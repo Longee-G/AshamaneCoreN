@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -741,7 +741,7 @@ class mob_pandriarch_windfur : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            player->playerTalkClass->ClearMenus();
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -874,7 +874,7 @@ class mob_pandriarch_bramblestaff : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            player->playerTalkClass->ClearMenus();
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -1016,7 +1016,7 @@ class mob_pandriarch_goldendraft : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            player->playerTalkClass->ClearMenus();
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -1140,7 +1140,7 @@ class mob_big_bao : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            player->playerTalkClass->ClearMenus();
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -1334,14 +1334,14 @@ class npc_elder_anli : public CreatureScript
                 if (player->GetReputationRank(REPUTATION_ORDER_OF_THE_CLOUD_SERPENT) == REP_EXALTED)
                     player->KilledMonsterCredit(NPC_INSTRUCTOR_WINDBLADE);
 
-            player->PlayerTalkClass->SendGossipMenu(GOSSIP_TEXT_I, creature->GetGUID());
+            player->playerTalkClass->SendGossipMenu(GOSSIP_TEXT_I, creature->GetGUID());
 
             return true;
         }
 
         bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 /*action*/) override
         {
-            player->PlayerTalkClass->GetQuestMenu();
+            player->playerTalkClass->GetQuestMenu();
 
             return true;
         }
@@ -1462,7 +1462,7 @@ class mob_pearlfin_situation : public CreatureScript
                         if (player->GetQuestStatus(29883) == QUEST_STATUS_INCOMPLETE)
                             player->KilledMonsterCredit(59058);
 
-                        player->PlayerTalkClass->SendGossipMenu(GOSSIP_TEXT_I, creature->GetGUID());
+                        player->playerTalkClass->SendGossipMenu(GOSSIP_TEXT_I, creature->GetGUID());
                         break;
                     case 56693:
                         if (player->GetQuestStatus(29883) == QUEST_STATUS_INCOMPLETE)
@@ -1479,7 +1479,7 @@ class mob_pearlfin_situation : public CreatureScript
                         if (player->GetQuestStatus(29883) == QUEST_STATUS_INCOMPLETE)
                             player->KilledMonsterCredit(54960);
 
-                        player->PlayerTalkClass->SendGossipMenu(GOSSIP_TEXT_I, creature->GetGUID());
+                        player->playerTalkClass->SendGossipMenu(GOSSIP_TEXT_I, creature->GetGUID());
                         break;
                     default:
                         break;
@@ -1491,7 +1491,7 @@ class mob_pearlfin_situation : public CreatureScript
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 /*action*/) override
         {
             if (creature->GetEntry() == 59058 || creature->GetEntry() == 54960)
-                player->PlayerTalkClass->GetQuestMenu();
+                player->playerTalkClass->GetQuestMenu();
 
             return true;
         }
@@ -1781,14 +1781,14 @@ class mob_instructor_windblade : public CreatureScript
             if (player->GetQuestStatus(30143) == QUEST_STATUS_INCOMPLETE)
                     player->KilledMonsterCredit(58572);
 
-            player->PlayerTalkClass->SendGossipMenu(GOSSIP_TEXT_I, creature->GetGUID());
+            player->playerTalkClass->SendGossipMenu(GOSSIP_TEXT_I, creature->GetGUID());
 
             return true;
         }
 
         bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 /*action*/) override
         {
-            player->PlayerTalkClass->GetQuestMenu();
+            player->playerTalkClass->GetQuestMenu();
 
             return true;
         }
@@ -1915,7 +1915,7 @@ class mob_second_big_bao : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            player->playerTalkClass->ClearMenus();
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -2054,7 +2054,7 @@ class mob_ace_longpaw : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            player->playerTalkClass->ClearMenus();
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -2193,7 +2193,7 @@ class mob_ningha_darkwheel : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            player->playerTalkClass->ClearMenus();
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -2332,7 +2332,7 @@ class mob_qua_row_whitebrow : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            player->playerTalkClass->ClearMenus();
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -2471,7 +2471,7 @@ class mob_suchi_the_sweet : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            player->playerTalkClass->ClearMenus();
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {

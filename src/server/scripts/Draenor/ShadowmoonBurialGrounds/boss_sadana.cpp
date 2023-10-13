@@ -702,7 +702,7 @@ public:
             m_CanDamage = false;
         }
 
-        EventMap m_Events;
+        EventMap _events;
         InstanceScript* m_Instance;
         bool m_StartEvent;
         bool m_CanDamage;
@@ -786,7 +786,7 @@ public:
             m_HasBeenActivated = false;
         }
 
-        EventMap m_Events;
+        EventMap _events;
         InstanceScript* m_Instance;
         bool m_HasBeenActivated;
 

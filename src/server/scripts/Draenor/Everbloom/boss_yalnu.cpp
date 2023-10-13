@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -741,7 +741,7 @@ public:
 
         void Register() override
         {
-            OnEffectApply += AuraEffectApplyFn(spell_font_life_AuraScript::OnApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+            OnEffectApply += AuraEffectApplyFn(spell_font_life_AuraScript::OnApply, EFFECT_0, 0, AURA_EFFECT_HANDLE_REAL);
         }
     };
 
@@ -1263,6 +1263,6 @@ void AddSC_boss_yalnu()
     new kirin_tor_mage();
     new lady_baihu();
     RegisterAreaTriggerAI(at_flamestrike);
-    RegisterAreaTriggerAI(at_arcane_orb);
     RegisterAreaTriggerAI(at_noxious_breath);
+    //RegisterAreaTriggerAI(at_arcane_orb);
 }

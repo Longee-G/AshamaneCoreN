@@ -290,3 +290,14 @@ WorldPacket const* WorldPackets::Battleground::DestroyArenaUnit::Write()
     _worldPacket << Guid;
     return &_worldPacket;
 }
+
+WorldPacket const * WorldPackets::Battleground::ConquestFormulaConstants::Write()
+{
+    _worldPacket << PvpMinCPPerWeek;
+    _worldPacket << PvpMaxCPPerWeek;
+    _worldPacket << PvpCPBaseCoefficient;
+    _worldPacket << PvpCPExpCoefficient;
+    _worldPacket << PvpCPNumerator;
+
+    return &_worldPacket;
+}

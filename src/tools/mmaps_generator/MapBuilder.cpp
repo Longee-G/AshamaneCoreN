@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
  *
@@ -104,7 +104,7 @@ namespace MMAP
         for (TileList::iterator itr = m_tiles.begin(); itr != m_tiles.end(); ++itr)
         {
             std::set<uint32>* tiles = (*itr).m_tiles;
-            mapID = (*itr).m_mapId;
+            mapID = (*itr)._mapId;
 
             files.clear();
             getDirContents(files, "vmaps", Trinity::StringFormat("%04u_*.vmtile", mapID));
@@ -149,7 +149,7 @@ namespace MMAP
         // Calculate tiles to process in total
         for (TileList::iterator it = m_tiles.begin(); it != m_tiles.end(); ++it)
         {
-            if (!shouldSkipMap(it->m_mapId))
+            if (!shouldSkipMap(it->_mapId))
                 m_totalTiles += it->m_tiles->size();
         }
     }
@@ -199,7 +199,7 @@ namespace MMAP
 
         for (TileList::iterator it = m_tiles.begin(); it != m_tiles.end(); ++it)
         {
-            uint32 mapId = it->m_mapId;
+            uint32 mapId = it->_mapId;
             if (!shouldSkipMap(mapId))
             {
                 if (threads > 0)
@@ -947,7 +947,7 @@ namespace MMAP
                 case 1555:  // TransportBoostExperienceAllianceGunship.wdt
                 case 1556:  // TransportBoostExperienceHordeGunship.wdt
                 case 1561:  // TechTestCosmeticParentPerformance.wdt
-                case 1582:  // Artifact�DalaranVaultAcquisition.wdt // no, this weird symbol is not an encoding error.
+                case 1582:  // Artifact?DalaranVaultAcquisition.wdt // no, this weird symbol is not an encoding error.
                 case 1584:  // JulienTestLand-DevOnly.wdt
                 case 1586:  // AssualtOnStormwind.wdt (Assault on Stormwind - Dev Map)
                 case 1588:  // DevMapA.wdt

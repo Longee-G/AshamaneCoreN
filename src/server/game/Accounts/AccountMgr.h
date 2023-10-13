@@ -79,6 +79,7 @@ class TC_GAME_API AccountMgr
         static bool IsBannedAccount(std::string const& name);
         static bool IsPlayerAccount(uint32 gmlevel);
         static bool IsAdminAccount(uint32 gmlevel);
+        static bool IsModeratorAccount(uint32 gmlevel);
         static bool IsConsoleAccount(uint32 gmlevel);
         static bool HasPermission(uint32 accountId, uint32 permission, uint32 realmId);
 

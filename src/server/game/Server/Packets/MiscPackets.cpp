@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -729,6 +729,8 @@ void WorldPackets::Misc::AdventureJournalStartQuest::Read()
     _worldPacket >> QuestID;
 }
 
+
+// order is different with (LEGION core)
 WorldPacket const* WorldPackets::Misc::StartTimer::Write()
 {
     _worldPacket << Type;
@@ -752,4 +754,9 @@ WorldPacket const* WorldPackets::Misc::OpenAlliedRaceDetailsGiver::Write()
     _worldPacket << RaceId;
 
     return &_worldPacket;
+}
+
+void WorldPackets::Misc::RequestConsumptionConversionInfo::Read()
+{
+    _worldPacket >> ID;
 }

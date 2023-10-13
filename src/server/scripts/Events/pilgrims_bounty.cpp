@@ -200,7 +200,7 @@ public:
             init.MoveTo(x, y, z, false);
             init.SetFacing(o);
             init.Launch();
-            who->m_Events.AddEvent(new CastFoodSpell(who, _chairSpells.at(who->GetEntry())), who->m_Events.CalculateTime(1000));
+            who->_events.AddEvent(new CastFoodSpell(who, _chairSpells.at(who->GetEntry())), who->_events.CalculateTime(1000));
             if (who->GetTypeId() == TYPEID_UNIT)
                 who->SetDisplayId(who->ToCreature()->GetCreatureTemplate()->Modelid1);
         }

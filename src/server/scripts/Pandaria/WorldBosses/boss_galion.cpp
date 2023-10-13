@@ -100,7 +100,7 @@ class boss_galion : public CreatureScript
                 ASSERT(me->GetVehicleKit());
             }
 
-            EventMap m_Events;
+            EventMap _events;
             uint32 m_CheckVehicleTimer;
             uint8 m_CanonReady;
             std::list<ObjectGuid> m_LootersGuids;
@@ -155,7 +155,7 @@ class boss_galion : public CreatureScript
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
 
                 _Reset();
 
@@ -198,9 +198,9 @@ class boss_galion : public CreatureScript
 
             void EnterCombat(Unit* attacker) override
             {
-                m_Events.ScheduleEvent(EVENT_WARN_STOMP, 47000);
-                m_Events.ScheduleEvent(EVENT_STOMP, 50000);
-                m_Events.ScheduleEvent(EVENT_CANON_BARRAGE, 24000);
+                _events.ScheduleEvent(EVENT_WARN_STOMP, 47000);
+                _events.ScheduleEvent(EVENT_STOMP, 50000);
+                _events.ScheduleEvent(EVENT_CANON_BARRAGE, 24000);
 
                 if (Unit* l_ChiefSalyis = me->GetVehicleKit()->GetPassenger(2))
                     l_ChiefSalyis->ToCreature()->AI()->Talk(TALK_AGGRO);
@@ -241,18 +241,18 @@ class boss_galion : public CreatureScript
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case EVENT_WARN_STOMP:
                         //me->TextEmote("Galleon is about to |cFFFF0000|Hspell:121787|h[Stomp]|h|r !", 0, true);
                         break;
                     case EVENT_STOMP:
                         me->CastSpell(me, SPELL_STOMP, false);
-                        m_Events.ScheduleEvent(EVENT_WARN_STOMP, 57000);
-                        m_Events.ScheduleEvent(EVENT_STOMP, 60000);
-                        m_Events.ScheduleEvent(EVENT_WARMONGER, 10000);
+                        _events.ScheduleEvent(EVENT_WARN_STOMP, 57000);
+                        _events.ScheduleEvent(EVENT_STOMP, 60000);
+                        _events.ScheduleEvent(EVENT_WARMONGER, 10000);
                         break;
                     case EVENT_CANON_BARRAGE:
                     {
@@ -278,11 +278,11 @@ class boss_galion : public CreatureScript
                         ++m_CanonReady;
 
                         if (m_CanonReady < 8)
-                            m_Events.ScheduleEvent(EVENT_CANON_BARRAGE, 1000);
+                            _events.ScheduleEvent(EVENT_CANON_BARRAGE, 1000);
                         else
                         {
                             m_CanonReady = 0;
-                            m_Events.ScheduleEvent(EVENT_CANON_BARRAGE, 52000);
+                            _events.ScheduleEvent(EVENT_CANON_BARRAGE, 52000);
                         }
 
                         break;
@@ -353,12 +353,12 @@ class npc_salyin_warmonger : public CreatureScript
         {
             npc_salyin_warmongerAI(Creature* p_Creature) : ScriptedAI(p_Creature) { }
 
-            EventMap m_Events;
+            EventMap _events;
             bool m_IsInCombat;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
 
                 m_IsInCombat = false;
             }
@@ -366,9 +366,9 @@ class npc_salyin_warmonger : public CreatureScript
             void EnterCombat(Unit* /*attacker*/) override
             {
                 if (me->IsOnVehicle())
-                    m_Events.ScheduleEvent(EVENT_FIRE_SHOT, urand(5000, 10000));
+                    _events.ScheduleEvent(EVENT_FIRE_SHOT, urand(5000, 10000));
                 else
-                    m_Events.ScheduleEvent(EVENT_IMPALING_PULL, 20000);
+                    _events.ScheduleEvent(EVENT_IMPALING_PULL, 20000);
 
                 m_IsInCombat = true;
             }
@@ -384,18 +384,18 @@ class npc_salyin_warmonger : public CreatureScript
                 if (me->HasUnitState(UNIT_STATE_CASTING) && !me->IsOnVehicle())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case EVENT_FIRE_SHOT:
                         me->CastSpell(me, SPELL_FIRE_SHOT, false);
-                        m_Events.ScheduleEvent(EVENT_FIRE_SHOT, urand(5000, 10000));
+                        _events.ScheduleEvent(EVENT_FIRE_SHOT, urand(5000, 10000));
                         break;
                     case EVENT_IMPALING_PULL:
                         if (Unit* l_Target = SelectTarget(SELECT_TARGET_RANDOM))
                             me->CastSpell(l_Target, SPELL_IMPALING_PULL, false);
-                        m_Events.ScheduleEvent(EVENT_IMPALING_PULL, 20000);
+                        _events.ScheduleEvent(EVENT_IMPALING_PULL, 20000);
                         break;
                     default:
                         break;

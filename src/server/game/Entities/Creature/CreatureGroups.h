@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -69,7 +69,7 @@ class TC_GAME_API CreatureGroup
     private:
         Creature* m_leader; //Important do not forget sometimes to work with pointers instead synonims :D:D
         typedef std::map<Creature*, FormationInfo*>  CreatureGroupMemberType;
-        CreatureGroupMemberType m_members;
+        CreatureGroupMemberType _members;
 
         ObjectGuid::LowType m_groupID;
         bool m_Formed;
@@ -81,7 +81,7 @@ class TC_GAME_API CreatureGroup
 
         Creature* getLeader() const { return m_leader; }
         ObjectGuid::LowType GetId() const { return m_groupID; }
-        bool isEmpty() const { return m_members.empty(); }
+        bool isEmpty() const { return _members.empty(); }
         bool isFormed() const { return m_Formed; }
 
         void AddMember(Creature* member);

@@ -64,13 +64,13 @@ class boss_nalak : public CreatureScript
                 m_IntroDone = false;
             }
 
-            EventMap m_Events;
+            EventMap _events;
 
             bool m_IntroDone;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
 
                 _Reset();
 
@@ -106,9 +106,9 @@ class boss_nalak : public CreatureScript
 
                 Talk(TALK_AGGRO);
 
-                m_Events.ScheduleEvent(EVENT_STORM_CLOUD, 15000);
-                m_Events.ScheduleEvent(EVENT_LIGHTNING_TETHER, 28000);
-                m_Events.ScheduleEvent(EVENT_ARC_NOVA, 39000);
+                _events.ScheduleEvent(EVENT_STORM_CLOUD, 15000);
+                _events.ScheduleEvent(EVENT_LIGHTNING_TETHER, 28000);
+                _events.ScheduleEvent(EVENT_ARC_NOVA, 39000);
             }
 
             void UpdateAI(uint32 diff) override
@@ -119,23 +119,23 @@ class boss_nalak : public CreatureScript
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case EVENT_STORM_CLOUD:
                         Talk(TALK_STORMCLOUD);
                         me->CastSpell(me, SPELL_STORM_CLOUD, false);
-                        m_Events.ScheduleEvent(EVENT_STORM_CLOUD, 24000);
+                        _events.ScheduleEvent(EVENT_STORM_CLOUD, 24000);
                         break;
                     case EVENT_LIGHTNING_TETHER:
                         me->CastSpell(me, SPELL_LIGHTNING_TETHER, false);
-                        m_Events.ScheduleEvent(EVENT_LIGHTNING_TETHER, 35000);
+                        _events.ScheduleEvent(EVENT_LIGHTNING_TETHER, 35000);
                         break;
                     case EVENT_ARC_NOVA:
                         Talk(TALK_ARC_NOVA);
                         me->CastSpell(me, SPELL_ARC_NOVA, false);
-                        m_Events.ScheduleEvent(EVENT_ARC_NOVA, 42000);
+                        _events.ScheduleEvent(EVENT_ARC_NOVA, 42000);
                         break;
                     default:
                         break;

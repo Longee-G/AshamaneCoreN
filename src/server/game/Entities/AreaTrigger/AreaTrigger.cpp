@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -46,12 +46,12 @@ AreaTrigger::AreaTrigger() : WorldObject(false), MapObject(), _aurEff(nullptr),
     _isBeingRemoved(false), _isRemoved(false), _reachedDestination(false), _lastSplineIndex(0), _movementTime(0),
     _areaTriggerTemplate(nullptr), _areaTriggerMiscTemplate(nullptr), _spawnId(0), _guidScriptId(0), _ai()
 {
-    m_objectType |= TYPEMASK_AREATRIGGER;
-    m_objectTypeId = TYPEID_AREATRIGGER;
+    _objectType |= TYPEMASK_AREATRIGGER;
+    _objectTypeId = TYPEID_AREATRIGGER;
 
-    m_updateFlag = UPDATEFLAG_STATIONARY_POSITION | UPDATEFLAG_AREATRIGGER;
+    _updateFlag = UPDATEFLAG_STATIONARY_POSITION | UPDATEFLAG_AREATRIGGER;
 
-    m_valuesCount = AREATRIGGER_END;
+    _valuesCount = AREATRIGGER_END;
     _dynamicValuesCount = AREATRIGGER_DYNAMIC_END;
 }
 
@@ -154,7 +154,7 @@ bool AreaTrigger::Create(uint32 spellMiscId, Unit* caster, Unit* target, SpellIn
 
     if (target && GetTemplate()->HasFlag(AREATRIGGER_FLAG_HAS_ATTACHED))
     {
-        m_movementInfo.transport.guid = target->GetGUID();
+        _movementInfo.transport.guid = target->GetGUID();
     }
 
     UpdateShape();
@@ -177,17 +177,17 @@ bool AreaTrigger::Create(uint32 spellMiscId, Unit* caster, Unit* target, SpellIn
     }
     else if (GetTemplate()->HasFlag(AREATRIGGER_FLAG_HAS_CIRCULAR_MOVEMENT))
     {
-        m_uint32Values[AREATRIGGER_TIME_TO_TARGET] = timeToTarget;
+        _uint32Values[AREATRIGGER_TIME_TO_TARGET] = timeToTarget;
     }
 
     // movement on transport of areatriggers on unit is handled by themself
-    Transport* transport = m_movementInfo.transport.guid.IsEmpty() ? caster->GetTransport() : nullptr;
+    Transport* transport = _movementInfo.transport.guid.IsEmpty() ? caster->GetTransport() : nullptr;
     if (transport)
     {
         float x, y, z, o;
         pos.GetPosition(x, y, z, o);
         transport->CalculatePassengerOffset(x, y, z, &o);
-        m_movementInfo.transport.pos.Relocate(x, y, z, o);
+        _movementInfo.transport.pos.Relocate(x, y, z, o);
 
         // This object must be added to transport before adding to map for the client to properly display it
         transport->AddPassenger(this);
@@ -339,7 +339,7 @@ void AreaTrigger::_UpdateDuration(int32 newDuration)
     _duration = newDuration;
 
     // should be sent in object create packets only
-    m_uint32Values[AREATRIGGER_DURATION] = _duration;
+    _uint32Values[AREATRIGGER_DURATION] = _duration;
 }
 
 float AreaTrigger::GetProgress() const
@@ -740,7 +740,7 @@ void AreaTrigger::InitSplines(std::vector<G3D::Vector3> splinePoints, uint32 tim
     _spline->initLengths();
 
     // should be sent in object create packets only
-    m_uint32Values[AREATRIGGER_TIME_TO_TARGET] = timeToTarget;
+    _uint32Values[AREATRIGGER_TIME_TO_TARGET] = timeToTarget;
 
     if (IsInWorld())
     {
@@ -809,7 +809,7 @@ void AreaTrigger::InitCircularMovement(AreaTriggerCircularMovementInfo const& cm
     ASSERT(cmi.Center.is_initialized() || cmi.TargetGUID.is_initialized());
 
     // should be sent in object create packets only
-    m_uint32Values[AREATRIGGER_TIME_TO_TARGET] = timeToTarget;
+    _uint32Values[AREATRIGGER_TIME_TO_TARGET] = timeToTarget;
 
     _circularMovementInfo = cmi;
 

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -160,7 +160,7 @@ void CreatureGroup::AddMember(Creature* member)
         m_leader = member;
     }
 
-    m_members[member] = sFormationMgr->CreatureGroupMap.find(member->GetSpawnId())->second;
+    _members[member] = sFormationMgr->CreatureGroupMap.find(member->GetSpawnId())->second;
     member->SetFormation(this);
 }
 
@@ -169,7 +169,7 @@ void CreatureGroup::RemoveMember(Creature* member)
     if (m_leader == member)
         m_leader = NULL;
 
-    m_members.erase(member);
+    _members.erase(member);
     member->SetFormation(NULL);
 }
 
@@ -187,7 +187,7 @@ void CreatureGroup::MemberAttackStart(Creature* member, Unit* target)
     else if (!(groupAI & FLAG_LEADER_ASSISTS_MEMBER))
         return;
 
-    for (CreatureGroupMemberType::iterator itr = m_members.begin(); itr != m_members.end(); ++itr)
+    for (CreatureGroupMemberType::iterator itr = _members.begin(); itr != _members.end(); ++itr)
     {
         if (m_leader) // avoid crash if leader was killed and reset.
             TC_LOG_DEBUG("entities.unit", "GROUP ATTACK: group instance id %u calls member instid %u", m_leader->GetInstanceId(), member->GetInstanceId());
@@ -211,7 +211,7 @@ void CreatureGroup::MemberAttackStart(Creature* member, Unit* target)
 
 void CreatureGroup::FormationReset(bool dismiss)
 {
-    for (CreatureGroupMemberType::iterator itr = m_members.begin(); itr != m_members.end(); ++itr)
+    for (CreatureGroupMemberType::iterator itr = _members.begin(); itr != _members.end(); ++itr)
     {
         if (itr->first != m_leader && itr->first->IsAlive())
         {
@@ -234,7 +234,7 @@ void CreatureGroup::LeaderMoveTo(float x, float y, float z)
 
     float pathangle = std::atan2(m_leader->GetPositionY() - y, m_leader->GetPositionX() - x);
 
-    for (CreatureGroupMemberType::iterator itr = m_members.begin(); itr != m_members.end(); ++itr)
+    for (CreatureGroupMemberType::iterator itr = _members.begin(); itr != _members.end(); ++itr)
     {
         Creature* member = itr->first;
         if (member == m_leader || !member->IsAlive() || member->GetVictim() || !(itr->second->groupAI & FLAG_IDLE_IN_FORMATION))

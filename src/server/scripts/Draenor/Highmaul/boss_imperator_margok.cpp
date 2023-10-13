@@ -1,4 +1,4 @@
-/*
+ï»¿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -44,9 +44,9 @@ Position const g_ChogallEventsPos[] =
 /*
 @TODO:
 - Ajouter le MM pour les NPCs (les getdata des ePhases)
-- faire des fonctions pour les déplacements vers les runes (gain de place dans le code), faire des tableaux pour les positions/dialogues/... indexés sur l'id de la rune
-- visuel des runes activées sur le SLG generic : 
-    déplacement   : visu : 174026
+- faire des fonctions pour les d?lacements vers les runes (gain de place dans le code), faire des tableaux pour les positions/dialogues/... index? sur l'id de la rune
+- visuel des runes activ?s sur le SLG generic : 
+    d?lacement   : visu : 174026
     reproduction  : visu du socl : 174044
     fortification : visual du socle : 174043
     nullification : visuel du socle : 178559
@@ -274,7 +274,7 @@ class boss_imperator_margok : public CreatureScript
                 g_SwitchPhasePcts[ePhases::MythicPhase4ChoGall - 1] = -1;   ///< Phase Four lasts from 100 % of Cho'gall's health(end of the First Transition Phase) to 0 % of Cho'gall's health.
             }
 
-            EventMap m_Events;
+            EventMap _events;
             EventMap m_CosmeticEvents;
 
             bool m_InCombat;
@@ -303,7 +303,7 @@ class boss_imperator_margok : public CreatureScript
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
                 m_CosmeticEvents.Reset();
 
                 summons.DespawnAll();
@@ -311,7 +311,7 @@ class boss_imperator_margok : public CreatureScript
                 m_InCombat = false;
 
                 m_Phase = IsMythic() ? ePhases::MythicPhase1 : ePhases::MightOfTheCrown;
-                m_Events.SetPhase(m_Phase);
+                _events.SetPhase(m_Phase);
 
                 m_MeleeTargetGuid = ObjectGuid::Empty;
 
@@ -358,7 +358,7 @@ class boss_imperator_margok : public CreatureScript
 
             void JustReachedHome() override
             {
-                m_Events.Reset();
+                _events.Reset();
                 m_Phase = IsMythic() ? ePhases::MythicPhase1 : ePhases::MightOfTheCrown;
             }
 
@@ -403,7 +403,7 @@ class boss_imperator_margok : public CreatureScript
                     }
                     case eActions::ActionCancelAllEvents:
                     {
-                        m_Events.Reset();
+                        _events.Reset();
                         break;
                     }
                     case 100:
@@ -520,14 +520,14 @@ class boss_imperator_margok : public CreatureScript
                     me->CastSpell(me, eSpells::PowerOfReplication, true);
                 }
 
-                m_Events.ScheduleEvent(eEvents::EventForceNova, 45 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventArcaneWrath, 6 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventDestructiveResonance, 15 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventMarkOfChaos, 34 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventArcaneAberration, 25 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventForceNova, 45 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventArcaneWrath, 6 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventDestructiveResonance, 15 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventMarkOfChaos, 34 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventArcaneAberration, 25 * TimeConstants::IN_MILLISECONDS);
 
                 if (IsLFR() || IsMythic())
-                    m_Events.ScheduleEvent(eEvents::EventBerserk, 900 * TimeConstants::IN_MILLISECONDS);
+                    _events.ScheduleEvent(eEvents::EventBerserk, 900 * TimeConstants::IN_MILLISECONDS);
 
                 m_CosmeticEvents.ScheduleEvent(eCosmeticEvents::EventCheckPlayerZ, 1 * TimeConstants::IN_MILLISECONDS);
                 m_CosmeticEvents.CancelEvent(EventCheckRuneCosmetic);
@@ -607,7 +607,7 @@ class boss_imperator_margok : public CreatureScript
                         break;
                     }
 
-                    m_Events.SetPhase(m_Phase);
+                    _events.SetPhase(m_Phase);
                 }
             }
 
@@ -621,7 +621,7 @@ class boss_imperator_margok : public CreatureScript
             {
                 _JustDied();
 
-                m_Events.Reset();
+                _events.Reset();
                 m_CosmeticEvents.Reset();
 
                 if (!IsMythic())
@@ -1166,12 +1166,12 @@ class boss_imperator_margok : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     /// ALL DIFFICULTIES
                     case eEvents::EventMarkOfChaos:
@@ -1202,7 +1202,7 @@ class boss_imperator_margok : public CreatureScript
                         }
 
                         if (m_Phase != ePhases::MythicPhase4ChoGall) Talk(eTalks::MarkOfChaos);
-                        m_Events.ScheduleEvent(eEvents::EventMarkOfChaos, 51 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventMarkOfChaos, 51 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     case eEvents::EventForceNova:
@@ -1230,7 +1230,7 @@ class boss_imperator_margok : public CreatureScript
                         me->CastSpell(me, eSpells::ForceNovaScriptEffect, true);
 
                         if (m_Phase != ePhases::MythicPhase4ChoGall) Talk(eTalks::ForceNova);
-                        m_Events.ScheduleEvent(eEvents::EventForceNova, 45 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventForceNova, 45 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     case eEvents::EventArcaneWrath:
@@ -1258,7 +1258,7 @@ class boss_imperator_margok : public CreatureScript
                         me->CastSpell(me, eSpells::ArcaneWrathCosmetic, true);
 
                         if (m_Phase != ePhases::MythicPhase4ChoGall) Talk(eTalks::ArcaneWrath);
-                        m_Events.ScheduleEvent(eEvents::EventArcaneWrath, 50 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventArcaneWrath, 50 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     case eEvents::EventDestructiveResonance:
@@ -1284,7 +1284,7 @@ class boss_imperator_margok : public CreatureScript
                         }
                         
                         me->CastSpell(me, eSpells::DestructiveResonanceCosmetic, true);
-                        m_Events.ScheduleEvent(eEvents::EventDestructiveResonance, 15 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventDestructiveResonance, 15 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     case eEvents::EventArcaneAberration:
@@ -1312,7 +1312,7 @@ class boss_imperator_margok : public CreatureScript
                         me->CastSpell(me, eSpells::SummonArcaneAberrationCosmetic, true);
 
                         if (m_Phase != ePhases::MythicPhase4ChoGall) Talk(eTalks::ArcaneAberration);
-                        m_Events.ScheduleEvent(eEvents::EventArcaneAberration, 45 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventArcaneAberration, 45 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     /// LFR + MYTHIC
@@ -1461,7 +1461,7 @@ class boss_imperator_margok : public CreatureScript
                     Position pos = *me;
                     pos.m_positionZ += 16.0f;
                     me->GetMotionMaster()->MovePoint(eMoves::MoveUp, pos);
-                    m_Events.DelayEvents(9 * IN_MILLISECONDS);
+                    _events.DelayEvents(9 * IN_MILLISECONDS);
                 });
 
                 AddTimedDelayedOperation(11 * TimeConstants::IN_MILLISECONDS, [this]() -> void
@@ -1500,7 +1500,7 @@ class boss_imperator_margok : public CreatureScript
                     Position pos = *me;
                     pos.m_positionZ += 16.0f;
                     me->GetMotionMaster()->MovePoint(eMoves::MoveUp, pos);
-                    m_Events.DelayEvents(60 * IN_MILLISECONDS);
+                    _events.DelayEvents(60 * IN_MILLISECONDS);
                 });
 
                 AddTimedDelayedOperation(10 * TimeConstants::IN_MILLISECONDS, [this]() -> void
@@ -1549,7 +1549,7 @@ class boss_imperator_margok : public CreatureScript
 
                     ++m_Phase;
 
-                    m_Events.SetPhase(m_Phase);
+                    _events.SetPhase(m_Phase);
                 });
             }
 
@@ -1578,7 +1578,7 @@ class boss_imperator_margok : public CreatureScript
                     Position pos = *me;
                     pos.m_positionZ += 16.0f;
                     me->GetMotionMaster()->MovePoint(eMoves::MoveUp, pos);
-                    m_Events.DelayEvents(60 * IN_MILLISECONDS);
+                    _events.DelayEvents(60 * IN_MILLISECONDS);
                 });
 
                 AddTimedDelayedOperation(10 * TimeConstants::IN_MILLISECONDS, [this]() -> void
@@ -1625,7 +1625,7 @@ class boss_imperator_margok : public CreatureScript
 
                     ++m_Phase;
 
-                    m_Events.SetPhase(m_Phase);
+                    _events.SetPhase(m_Phase);
                 });
             }
 
@@ -1635,7 +1635,7 @@ class boss_imperator_margok : public CreatureScript
                 me->AttackStop();
                 me->SetReactState(ReactStates::REACT_PASSIVE);
                 me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
-                m_Events.DelayEvents(75 * IN_MILLISECONDS);
+                _events.DelayEvents(75 * IN_MILLISECONDS);
 
                 me->CastSpell(me, eSpells::EncounterEvent, true);
                 me->CastSpell(me, eSpells::TeleportToFortification, true);
@@ -1704,14 +1704,14 @@ class boss_imperator_margok : public CreatureScript
 
                     ++m_Phase;
 
-                    m_Events.SetPhase(m_Phase);
+                    _events.SetPhase(m_Phase);
                 });
             }
 
             void MythicScheduleSecondTransitionPhase()
             {
                 // activate replication rune
-                m_Events.DelayEvents(75 * IN_MILLISECONDS);
+                _events.DelayEvents(75 * IN_MILLISECONDS);
                 me->AttackStop();
                 me->SetReactState(ReactStates::REACT_PASSIVE);
                 me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
@@ -1781,7 +1781,7 @@ class boss_imperator_margok : public CreatureScript
 
                     ++m_Phase;
 
-                    m_Events.SetPhase(m_Phase);
+                    _events.SetPhase(m_Phase);
                 });
             }
 
@@ -1893,7 +1893,7 @@ public:
         EventSpawnIntroAdds = 1,    // ~25 npc(78641) join the fight during cosmetic intro (30-40sec) with 2 ability
         EventDrainPower,            // cosmetic one
 
-        EventDarkStar,              // bubulle qui pop à l'emplac d'un joueur et explose 5sec après
+        EventDarkStar,              // bubulle qui pop ?l'emplac d'un joueur et explose 5sec apr?
         EventGlimpseOfMadness,      // Cho'gall uses every 25 seconds. He creates a shadow copy of a random raid member, which persists until the end of the fight. These copies are stationary and they cannot be attacked, but they spam Gaze of the Abyss Icon Gaze of the Abyss on the closest raid member within a certain radius (we are not sure of the size of the radius, but it appears to be around 10 yards).
         EventInfiniteDarkness,      // aura on 1-3 players every 60secs, trigger entropy mechanics
         EventEnvelopingNight,       // explode every shadow copy if they can (the copy had to miss at least one time gaze of the abyss), the explosion deal damage to the whole raid
@@ -1944,7 +1944,7 @@ public:
 
         InstanceScript* m_Instance;
 
-        EventMap m_Events;
+        EventMap _events;
         EventMap m_CosmeticEvents;
 
         bool m_IntroDone;
@@ -1954,7 +1954,7 @@ public:
 
         void Reset() override
         {
-            m_Events.Reset();
+            _events.Reset();
             m_CosmeticEvents.Reset();
             m_IntroDone = false;
             me->AddUnitState(UNIT_STATE_IGNORE_PATHFINDING);
@@ -2085,18 +2085,18 @@ public:
 
             m_CosmeticEvents.ScheduleEvent(eEvents::EventSpawnNightTwistedFaithful, urand(20, 30) * TimeConstants::IN_MILLISECONDS); /// 30sec cd
 
-            m_Events.ScheduleEvent(eEvents::EventDarkStar, 29 * TimeConstants::IN_MILLISECONDS); /// 60sec cd
-            m_Events.ScheduleEvent(eEvents::EventGlimpseOfMadness, 20 * TimeConstants::IN_MILLISECONDS); /// 25sec cd
-            m_Events.ScheduleEvent(eEvents::EventInfiniteDarkness, urand(8 * TimeConstants::IN_MILLISECONDS, 12 * TimeConstants::IN_MILLISECONDS)); /// 60sec cd
-            m_Events.ScheduleEvent(eEvents::EventEnvelopingNight, 55 * TimeConstants::IN_MILLISECONDS); /// 60sec cd
-            m_Events.ScheduleEvent(eEvents::EventEdgeOfTheVoid, 5 * TimeConstants::MINUTE * TimeConstants::IN_MILLISECONDS);
+            _events.ScheduleEvent(eEvents::EventDarkStar, 29 * TimeConstants::IN_MILLISECONDS); /// 60sec cd
+            _events.ScheduleEvent(eEvents::EventGlimpseOfMadness, 20 * TimeConstants::IN_MILLISECONDS); /// 25sec cd
+            _events.ScheduleEvent(eEvents::EventInfiniteDarkness, urand(8 * TimeConstants::IN_MILLISECONDS, 12 * TimeConstants::IN_MILLISECONDS)); /// 60sec cd
+            _events.ScheduleEvent(eEvents::EventEnvelopingNight, 55 * TimeConstants::IN_MILLISECONDS); /// 60sec cd
+            _events.ScheduleEvent(eEvents::EventEdgeOfTheVoid, 5 * TimeConstants::MINUTE * TimeConstants::IN_MILLISECONDS);
 
             m_AddsSpawned = 0;
         }
 
         void JustDied(Unit* killer) override
         {
-            m_Events.Reset();
+            _events.Reset();
             m_CosmeticEvents.Reset();
 
             Talk(eTalks::Death);
@@ -2240,37 +2240,37 @@ public:
             if (!UpdateVictim())
                 return;
 
-            m_Events.Update(diff);
+            _events.Update(diff);
 
             if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                 return;
 
-            switch (m_Events.ExecuteEvent())
+            switch (_events.ExecuteEvent())
             {
                 case eEvents::EventDarkStar:
                 {
                     if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_RANDOM, 0, 200.0f, true))
                         me->CastSpell(target, eSpells::SpellDarkStarAT, false);
 
-                    m_Events.ScheduleEvent(eEvents::EventDarkStar, 60 * TimeConstants::IN_MILLISECONDS);
+                    _events.ScheduleEvent(eEvents::EventDarkStar, 60 * TimeConstants::IN_MILLISECONDS);
                     break;
                 }
                 case eEvents::EventGlimpseOfMadness:
                 {
                     me->CastSpell(me, SpellGlimpseOfMadnessSearch, false);
-                    m_Events.ScheduleEvent(eEvents::EventGlimpseOfMadness, 25 * TimeConstants::IN_MILLISECONDS);
+                    _events.ScheduleEvent(eEvents::EventGlimpseOfMadness, 25 * TimeConstants::IN_MILLISECONDS);
                     break;
                 }
                 case eEvents::EventInfiniteDarkness:
                 {
                     me->CastSpell(me, eSpells::SpellInfiniteDarkness, false);
-                    m_Events.ScheduleEvent(eEvents::EventInfiniteDarkness, 60 * TimeConstants::IN_MILLISECONDS);
+                    _events.ScheduleEvent(eEvents::EventInfiniteDarkness, 60 * TimeConstants::IN_MILLISECONDS);
                     break;
                 }
                 case eEvents::EventEnvelopingNight:
                 {
                     me->CastSpell(me, eSpells::SpellEnvelopingNightDummy, false);
-                    m_Events.ScheduleEvent(eEvents::EventEnvelopingNight, 60 * TimeConstants::IN_MILLISECONDS);
+                    _events.ScheduleEvent(eEvents::EventEnvelopingNight, 60 * TimeConstants::IN_MILLISECONDS);
                     break;
                 }
                 case eEvents::EventEdgeOfTheVoid:
@@ -2996,7 +2996,7 @@ class npc_highmaul_gorian_warmage : public CreatureScript
 
             InstanceScript* m_Instance;
 
-            EventMap m_Events;
+            EventMap _events;
             EventMap m_CosmeticEvents;
 
             ObjectGuid m_FixateTarget;
@@ -3018,12 +3018,12 @@ class npc_highmaul_gorian_warmage : public CreatureScript
                 if (m_Instance != nullptr)
                     m_Instance->SendEncounterUnit(EncounterFrameType::ENCOUNTER_FRAME_ENGAGE, me, 2);
 
-                m_Events.Reset();
+                _events.Reset();
 
                 m_CosmeticEvents.Reset();
 
-                m_Events.ScheduleEvent(eEvents::EventFixate, 3 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventSlow, 5 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventFixate, 3 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventSlow, 5 * TimeConstants::IN_MILLISECONDS);
 
                 m_CosmeticEvents.ScheduleEvent(eCosmeticEvent::EventCheckRune, 1 * TimeConstants::IN_MILLISECONDS);
             }
@@ -3064,12 +3064,12 @@ class npc_highmaul_gorian_warmage : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvents::EventFixate:
                     {
@@ -3079,14 +3079,14 @@ class npc_highmaul_gorian_warmage : public CreatureScript
                             me->CastSpell(target, eSpells::Fixate, true);
                         }
 
-                        m_Events.ScheduleEvent(eEvents::EventNetherBlast, 100);
-                        m_Events.ScheduleEvent(eEvents::EventFixate, 15 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventNetherBlast, 100);
+                        _events.ScheduleEvent(eEvents::EventFixate, 15 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     case eEvents::EventSlow:
                     {
                         me->CastSpell(me, eSpells::Slow, true);
-                        m_Events.ScheduleEvent(eEvents::EventSlow, 17 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventSlow, 17 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     case eEvents::EventNetherBlast:
@@ -3094,7 +3094,7 @@ class npc_highmaul_gorian_warmage : public CreatureScript
                         if (Unit* target = ObjectAccessor::GetPlayer(*me, m_FixateTarget))
                             me->CastSpell(target, eSpells::NetherBlast, false);
 
-                        m_Events.ScheduleEvent(eEvents::EventNetherBlast, 200);
+                        _events.ScheduleEvent(eEvents::EventNetherBlast, 200);
                         break;
                     }
                     default:
@@ -3192,7 +3192,7 @@ class npc_highmaul_gorian_reaver : public CreatureScript
 
             InstanceScript* m_Instance;
 
-            EventMap m_Events;
+            EventMap _events;
 
             void Reset() override
             {
@@ -3205,11 +3205,11 @@ class npc_highmaul_gorian_reaver : public CreatureScript
                 if (m_Instance != nullptr)
                     m_Instance->SendEncounterUnit(EncounterFrameType::ENCOUNTER_FRAME_ENGAGE, me, 2);
 
-                m_Events.Reset();
+                _events.Reset();
 
-                m_Events.ScheduleEvent(eEvents::EventCrushArmor, 22 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventKickToTheFace, 41 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventDevastatingShockwave, 12 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventCrushArmor, 22 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventKickToTheFace, 41 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventDevastatingShockwave, 12 * TimeConstants::IN_MILLISECONDS);
             }
 
             void JustDied(Unit* /*killer*/) override
@@ -3223,19 +3223,19 @@ class npc_highmaul_gorian_reaver : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvents::EventCrushArmor:
                     {
                         if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
                             me->CastSpell(target, eSpells::CrushArmor, true);
 
-                        m_Events.ScheduleEvent(eEvents::EventCrushArmor, 11 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventCrushArmor, 11 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     case eEvents::EventKickToTheFace:
@@ -3246,13 +3246,13 @@ class npc_highmaul_gorian_reaver : public CreatureScript
                             me->getThreatManager().modifyThreatPercent(target, -100);
                         }
 
-                        m_Events.ScheduleEvent(eEvents::EventKickToTheFace, 25 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventKickToTheFace, 25 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     case eEvents::EventDevastatingShockwave:
                     {
                         me->CastSpell(me, eSpells::DevastatingShockwave, true);
-                        m_Events.ScheduleEvent(eEvents::EventDevastatingShockwave, 12 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventDevastatingShockwave, 12 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     default:

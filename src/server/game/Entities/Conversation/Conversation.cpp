@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -27,12 +27,12 @@
 
 Conversation::Conversation() : WorldObject(false), _duration(0)
 {
-    m_objectType |= TYPEMASK_CONVERSATION;
-    m_objectTypeId = TYPEID_CONVERSATION;
+    _objectType |= TYPEMASK_CONVERSATION;
+    _objectTypeId = TYPEID_CONVERSATION;
 
-    m_updateFlag = UPDATEFLAG_STATIONARY_POSITION;
+    _updateFlag = UPDATEFLAG_STATIONARY_POSITION;
 
-    m_valuesCount = CONVERSATION_END;
+    _valuesCount = CONVERSATION_END;
     _dynamicValuesCount = CONVERSATION_DYNAMIC_END;
 }
 

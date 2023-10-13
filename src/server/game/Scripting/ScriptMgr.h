@@ -94,6 +94,7 @@ enum SpellSchoolMask : uint16;
 enum WeatherState : uint32;
 enum XPColorChar : uint8;
 
+
 #define VISIBLE_RANGE       166.0f                          //MAX visible range (size of grid)
 
 
@@ -178,7 +179,6 @@ class TC_GAME_API ScriptObject
     friend class ScriptMgr;
 
     public:
-
         const std::string& GetName() const { return _name; }
 
     protected:
@@ -1000,6 +1000,26 @@ class TC_GAME_API QuestScript : public ScriptObject
         virtual void OnQuestObjectiveChange(Player* /*player*/, Quest const* /*quest*/, QuestObjective const& /*objective*/, int32 /*oldAmount*/, int32 /*newAmount*/) { }
 };
 
+
+namespace BattlePay
+{
+    struct Product;
+}
+
+// script for BattlePay
+class TC_GAME_API BattlePayProductScript : public ScriptObject
+{
+protected:
+    explicit BattlePayProductScript(std::string scriptName);
+public:
+    virtual void OnProductDelivery(WorldSession* /*session*/, BattlePay::Product const& /*product*/) { }
+    virtual bool CanShow(WorldSession* /*session*/, BattlePay::Product const& /*product*/) { return true; }
+    virtual bool CanBuy(WorldSession* /*session*/, BattlePay::Product const& /*product*/, std::string& /*reason*/) { return true; }
+    virtual std::string GetCustomData(BattlePay::Product const& /*product*/) { return ""; }
+};
+
+
+
 // Manages registration, loading, and execution of scripts.
 class TC_GAME_API ScriptMgr
 {
@@ -1328,6 +1348,13 @@ class TC_GAME_API ScriptMgr
     public: /* ZoneScript */
         ZoneScript* GetZoneScript(uint32 scriptId);
 
+
+    public: /* BattlePayProductScript */
+        // TODO:
+        std::string BattlePayGetCustomData(BattlePay::Product const& product);
+        void OnBattlePayProductDelivery(WorldSession* session, BattlePay::Product const& product);
+        bool BattlePayCanBuy(WorldSession* session, BattlePay::Product const& product, std::string& reason);
+
     private:
         uint32 _scriptCount;
 
@@ -1417,6 +1444,10 @@ class GenericInstanceMapScript : public InstanceMapScript
         InstanceScript* GetInstanceScript(InstanceMap* map) const override { return new AI(map); }
 };
 #define RegisterInstanceScript(ai_name, mapId) new GenericInstanceMapScript<ai_name>(#ai_name, mapId)
+
+
+
+
 
 #define sScriptMgr ScriptMgr::instance()
 

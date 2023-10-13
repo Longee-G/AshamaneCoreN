@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -1156,6 +1156,7 @@ public:
     };
 };
 
+// 85422, 85429
 class spell_nurture_aura : public SpellScriptLoader
 {
 public:
@@ -1178,8 +1179,10 @@ public:
 
         void Register() override
         {
-            DoEffectCalcPeriodic += AuraEffectCalcPeriodicFn(spell_nurture_aura_AuraScript::HandleEffectCalcPeriodic, EFFECT_0, SPELL_AURA_DUMMY);
-            OnEffectPeriodic += AuraEffectPeriodicFn(spell_nurture_aura_AuraScript::HandlePeriodic, EFFECT_0, SPELL_AURA_DUMMY);
+            uint32 aura = (m_scriptSpellId == 85422) ? 23 : 0;
+
+            DoEffectCalcPeriodic += AuraEffectCalcPeriodicFn(spell_nurture_aura_AuraScript::HandleEffectCalcPeriodic, EFFECT_0, aura);
+            OnEffectPeriodic += AuraEffectPeriodicFn(spell_nurture_aura_AuraScript::HandlePeriodic, EFFECT_0, aura);
         }
     };
 
@@ -1257,7 +1260,7 @@ class spell_wind_blast : public SpellScriptLoader
             void Register() override
             {
                 OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_wind_blast_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_CONE_ENEMY_104);
-                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_wind_blast_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_CONE_ENTRY_110);
+                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_wind_blast_SpellScript::FilterTargets, EFFECT_1, TARGET_UNIT_CONE_ENTRY_110);
             }
 
         protected:

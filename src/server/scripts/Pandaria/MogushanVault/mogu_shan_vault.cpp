@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -143,7 +143,7 @@ void StartNextFight(uint32 p_PreviousAdd, uint32 p_NextAdd, uint32 p_PreviousBos
 class mob_cursed_mogu_sculpture : public CreatureScript
 {
     public:
-        mob_cursed_mogu_sculpture() : CreatureScript("mob_cursed_mogu_sculture") {}
+        mob_cursed_mogu_sculpture() : CreatureScript("mob_cursed_mogu_sculpture") {}
 
         struct mob_cursed_mogu_sculptureAI : public ScriptedAI
         {
@@ -749,7 +749,7 @@ class npc_lorewalker_cho : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            player->playerTalkClass->ClearMenus();
 
             // Launching event before Spirit Kings
             if (action == GOSSIP_ACTION_INFO_DEF + 1)

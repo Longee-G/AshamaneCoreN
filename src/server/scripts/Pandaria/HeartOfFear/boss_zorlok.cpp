@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -592,7 +592,7 @@ class boss_zorlok : public CreatureScript
                 // Removing song of the empress
                 if (me->GetDistance(attacker) < 5.0f)
                 {
-                    uint32 spell = me->GetCurrentSpell(CURRENT_CHANNELED_SPELL) ? me->GetCurrentSpell(CURRENT_CHANNELED_SPELL)->m_spellInfo->Id : 0;
+                    uint32 spell = me->GetCurrentSpell(CURRENT_CHANNELED_SPELL) ? me->GetCurrentSpell(CURRENT_CHANNELED_SPELL)->_spellInfo->Id : 0;
                     if (me->HasAura(SPELL_SONG_OF_THE_EMPRESS) || spell == SPELL_SONG_OF_THE_EMPRESS)
                     {
                         me->RemoveAurasDueToSpell(SPELL_SONG_OF_THE_EMPRESS);
@@ -1114,7 +1114,7 @@ class mob_sonic_ring : public CreatureScript
             }
 
             InstanceScript* pInstance;
-            EventMap m_Events;
+            EventMap _events;
             Position m_TargetPos;
 
             void Reset() override
@@ -1129,7 +1129,7 @@ class mob_sonic_ring : public CreatureScript
                 float l_PosX = me->GetPositionX() + 50.0f * cos(me->GetOrientation());
                 float l_PosY = me->GetPositionY() + 50.0f * sin(me->GetOrientation());
                 m_TargetPos = { l_PosX, l_PosY, me->GetPositionZ(), me->GetOrientation() };
-                m_Events.ScheduleEvent(EVENT_SONIC_MOVE, 500);
+                _events.ScheduleEvent(EVENT_SONIC_MOVE, 500);
 
                 // In case the mob is unable to reach the target point
                 me->DespawnOrUnsummon(10000);
@@ -1146,9 +1146,9 @@ class mob_sonic_ring : public CreatureScript
 
             void UpdateAI(uint32 const p_Diff) override
             {
-                m_Events.Update(p_Diff);
+                _events.Update(p_Diff);
 
-                if (m_Events.ExecuteEvent() == EVENT_SONIC_MOVE)
+                if (_events.ExecuteEvent() == EVENT_SONIC_MOVE)
                     me->GetMotionMaster()->MovePoint(1, m_TargetPos);
             }
         };
@@ -1172,7 +1172,7 @@ class mob_sonic_pulse : public CreatureScript
                 pInstance = creature->GetInstanceScript();
             }
 
-            EventMap m_Events;
+            EventMap _events;
             InstanceScript* pInstance;
             Position m_TargetPos;
 
@@ -1188,7 +1188,7 @@ class mob_sonic_pulse : public CreatureScript
                 float l_PosX = me->GetPositionX() + 50.0f * cos(me->GetOrientation());
                 float l_PosY = me->GetPositionY() + 50.0f * sin(me->GetOrientation());
                 m_TargetPos = { l_PosX, l_PosY, me->GetPositionZ(), me->GetOrientation() };
-                m_Events.ScheduleEvent(EVENT_SONIC_MOVE, 500);
+                _events.ScheduleEvent(EVENT_SONIC_MOVE, 500);
 
                 // In case the mob is unable to reach the target point
                 me->DespawnOrUnsummon(10000);
@@ -1205,9 +1205,9 @@ class mob_sonic_pulse : public CreatureScript
 
             void UpdateAI(uint32 const p_Diff) override
             {
-                m_Events.Update(p_Diff);
+                _events.Update(p_Diff);
 
-                if (m_Events.ExecuteEvent() == EVENT_SONIC_MOVE)
+                if (_events.ExecuteEvent() == EVENT_SONIC_MOVE)
                     me->GetMotionMaster()->MovePoint(1, m_TargetPos);
             }
         };
@@ -1682,16 +1682,16 @@ public:
 
 void AddSC_boss_zorlok()
 {
-    new boss_zorlok();                  ///< 62980 - Imperial Vizier Zor'lok
-    new mob_sonic_ring();               ///< 62689 - Sonic Ring
-    new mob_sonic_pulse();              ///< 63837 - Sonic Pulse
-    new spell_inhale_zorlok();          ///< 122852 - Inhale
-    new spell_attenuation();            ///< 122440 - Attenuation
-    new spell_force_verve();            ///< 122718 - Force and verve
-    new spell_sonic_ring();             ///< 122336 - Sonic Ring
-    new spell_sonic_pulse();            ///< 124673 - Sonic Pulse
-    new spell_zorlok_exhale();          ///< 122761 - Exhale
-    new spell_zorlok_exhale_damage();   ///< 122760 - Exhale (damage aura)
-    new spell_convert();                ///< 122740 - Convert
-    RegisterAreaTriggerAI(at_cancelling_noise);          ///< 122731 - Cancelling Noise AreaTrigger
+    //new boss_zorlok();                  ///< 62980 - Imperial Vizier Zor'lok
+    //new mob_sonic_ring();               ///< 62689 - Sonic Ring
+    //new mob_sonic_pulse();              ///< 63837 - Sonic Pulse
+    //new spell_inhale_zorlok();          ///< 122852 - Inhale
+    //new spell_attenuation();            ///< 122440 - Attenuation
+    //new spell_force_verve();            ///< 122718 - Force and verve
+    //new spell_sonic_ring();             ///< 122336 - Sonic Ring
+    //new spell_sonic_pulse();            ///< 124673 - Sonic Pulse
+    //new spell_zorlok_exhale();          ///< 122761 - Exhale
+    //new spell_zorlok_exhale_damage();   ///< 122760 - Exhale (damage aura)
+    //new spell_convert();                ///< 122740 - Convert
+    //RegisterAreaTriggerAI(at_cancelling_noise);          ///< 122731 - Cancelling Noise AreaTrigger
 }

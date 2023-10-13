@@ -154,7 +154,7 @@ class TC_GAME_API MailDraft
         std::string m_subject;
         std::string m_body;
 
-        MailItemMap m_items;                                // Keep the items in a map to avoid duplicate guids (which can happen), store only low part of guid
+        MailItemMap _items;                                // Keep the items in a map to avoid duplicate guids (which can happen), store only low part of guid
 
         uint64 m_money;
         uint64 m_COD;

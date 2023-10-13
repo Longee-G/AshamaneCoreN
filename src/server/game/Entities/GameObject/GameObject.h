@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -80,6 +80,7 @@ enum LootState
 // 5 sec for bobber catch
 #define FISHING_BOBBER_READY_TIME 5
 
+// GameObject是不是指地图上的非creature对象？
 class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>, public MapObject
 {
     public:
@@ -99,22 +100,22 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
         static GameObject* CreateGameObjectFromDB(ObjectGuid::LowType spawnId, Map* map, bool addToMap = true);
 
         void Update(uint32 p_time) override;
-        GameObjectTemplate const* GetGOInfo() const { return m_goInfo; }
-        GameObjectTemplateAddon const* GetTemplateAddon() const { return m_goTemplateAddon; }
-        GameObjectData const* GetGOData() const { return m_goData; }
-        GameObjectValue const* GetGOValue() const { return &m_goValue; }
+        GameObjectTemplate const* GetGOInfo() const { return _goInfo; }
+        GameObjectTemplateAddon const* GetTemplateAddon() const { return _goTemplateAddon; }
+        GameObjectData const* GetGOData() const { return _goData; }
+        GameObjectValue const* GetGOValue() const { return &_goValue; }
 
         bool IsTransport() const;
         bool IsDynTransport() const;
         bool IsDestructibleBuilding() const;
 
-        ObjectGuid::LowType GetSpawnId() const { return m_spawnId; }
+        ObjectGuid::LowType GetSpawnId() const { return _spawnId; }
 
          // z_rot, y_rot, x_rot - rotation angles around z, y and x axes
         void SetWorldRotationAngles(float z_rot, float y_rot, float x_rot);
         void SetWorldRotation(float qx, float qy, float qz, float qw);
         void SetParentRotation(QuaternionData const& rotation);      // transforms(rotates) transport's path
-        int64 GetPackedWorldRotation() const { return m_packedRotation; }
+        int64 GetPackedWorldRotation() const { return _packedRotation; }
 
         // overwrite WorldObject function for proper name localization
         std::string const& GetNameForLocaleIdx(LocaleConstant locale_idx) const override;
@@ -134,7 +135,7 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
             {
                 ABORT();
             }
-            m_spawnedByDefault = false;                     // all object with owner is despawned after delay
+            _spawnedByDefault = false;                     // all object with owner is despawned after delay
             SetGuidValue(GAMEOBJECT_FIELD_CREATED_BY, owner);
         }
         ObjectGuid GetOwnerGUID() const { return GetGuidValue(GAMEOBJECT_FIELD_CREATED_BY); }
@@ -142,36 +143,36 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
 
         void SetSpellId(uint32 id)
         {
-            m_spawnedByDefault = false;                     // all summoned object is despawned after delay
-            m_spellId = id;
+            _spawnedByDefault = false;                     // all summoned object is despawned after delay
+            _spellId = id;
         }
-        uint32 GetSpellId() const { return m_spellId;}
+        uint32 GetSpellId() const { return _spellId;}
 
-        time_t GetRespawnTime() const { return m_respawnTime; }
+        time_t GetRespawnTime() const { return _respawnTime; }
         time_t GetRespawnTimeEx() const
         {
             time_t now = time(NULL);
-            if (m_respawnTime > now)
-                return m_respawnTime;
+            if (_respawnTime > now)
+                return _respawnTime;
             else
                 return now;
         }
 
         void SetRespawnTime(int32 respawn)
         {
-            m_respawnTime = respawn > 0 ? time(NULL) + respawn : 0;
-            m_respawnDelayTime = respawn > 0 ? respawn : 0;
+            _respawnTime = respawn > 0 ? time(NULL) + respawn : 0;
+            _respawnDelayTime = respawn > 0 ? respawn : 0;
         }
         void Respawn();
         bool isSpawned() const
         {
-            return m_respawnDelayTime == 0 ||
-                (m_respawnTime > 0 && !m_spawnedByDefault) ||
-                (m_respawnTime == 0 && m_spawnedByDefault);
+            return _respawnDelayTime == 0 ||
+                (_respawnTime > 0 && !_spawnedByDefault) ||
+                (_respawnTime == 0 && _spawnedByDefault);
         }
-        bool isSpawnedByDefault() const { return m_spawnedByDefault; }
-        void SetSpawnedByDefault(bool b) { m_spawnedByDefault = b; }
-        uint32 GetRespawnDelay() const { return m_respawnDelayTime; }
+        bool isSpawnedByDefault() const { return _spawnedByDefault; }
+        void SetSpawnedByDefault(bool b) { _spawnedByDefault = b; }
+        uint32 GetRespawnDelay() const { return _respawnDelayTime; }
         void Refresh();
         void Delete();
         void SendGameObjectDespawn();
@@ -193,29 +194,29 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
 
         void Use(Unit* user);
 
-        LootState getLootState() const { return m_lootState; }
+        LootState getLootState() const { return _lootState; }
         // Note: unit is only used when s = GO_ACTIVATED
         void SetLootState(LootState s, Unit* unit = NULL);
 
-        uint16 GetLootMode() const { return m_LootMode; }
-        bool HasLootMode(uint16 lootMode) const { return (m_LootMode & lootMode) != 0; }
-        void SetLootMode(uint16 lootMode) { m_LootMode = lootMode; }
-        void AddLootMode(uint16 lootMode) { m_LootMode |= lootMode; }
-        void RemoveLootMode(uint16 lootMode) { m_LootMode &= ~lootMode; }
-        void ResetLootMode() { m_LootMode = LOOT_MODE_DEFAULT; }
+        uint16 GetLootMode() const { return _lootMode; }
+        bool HasLootMode(uint16 lootMode) const { return (_lootMode & lootMode) != 0; }
+        void SetLootMode(uint16 lootMode) { _lootMode = lootMode; }
+        void AddLootMode(uint16 lootMode) { _lootMode |= lootMode; }
+        void RemoveLootMode(uint16 lootMode) { _lootMode &= ~lootMode; }
+        void ResetLootMode() { _lootMode = LOOT_MODE_DEFAULT; }
 
-        void AddToSkillupList(ObjectGuid const& PlayerGuidLow) { m_SkillupList.insert(PlayerGuidLow); }
+        void AddToSkillupList(ObjectGuid const& PlayerGuidLow) { _skillupList.insert(PlayerGuidLow); }
         bool IsInSkillupList(ObjectGuid const& playerGuid) const
         {
-            return m_SkillupList.count(playerGuid) > 0;
+            return _skillupList.count(playerGuid) > 0;
         }
-        void ClearSkillupList() { m_SkillupList.clear(); }
+        void ClearSkillupList() { _skillupList.clear(); }
 
         void AddUniqueUse(Player* player);
-        void AddUse() { ++m_usetimes; }
+        void AddUse() { ++_useTimes; }
 
-        uint32 GetUseCount() const { return m_usetimes; }
-        uint32 GetUniqueUseCount() const { return uint32(m_unique_users.size()); }
+        uint32 GetUseCount() const { return _useTimes; }
+        uint32 GetUniqueUseCount() const { return uint32(_uniqueUsers.size()); }
 
         void SaveRespawnTime() override;
 
@@ -225,18 +226,20 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
         Group* GetLootRecipientGroup() const;
         void SetLootRecipient(Unit* unit, Group* group = nullptr);
         bool IsLootAllowedFor(Player const* player) const;
-        bool HasLootRecipient() const { return !m_lootRecipient.IsEmpty() || !m_lootRecipientGroup.IsEmpty(); }
-        uint32 m_groupLootTimer;                            // (msecs)timer used for group loot
-        ObjectGuid lootingGroupLowGUID;                     // used to find group which is looting
+        bool HasLootRecipient() const { return !_lootRecipient.IsEmpty() || !_lootRecipientGroup.IsEmpty(); }
+        // (msecs)timer used for group loot
+        uint32 _groupLootTimer;
+        // used to find group which is looting
+        ObjectGuid lootingGroupLowGUID;    
 
         GameObject* GetLinkedTrap();
-        void SetLinkedTrap(GameObject* linkedTrap) { m_linkedTrap = linkedTrap->GetGUID(); }
+        void SetLinkedTrap(GameObject* linkedTrap) { _linkedTrap = linkedTrap->GetGUID(); }
 
         bool hasQuest(uint32 quest_id) const override;
         bool hasInvolvedQuest(uint32 quest_id) const override;
         bool ActivateToQuest(Player* target) const;
         void UseDoorOrButton(uint32 time_to_restore = 0, bool alternative = false, Unit* user = NULL);
-                                                            // 0 = use `gameobject`.`spawntimesecs`
+        // 0 = use `gameobject`.`spawntimesecs`
         void ResetDoorOrButton();
 
         void TriggeringLinkedGameObject(uint32 trapEntry, Unit* target);
@@ -269,7 +272,7 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
         void EventInform(uint32 eventId, WorldObject* invoker = NULL);
 
         virtual uint32 GetScriptId() const;
-        GameObjectAI* AI() const { return m_AI; }
+        GameObjectAI* AI() const { return _AI; }
 
         std::string GetAIName() const;
         void SetDisplayId(uint32 displayid);
@@ -279,17 +282,17 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
         uint32 GetFaction() const { return GetUInt32Value(GAMEOBJECT_FACTION); }
         void SetFaction(uint32 faction) { SetUInt32Value(GAMEOBJECT_FACTION, faction); }
 
-        GameObjectModel* m_model;
+        GameObjectModel* _model;
         void GetRespawnPosition(float &x, float &y, float &z, float* ori = NULL) const;
 
         Transport* ToTransport() { if (GetGOInfo()->type == GAMEOBJECT_TYPE_MAP_OBJ_TRANSPORT) return reinterpret_cast<Transport*>(this); else return NULL; }
         Transport const* ToTransport() const { if (GetGOInfo()->type == GAMEOBJECT_TYPE_MAP_OBJ_TRANSPORT) return reinterpret_cast<Transport const*>(this); else return NULL; }
 
-        float GetStationaryX() const override { return m_stationaryPosition.GetPositionX(); }
-        float GetStationaryY() const override { return m_stationaryPosition.GetPositionY(); }
-        float GetStationaryZ() const override { return m_stationaryPosition.GetPositionZ(); }
-        float GetStationaryO() const override { return m_stationaryPosition.GetOrientation(); }
-        void RelocateStationaryPosition(float x, float y, float z, float o) { m_stationaryPosition.Relocate(x, y, z, o); }
+        float GetStationaryX() const override { return _stationaryPosition.GetPositionX(); }
+        float GetStationaryY() const override { return _stationaryPosition.GetPositionY(); }
+        float GetStationaryZ() const override { return _stationaryPosition.GetPositionZ(); }
+        float GetStationaryO() const override { return _stationaryPosition.GetOrientation(); }
+        void RelocateStationaryPosition(float x, float y, float z, float o) { _stationaryPosition.Relocate(x, y, z, o); }
 
         float GetInteractionDistance() const;
 
@@ -299,7 +302,7 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
         void SetAnimKitId(uint16 animKitId, bool oneshot);
 
         /// Event handler
-        EventProcessor m_Events;
+        EventProcessor _events;
 
         uint32 GetWorldEffectID() const { return _worldEffectID; }
         void SetWorldEffectID(uint32 worldEffectID) { _worldEffectID = worldEffectID; }
@@ -307,50 +310,60 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
         void AIM_Destroy();
         bool AIM_Initialize();
 
-        void setShouldIntersectWithAllPhases(bool value) { m_shouldIntersectWithAllPhases = value; }
-        bool shouldIntersectWithAllPhases() const { return m_shouldIntersectWithAllPhases; }
+        void setShouldIntersectWithAllPhases(bool value) { _shouldIntersectWithAllPhases = value; }
+        bool shouldIntersectWithAllPhases() const { return _shouldIntersectWithAllPhases; }
 
         TaskScheduler& GetScheduler() { return _scheduler; }
 
     protected:
         GameObjectModel* CreateModel();
-        void UpdateModel();                                 // updates model in case displayId were changed
-        uint32      m_spellId;
-        time_t      m_respawnTime;                          // (secs) time of next respawn (or despawn if GO have owner()),
-        uint32      m_respawnDelayTime;                     // (secs) if 0 then current GO state no dependent from timer
-        LootState   m_lootState;
-        ObjectGuid  m_lootStateUnitGUID;                    // GUID of the unit passed with SetLootState(LootState, Unit*)
-        bool        m_spawnedByDefault;
-        time_t      m_cooldownTime;                         // used as internal reaction delay time store (not state change reaction).
-                                                            // For traps this: spell casting cooldown, for doors/buttons: reset time.
-        GOState     m_prevGoState;                          // What state to set whenever resetting
+        // updates model in case displayId were changed
+        void UpdateModel();                                 
+        uint32      _spellId;
+        // (secs) time of next respawn (or despawn if GO have owner()),
+        time_t      _respawnTime;
+        // (secs) if 0 then current GO state no dependent from timer
+        uint32      _respawnDelayTime;                    
+        LootState   _lootState;
+        // GUID of the unit passed with SetLootState(LootState, Unit*)
+        ObjectGuid  _lootStateUnitGUID;
+        // used as internal reaction delay time store (not state change reaction).
+        bool        _spawnedByDefault;
+        // For traps this: spell casting cooldown, for doors/buttons: reset time.
+        time_t      _cooldownTime;        
+        // What state to set whenever resetting
+        GOState     _prevGoState;                          
 
-        GuidSet m_SkillupList;
-
-        ObjectGuid m_ritualOwnerGUID;                       // used for GAMEOBJECT_TYPE_RITUAL where GO is not summoned (no owner)
-        GuidSet m_unique_users;
-        uint32 m_usetimes;
+        GuidSet _skillupList;
+        // used for GAMEOBJECT_TYPE_RITUAL where GO is not summoned (no owner)
+        ObjectGuid _ritualOwnerGUID;                       
+        GuidSet _uniqueUsers;
+        // obj use counter
+        uint32 _useTimes;
 
         typedef std::map<uint32, ObjectGuid> ChairSlotAndUser;
         ChairSlotAndUser ChairListSlots;
 
-        ObjectGuid::LowType m_spawnId;                               ///< For new or temporary gameobjects is 0 for saved it is lowguid
-        GameObjectTemplate const* m_goInfo;
-        GameObjectTemplateAddon const* m_goTemplateAddon;
-        GameObjectData const* m_goData;
-        GameObjectValue m_goValue;
+        ///< For new or temporary gameobjects is 0 for saved it is lowguid
+        ObjectGuid::LowType _spawnId;                              
+        GameObjectTemplate const* _goInfo;
+        GameObjectTemplateAddon const* _goTemplateAddon;
+        GameObjectData const* _goData;
+        GameObjectValue _goValue;
 
-        int64 m_packedRotation;
-        QuaternionData m_worldRotation;
-        Position m_stationaryPosition;
+        int64 _packedRotation;
+        QuaternionData _worldRotation;
+        // the fixed pos, immovable
+        Position _stationaryPosition;
 
-        ObjectGuid m_lootRecipient;
-        ObjectGuid m_lootRecipientGroup;
-        uint16 m_LootMode;                                  // bitmask, default LOOT_MODE_DEFAULT, determines what loot will be lootable
+        ObjectGuid _lootRecipient;
+        ObjectGuid _lootRecipientGroup;
+        // bitmask, default LOOT_MODE_DEFAULT, determines what loot will be lootable
+        uint16 _lootMode;                                  
 
-        bool m_shouldIntersectWithAllPhases;
-
-        ObjectGuid m_linkedTrap;
+        bool _shouldIntersectWithAllPhases;
+        // what trap?
+        ObjectGuid _linkedTrap;
 
     private:
         void RemoveFromOwner();
@@ -364,7 +377,7 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
             return IsInRange(obj->GetPositionX(), obj->GetPositionY(), obj->GetPositionZ(), dist2compare);
         }
 
-        GameObjectAI* m_AI;
+        GameObjectAI* _AI;
         uint16 _animKitId;
         uint32 _worldEffectID;
 

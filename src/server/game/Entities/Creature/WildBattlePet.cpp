@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -22,14 +22,14 @@
 #include "DBCEnums.h"
 #include "WildBattlePet.h"
 
-WildBattlePet::WildBattlePet(Creature* creature) : m_creature(creature)
+WildBattlePet::WildBattlePet(Creature* creature) : _creature(creature)
 {
-    m_battlePet = new BattlePet();
+    _battlePet = new BattlePet();
 }
 
 WildBattlePet::~WildBattlePet()
 {
-    delete m_battlePet;
+    delete _battlePet;
 }
 
 void WildBattlePet::Initialize()
@@ -50,9 +50,9 @@ void WildBattlePet::Initialize()
 
     GetCreature()->SetUInt32Value(UNIT_FIELD_WILD_BATTLEPET_LEVEL, level);
 
-    m_battlePet->CreatureID = GetCreature()->GetEntry();
-    m_battlePet->Species = species->ID;
-    m_battlePet->Level = level;
-    m_battlePet->Breed = sBattlePetDataStore->RollPetBreed(species->ID);
-    m_battlePet->Quality = sBattlePetDataStore->GetDefaultPetQuality(species->ID);
+    _battlePet->CreatureID = GetCreature()->GetEntry();
+    _battlePet->Species = species->ID;
+    _battlePet->Level = level;
+    _battlePet->Breed = sBattlePetDataStore->RollPetBreed(species->ID);
+    _battlePet->Quality = sBattlePetDataStore->GetDefaultPetQuality(species->ID);
 }

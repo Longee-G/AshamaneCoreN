@@ -180,7 +180,7 @@ class boss_tectus : public CreatureScript
                 m_Instance = creature->GetInstanceScript();
             }
 
-            EventMap m_Events;
+            EventMap _events;
             InstanceScript* m_Instance;
 
             ObjectGuid m_CrystallineBarrageTarget;
@@ -194,7 +194,7 @@ class boss_tectus : public CreatureScript
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
 
                 if (me->GetEntry() == eHighmaulCreatures::Tectus)
                     _Reset();
@@ -329,7 +329,7 @@ class boss_tectus : public CreatureScript
                     }
                     case eActions::ScheduleEarthenPillar:
                     {
-                        m_Events.RescheduleEvent(eEvents::EventEarthenPillar, 100);
+                        _events.RescheduleEvent(eEvents::EventEarthenPillar, 100);
                         break;
                     }
                     case eActions::ScheduleTectonicUpheaval:
@@ -337,7 +337,7 @@ class boss_tectus : public CreatureScript
                         if (m_TectonicScheduled || me->HasAura(eSpells::SpellTectonicUpheaval))
                             break;
                         m_TectonicScheduled = true;
-                        m_Events.ScheduleEvent(eEvents::EventTectonicUpheaval, 100);
+                        _events.ScheduleEvent(eEvents::EventTectonicUpheaval, 100);
                         break;
                     }
                     case eActions::MoteKilled:
@@ -388,8 +388,8 @@ class boss_tectus : public CreatureScript
                 if (me->GetEntry() == eHighmaulCreatures::Tectus)
                     _EnterCombat();
 
-                m_Events.ScheduleEvent(eEvents::EventFracture, 8 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventAccretion, 5 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventFracture, 8 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventAccretion, 5 * TimeConstants::IN_MILLISECONDS);
 
                 switch (me->GetEntry())
                 {
@@ -397,25 +397,25 @@ class boss_tectus : public CreatureScript
                         me->CastSpell(me, eSpells::MidsizeTectusDamageReduct, true);
                         if (m_Instance)
                             m_Instance->SendEncounterUnit(EncounterFrameType::ENCOUNTER_FRAME_ENGAGE, me, 1);
-                        m_Events.ScheduleEvent(eEvents::EventCrystallineBarrage, 8 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventCrystallineBarrage, 8 * TimeConstants::IN_MILLISECONDS);
                         break;
                     case eCreatures::MoteOfTectus:
                         me->CastSpell(me, eSpells::MoteOfTectusDamageReduct, true);
                         if (m_Instance)
                             m_Instance->SendEncounterUnit(EncounterFrameType::ENCOUNTER_FRAME_ENGAGE, me, 2);
-                        m_Events.ScheduleEvent(eEvents::EventCrystallineBarrage, 8 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventCrystallineBarrage, 8 * TimeConstants::IN_MILLISECONDS);
                         break;
                     case eHighmaulCreatures::Tectus:
                         if (m_Instance)
                             m_Instance->SendEncounterUnit(EncounterFrameType::ENCOUNTER_FRAME_ENGAGE, me);
                         Talk(eTalks::Aggro);
-                        m_Events.ScheduleEvent(eEvents::EventEnrage, IsMythic() ? 480 * TimeConstants::IN_MILLISECONDS : 600 * TimeConstants::IN_MILLISECONDS);
-                        m_Events.ScheduleEvent(eEvents::EventCrystallineBarrage, 5 * TimeConstants::IN_MILLISECONDS);
-                        m_Events.ScheduleEvent(eEvents::EventSpawnBersererk, 18 * TimeConstants::IN_MILLISECONDS);
-                        m_Events.ScheduleEvent(eEvents::EventSpawnEarthwarper, 8 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventEnrage, IsMythic() ? 480 * TimeConstants::IN_MILLISECONDS : 600 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventCrystallineBarrage, 5 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventSpawnBersererk, 18 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventSpawnEarthwarper, 8 * TimeConstants::IN_MILLISECONDS);
                         break;
                     default:
-                        m_Events.ScheduleEvent(eEvents::EventCrystallineBarrage, 5 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventCrystallineBarrage, 5 * TimeConstants::IN_MILLISECONDS);
                         break;
                 }
             }
@@ -434,7 +434,7 @@ class boss_tectus : public CreatureScript
                 me->RemoveAllAreaTriggers();
                 DespawnNightTwistedAdds();
 
-                m_Events.Reset();
+                _events.Reset();
 
                 if (m_Instance != nullptr)
                 {
@@ -599,7 +599,7 @@ class boss_tectus : public CreatureScript
                         if (!IsMythic() || (me->GetEntry() == eHighmaulCreatures::Tectus && me->HasAura(HollowedHeartOfTheMountain))
                             || (me->GetEntry() == eCreatures::ShardOfTectus && me->HasAura(HollowedShardOfTheMountain)) || me->GetEntry() == eCreatures::MoteOfTectus)
                         {
-                            m_Events.Reset();
+                            _events.Reset();
 
                             me->RemoveAllAuras();
                             me->InterruptNonMeleeSpells(true);
@@ -622,8 +622,8 @@ class boss_tectus : public CreatureScript
 
                             if (IsMythic() && me->GetEntry() == eHighmaulCreatures::Tectus)
                             {
-                                m_Events.ScheduleEvent(eEvents::EventSpawnBersererk, 18 * TimeConstants::IN_MILLISECONDS);
-                                m_Events.ScheduleEvent(eEvents::EventSpawnEarthwarper, 8 * TimeConstants::IN_MILLISECONDS);
+                                _events.ScheduleEvent(eEvents::EventSpawnBersererk, 18 * TimeConstants::IN_MILLISECONDS);
+                                _events.ScheduleEvent(eEvents::EventSpawnEarthwarper, 8 * TimeConstants::IN_MILLISECONDS);
                             }
 
                             if (IsMythic() && (me->GetEntry() == eHighmaulCreatures::Tectus || me->GetEntry() == eCreatures::ShardOfTectus))
@@ -690,12 +690,12 @@ class boss_tectus : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvents::EventEnrage:
                     {
@@ -718,13 +718,13 @@ class boss_tectus : public CreatureScript
                     case eEvents::EventSpawnBersererk:
                     {
                         SpawnAdd(eCreatures::NightTwistedBerserker);
-                        m_Events.ScheduleEvent(eEvents::EventSpawnBersererk, 40 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventSpawnBersererk, 40 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     case eEvents::EventSpawnEarthwarper:
                     {
                         SpawnAdd(eCreatures::NightTwistedEarthwarper);
-                        m_Events.ScheduleEvent(eEvents::EventSpawnEarthwarper, 40 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventSpawnEarthwarper, 40 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     case eEvents::EventCrystallineBarrage:
@@ -747,11 +747,11 @@ class boss_tectus : public CreatureScript
                                 me->CastSpell(pos, eSpells::CrystallineBarrageSummon, true);
                                 m_FirstCrystalline = pos;
 
-                                m_Events.ScheduleEvent(eEvents::EventSpawnCrystalline, 500);
+                                _events.ScheduleEvent(eEvents::EventSpawnCrystalline, 500);
                             });
                         }
 
-                        m_Events.ScheduleEvent(eEvents::EventCrystallineBarrage, 30 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventCrystallineBarrage, 30 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     case eEvents::EventSpawnCrystalline:
@@ -778,13 +778,13 @@ class boss_tectus : public CreatureScript
                             m_FirstCrystalline.m_positionZ = l_Z;
                         }
 
-                        m_Events.ScheduleEvent(eEvents::EventSpawnCrystalline, 500);
+                        _events.ScheduleEvent(eEvents::EventSpawnCrystalline, 500);
                         break;
                     }
                     case eEvents::EventFracture:
                     {
                         me->CastSpell(me, eSpells::FractureSearcher, true);
-                        m_Events.ScheduleEvent(eEvents::EventFracture, 6 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventFracture, 6 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     case eEvents::EventEarthenPillar:
@@ -802,7 +802,7 @@ class boss_tectus : public CreatureScript
                     case eEvents::EventAccretion:
                     {
                         me->CastSpell(me, eSpells::Accretion, true);
-                        m_Events.ScheduleEvent(eEvents::EventAccretion, 5 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventAccretion, 5 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     case eEvents::EventTectonicUpheaval:
@@ -814,8 +814,8 @@ class boss_tectus : public CreatureScript
                         me->CastSpell(me, eSpells::SpellTectonicUpheaval, false);
 
                         /// Delay summons
-                        m_Events.DelayEvent(EventSpawnBersererk, 12 * IN_MILLISECONDS);
-                        m_Events.DelayEvent(EventSpawnEarthwarper, 12 * IN_MILLISECONDS);
+                        _events.DelayEvent(EventSpawnBersererk, 12 * IN_MILLISECONDS);
+                        _events.DelayEvent(EventSpawnEarthwarper, 12 * IN_MILLISECONDS);
                         break;
                     }
                     default:
@@ -1051,7 +1051,7 @@ class npc_highmaul_rokka_and_lokk : public CreatureScript
 
             bool m_Risen;
 
-            EventMap m_Events;
+            EventMap _events;
             InstanceScript* m_Instance;
 
             void Reset() override
@@ -1064,7 +1064,7 @@ class npc_highmaul_rokka_and_lokk : public CreatureScript
                 else
                     me->SetAIAnimKitId(0);
 
-                m_Events.Reset();
+                _events.Reset();
 
                 RespawnGuardians(me, m_Instance);
             }
@@ -1084,8 +1084,8 @@ class npc_highmaul_rokka_and_lokk : public CreatureScript
             {
                 StartGuardians(me, attacker);
 
-                m_Events.ScheduleEvent(eEvents::EventEarthenThrust, 6 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventMeteoricEarthspire, 10 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventEarthenThrust, 6 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventMeteoricEarthspire, 10 * TimeConstants::IN_MILLISECONDS);
             }
 
             void DamageTaken(Unit* /*attacker*/, uint32& damage) override
@@ -1094,7 +1094,7 @@ class npc_highmaul_rokka_and_lokk : public CreatureScript
                     return;
 
                 if (me->HealthBelowPctDamaged(21, damage))
-                    m_Events.RescheduleEvent(eEvents::EventReconstitution, 100);
+                    _events.RescheduleEvent(eEvents::EventReconstitution, 100);
             }
 
             void DoAction(int32 const action) override
@@ -1126,21 +1126,21 @@ class npc_highmaul_rokka_and_lokk : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvents::EventEarthenThrust:
                         me->CastSpell(me, eSpells::EarthenThrust, false);
-                        m_Events.ScheduleEvent(eEvents::EventEarthenThrust, 12 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventEarthenThrust, 12 * TimeConstants::IN_MILLISECONDS);
                         break;
                     case eEvents::EventMeteoricEarthspire:
                         if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_RANDOM))
                             me->CastSpell(target, eSpells::MeteoricEarthspire, false);
-                        m_Events.ScheduleEvent(eEvents::EventMeteoricEarthspire, 12 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventMeteoricEarthspire, 12 * TimeConstants::IN_MILLISECONDS);
                         break;
                     case eEvents::EventReconstitution:
                         me->CastSpell(me, eSpells::ReconstitutionScale, true);
@@ -1205,7 +1205,7 @@ class npc_highmaul_oro : public CreatureScript
 
             bool m_Risen;
 
-            EventMap m_Events;
+            EventMap _events;
             InstanceScript* m_Instance;
 
             void Reset() override
@@ -1218,7 +1218,7 @@ class npc_highmaul_oro : public CreatureScript
                 else
                     me->SetAIAnimKitId(0);
 
-                m_Events.Reset();
+                _events.Reset();
 
                 RespawnGuardians(me, m_Instance);
             }
@@ -1238,8 +1238,8 @@ class npc_highmaul_oro : public CreatureScript
             {
                 StartGuardians(me, attacker);
 
-                m_Events.ScheduleEvent(eEvents::EventStoneboltVolley, 6 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventRadiatingPoison, 10 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventStoneboltVolley, 6 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventRadiatingPoison, 10 * TimeConstants::IN_MILLISECONDS);
             }
 
             void DoAction(int32 const action) override
@@ -1260,11 +1260,11 @@ class npc_highmaul_oro : public CreatureScript
 
             void DamageTaken(Unit* /*attacker*/, uint32& damage) override
             {
-                if (m_Events.HasEvent(eEvents::EventReconstitution) || me->HasAura(eSpells::ReconstitutionScale))
+                if (_events.HasEvent(eEvents::EventReconstitution) || me->HasAura(eSpells::ReconstitutionScale))
                     return;
 
                 if (me->HealthBelowPctDamaged(21, damage))
-                    m_Events.ScheduleEvent(eEvents::EventReconstitution, 100);
+                    _events.ScheduleEvent(eEvents::EventReconstitution, 100);
             }
 
             void JustDied(Unit* /*killer*/) override
@@ -1280,21 +1280,21 @@ class npc_highmaul_oro : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvents::EventStoneboltVolley:
                         me->CastSpell(me, eSpells::StoneboltVolley, false);
-                        m_Events.ScheduleEvent(eEvents::EventStoneboltVolley, 12 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventStoneboltVolley, 12 * TimeConstants::IN_MILLISECONDS);
                         break;
                     case eEvents::EventRadiatingPoison:
                         if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_RANDOM))
                             me->CastSpell(target, eSpells::RadiatingPoison, false);
-                        m_Events.ScheduleEvent(eEvents::EventRadiatingPoison, 12 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventRadiatingPoison, 12 * TimeConstants::IN_MILLISECONDS);
                         break;
                     case eEvents::EventReconstitution:
                         me->CastSpell(me, eSpells::ReconstitutionScale, true);
@@ -1405,20 +1405,20 @@ class npc_highmaul_night_twisted_berserker : public CreatureScript
                 Aggro
             };
 
-            EventMap m_Events;
+            EventMap _events;
 
             void Reset() override
             {
                 me->CastSpell(me, eSpells::EncounterSpawn, true);
 
-                m_Events.Reset();
+                _events.Reset();
             }
 
             void EnterCombat(Unit* /*attacker*/) override
             {
                 Talk(eTalk::Aggro);
 
-                m_Events.ScheduleEvent(eEvent::EventRavingAssault, 8 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvent::EventRavingAssault, 8 * TimeConstants::IN_MILLISECONDS);
             }
 
             void SpellHitTarget(Unit* p_Victim, SpellInfo const* spellInfo) override
@@ -1447,18 +1447,18 @@ class npc_highmaul_night_twisted_berserker : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvent::EventRavingAssault:
                     {
                         if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_RANDOM))
                             me->CastSpell(target, eSpells::RavingAssault, false);
-                        m_Events.ScheduleEvent(eEvent::EventRavingAssault, 20 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvent::EventRavingAssault, 20 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     default:
@@ -1503,21 +1503,21 @@ class npc_highmaul_night_twisted_earthwarper : public CreatureScript
                 Aggro
             };
 
-            EventMap m_Events;
+            EventMap _events;
 
             void Reset() override
             {
                 me->CastSpell(me, eSpells::EncounterSpawn, true);
 
-                m_Events.Reset();
+                _events.Reset();
             }
 
             void EnterCombat(Unit* /*attacker*/) override
             {
                 Talk(eTalk::Aggro);
 
-                m_Events.ScheduleEvent(eEvents::EventEarthenFlechettes, 5 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventGiftOfEarth, 12 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventEarthenFlechettes, 5 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventGiftOfEarth, 12 * TimeConstants::IN_MILLISECONDS);
             }
 
             void UpdateAI(uint32 const diff) override
@@ -1525,20 +1525,20 @@ class npc_highmaul_night_twisted_earthwarper : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvents::EventEarthenFlechettes:
                         me->CastSpell(me, eSpells::EarthenFlechettes, false);
-                        m_Events.ScheduleEvent(eEvents::EventEarthenFlechettes, 15 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventEarthenFlechettes, 15 * TimeConstants::IN_MILLISECONDS);
                         break;
                     case eEvents::EventGiftOfEarth:
                         me->CastSpell(me, eSpells::GiftOfEarth, false);
-                        m_Events.ScheduleEvent(eEvents::EventGiftOfEarth, 25 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventGiftOfEarth, 25 * TimeConstants::IN_MILLISECONDS);
                         break;
                     default:
                         break;

@@ -282,7 +282,7 @@ class npc_groog : public CreatureScript
         {
             npc_groogAI(Creature* creature) : ScriptedAI(creature) { }
 
-            EventMap m_Events;
+            EventMap _events;
 
             void Reset() override
             {
@@ -291,28 +291,28 @@ class npc_groog : public CreatureScript
 
             void EnterCombat(Unit* /*p_Victim*/) override
             {
-                m_Events.Reset();
+                _events.Reset();
 
-                m_Events.ScheduleEvent(EventEarthrendingSlam, 3000);
-                m_Events.ScheduleEvent(EventRampage, 7000);
+                _events.ScheduleEvent(EventEarthrendingSlam, 3000);
+                _events.ScheduleEvent(EventRampage, 7000);
             }
 
             void UpdateAI(uint32 diff) override
             {
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UNIT_STATE_CASTING) || !UpdateVictim())
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case EventEarthrendingSlam:
                         me->CastSpell(me, SpellEarthrendingSlam, false);
-                        m_Events.ScheduleEvent(EventEarthrendingSlam, 15000);
+                        _events.ScheduleEvent(EventEarthrendingSlam, 15000);
                         break;
                     case EventRampage:
                         me->AddAura(SpellRampage, me);
-                        m_Events.ScheduleEvent(EventRampage, 15000);
+                        _events.ScheduleEvent(EventRampage, 15000);
                         break;
                 }
 

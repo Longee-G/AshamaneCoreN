@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@ void WorldSession::HandleMoveDismissVehicle(WorldPackets::Vehicle::MoveDismissVe
         return;
 
     _player->ValidateMovementInfo(&moveDismissVehicle.Status);
-    _player->m_movementInfo = moveDismissVehicle.Status;
+    _player->_movementInfo = moveDismissVehicle.Status;
 
     _player->ExitVehicle();
 }
@@ -88,7 +88,7 @@ void WorldSession::HandleMoveChangeVehicleSeats(WorldPackets::Vehicle::MoveChang
     if (vehicle_base->GetGUID() != moveChangeVehicleSeats.Status.guid)
         return;
 
-    vehicle_base->m_movementInfo = moveChangeVehicleSeats.Status;
+    vehicle_base->_movementInfo = moveChangeVehicleSeats.Status;
 
     if (moveChangeVehicleSeats.DstVehicle.IsEmpty())
         GetPlayer()->ChangeSeat(-1, moveChangeVehicleSeats.DstSeatIndex != 255);
@@ -175,7 +175,7 @@ void WorldSession::HandleRequestVehicleExit(WorldPackets::Vehicle::RequestVehicl
     if (Vehicle* vehicle = GetPlayer()->GetVehicle())
     {
         auto itr = vehicle->GetSeatIteratorForPassenger(GetPlayer());
-        if (itr != vehicle->Seats.end())
+        if (itr != vehicle->_seats.end())
         {
             if (itr->second.SeatInfo->CanEnterOrExit())
                 GetPlayer()->ExitVehicle();

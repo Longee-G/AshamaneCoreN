@@ -1,4 +1,4 @@
- /*
+﻿ /*
   * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
   * Copyright (C) 2010-2018 Trinity <http://www.projecttrinity.org/>
   *
@@ -811,7 +811,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 /*action*/) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        player->playerTalkClass->ClearMenus();
         creature->AI()->SetData(DATA_BRANN_EVENT, 1);
         return true;
     }

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -2433,7 +2433,11 @@ class spell_q10929_fumping : SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spell*/) override
             {
+#if GAME_BUILD >= LEGION_735
+                return true;
+#else
                 return ValidateSpellInfo({ SPELL_SUMMON_SAND_GNOME, SPELL_SUMMON_BONE_SLICER });
+#endif
             }
 
             void HandleEffectRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)

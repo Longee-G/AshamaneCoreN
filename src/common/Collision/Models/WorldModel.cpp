@@ -487,14 +487,16 @@ namespace VMAP
     class WModelAreaCallback {
         public:
             WModelAreaCallback(const std::vector<GroupModel> &vals, const Vector3 &down):
-                prims(vals.begin()), hit(vals.end()), minVol(G3D::finf()), zDist(G3D::finf()), zVec(down) { }
+                prims(vals.begin()), hit(vals.end()), minVol(G3D::finf()), zDist(G3D::finf()), zVec(down), siz(vals.size()) {}
             std::vector<GroupModel>::const_iterator prims;
             std::vector<GroupModel>::const_iterator hit;
             float minVol;
             float zDist;
             Vector3 zVec;
+            uint64 siz;
             void operator()(const Vector3& point, uint32 entry)
             {
+
                 float group_Z;
                 //float pVol = prims[entry].GetBound().volume();
                 //if (pVol < minVol)

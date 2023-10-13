@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -1687,17 +1687,17 @@ class go_krithik_weapon_rack : public GameObjectScript
 
 void AddSC_boss_meljarak()
 {
-    new boss_wind_lord_meljarak();          // 62397
-    new npc_korthik_elite_blademaster();    // 62402
-    new npc_srathik_amber_trapper();        // 62405
-    new npc_zarthik_battle_mender();        // 62408
-    new npc_wind_bomb_meljarak();           // 67053
-    new npc_corrosive_resin_pool();         // 67046
-    new npc_amber_prison_meljarak();        // 62531
-    new npc_whirling_blade();               // 63930
-    new spell_meljarak_corrosive_resin();   // 122064
-    new spell_mending();                    // 122147
-    new spell_whirling_blade_sword();       // 121897
-    new spell_whirling_blade_damages();     // 121898
-    new go_krithik_weapon_rack();           // 211675
+    //new boss_wind_lord_meljarak();          // 62397
+    //new npc_korthik_elite_blademaster();    // 62402
+    //new npc_srathik_amber_trapper();        // 62405
+    //new npc_zarthik_battle_mender();        // 62408
+    //new npc_wind_bomb_meljarak();           // 67053
+    //new npc_corrosive_resin_pool();         // 67046
+    //new npc_amber_prison_meljarak();        // 62531
+    //new npc_whirling_blade();               // 63930
+    //new spell_meljarak_corrosive_resin();   // 122064
+    //new spell_mending();                    // 122147
+    //new spell_whirling_blade_sword();       // 121897
+    //new spell_whirling_blade_damages();     // 121898
+    //new go_krithik_weapon_rack();           // 211675
 }

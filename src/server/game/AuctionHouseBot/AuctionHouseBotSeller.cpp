@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -66,7 +66,7 @@ bool AuctionBotSeller::Initialize()
     CreatureTemplateContainer const* creatures = sObjectMgr->GetCreatureTemplates();
     for (auto it = creatures->begin(); it != creatures->end(); ++it)
         if (VendorItemData const* data = sObjectMgr->GetNpcVendorItemList(it->first))
-            for (VendorItem const& vendorItem : data->m_items)
+            for (VendorItem const& vendorItem : data->_items)
                 npcItems.insert(vendorItem.item);
 
     TC_LOG_DEBUG("ahbot", "Npc vendor filter has " SZFMTD " items", npcItems.size());

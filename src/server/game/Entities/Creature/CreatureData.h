@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -376,14 +376,16 @@ struct TC_GAME_API CreatureTemplate
     // helpers
     SkillType GetRequiredLootSkill() const
     {
-        if (type_flags & CREATURE_TYPE_FLAG_HERB_SKINNING_SKILL)
+        if (type_flags & CREATURE_TYPE_FLAG_HERBALIST_SKILL)
             return SKILL_HERBALISM;
-        else if (type_flags & CREATURE_TYPE_FLAG_MINING_SKINNING_SKILL)
+        else if (type_flags & CREATURE_TYPE_FLAG_MINING_SKILL)
             return SKILL_MINING;
-        else if (type_flags & CREATURE_TYPE_FLAG_ENGINEERING_SKINNING_SKILL)
+        else if (type_flags & CREATURE_TYPE_FLAG_ENGINEERING_SKILL)
             return SKILL_ENGINEERING;
         else
             return SKILL_SKINNING;                          // normal case
+
+        //return SKILL_NONE;
     }
 
     bool IsExotic() const
@@ -586,26 +588,27 @@ struct VendorItem
 
 struct VendorItemData
 {
-    std::vector<VendorItem> m_items;
+    // items sold by vendor
+    std::vector<VendorItem> _items;
 
     VendorItem const* GetItem(uint32 slot) const
     {
-        if (slot >= m_items.size())
+        if (slot >= _items.size())
             return nullptr;
 
-        return &m_items[slot];
+        return &_items[slot];
     }
-    bool Empty() const { return m_items.empty(); }
-    uint32 GetItemCount() const { return uint32(m_items.size()); }
+    bool Empty() const { return _items.empty(); }
+    uint32 GetItemCount() const { return uint32(_items.size()); }
     void AddItem(VendorItem vItem)
     {
-        m_items.emplace_back(std::move(vItem));
+        _items.emplace_back(std::move(vItem));
     }
     bool RemoveItem(uint32 item_id, uint8 type);
     VendorItem const* FindItemCostPair(uint32 item_id, uint32 extendedCost, uint8 type) const;
     void Clear()
     {
-        m_items.clear();
+        _items.clear();
     }
 };
 

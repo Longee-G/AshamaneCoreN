@@ -255,8 +255,8 @@ class boss_murozond : public CreatureScript
                     me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                     me->SetReactState(REACT_PASSIVE);
                     float moveTime = me->GetExactDist(&MurozondFlyPos) / (me->GetSpeed(MOVE_FLIGHT) * 0.001f);
-                    me->m_Events.AddEvent(new MurozondLandEvent(*me, MurozondLandPos), me->m_Events.CalculateTime(uint64(moveTime) + 250));
-                    me->m_Events.AddEvent(new MurozondStartAttack(*me), me->m_Events.CalculateTime(uint64(moveTime) + 5250));
+                    me->_events.AddEvent(new MurozondLandEvent(*me, MurozondLandPos), me->_events.CalculateTime(uint64(moveTime) + 250));
+                    me->_events.AddEvent(new MurozondStartAttack(*me), me->_events.CalculateTime(uint64(moveTime) + 5250));
                     me->GetMotionMaster()->MovePoint(POINT_MUROZOND_FLY_IN, MurozondFlyPos);
                     break;
                 }

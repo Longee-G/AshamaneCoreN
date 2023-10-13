@@ -1,4 +1,4 @@
-/*
+ï»¿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -76,11 +76,11 @@ class playerScript_the_home_stretch : public PlayerScript
 public:
     playerScript_the_home_stretch() : PlayerScript("playerScript_the_home_stretch")
     {
-        m_timer = 1000;
+        _timer = 1000;
     }
 
     #define MAX_IRON_BASTION_PROGRESS 6
-    uint32 m_timer;
+    uint32 _timer;
 
     std::vector<float> m_minX =
     {
@@ -161,13 +161,13 @@ public:
 
     void OnUpdate(Player* player, uint32 diff) override
     {
-        if (m_timer > diff)
+        if (_timer > diff)
         {
-            m_timer -= diff;
+            _timer -= diff;
             return;
         }
 
-        m_timer = 1000;
+        _timer = 1000;
 
         if (!player->GetSceneMgr().HasSceneWithPackageId(TanaanSceneObjects::SceneFinaleIronBastion))
             return;
@@ -242,7 +242,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        player->playerTalkClass->ClearMenus();
 
         if (action == GOSSIP_ACTION_INFO_DEF + 1)
         {
@@ -278,14 +278,14 @@ public:
             EventCheckSummoner  = 2
         };
 
-        EventMap m_Events;
+        EventMap _events;
         ObjectGuid m_PlayerGuid;
         bool m_Summoned;
 
         void Reset() override
         {
             m_Summoned = false;
-            m_Events.Reset();
+            _events.Reset();
         }
 
         void IsSummonedBy(Unit* summoner) override
@@ -302,8 +302,8 @@ public:
             if (Player* player = summoner->ToPlayer())
                 me->GetMotionMaster()->MoveFollow(player, 0, 1.0f);
 
-            m_Events.ScheduleEvent(eEvents::EventCheckTalk,     5000);
-            m_Events.ScheduleEvent(eEvents::EventCheckSummoner, 500);
+            _events.ScheduleEvent(eEvents::EventCheckTalk,     5000);
+            _events.ScheduleEvent(eEvents::EventCheckSummoner, 500);
         }
 
         void DamageTaken(Unit* /*attacker*/, uint32& damage) override
@@ -366,18 +366,18 @@ public:
 
         void UpdateAI(uint32 diff) override
         {
-            m_Events.Update(diff);
+            _events.Update(diff);
 
             if (!m_Summoned)
                 return;
 
-            switch (m_Events.ExecuteEvent())
+            switch (_events.ExecuteEvent())
             {
                 case eEvents::EventCheckTalk:
                     if (GetClosestCreatureWithEntry(me, TanaanCreatures::NpcGogluk, 85.0f))
                         Talk(1); ///< TALK
                     else
-                        m_Events.ScheduleEvent(eEvents::EventCheckTalk, 800);
+                        _events.ScheduleEvent(eEvents::EventCheckTalk, 800);
                     break;
                 case eEvents::EventCheckSummoner:
                 {
@@ -404,7 +404,7 @@ public:
                         }
                     }
 
-                    m_Events.ScheduleEvent(eEvents::EventCheckSummoner, 500);
+                    _events.ScheduleEvent(eEvents::EventCheckSummoner, 500);
                     break;
                 }
                 default:
@@ -509,7 +509,7 @@ public:
     {
         npc_tanaan_gogluk_addsAI(Creature* creature) : ScriptedAI(creature) { }
 
-        EventMap m_Events;
+        EventMap _events;
 
         enum eEvents
         {
@@ -522,10 +522,10 @@ public:
             switch (me->GetEntry())
             {
                 case TanaanCreatures::NpcCannonTurret:
-                    m_Events.ScheduleEvent(eEvents::EventCannonBarrage, 1000);
+                    _events.ScheduleEvent(eEvents::EventCannonBarrage, 1000);
                     break;
                 case TanaanCreatures::NpcGunTurret:
-                    m_Events.ScheduleEvent(eEvents::EventMachineGun, 3000);
+                    _events.ScheduleEvent(eEvents::EventMachineGun, 3000);
                     break;
                 default:
                     break;
@@ -534,19 +534,19 @@ public:
 
         void UpdateAI(uint32 diff) override
         {
-            m_Events.Update(diff);
+            _events.Update(diff);
 
-            switch (m_Events.ExecuteEvent())
+            switch (_events.ExecuteEvent())
             {
                 case eEvents::EventCannonBarrage:
                     if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
                         me->CastSpell(target, TanaanSpells::SpellCannonBarrage, false);
-                    m_Events.ScheduleEvent(eEvents::EventCannonBarrage, 80000);
+                    _events.ScheduleEvent(eEvents::EventCannonBarrage, 80000);
                     break;
                 case eEvents::EventMachineGun:
                     if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
                         me->CastSpell(target, TanaanSpells::SpellMachineGun, true);
-                    m_Events.ScheduleEvent(eEvents::EventMachineGun, 8000);
+                    _events.ScheduleEvent(eEvents::EventMachineGun, 8000);
                     break;
                 default:
                     break;
@@ -567,7 +567,7 @@ public:
     {
         if (quest->GetQuestId() == TanaanQuests::QuestATasteOfIron)
         {
-            // On enlève Thaelin avant le début de la cinématique, pour qu'il revienne correctement après coté client
+            // On enl?e Thaelin avant le d?ut de la cin?atique, pour qu'il revienne correctement apr? cot?client
             player->RemoveAurasDueToSpell(TanaanPhases::PhaseFinalThaelinCanon);
 
             player->GetSceneMgr().PlaySceneByPackageId(TanaanSceneObjects::SceneShootingGallery, SCENEFLAG_NOT_CANCELABLE | SCENEFLAG_UNK16);

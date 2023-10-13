@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -85,13 +85,13 @@ void WorldSession::HandleUseToy(WorldPackets::Toy::UseToy& packet)
 
     WorldPackets::Spells::SpellPrepare spellPrepare;
     spellPrepare.ClientCastID = packet.Cast.CastID;
-    spellPrepare.ServerCastID = spell->m_castId;
+    spellPrepare.ServerCastID = spell->_castId;
     SendPacket(spellPrepare.Write());
 
-    spell->m_fromClient = true;
-    spell->m_castItemEntry = itemId;
-    spell->m_misc.Raw.Data[0] = packet.Cast.Misc[0];
-    spell->m_misc.Raw.Data[1] = packet.Cast.Misc[1];
-    spell->m_castFlagsEx |= CAST_FLAG_EX_USE_TOY_SPELL;
+    spell->_isFromClient = true;
+    spell->_castItemEntry = itemId;
+    spell->_misc.Raw.Data[0] = packet.Cast.Misc[0];
+    spell->_misc.Raw.Data[1] = packet.Cast.Misc[1];
+    spell->_castFlagsEx |= CAST_FLAG_EX_USE_TOY_SPELL;
     spell->prepare(&targets);
 }

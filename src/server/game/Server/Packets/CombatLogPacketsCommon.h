@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -72,6 +72,7 @@ namespace WorldPackets
         };
     }
 
+    // 战斗日志.. 战斗日志是由服务器发给客户端的...
     namespace CombatLog
     {
         class CombatLogServerPacket : public ServerPacket

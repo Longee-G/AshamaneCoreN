@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -189,7 +189,7 @@ void HostileReference::updateOnlineStatus()
         online = getTarget()->isInAccessiblePlaceFor(creature);
         if (!online)
         {
-            if (creature->IsWithinCombatRange(getTarget(), creature->m_CombatDistance))
+            if (creature->IsWithinCombatRange(getTarget(), creature->_combatDistance))
                 online = true;                              // not accessible but stays online
         }
         else

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -362,7 +362,7 @@ class boss_lady_deathwhisper : public CreatureScript
                         darnavan->CombatStop(true);
                         darnavan->GetMotionMaster()->MoveIdle();
                         darnavan->SetReactState(REACT_PASSIVE);
-                        darnavan->m_Events.AddEvent(new DaranavanMoveEvent(*darnavan), darnavan->m_Events.CalculateTime(10000));
+                        darnavan->_events.AddEvent(new DaranavanMoveEvent(*darnavan), darnavan->_events.CalculateTime(10000));
                         darnavan->AI()->Talk(SAY_DARNAVAN_RESCUED);
                         if (Player* owner = killer->GetCharmerOrOwnerPlayerOrPlayerItself())
                         {
@@ -1007,13 +1007,14 @@ class spell_deathwhisper_dominated_mind : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellInfo*/) override
             {
-                return ValidateSpellInfo({ SPELL_DOMINATE_MIND_SCALE });
+                //return ValidateSpellInfo({ SPELL_DOMINATE_MIND_SCALE });
+                return true;
             }
 
             void HandleApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
             {
-                Unit* target = GetTarget();
-                target->CastSpell(target, SPELL_DOMINATE_MIND_SCALE, true);
+                //Unit* target = GetTarget();
+                //target->CastSpell(target, SPELL_DOMINATE_MIND_SCALE, true);
             }
 
             void Register() override

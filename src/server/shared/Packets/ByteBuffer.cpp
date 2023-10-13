@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -84,6 +84,7 @@ void ByteBuffer::append(const uint8 *src, size_t cnt)
 void ByteBuffer::AppendPackedTime(time_t time)
 {
     tm lt;
+    // get local time
     localtime_r(&time, &lt);
     append<uint32>((lt.tm_year - 100) << 24 | lt.tm_mon << 20 | (lt.tm_mday - 1) << 14 | lt.tm_wday << 11 | lt.tm_hour << 6 | lt.tm_min);
 }

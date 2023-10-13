@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -60,16 +60,17 @@
 #include "Util.h"
 #include "World.h"
 
+// holder 是什么以上？ 
 class LoginQueryHolder : public SQLQueryHolder
 {
     private:
-        uint32 m_accountId;
+        uint32 _accountId;
         ObjectGuid m_guid;
     public:
         LoginQueryHolder(uint32 accountId, ObjectGuid guid)
-            : m_accountId(accountId), m_guid(guid) { }
+            : _accountId(accountId), m_guid(guid) { }
         ObjectGuid GetGuid() const { return m_guid; }
-        uint32 GetAccountId() const { return m_accountId; }
+        uint32 GetAccountId() const { return _accountId; }
         bool Initialize();
 };
 
@@ -253,7 +254,7 @@ bool LoginQueryHolder::Initialize()
     res &= SetPreparedQuery(PLAYER_LOGIN_QUERY_LOAD_QUEST_STATUS_REW, stmt);
 
     stmt = CharacterDatabase.GetPreparedStatement(CHAR_SEL_ACCOUNT_INSTANCELOCKTIMES);
-    stmt->setUInt32(0, m_accountId);
+    stmt->setUInt32(0, _accountId);
     res &= SetPreparedQuery(PLAYER_LOGIN_QUERY_LOAD_INSTANCE_LOCK_TIMES, stmt);
 
     stmt = CharacterDatabase.GetPreparedStatement(CHAR_SEL_PLAYER_CURRENCY);
@@ -280,15 +281,29 @@ bool LoginQueryHolder::Initialize()
     stmt->setUInt64(0, lowGuid);
     res &= SetPreparedQuery(PLAYER_LOGIN_QUERY_LOAD_ARCHAEOLOGY_HISTORY, stmt);
 
+
+    // Battle Pets
+    stmt = CharacterDatabase.GetPreparedStatement(CHAR_SEL_PETBATTLE_ACCOUNT);
+    stmt->setUInt32(0, _accountId);
+    res &= SetPreparedQuery(PLAYER_LOGIN_QUERY_BATTLE_PETS, stmt);  // TODO:
+
+
+
     return res;
 }
 
+// 已经从数据库中获得角色数据...
 void WorldSession::HandleCharEnum(PreparedQueryResult result)
 {
+    // 检查当前账号DH的数量..
     uint8 demonHunterCount = 0; // We use this counter to allow multiple demon hunter creations when allowed in config
     bool canAlwaysCreateDemonHunter = HasPermission(rbac::RBAC_PERM_SKIP_CHECK_CHARACTER_CREATION_DEMON_HUNTER);
-    if (sWorld->getIntConfig(CONFIG_CHARACTER_CREATING_MIN_LEVEL_FOR_DEMON_HUNTER) == 0) // char level = 0 means this check is disabled, so always true
+
+    // char level = 0 means this check is disabled, so always true
+    if (sWorld->getIntConfig(CONFIG_CHARACTER_CREATING_MIN_LEVEL_FOR_DEMON_HUNTER) == 0) 
         canAlwaysCreateDemonHunter = true;
+
+    // 返回给客户端的消息...
     WorldPackets::Character::EnumCharactersResult charEnum;
     charEnum.Success = true;
     charEnum.IsDeletedCharacters = false;
@@ -358,6 +373,8 @@ void WorldSession::HandleCharEnum(PreparedQueryResult result)
     SendPacket(charEnum.Write());
 }
 
+// 处理客户端的角色列表请求... 在角色界面中
+// 给客户端返回当前账号的所用角色信息...
 void WorldSession::HandleCharEnumOpcode(WorldPackets::Character::EnumCharacters& /*enumCharacters*/)
 {
     // remove expired bans
@@ -373,6 +390,8 @@ void WorldSession::HandleCharEnumOpcode(WorldPackets::Character::EnumCharacters&
 
     stmt->setUInt32(0, GetAccountId());
 
+    // 将数据库查询放入到处理队列中，通过背景线程来完成查询，传入回调函数让背景线程在完成
+    // query之后调用...
     _queryProcessor.AddQuery(CharacterDatabase.AsyncQuery(stmt).WithPreparedCallback(std::bind(&WorldSession::HandleCharEnum, this, std::placeholders::_1)));
 }
 
@@ -806,6 +825,7 @@ void WorldSession::HandleCharDeleteOpcode(WorldPackets::Character::CharDelete& c
     SendCharDelete(CHAR_DELETE_SUCCESS);
 }
 
+// 客户端请求进入游戏...从登录选人界面进入游戏中...
 void WorldSession::HandlePlayerLoginOpcode(WorldPackets::Character::PlayerLogin& playerLogin)
 {
     if (PlayerLoading() || GetPlayer() != NULL)
@@ -815,7 +835,7 @@ void WorldSession::HandlePlayerLoginOpcode(WorldPackets::Character::PlayerLogin&
         return;
     }
 
-    m_playerLoading = playerLogin.Guid;
+    _playerLoading = playerLogin.Guid;
 
     TC_LOG_DEBUG("network", "Character %s logging in", playerLogin.Guid.ToString().c_str());
 
@@ -837,11 +857,11 @@ void WorldSession::HandleContinuePlayerLogin()
         return;
     }
 
-    LoginQueryHolder* holder = new LoginQueryHolder(GetAccountId(), m_playerLoading);
+    LoginQueryHolder* holder = new LoginQueryHolder(GetAccountId(), _playerLoading);
     if (!holder->Initialize())
     {
         delete holder;                                      // delete all unprocessed queries
-        m_playerLoading.Clear();
+        _playerLoading.Clear();
         return;
     }
 
@@ -858,7 +878,7 @@ void WorldSession::AbortLogin(WorldPackets::Character::LoginFailureReason reason
         return;
     }
 
-    m_playerLoading.Clear();
+    _playerLoading.Clear();
     SendPacket(WorldPackets::Character::CharacterLoginFailed(reason).Write());
 }
 
@@ -867,6 +887,7 @@ void WorldSession::HandleLoadScreenOpcode(WorldPackets::Character::LoadingScreen
     // TODO: Do something with this packet
 }
 
+// 处理角色登录... 
 void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
 {
     ObjectGuid playerGuid = holder->GetGuid();
@@ -875,6 +896,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
      // for send server info and strings (config)
     ChatHandler chH = ChatHandler(pCurrChar->GetSession());
 
+    // 从数据库中`characters`表加载player的信息...
     // "GetAccountId() == db stored account id" checked in LoadFromDB (prevent login not own character using cheating tools)
     if (!pCurrChar->LoadFromDB(playerGuid, holder))
     {
@@ -882,7 +904,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
         KickPlayer();                                       // disconnect client, player no set to session and it will not deleted or saved at kick
         delete pCurrChar;                                   // delete it manually
         delete holder;                                      // delete all unprocessed queries
-        m_playerLoading.Clear();
+        _playerLoading.Clear();
         return;
     }
 
@@ -1018,7 +1040,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
         if (at)
             pCurrChar->TeleportTo(at->target_mapId, at->target_X, at->target_Y, at->target_Z, pCurrChar->GetOrientation());
         else
-            pCurrChar->TeleportTo(pCurrChar->m_homebindMapId, pCurrChar->m_homebindX, pCurrChar->m_homebindY, pCurrChar->m_homebindZ, pCurrChar->GetOrientation());
+            pCurrChar->TeleportTo(pCurrChar->_homebindMapId, pCurrChar->_homebindX, pCurrChar->_homebindY, pCurrChar->_homebindZ, pCurrChar->GetOrientation());
     }
 
     ObjectAccessor::AddObject(pCurrChar);
@@ -1063,7 +1085,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
     pCurrChar->LoadCorpse(holder->GetPreparedResult(PLAYER_LOGIN_QUERY_LOAD_CORPSE_LOCATION));
 
     // setting Ghost+speed if dead
-    if (pCurrChar->m_deathState != ALIVE)
+    if (pCurrChar->_deathState != ALIVE)
     {
         // not blizz like, we must correctly save and load player instead...
         if (pCurrChar->getRace() == RACE_NIGHTELF && !pCurrChar->HasAura(20584))
@@ -1147,7 +1169,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
     if (!pCurrChar->IsStandState() && !pCurrChar->HasUnitState(UNIT_STATE_STUNNED))
         pCurrChar->SetStandState(UNIT_STAND_STATE_STAND);
 
-    m_playerLoading.Clear();
+    _playerLoading.Clear();
 
     // Handle Login-Achievements (should be handled after loading)
     _player->UpdateCriteria(CRITERIA_TYPE_ON_LOGIN, 1);

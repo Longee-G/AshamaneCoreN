@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -97,6 +97,7 @@ void PhaseShift::ClearPhases()
     UpdateUnphasedFlag();
 }
 
+// 检查是否能看见另外`位面`的对象
 bool PhaseShift::CanSee(PhaseShift const& other) const
 {
     if (Flags.HasFlag(PhaseShiftFlags::Unphased) && other.Flags.HasFlag(PhaseShiftFlags::Unphased))

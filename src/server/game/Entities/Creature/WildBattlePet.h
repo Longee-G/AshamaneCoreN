@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -29,14 +29,14 @@ class TC_GAME_API WildBattlePet
 
         void Initialize();
 
-        Creature* GetCreature() { return m_creature; }
-        BattlePet* GetBattlePet() { return m_battlePet; }
+        Creature* GetCreature() { return _creature; }
+        BattlePet* GetBattlePet() { return _battlePet; }
 
-        uint8 GetLevel() { return m_battlePet->Level; }
+        uint8 GetLevel() { return _battlePet->Level; }
 
     private:
-        Creature* m_creature;
-        BattlePet* m_battlePet;
+        Creature* _creature;
+        BattlePet* _battlePet;
 };
 
 #endif

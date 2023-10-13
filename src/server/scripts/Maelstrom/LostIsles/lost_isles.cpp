@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2011 - 2012 ArkCORE <http://www.arkania.net/>
  *
@@ -560,7 +560,7 @@ public:
         {
             player->RemoveAura(68338);
             player->RemoveAura(69303);
-            for (Unit::ControlList::iterator itr = player->m_Controlled.begin(); itr != player->m_Controlled.end(); ++itr)
+            for (Unit::ControlList::iterator itr = player->_controlled.begin(); itr != player->_controlled.end(); ++itr)
                 if ((*itr)->GetTypeId() == TYPEID_UNIT && (*itr)->GetEntry() == 36100)
                     (*itr)->ToCreature()->DespawnOrUnsummon();
         }
@@ -573,7 +573,7 @@ public:
         {
             player->RemoveAura(68338);
             player->RemoveAura(69303);
-            for (Unit::ControlList::iterator itr = player->m_Controlled.begin(); itr != player->m_Controlled.end(); ++itr)
+            for (Unit::ControlList::iterator itr = player->_controlled.begin(); itr != player->_controlled.end(); ++itr)
                 if ((*itr)->GetTypeId() == TYPEID_UNIT && (*itr)->GetEntry() == 36100)
                     (*itr)->ToCreature()->DespawnOrUnsummon();
         }
@@ -1953,7 +1953,7 @@ public:
                 int cnt = 1;
                 chariot->AddUnitState(UNIT_STATE_IGNORE_PATHFINDING);
                 player->CastCustomSpell(VEHICLE_SPELL_RIDE_HARDCODED, SPELLVALUE_BASE_POINT0, 1, chariot, false);
-                for (Unit::ControlList::iterator itr = player->m_Controlled.begin(); itr != player->m_Controlled.end(); ++itr)
+                for (Unit::ControlList::iterator itr = player->_controlled.begin(); itr != player->_controlled.end(); ++itr)
                     if ((*itr)->GetTypeId() == TYPEID_UNIT && ((*itr)->GetEntry() == 34957 || (*itr)->GetEntry() == 39199 || (*itr)->GetEntry() == 34959 || (*itr)->GetEntry() == 39205))
                     {
                         cnt++;
@@ -2338,7 +2338,7 @@ public:
 
         void Register() override
         {
-            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_boot_damage_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENTRY);
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_boot_damage_SpellScript::FilterTargets, EFFECT_0, 25);
         }
     };
 

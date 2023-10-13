@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -2354,9 +2354,10 @@ void CriteriaMgr::LoadCriteriaList()
         ASSERT(criteriaEntry->Type < CRITERIA_TYPE_TOTAL, "CRITERIA_TYPE_TOTAL must be greater than or equal to %u but is currently equal to %u",
             criteriaEntry->Type + 1, CRITERIA_TYPE_TOTAL);
 
+        // 成就表是通过`criteria.db2`和`criteriaTree.db2`两张数据表结合来实现的...
         auto treeItr = _criteriaTreeByCriteria.find(criteriaEntry->ID);
         if (treeItr == _criteriaTreeByCriteria.end())
-            continue;
+            continue;   // 在`criteria.db2`中存在的数据没有在`criteriaTree.db2`中找到...
 
         Criteria* criteria = new Criteria();
         criteria->ID = criteriaEntry->ID;
@@ -2439,6 +2440,7 @@ void CriteriaMgr::LoadCriteriaData()
         Field* fields = result->Fetch();
         uint32 criteria_id = fields[0].GetUInt32();
 
+        // acquire data from `criteria.db2`
         Criteria const* criteria = GetCriteria(criteria_id);
 
         if (!criteria)

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -70,13 +70,13 @@ class TC_GAME_API _SpellScript
         virtual bool _Validate(SpellInfo const* entry);
 
     public:
-        _SpellScript() : m_currentScriptState(SPELL_SCRIPT_STATE_NONE), m_scriptName(NULL), m_scriptSpellId(0) {}
+        _SpellScript() : m_currentScriptState(SPELL_SCRIPT_STATE_NONE), m_scriptName(NULL), m_scriptSpellId(0), m_deprecated(false) {}
         virtual ~_SpellScript() { }
         void _Register();
         void _Unload();
         void _Init(std::string const* scriptname, uint32 spellId);
         std::string const* _GetScriptName() const;
-
+        bool _Deprecated() const { return m_deprecated; }
     protected:
         class TC_GAME_API EffectHook
         {
@@ -85,6 +85,7 @@ class TC_GAME_API _SpellScript
                 virtual ~EffectHook() { }
 
                 uint32 GetAffectedEffectsMask(SpellInfo const* spellInfo) const;
+                bool FixedEffect(SpellInfo const* spellInfo);
                 bool IsEffectAffected(SpellInfo const* spellInfo, uint8 effIndex) const;
                 virtual bool CheckEffect(SpellInfo const* spellInfo, uint8 effIndex) const = 0;
                 std::string EffIndexToString() const;
@@ -115,7 +116,7 @@ class TC_GAME_API _SpellScript
         uint8 m_currentScriptState;
         std::string const* m_scriptName;
         uint32 m_scriptSpellId;
-
+        bool m_deprecated;          // is script deprecated for current Expansion
     private:
 
 #ifdef TRINITY_API_USE_DYNAMIC_LINKING
@@ -988,7 +989,7 @@ class TC_GAME_API AuraScript : public _SpellScript
         // returns spellid of the spell
         uint32 GetId() const;
 
-        // returns guid of object which cast the aura (m_originalCaster of the Spell class)
+        // returns guid of object which cast the aura (_originalCaster of the Spell class)
         ObjectGuid GetCasterGUID() const;
         // returns unit which cast the aura or NULL if not avalible (caster logged out for example)
         Unit* GetCaster() const;

@@ -28,6 +28,30 @@ namespace WorldPackets
 {
     namespace Battleground
     {
+        //< SMSG_BATTLEGROUND_INFO_THROTTLED
+        class NullSMsg final : public ServerPacket
+        {
+        public:
+            NullSMsg(OpcodeServer opcode) : ServerPacket(opcode) { }
+
+            WorldPacket const* Write() override { return &_worldPacket; }
+        };
+
+        //< CMSG_REQUEST_BATTLEFIELD_STATUS
+        //< CMSG_REQUEST_CONQUEST_FORMULA_CONSTANTS
+        //< CMSG_REQUEST_RATED_BATTLEFIELD_INFO
+        //< CMSG_GET_PVP_OPTIONS_ENABLED
+        //< CMSG_BATTLEFIELD_LEAVE
+        //< CMSG_PVP_LOG_DATA
+        class NullCmsg final : public ClientPacket
+        {
+        public:
+            NullCmsg(WorldPacket&& packet) : ClientPacket(std::move(packet)) { }
+
+            void Read() override { }
+        };
+
+
         class PVPSeason final : public ServerPacket
         {
         public:
@@ -412,6 +436,20 @@ namespace WorldPackets
             RequestRatedBattlefieldInfo(WorldPacket&& packet) : ClientPacket(CMSG_REQUEST_RATED_BATTLEFIELD_INFO, std::move(packet)) { }
 
             void Read() override { }
+        };
+
+        class ConquestFormulaConstants final : public ServerPacket
+        {
+        public:
+            ConquestFormulaConstants() : ServerPacket(SMSG_CONQUEST_FORMULA_CONSTANTS, 20) { }
+
+            WorldPacket const* Write() override;
+
+            uint32 PvpMinCPPerWeek = 0;
+            uint32 PvpMaxCPPerWeek = 0;
+            float PvpCPBaseCoefficient = 0.0f;
+            float PvpCPExpCoefficient = 0.0f;
+            float PvpCPNumerator = 0.0f;
         };
     }
 }

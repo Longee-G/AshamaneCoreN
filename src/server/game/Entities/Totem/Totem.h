@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -37,10 +37,10 @@ class TC_GAME_API Totem : public Minion
         void InitStats(uint32 duration) override;
         void InitSummon(Spell const* summonSpell = nullptr) override;
         void UnSummon(uint32 msTime = 0) override;
-        uint32 GetSpell(uint8 slot = 0) const { return m_spells[slot]; }
-        uint32 GetTotemDuration() const { return m_duration; }
-        void SetTotemDuration(uint32 duration) { m_duration = duration; }
-        TotemType GetTotemType() const { return m_type; }
+        uint32 GetSpell(uint8 slot = 0) const { return _spells[slot]; }
+        uint32 GetTotemDuration() const { return _duration; }
+        void SetTotemDuration(uint32 duration) { _duration = duration; }
+        TotemType GetTotemType() const { return _type; }
 
         bool UpdateStats(Stats /*stat*/) override { return true; }
         bool UpdateAllStats() override { return true; }
@@ -54,7 +54,7 @@ class TC_GAME_API Totem : public Minion
         bool IsImmunedToSpellEffect(SpellInfo const* spellInfo, uint32 index, Unit* caster) const override;
 
     protected:
-        TotemType m_type;
-        uint32 m_duration;
+        TotemType _type;
+        uint32 _duration;
 };
 #endif

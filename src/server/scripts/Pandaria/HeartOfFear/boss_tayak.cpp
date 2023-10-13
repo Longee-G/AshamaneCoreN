@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -838,13 +838,13 @@ class npc_storm_unleashed_tornado : public CreatureScript
 
             Vehicle* vehicle;
             InstanceScript* pInstance;
-            EventMap m_Events;
+            EventMap _events;
             bool storm1;
             Position m_ReachPoint;
 
             void IsSummonedBy(Unit* /*p_Summoner*/) override
             {
-                m_Events.Reset();
+                _events.Reset();
                 storm1 = true;
                 me->AddAura(SPELL_SU_DUMMY_VIS, me);    // Visual aura.
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
@@ -853,7 +853,7 @@ class npc_storm_unleashed_tornado : public CreatureScript
                 me->SetSpeed(MOVE_WALK, 1.1f);
                 me->SetSpeed(MOVE_RUN, 1.1f);
 
-                m_Events.ScheduleEvent(EVENT_STORM_REMOVE, 24000);
+                _events.ScheduleEvent(EVENT_STORM_REMOVE, 24000);
             }
 
             void Eject()
@@ -883,7 +883,7 @@ class npc_storm_unleashed_tornado : public CreatureScript
                     storm1 = value < 3 ? true : false;
                     m_ReachPoint = (value < 3 ? Tornado2[2 - value] : Tornado1[5 - value]);
 
-                    m_Events.ScheduleEvent(EVENT_STORM_MOVE, 500);
+                    _events.ScheduleEvent(EVENT_STORM_MOVE, 500);
                 }
             }
 
@@ -916,9 +916,9 @@ class npc_storm_unleashed_tornado : public CreatureScript
                     }
                 }
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
-                uint32 m_EventId = m_Events.ExecuteEvent();
+                uint32 m_EventId = _events.ExecuteEvent();
                 if (m_EventId == EVENT_STORM_MOVE)
                 {
                     me->AddAura(SPELL_SU_AURA, me);         // Control vehicle aura.
@@ -1486,21 +1486,21 @@ class spell_blade_tempest : public SpellScriptLoader
 
 void AddSC_boss_tayak()
 {
-    new boss_tayak();                       // 62543
-    new npc_tempest_slash_tornado();        // 62908
-    new npc_storm_unleashed_tornado();      // 63278
-    new mob_gale_winds_stalker();           // 63292
-    new spell_wind_step();                  // 123175
-    new spell_tayak_wind_step();            // 123459
-    new spell_tayak_storms_vehicle();       // 124258
-    new spell_tayak_storm_unleashed_dmg();  // 124783
-    new spell_tempest_slash();              // 122853
-    new spell_unseen_strike_aura();         // 122982
-    new spell_unseen_strike_dmg();          // 122994
-    new spell_tayak_su_visual();            // 123814
-    new spell_su_dummy_visual();            // 124024
-    new spell_gale_winds();                 // 123633
-    new spell_su_dummy();                   // 123600
-    new spell_su_dumaura();                 // 123616
-    new spell_blade_tempest();              // 125310
+    //new boss_tayak();                       // 62543
+    //new npc_tempest_slash_tornado();        // 62908
+    //new npc_storm_unleashed_tornado();      // 63278
+    //new mob_gale_winds_stalker();           // 63292
+    //new spell_wind_step();                  // 123175
+    //new spell_tayak_wind_step();            // 123459
+    //new spell_tayak_storms_vehicle();       // 124258
+    //new spell_tayak_storm_unleashed_dmg();  // 124783
+    //new spell_tempest_slash();              // 122853
+    //new spell_unseen_strike_aura();         // 122982
+    //new spell_unseen_strike_dmg();          // 122994
+    //new spell_tayak_su_visual();            // 123814
+    //new spell_su_dummy_visual();            // 124024
+    //new spell_gale_winds();                 // 123633
+    //new spell_su_dummy();                   // 123600
+    //new spell_su_dumaura();                 // 123616
+    //new spell_blade_tempest();              // 125310
 }

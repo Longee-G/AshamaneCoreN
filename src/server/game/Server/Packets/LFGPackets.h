@@ -430,6 +430,40 @@ namespace WorldPackets
 
             lfg::LfgTeleportResult Reason;
         };
+
+        // DFListGetStatus
+        class DFListGetStatus final : public ClientPacket
+        {
+        public:
+            DFListGetStatus(WorldPacket&& packet) : ClientPacket(CMSG_LFG_LIST_GET_STATUS, std::move(packet)) { }
+
+            void Read() override { }
+        };
+
+        // 
+        class DFRequestListBlacklist final : public ClientPacket
+        {
+        public:
+            DFRequestListBlacklist(WorldPacket&& packet) : ClientPacket(CMSG_REQUEST_LFG_LIST_BLACKLIST, std::move(packet)) { }
+
+            void Read() override { }
+        };
+
+        struct LFGListBlacklist
+        {
+            uint32 ActivityID = 0;
+            uint32 Reason = 0;
+        };
+
+        class DFListUpdateBlacklist final : public ServerPacket
+        {
+        public:
+            DFListUpdateBlacklist() : ServerPacket(SMSG_LFG_LIST_UPDATE_BLACKLIST, 4) { }
+
+            WorldPacket const* Write() override;
+
+            std::vector<LFGListBlacklist> Blacklist;
+        };
     }
 }
 

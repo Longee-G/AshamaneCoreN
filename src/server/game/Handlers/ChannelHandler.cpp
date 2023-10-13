@@ -48,7 +48,7 @@ void WorldSession::HandleJoinChannel(WorldPackets::Channel::JoinChannel& packet)
     if (packet.ChannelName.empty())
         return;
 
-    if (isdigit(packet.ChannelName[0]))
+    if (isdigit((uint8)packet.ChannelName[0]))
         return;
 
     if (ChannelMgr* cMgr = ChannelMgr::ForTeam(GetPlayer()->GetTeam()))

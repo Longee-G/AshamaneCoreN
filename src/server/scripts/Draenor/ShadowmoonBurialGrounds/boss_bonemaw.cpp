@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -595,10 +595,11 @@ public:
         }
 
         void Register() override
-        {     
-            AfterEffectRemove += AuraEffectRemoveFn(spell_shadowmoon_burial_grounds_inhale_SpellScript::OnRemove, SpellEffIndex::EFFECT_0, AuraType::SPELL_AURA_PERIODIC_TRIGGER_SPELL, AuraEffectHandleModes::AURA_EFFECT_HANDLE_REAL);
+        {
+            // 7.3.5 SPELL_AURA_PERIODIC_TRIGGER_SPELL -> 0
+            if (m_scriptSpellId != 169233)
+                AfterEffectRemove += AuraEffectRemoveFn(spell_shadowmoon_burial_grounds_inhale_SpellScript::OnRemove, SpellEffIndex::EFFECT_0, 4, AuraEffectHandleModes::AURA_EFFECT_HANDLE_REAL);
         }
-
     };
 
     AuraScript* GetAuraScript() const override

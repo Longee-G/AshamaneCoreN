@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2008-2011 TrinityCore <http://www.trinitycore.org/>
  * Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
@@ -25,6 +25,8 @@
 #include "SpellMgr.h"
 #include "Unit.h"
 
+
+// 26375
 class spell_lunar_festival_invitation : public SpellScriptLoader
 {
 public:
@@ -43,7 +45,9 @@ public:
 
         void Register() override
         {
+#if GAME_BUILD < LEGION_735
             OnEffectHitTarget += SpellEffectFn(spell_lunar_festival_invitation_SpellScript::HandleDummy, EFFECT_1, SPELL_EFFECT_DUMMY);
+#endif
         }
     };
 

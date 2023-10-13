@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -32,7 +32,7 @@ void WorldSession::HandleAutoBankItemOpcode(WorldPackets::Bank::AutoBankItem& pa
 
     if (!CanUseBank())
     {
-        TC_LOG_ERROR("network", "WORLD: HandleAutoBankItemOpcode - Unit (%s) not found or you can't interact with him.", m_currentBankerGUID.ToString().c_str());
+        TC_LOG_ERROR("network", "WORLD: HandleAutoBankItemOpcode - Unit (%s) not found or you can't interact with him.", _currentBankerGUID.ToString().c_str());
         return;
     }
 
@@ -76,7 +76,7 @@ void WorldSession::HandleAutoBankReagentOpcode(WorldPackets::Bank::AutoBankReage
 
     if (!CanUseBank())
     {
-        TC_LOG_ERROR("network", "WORLD: HandleAutoBankReagentOpcode - Unit (%s) not found or you can't interact with him.", m_currentBankerGUID.ToString().c_str());
+        TC_LOG_ERROR("network", "WORLD: HandleAutoBankReagentOpcode - Unit (%s) not found or you can't interact with him.", _currentBankerGUID.ToString().c_str());
         return;
     }
 
@@ -144,7 +144,7 @@ void WorldSession::HandleAutoStoreBankItemOpcode(WorldPackets::Bank::AutoStoreBa
 
     if (!CanUseBank())
     {
-        TC_LOG_ERROR("network", "WORLD: HandleAutoStoreBankItemOpcode - Unit (%s) not found or you can't interact with him.", m_currentBankerGUID.ToString().c_str());
+        TC_LOG_ERROR("network", "WORLD: HandleAutoStoreBankItemOpcode - Unit (%s) not found or you can't interact with him.", _currentBankerGUID.ToString().c_str());
         return;
     }
 
@@ -188,7 +188,7 @@ void WorldSession::HandleAutoStoreBankReagentOpcode(WorldPackets::Bank::AutoStor
 
     if (!CanUseBank())
     {
-        TC_LOG_ERROR("network", "WORLD: HandleAutoStoreReagentBankItemOpcode - Unit (%s) not found or you can't interact with him.", m_currentBankerGUID.ToString().c_str());
+        TC_LOG_ERROR("network", "WORLD: HandleAutoStoreReagentBankItemOpcode - Unit (%s) not found or you can't interact with him.", _currentBankerGUID.ToString().c_str());
         return;
     }
 
@@ -279,7 +279,7 @@ void WorldSession::HandleBuyBankSlotOpcode(WorldPackets::Bank::BuyBankSlot& pack
 
 void WorldSession::SendShowBank(ObjectGuid guid)
 {
-    m_currentBankerGUID = guid;
+    _currentBankerGUID = guid;
     WorldPackets::NPC::ShowBank packet;
     packet.Guid = guid;
     SendPacket(packet.Write());

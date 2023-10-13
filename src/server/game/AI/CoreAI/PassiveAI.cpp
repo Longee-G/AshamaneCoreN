@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -79,6 +79,6 @@ void CritterAI::EnterEvadeMode(EvadeReason why)
 
 void TriggerAI::IsSummonedBy(Unit* summoner)
 {
-    if (me->m_spells[0])
-        me->CastSpell(me, me->m_spells[0], false, nullptr, nullptr, summoner->GetGUID());
+    if (me->_spells[0])
+        me->CastSpell(me, me->_spells[0], false, nullptr, nullptr, summoner->GetGUID());
 }

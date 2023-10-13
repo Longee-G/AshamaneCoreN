@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2011-2012 Project SkyFire <http://www.projectskyfire.org/>
 * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
@@ -227,7 +227,8 @@ class spell_ulthok_dark_fissure : public SpellScriptLoader
 
             void Register() override
             {
-                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_ulthok_dark_fissureSpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
+                // 47 and 80
+                //OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_ulthok_dark_fissureSpellScript::FilterTargets, EFFECT_0, 80);
             }
         };
 

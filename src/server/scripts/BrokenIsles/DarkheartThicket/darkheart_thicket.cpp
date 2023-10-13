@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -251,7 +251,7 @@ public:
     }
 };
 
-// Tormenting Eye - 204243
+// 204243 - Tormenting Eye - 
 class spell_dt_trash_tormenting_eye : public SpellScriptLoader
 {
 public:
@@ -275,8 +275,9 @@ public:
         void Register() override
         {
             AfterEffectRemove += AuraEffectRemoveFn(spell_dt_trash_tormenting_eye_AuraScript::HandleEffectRemove, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE, AURA_EFFECT_HANDLE_REAL);
-            AfterEffectRemove += AuraEffectRemoveFn(spell_dt_trash_tormenting_eye_AuraScript::HandleEffectRemove, EFFECT_1, SPELL_AURA_PERIODIC_DAMAGE, AURA_EFFECT_HANDLE_REAL);
-            AfterEffectRemove += AuraEffectRemoveFn(spell_dt_trash_tormenting_eye_AuraScript::HandleEffectRemove, EFFECT_2, SPELL_AURA_PERIODIC_DAMAGE, AURA_EFFECT_HANDLE_REAL);
+            // 7.3.5 _1,_2 <deprecated>
+            //AfterEffectRemove += AuraEffectRemoveFn(spell_dt_trash_tormenting_eye_AuraScript::HandleEffectRemove, EFFECT_1, SPELL_AURA_PERIODIC_DAMAGE, AURA_EFFECT_HANDLE_REAL);
+            //AfterEffectRemove += AuraEffectRemoveFn(spell_dt_trash_tormenting_eye_AuraScript::HandleEffectRemove, EFFECT_2, SPELL_AURA_PERIODIC_DAMAGE, AURA_EFFECT_HANDLE_REAL);
         }
     };
 

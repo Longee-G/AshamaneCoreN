@@ -114,6 +114,7 @@ void WorldSession::HandleDFGetSystemInfo(WorldPackets::LFG::DFGetSystemInfo& dfG
         SendLfgPartyLockInfo();
 }
 
+// DF = Dugeon Finder? 
 void WorldSession::HandleDFGetJoinStatus(WorldPackets::LFG::DFGetJoinStatus& /*dfGetJoinStatus*/)
 {
     TC_LOG_DEBUG("lfg", "CMSG_DF_GET_JOIN_STATUS %s", GetPlayerInfo().c_str());
@@ -136,6 +137,17 @@ void WorldSession::HandleDFGetJoinStatus(WorldPackets::LFG::DFGetJoinStatus& /*d
         updateData.dungeons.clear();
         SendLfgUpdateStatus(updateData, true);
     }
+}
+
+void WorldSession::HandleLfgListGetStatus(WorldPackets::LFG::DFListGetStatus & packet)
+{
+    // TODO:
+}
+
+// TODO:
+void WorldSession::HandleRequestLfgListBlackList(WorldPackets::LFG::DFRequestListBlacklist & packet)
+{
+    SendPacket(WorldPackets::LFG::DFListUpdateBlacklist().Write()); /// Activity and Reason loop - We dont need it
 }
 
 void WorldSession::SendLfgPlayerLockInfo()

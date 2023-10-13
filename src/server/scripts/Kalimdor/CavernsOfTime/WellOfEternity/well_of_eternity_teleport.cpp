@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -68,7 +68,7 @@ public:
 
     bool OnGossipSelect(Player* player, GameObject* /*go*/, uint32 /*sender*/, uint32 action) override
     {
-        //player->PlayerTalkClass->ClearMenus();
+        //player->playerTalkClass->ClearMenus();
         if (player->IsInCombat())
             return true;
 

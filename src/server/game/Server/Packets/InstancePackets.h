@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -21,8 +21,17 @@
 #include "Packet.h"
 #include "ObjectGuid.h"
 
+
+enum TimerType : uint32
+{
+    WORLD_TIMER_TYPE_PVP = 0,
+    WORLD_TIMER_TYPE_CHALLENGE_MODE = 1,
+    WORLD_TIMER_TIMER_TYPE_PROVING_GROUND = 2,
+};
+
 namespace WorldPackets
 {
+    // 副本？
     namespace Instance
     {
         class UpdateLastInstance final : public ServerPacket
@@ -244,6 +253,17 @@ namespace WorldPackets
 
             WorldPacket const* Write() override;
             uint32 DungeonEncounterID = 0;
+        };
+
+        // query countdown timer 
+        class QueryCountdownTimer final : public ClientPacket
+        {
+        public:
+            QueryCountdownTimer(WorldPacket&& packet) : ClientPacket(CMSG_QUERY_COUNTDOWN_TIMER, std::move(packet)) { }
+
+            void Read() override;
+
+            TimerType Type = WORLD_TIMER_TYPE_PVP;
         };
     }
 }

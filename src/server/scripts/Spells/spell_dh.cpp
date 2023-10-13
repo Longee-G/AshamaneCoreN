@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2008-2017 TrinityCore <http://www.trinitycore.org/>
  *
@@ -42,7 +42,9 @@
 #include "TemporarySummon.h"
 #include "Unit.h"
 #include "World.h"
-
+//
+// scripts for Demon Hunter(DH)
+//
 enum DHSpells
 {
     SPELL_DH_ANNIHILATION                   = 201427,
@@ -184,10 +186,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_DH_NETHER_BOND_DAMAGE) ||
-                !sSpellMgr->GetSpellInfo(SPELL_DH_NETHER_BOND_PERIODIC))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_DH_NETHER_BOND_DAMAGE , SPELL_DH_NETHER_BOND_PERIODIC });
         }
 
         void HandleDummy()
@@ -517,10 +516,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_DH_FEL_DEVASTATION_DAMAGE) ||
-                !sSpellMgr->GetSpellInfo(SPELL_DH_FEL_DEVASTATION_HEAL))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_DH_FEL_DEVASTATION_DAMAGE , SPELL_DH_FEL_DEVASTATION_HEAL });
         }
 
         void HandlePeriodic(AuraEffect const* /*aurEff*/)
@@ -719,9 +715,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_DH_RAZOR_SPIKES_SLOW))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_DH_RAZOR_SPIKES_SLOW });
         }
 
         bool CheckProc(ProcEventInfo& eventInfo)
@@ -778,9 +772,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_DH_SOUL_CLEAVE_DAMAGE))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_DH_SOUL_CLEAVE_DAMAGE });
         }
 
         void HandleSouls(SpellEffIndex /*effindex*/)
@@ -959,9 +951,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_DH_FIERY_BRAND_DOT))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_DH_FIERY_BRAND_DOT });
         }
 
         void HandleDamage(SpellEffIndex /*effIndex*/)
@@ -1054,7 +1044,7 @@ public:
     }
 };
 
-// Fiery Brand aura - 204022
+// 204022 - Fiery Brand aura - 
 class spell_dh_fiery_brand_absorb : public SpellScriptLoader
 {
 public:
@@ -1082,8 +1072,9 @@ public:
 
         void Register() override
         {
-            DoEffectCalcAmount += AuraEffectCalcAmountFn(spell_dh_fiery_brand_absorb_AuraScript::CalcAmount, EFFECT_0, SPELL_AURA_SCHOOL_ABSORB);
-            OnEffectAbsorb += AuraEffectAbsorbFn(spell_dh_fiery_brand_absorb_AuraScript::HandleAbsorb, EFFECT_0);
+            // 7.3.5 SPELL_AURA_SCHOOL_ABSORB -> 226
+            DoEffectCalcAmount += AuraEffectCalcAmountFn(spell_dh_fiery_brand_absorb_AuraScript::CalcAmount, EFFECT_0, 226);
+            //OnEffectAbsorb += AuraEffectAbsorbFn(spell_dh_fiery_brand_absorb_AuraScript::HandleAbsorb, EFFECT_0);
         }
     };
 
@@ -1106,9 +1097,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_DH_LAST_RESORT_DEBUFF))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_DH_LAST_RESORT_DEBUFF });
         }
 
         void CalcAmount(AuraEffect const* /*aurEff*/, int32& amount, bool& /*canBeRecalculated*/)
@@ -1382,7 +1371,8 @@ public:
 
         void Register() override
         {
-            OnEffectProc += AuraEffectProcFn(spell_dh_demon_blades_AuraScript::HandleProc, EFFECT_0, SPELL_AURA_DUMMY);
+            // 7.3.5 SPELL_AURA_DUMMY -> 42
+            OnEffectProc += AuraEffectProcFn(spell_dh_demon_blades_AuraScript::HandleProc, EFFECT_0, 42);
         }
     };
 
@@ -1453,10 +1443,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_DH_FEL_BARRAGE) ||
-                !sSpellMgr->GetSpellInfo(SPELL_DH_FEL_BARRAGE_TRIGGER))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_DH_FEL_BARRAGE , SPELL_DH_FEL_BARRAGE_TRIGGER });
         }
 
         bool Load() override
@@ -1511,7 +1498,7 @@ public:
     }
 };
 
-// Fel Barrage aura - 222703
+// 222703 - Fel Barrage aura - 
 class spell_dh_fel_barrage_aura : public SpellScriptLoader
 {
 public:
@@ -1548,8 +1535,9 @@ public:
 
         void Register() override
         {
-            DoCheckProc += AuraCheckProcFn(spell_dh_fel_barrage_aura_AuraScript::CheckProc);
-            OnEffectProc += AuraEffectProcFn(spell_dh_fel_barrage_aura_AuraScript::HandleProc, EFFECT_0, SPELL_AURA_PROC_TRIGGER_SPELL);
+            //DoCheckProc += AuraCheckProcFn(spell_dh_fel_barrage_aura_AuraScript::CheckProc);
+            // 7.3.5 SPELL_AURA_PROC_TRIGGER_SPELL -> 0
+            OnEffectProc += AuraEffectProcFn(spell_dh_fel_barrage_aura_AuraScript::HandleProc, EFFECT_0, 0);
         }
     };
 
@@ -1571,12 +1559,8 @@ public:
         PrepareSpellScript(spell_dh_annihilation_SpellScript);
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
-        {
-            if (!sSpellMgr->GetSpellInfo(SPELL_DH_ANNIHILATION) ||
-                !sSpellMgr->GetSpellInfo(SPELL_DH_ANNIHILATION_MAINHAIND) ||
-                !sSpellMgr->GetSpellInfo(SPELL_DH_ANNIHILATION_OFFHAND))
-                return false;
-            return true;
+        {            
+            return ValidateSpellInfo({ SPELL_DH_ANNIHILATION ,SPELL_DH_ANNIHILATION_MAINHAIND, SPELL_DH_ANNIHILATION_OFFHAND });
         }
 
         void PreventMainhandEffect(SpellEffIndex /*effIndex*/)
@@ -1687,10 +1671,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_DH_IMMOLATION_AURA) ||
-                !sSpellMgr->GetSpellInfo(SPELL_DH_IMMOLATION_AURA_VISUAL))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_DH_IMMOLATION_AURA , SPELL_DH_IMMOLATION_AURA_VISUAL });
         }
 
         void ApplyVisual(SpellEffIndex /*effIndex*/)
@@ -1732,10 +1713,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_DH_VENGEFUL_RETREAT) ||
-                !sSpellMgr->GetSpellInfo(SPELL_DH_VENGEFUL_RETREAT_FURY))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_DH_VENGEFUL_RETREAT , SPELL_DH_VENGEFUL_RETREAT_FURY });
         }
 
         void HandleOnHit(SpellEffIndex /*effIndex*/)
@@ -1772,9 +1750,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_DH_VENGEFUL_RETREAT_FURY))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_DH_VENGEFUL_RETREAT_FURY });
         }
 
         void Energize(AuraEffect const* /*aurEff*/)
@@ -1796,7 +1772,8 @@ public:
 
         void Register() override
         {
-            OnEffectPeriodic += AuraEffectPeriodicFn(spell_dh_vengeful_retreat_fury_refiller_AuraScript::Energize, EFFECT_0, SPELL_AURA_PERIODIC_ENERGIZE);
+            // 7.3.5 SPELL_AURA_PERIODIC_ENERGIZE -> 85
+            OnEffectPeriodic += AuraEffectPeriodicFn(spell_dh_vengeful_retreat_fury_refiller_AuraScript::Energize, EFFECT_0, 85);
         }
     };
 
@@ -1818,9 +1795,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_DH_VENGEFUL_RETREAT))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_DH_VENGEFUL_RETREAT });
         }
 
         void HandleOnHit(SpellEffIndex /*effIndex*/)
@@ -1855,10 +1830,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_DH_DEMON_SPIKES) ||
-                !sSpellMgr->GetSpellInfo(SPELL_DH_DEMON_SPIKES_BUFF))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_DH_DEMON_SPIKES , SPELL_DH_DEMON_SPIKES_BUFF });
         }
 
         void HandleOnHit(SpellEffIndex /*effIndex*/)
@@ -2087,9 +2059,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_DH_METAMORPHOSIS))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_DH_METAMORPHOSIS });
         }
 
         void CalcLeech(AuraEffect const* /*aurEff*/, int32& amount, bool& /*canBeRecalculated*/)
@@ -2128,9 +2098,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_DH_METAMORPHOSIS))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_DH_METAMORPHOSIS });
         }
 
         void CalcLeech(AuraEffect const* /*aurEff*/, int32& amount, bool& /*canBeRecalculated*/)
@@ -2167,12 +2135,12 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_DH_METAMORPHOSIS) ||
-                !sSpellMgr->GetSpellInfo(SPELL_DH_METAMORPHOSIS_BUFFS) ||
-                !sSpellMgr->GetSpellInfo(SPELL_DH_METAMORPHOSIS_LEAP) ||
-                !sSpellMgr->GetSpellInfo(SPELL_DH_METAMORPHOSIS_STUN))
-                return false;
-            return true;
+            return ValidateSpellInfo({
+                SPELL_DH_METAMORPHOSIS,
+                SPELL_DH_METAMORPHOSIS_BUFFS,
+                SPELL_DH_METAMORPHOSIS_LEAP,
+                SPELL_DH_METAMORPHOSIS_LEAP
+                });
         }
 
         void HandleDummy()
@@ -2279,10 +2247,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_DH_EYE_BEAM) ||
-                !sSpellMgr->GetSpellInfo(SPELL_DH_EYE_BEAM_DAMAGE))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_DH_EYE_BEAM , SPELL_DH_EYE_BEAM_DAMAGE });
         }
 
         void HandlePeriodic(AuraEffect const* /*aurEff*/)
@@ -2337,10 +2302,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_DH_EYE_BEAM) ||
-                !sSpellMgr->GetSpellInfo(SPELL_DH_EYE_BEAM_DAMAGE))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_DH_EYE_BEAM , SPELL_DH_EYE_BEAM_DAMAGE });
         }
 
         void PreventHit(SpellEffIndex /*effIndex*/)
@@ -2410,7 +2372,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        player->playerTalkClass->ClearMenus();
 
         std::vector<int32> spellIds
         {
@@ -2557,9 +2519,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_DH_GLIDE))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_DH_GLIDE });
         }
 
         SpellCastResult CheckCast()

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -40,25 +40,25 @@ class TC_GAME_API AuraEffect
         AuraEffect(Aura* base, uint32 effIndex, int32 *baseAmount, Unit* caster);
         Unit* GetCaster() const { return GetBase()->GetCaster(); }
         ObjectGuid GetCasterGUID() const { return GetBase()->GetCasterGUID(); }
-        Aura* GetBase() const { return m_base; }
+        Aura* GetBase() const { return _base; }
         void GetTargetList(std::list<Unit*> & targetList) const;
         void GetApplicationList(std::list<AuraApplication*> & applicationList) const;
 
-        SpellInfo const* GetSpellInfo() const { return m_spellInfo; }
-        uint32 GetId() const { return m_spellInfo->Id; }
-        uint32 GetEffIndex() const { return m_effIndex; }
-        int32 GetBaseAmount() const { return m_baseAmount; }
-        int32 GetPeriod() const { return m_period; }
+        SpellInfo const* GetSpellInfo() const { return _spellInfo; }
+        uint32 GetId() const { return _spellInfo->Id; }
+        uint32 GetEffIndex() const { return _effIndex; }
+        int32 GetBaseAmount() const { return _baseAmount; }
+        int32 GetPeriod() const { return _period; }
 
         int32 GetMiscValueB() const { return GetSpellEffectInfo()->MiscValueB; }
         int32 GetMiscValue() const { return GetSpellEffectInfo()->MiscValue; }
         AuraType GetAuraType() const { return (AuraType)GetSpellEffectInfo()->ApplyAuraName; }
-        int32 GetAmount() const { return m_amount; }
-        void SetAmount(int32 amount) { m_amount = amount; m_canBeRecalculated = false; }
-        void ModAmount(int32 amount) { SetAmount(m_amount + amount); }
+        int32 GetAmount() const { return _amount; }
+        void SetAmount(int32 amount) { _amount = amount; _canBeRecalculated = false; }
+        void ModAmount(int32 amount) { SetAmount(_amount + amount); }
 
-        int32 GetPeriodicTimer() const { return m_periodicTimer; }
-        void SetPeriodicTimer(int32 periodicTimer) { m_periodicTimer = periodicTimer; }
+        int32 GetPeriodicTimer() const { return _periodicTimer; }
+        void SetPeriodicTimer(int32 periodicTimer) { _periodicTimer = periodicTimer; }
 
         int32 CalculateAmount(Unit* caster);
         void CalculatePeriodic(Unit* caster, bool resetPeriodicTimer = true, bool load = false);
@@ -66,28 +66,28 @@ class TC_GAME_API AuraEffect
         void ChangeAmount(int32 newAmount, bool mark = true, bool onStackOrReapply = false);
         void RecalculateAmount() { if (!CanBeRecalculated()) return; ChangeAmount(CalculateAmount(GetCaster()), false); }
         void RecalculateAmount(Unit* caster) { if (!CanBeRecalculated()) return; ChangeAmount(CalculateAmount(caster), false); }
-        bool CanBeRecalculated() const { return m_canBeRecalculated; }
-        void SetCanBeRecalculated(bool val) { m_canBeRecalculated = val; }
+        bool CanBeRecalculated() const { return _canBeRecalculated; }
+        void SetCanBeRecalculated(bool val) { _canBeRecalculated = val; }
         void HandleEffect(AuraApplication * aurApp, uint8 mode, bool apply);
         void HandleEffect(Unit* target, uint8 mode, bool apply);
         void ApplySpellMod(Unit* target, bool apply);
 
-        void  SetDamage(int32 val) { m_damage = val; }
-        int32 GetDamage() const { return m_damage; }
-        void  SetCritChance(float val) { m_critChance = val; }
-        float GetCritChance() const { return m_critChance; }
-        void  SetDonePct(float val) { m_donePct = val; }
-        float GetDonePct() const { return m_donePct; }
+        void  SetDamage(int32 val) { _damage = val; }
+        int32 GetDamage() const { return _damage; }
+        void  SetCritChance(float val) { _critChance = val; }
+        float GetCritChance() const { return _critChance; }
+        void  SetDonePct(float val) { _donePct = val; }
+        float GetDonePct() const { return _donePct; }
 
         void Update(uint32 diff, Unit* caster);
         void UpdatePeriodic(Unit* caster);
 
-        uint32 GetTickNumber() const { return m_tickNumber; }
-        int32 GetTotalTicks() const { return m_period ? (GetBase()->GetMaxDuration() / m_period) : 1;}
-        void ResetPeriodic(bool resetPeriodicTimer = false) { if (resetPeriodicTimer) m_periodicTimer = m_period; m_tickNumber = 0;}
+        uint32 GetTickNumber() const { return _tickNumber; }
+        int32 GetTotalTicks() const { return _period ? (GetBase()->GetMaxDuration() / _period) : 1;}
+        void ResetPeriodic(bool resetPeriodicTimer = false) { if (resetPeriodicTimer) _periodicTimer = _period; _tickNumber = 0;}
 
-        bool IsPeriodic() const { return m_isPeriodic; }
-        void SetPeriodic(bool isPeriodic) { m_isPeriodic = isPeriodic; }
+        bool IsPeriodic() const { return _isPeriodic; }
+        void SetPeriodic(bool isPeriodic) { _isPeriodic = isPeriodic; }
         bool IsAffectingSpell(SpellInfo const* spell) const;
         bool HasSpellClassMask() const { return GetSpellEffectInfo()->SpellClassMask; }
 
@@ -107,26 +107,27 @@ class TC_GAME_API AuraEffect
         bool IsAreaAuraEffect() const;
 
     private:
-        Aura* const m_base;
+        Aura* const _base;
 
-        SpellInfo const* const m_spellInfo;
+        SpellInfo const* const _spellInfo;
         SpellEffectInfo const* _effectInfo;
-        int32 const m_baseAmount;
+        int32 const _baseAmount;
 
-        int32 m_amount;
-        int32 m_damage;
-        float m_critChance;
-        float m_donePct;
+        int32 _amount;
+        int32 _damage;
+        float _critChance;
+        // what percent [0, 1]
+        float _donePct;
 
-        SpellModifier* m_spellmod;
+        SpellModifier* _spellmod;
 
-        int32 m_periodicTimer;
-        int32 m_period;
-        uint32 m_tickNumber;
+        int32 _periodicTimer;
+        int32 _period;
+        uint32 _tickNumber;
 
-        uint8 const m_effIndex;
-        bool m_canBeRecalculated;
-        bool m_isPeriodic;
+        uint8 const _effIndex;
+        bool _canBeRecalculated;
+        bool _isPeriodic;
     private:
         bool CanPeriodicTickCrit(Unit const* caster) const;
 

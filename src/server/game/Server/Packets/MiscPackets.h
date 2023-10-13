@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -705,6 +705,7 @@ namespace WorldPackets
             Array<std::unique_ptr<CUFProfile>, MAX_CUF_PROFILES> CUFProfiles;
         };
 
+        // what is CUF =  Compact Unit Frames
         class LoadCUFProfiles final : public ServerPacket
         {
         public:
@@ -796,6 +797,7 @@ namespace WorldPackets
             bool EnablePVP = false;
         };
 
+        // 传家宝更新...
         class AccountHeirloomUpdate final : public ServerPacket
         {
         public:
@@ -1000,9 +1002,9 @@ namespace WorldPackets
 
             WorldPacket const* Write() override;
 
-            uint32 Type;
-            uint32 TimeLeft;
-            uint32 TotalTime;
+            uint32 Type;                // Timer type
+            uint32 TimeLeft;            // in seconds 
+            uint32 TotalTime;           // in seconds
         };
 
         class StartElapsedTimer final : public ServerPacket
@@ -1025,6 +1027,16 @@ namespace WorldPackets
 
             ObjectGuid Guid;
             uint32 RaceId;
+        };
+
+        // TODO: 这个消息是和BattlePay相关的消息，客户端请求消费所用的代币的信息
+        class RequestConsumptionConversionInfo final : public ClientPacket
+        {
+        public:
+            RequestConsumptionConversionInfo(WorldPacket&& packet) : ClientPacket(CMSG_REQUEST_CONSUMPTION_CONVERSION_INFO, std::move(packet)) { }
+
+            void Read() override;
+            uint32 ID = 0;
         };
     }
 }

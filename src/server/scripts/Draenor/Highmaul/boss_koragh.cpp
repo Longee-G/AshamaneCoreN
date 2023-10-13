@@ -138,7 +138,7 @@ class boss_koragh : public CreatureScript
                 m_Init          = false;
             }
 
-            EventMap m_Events;
+            EventMap _events;
             EventMap m_CosmeticEvents;
 
             InstanceScript* m_Instance;
@@ -160,7 +160,7 @@ class boss_koragh : public CreatureScript
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
 
                 _Reset();
 
@@ -290,7 +290,7 @@ class boss_koragh : public CreatureScript
                     me->SetAIAnimKitId(eAnimKit::AnimWaiting);
                 }
 
-                m_Events.Reset();
+                _events.Reset();
 
                 summons.DespawnAll();
                 me->DespawnCreaturesInArea(eHighmaulCreatures::VolatileAnomaly, 400);
@@ -411,7 +411,7 @@ class boss_koragh : public CreatureScript
 
                         me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
 
-                        m_Events.DelayEvent(eEvents::EventOverflowingEnergy, 20 * TimeConstants::IN_MILLISECONDS);
+                        _events.DelayEvent(eEvents::EventOverflowingEnergy, 20 * TimeConstants::IN_MILLISECONDS);
 
                         m_CosmeticEvents.CancelEvent(eCosmeticEvents::EventEndOfCharging);
                         m_CosmeticEvents.ScheduleEvent(eCosmeticEvents::EventEndOfCharging, 20 * TimeConstants::IN_MILLISECONDS);
@@ -461,16 +461,16 @@ class boss_koragh : public CreatureScript
                 /// This effect stacks. When the barrier expires, Breaker's Strength is removed.
                 m_CosmeticEvents.ScheduleEvent(eCosmeticEvents::EventBreakersStrength, 10 * TimeConstants::IN_MILLISECONDS);
 
-                m_Events.ScheduleEvent(eEvents::EventExpelMagicFire, 6 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventExpelMagicArcane, 30 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventExpelMagicFrost, 40 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventExpelMagicShadow, 55 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventSuppressionField, 15 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventOverflowingEnergy, (IsMythic() ? 21 : 36) * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventBerserk, 570 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventExpelMagicFire, 6 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventExpelMagicArcane, 30 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventExpelMagicFrost, 40 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventExpelMagicShadow, 55 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventSuppressionField, 15 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventOverflowingEnergy, (IsMythic() ? 21 : 36) * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventBerserk, 570 * TimeConstants::IN_MILLISECONDS);
 
                 if (IsMythic())
-                    m_Events.ScheduleEvent(eEvents::EventExpelMagicFel, 12 * TimeConstants::IN_MILLISECONDS);
+                    _events.ScheduleEvent(eEvents::EventExpelMagicFel, 12 * TimeConstants::IN_MILLISECONDS);
 
                 _EnterCombat();
             }
@@ -656,18 +656,18 @@ class boss_koragh : public CreatureScript
                 if (!UpdateVictim() || m_Charging)
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvents::EventExpelMagicFire:
                     {
                         me->CastSpell(me, eSpells::ExpelMagicFireDoT, false);
                         Talk(eTalks::ExpelMagic);
-                        m_Events.ScheduleEvent(eEvents::EventExpelMagicFire, 60 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventExpelMagicFire, 60 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     case eEvents::EventExpelMagicArcane:
@@ -675,7 +675,7 @@ class boss_koragh : public CreatureScript
                         if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
                             me->CastSpell(target, eSpells::ExpelMagicArcaneAura, false);
                         Talk(eTalks::ExpelMagic);
-                        m_Events.ScheduleEvent(eEvents::EventExpelMagicArcane, 30 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventExpelMagicArcane, 30 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     case eEvents::EventExpelMagicFrost:
@@ -691,14 +691,14 @@ class boss_koragh : public CreatureScript
                         }
 
                         Talk(eTalks::ExpelMagic);
-                        m_Events.ScheduleEvent(eEvents::EventExpelMagicFrost, 60 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventExpelMagicFrost, 60 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     case eEvents::EventExpelMagicShadow:
                     {
                         me->CastSpell(me, eSpells::ExpelMagicShadow, false);
                         Talk(eTalks::ExpelMagic);
-                        m_Events.ScheduleEvent(eEvents::EventExpelMagicShadow, 60 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventExpelMagicShadow, 60 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     case eEvents::EventSuppressionField:
@@ -717,7 +717,7 @@ class boss_koragh : public CreatureScript
                         }
 
                         Talk(eTalks::SuppressionField);
-                        m_Events.ScheduleEvent(eEvents::EventSuppressionField, 17 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventSuppressionField, 17 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     case eEvents::EventOverflowingEnergy:
@@ -725,7 +725,7 @@ class boss_koragh : public CreatureScript
                         for(uint32 i = 0; i < m_overflowingOrbsCount; i++)
                             me->CastSpell(me, eSpells::OverflowingEnergySpawn, true);
 
-                        m_Events.ScheduleEvent(eEvents::EventOverflowingEnergy, (IsMythic() ? 15 : 30 )* TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventOverflowingEnergy, (IsMythic() ? 15 : 30 )* TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     case eEvents::EventBerserk:
@@ -737,7 +737,7 @@ class boss_koragh : public CreatureScript
                     case EventExpelMagicFel:
                     {
                         me->CastSpell(me, eSpells::ExpelMagicFelDummy, true);
-                        m_Events.ScheduleEvent(eEvents::EventExpelMagicFel, 15.5 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventExpelMagicFel, 15.5 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     default:
@@ -782,19 +782,19 @@ class npc_highmaul_breaker_of_fel : public CreatureScript
                 m_Instance = creature->GetInstanceScript();
             }
 
-            EventMap m_Events;
+            EventMap _events;
             InstanceScript* m_Instance;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
 
                 me->CastSpell(me, eSpells::FelBreakerFelChannel, false);
             }
 
             void EnterCombat(Unit* /*attacker*/) override
             {
-                m_Events.ScheduleEvent(eEvent::EventFelNova, 12 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvent::EventFelNova, 12 * TimeConstants::IN_MILLISECONDS);
             }
 
             void JustDied(Unit* /*killer*/) override
@@ -814,16 +814,16 @@ class npc_highmaul_breaker_of_fel : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvent::EventFelNova:
                         me->CastSpell(me, eSpells::FelNova, false);
-                        m_Events.ScheduleEvent(eEvent::EventFelNova, 25 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvent::EventFelNova, 25 * TimeConstants::IN_MILLISECONDS);
                         break;
                     default:
                         break;
@@ -867,19 +867,19 @@ class npc_highmaul_breaker_of_fire : public CreatureScript
                 m_Instance = creature->GetInstanceScript();
             }
 
-            EventMap m_Events;
+            EventMap _events;
             InstanceScript* m_Instance;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
 
                 me->CastSpell(me, eSpells::FelBreakerFireChannel, false);
             }
 
             void EnterCombat(Unit* /*attacker*/) override
             {
-                m_Events.ScheduleEvent(eEvent::EventWildFlames, 4 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvent::EventWildFlames, 4 * TimeConstants::IN_MILLISECONDS);
             }
 
             void EnterEvadeMode(EvadeReason /*why*/) override
@@ -921,16 +921,16 @@ class npc_highmaul_breaker_of_fire : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvent::EventWildFlames:
                         me->CastSpell(me, eSpells::WildFlamesSearcher, false);
-                        m_Events.ScheduleEvent(eEvent::EventWildFlames, 11 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvent::EventWildFlames, 11 * TimeConstants::IN_MILLISECONDS);
                         break;
                     default:
                         break;
@@ -1027,19 +1027,19 @@ class npc_highmaul_breaker_of_frost : public CreatureScript
                 m_Instance = creature->GetInstanceScript();
             }
 
-            EventMap m_Events;
+            EventMap _events;
             InstanceScript* m_Instance;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
 
                 me->CastSpell(me, eSpells::FelBreakerFrostChannel, false);
             }
 
             void EnterCombat(Unit* /*attacker*/) override
             {
-                m_Events.ScheduleEvent(eEvent::EventFrozenCore, 4 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvent::EventFrozenCore, 4 * TimeConstants::IN_MILLISECONDS);
             }
 
             void JustDied(Unit* /*killer*/) override
@@ -1059,16 +1059,16 @@ class npc_highmaul_breaker_of_frost : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvent::EventFrozenCore:
                         me->CastSpell(me, eSpells::FrozenCore, false);
-                        m_Events.ScheduleEvent(eEvent::EventFrozenCore, 13 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvent::EventFrozenCore, 13 * TimeConstants::IN_MILLISECONDS);
                         break;
                     default:
                         break;

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -52,6 +52,7 @@
 #include "WardenWin.h"
 #include "World.h"
 #include "WorldSocket.h"
+#include "BattlePayMgr.h"
 
 namespace {
 
@@ -105,51 +106,52 @@ bool WorldSessionFilter::Process(WorldPacket* packet)
 /// WorldSession constructor
 WorldSession::WorldSession(uint32 id, std::string&& name, uint32 battlenetAccountId, std::shared_ptr<WorldSocket> sock, AccountTypes sec, uint8 expansion, time_t mute_time,
     std::string os, LocaleConstant locale, uint32 recruiter, bool isARecruiter, std::string&& battlenetAccountName):
-    m_muteTime(mute_time),
-    m_timeOutTime(0),
+    _muteTime(mute_time),
+    _timeOutTime(0), // use for socket connection idle check
     AntiDOS(this),
-    m_GUIDLow(UI64LIT(0)),
+    _lowGUID(UI64LIT(0)),
     _player(NULL),
     _security(sec),
     _accountId(id),
     _accountName(std::move(name)),
     _battlenetAccountId(battlenetAccountId),
     _battlenetAccountName(std::move(battlenetAccountName)),
-    m_accountExpansion(expansion),
-    m_expansion(std::min<uint8>(expansion, sWorld->getIntConfig(CONFIG_EXPANSION))),
+    _accountExpansion(expansion),
+    _expansion(std::min<uint8>(expansion, sWorld->getIntConfig(CONFIG_EXPANSION))),
     _os(os),
     _battlenetRequestToken(0),
     _warden(NULL),
     _logoutTime(0),
-    m_inQueue(false),
-    m_playerLogout(false),
-    m_playerRecentlyLogout(false),
-    m_playerSave(false),
-    m_sessionDbcLocale(sWorld->GetAvailableDbcLocale(locale)),
-    m_sessionDbLocaleIndex(locale),
-    m_latency(0),
-    m_clientTimeDelay(0),
+    _inQueue(false),
+    _isPlayerLogout(false),
+    _playerRecentlyLogout(false),
+    _isPlayerSave(false),
+    _sessionDbcLocale(sWorld->GetAvailableDbcLocale(locale)),
+    _sessionDbLocaleIndex(locale),
+    _latency(0),
+    _clientTimeDelay(0),
     _tutorialsChanged(false),
     _filterAddonMessages(false),
-    recruiterId(recruiter),
-    isRecruiter(isARecruiter),
+    _recruiterId(recruiter),
+    _isRecruiter(isARecruiter),
     _RBACData(NULL),
-    expireTime(60000), // 1 min after socket loss, session is deleted
-    forceExit(false),
-    m_currentBankerGUID(),
+    _expireTime(60000), // 1 min after socket loss, session is deleted
+    _isForceExit(false),
+    _currentBankerGUID(),
     _battlePetMgr(Trinity::make_unique<BattlePetMgr>(this)),
-    _collectionMgr(Trinity::make_unique<CollectionMgr>(this))
+    _collectionMgr(Trinity::make_unique<CollectionMgr>(this)),
+    _battlepayMgr(Trinity::make_unique<BattlepayManager>(this))
 {
     memset(_tutorials, 0, sizeof(_tutorials));
 
     if (sock)
     {
-        m_Address = sock->GetRemoteIpAddress().to_string();
+        _address = sock->GetRemoteIpAddress().to_string();
         ResetTimeOutTime();
         LoginDatabase.PExecute("UPDATE account SET online = 1 WHERE id = %u;", GetAccountId());     // One-time query
     }
 
-    m_Socket[CONNECTION_TYPE_REALM] = sock;
+    _socket[CONNECTION_TYPE_REALM] = sock;
     _instanceConnectKey.Raw = UI64LIT(0);
 }
 
@@ -163,10 +165,10 @@ WorldSession::~WorldSession()
     /// - If have unclosed socket, close it
     for (uint8 i = 0; i < 2; ++i)
     {
-        if (m_Socket[i])
+        if (_socket[i])
         {
-            m_Socket[i]->CloseSocket();
-            m_Socket[i].reset();
+            _socket[i]->CloseSocket();
+            _socket[i].reset();
         }
     }
 
@@ -183,8 +185,8 @@ WorldSession::~WorldSession()
 
 bool WorldSession::PlayerDisconnected() const
 {
-    return !(m_Socket[CONNECTION_TYPE_REALM] && m_Socket[CONNECTION_TYPE_REALM]->IsOpen() &&
-             m_Socket[CONNECTION_TYPE_INSTANCE] && m_Socket[CONNECTION_TYPE_INSTANCE]->IsOpen());
+    return !(_socket[CONNECTION_TYPE_REALM] && _socket[CONNECTION_TYPE_REALM]->IsOpen() &&
+             _socket[CONNECTION_TYPE_INSTANCE] && _socket[CONNECTION_TYPE_INSTANCE]->IsOpen());
 }
 
 std::string const & WorldSession::GetPlayerName() const
@@ -197,8 +199,8 @@ std::string WorldSession::GetPlayerInfo() const
     std::ostringstream ss;
 
     ss << "[Player: ";
-    if (!m_playerLoading.IsEmpty())
-        ss << "Logging in: " << m_playerLoading.ToString() << ", ";
+    if (!_playerLoading.IsEmpty())
+        ss << "Logging in: " << _playerLoading.ToString() << ", ";
     else if (_player)
         ss << _player->GetName() << ' ' << _player->GetGUID().ToString() << ", ";
 
@@ -244,7 +246,7 @@ void WorldSession::SendPacket(WorldPacket const* packet, bool forced /*= false*/
         conIdx = packet->GetConnection();
     }
 
-    if (!m_Socket[conIdx])
+    if (!_socket[conIdx])
     {
         TC_LOG_ERROR("network.opcode", "Prevented sending of %s to non existent socket %u to %s", GetOpcodeNameForLogging(static_cast<OpcodeServer>(packet->GetOpcode())).c_str(), conIdx, GetPlayerInfo().c_str());
         return;
@@ -296,7 +298,7 @@ void WorldSession::SendPacket(WorldPacket const* packet, bool forced /*= false*/
     sScriptMgr->OnPacketSend(this, *packet);
 
     TC_LOG_TRACE("network.opcode", "S->C: %s %s", GetPlayerInfo().c_str(), GetOpcodeNameForLogging(static_cast<OpcodeServer>(packet->GetOpcode())).c_str());
-    m_Socket[conIdx]->SendPacket(*packet);
+    _socket[conIdx]->SendPacket(*packet);
 }
 
 /// Add an incoming packet to the queue
@@ -332,7 +334,7 @@ bool WorldSession::Update(uint32 diff, PacketFilter& updater)
     ///- Before we process anything:
     /// If necessary, kick the player from the character select screen
     if (IsConnectionIdle())
-        m_Socket[CONNECTION_TYPE_REALM]->CloseSocket();
+        _socket[CONNECTION_TYPE_REALM]->CloseSocket();
 
     ///- Retrieve packets from the receive queue and call the appropriate handlers
     /// not process packets if socket already closed
@@ -343,7 +345,7 @@ bool WorldSession::Update(uint32 diff, PacketFilter& updater)
     uint32 processedPackets = 0;
     time_t currentTime = time(NULL);
 
-    while (m_Socket[CONNECTION_TYPE_REALM] && _recvQueue.next(packet, updater))
+    while (_socket[CONNECTION_TYPE_REALM] && _recvQueue.next(packet, updater))
     {
         ClientOpcodeHandler const* opHandle = opcodeTable[static_cast<OpcodeClient>(packet->GetOpcode())];
         try
@@ -356,7 +358,7 @@ bool WorldSession::Update(uint32 diff, PacketFilter& updater)
                         // skip STATUS_LOGGEDIN opcode unexpected errors if player logout sometime ago - this can be network lag delayed packets
                         //! If player didn't log out a while ago, it means packets are being sent while the server does not recognize
                         //! the client to be in world yet. We will re-add the packets to the bottom of the queue and process them later.
-                        if (!m_playerRecentlyLogout)
+                        if (!_playerRecentlyLogout)
                         {
                             requeuePackets.push_back(packet);
                             deletePacket = false;
@@ -372,7 +374,7 @@ bool WorldSession::Update(uint32 diff, PacketFilter& updater)
                     // lag can cause STATUS_LOGGEDIN opcodes to arrive after the player started a transfer
                     break;
                 case STATUS_LOGGEDIN_OR_RECENTLY_LOGGOUT:
-                    if (!_player && !m_playerRecentlyLogout && !m_playerLogout) // There's a short delay between _player = null and m_playerRecentlyLogout = true during logout
+                    if (!_player && !_playerRecentlyLogout && !_isPlayerLogout) // There's a short delay between _player = null and _playerRecentlyLogout = true during logout
                         LogUnexpectedOpcode(packet, "STATUS_LOGGEDIN_OR_RECENTLY_LOGGOUT",
                             "the player has not logged in yet and not recently logout");
                     else if (AntiDOS.EvaluateOpcode(*packet, currentTime))
@@ -395,7 +397,7 @@ bool WorldSession::Update(uint32 diff, PacketFilter& updater)
                     break;
                 case STATUS_AUTHED:
                     // prevent cheating with skip queue wait
-                    if (m_inQueue)
+                    if (_inQueue)
                     {
                         LogUnexpectedOpcode(packet, "STATUS_AUTHED", "the player not pass queue yet");
                         break;
@@ -404,7 +406,7 @@ bool WorldSession::Update(uint32 diff, PacketFilter& updater)
                     // some auth opcodes can be recieved before STATUS_LOGGEDIN_OR_RECENTLY_LOGGOUT opcodes
                     // however when we recieve CMSG_CHAR_ENUM we are surely no longer during the logout process.
                     if (packet->GetOpcode() == CMSG_ENUM_CHARACTERS)
-                        m_playerRecentlyLogout = false;
+                        _playerRecentlyLogout = false;
 
                     if (AntiDOS.EvaluateOpcode(*packet, currentTime))
                     {
@@ -452,7 +454,7 @@ bool WorldSession::Update(uint32 diff, PacketFilter& updater)
 
     _recvQueue.readd(requeuePackets.begin(), requeuePackets.end());
 
-    if (m_Socket[CONNECTION_TYPE_REALM] && m_Socket[CONNECTION_TYPE_REALM]->IsOpen() && _warden)
+    if (_socket[CONNECTION_TYPE_REALM] && _socket[CONNECTION_TYPE_REALM]->IsOpen() && _warden)
         _warden->Update();
 
     ProcessQueryCallbacks();
@@ -463,33 +465,33 @@ bool WorldSession::Update(uint32 diff, PacketFilter& updater)
     {
         time_t currTime = time(NULL);
         ///- If necessary, log the player out
-        if (ShouldLogOut(currTime) && m_playerLoading.IsEmpty())
+        if (ShouldLogOut(currTime) && _playerLoading.IsEmpty())
             LogoutPlayer(true);
 
-        if (m_Socket[CONNECTION_TYPE_REALM] && GetPlayer() && _warden)
+        if (_socket[CONNECTION_TYPE_REALM] && GetPlayer() && _warden)
             _warden->Update();
 
         ///- Cleanup socket pointer if need
-        if ((m_Socket[CONNECTION_TYPE_REALM] && !m_Socket[CONNECTION_TYPE_REALM]->IsOpen()) ||
-            (m_Socket[CONNECTION_TYPE_INSTANCE] && !m_Socket[CONNECTION_TYPE_INSTANCE]->IsOpen()))
+        if ((_socket[CONNECTION_TYPE_REALM] && !_socket[CONNECTION_TYPE_REALM]->IsOpen()) ||
+            (_socket[CONNECTION_TYPE_INSTANCE] && !_socket[CONNECTION_TYPE_INSTANCE]->IsOpen()))
         {
-            expireTime -= expireTime > diff ? diff : expireTime;
-            if (expireTime < diff || forceExit || !GetPlayer())
+            _expireTime -= _expireTime > diff ? diff : _expireTime;
+            if (_expireTime < diff || _isForceExit || !GetPlayer())
             {
-                if (m_Socket[CONNECTION_TYPE_REALM])
+                if (_socket[CONNECTION_TYPE_REALM])
                 {
-                    m_Socket[CONNECTION_TYPE_REALM]->CloseSocket();
-                    m_Socket[CONNECTION_TYPE_REALM].reset();
+                    _socket[CONNECTION_TYPE_REALM]->CloseSocket();
+                    _socket[CONNECTION_TYPE_REALM].reset();
                 }
-                if (m_Socket[CONNECTION_TYPE_INSTANCE])
+                if (_socket[CONNECTION_TYPE_INSTANCE])
                 {
-                    m_Socket[CONNECTION_TYPE_INSTANCE]->CloseSocket();
-                    m_Socket[CONNECTION_TYPE_INSTANCE].reset();
+                    _socket[CONNECTION_TYPE_INSTANCE]->CloseSocket();
+                    _socket[CONNECTION_TYPE_INSTANCE].reset();
                 }
             }
         }
 
-        if (!m_Socket[CONNECTION_TYPE_REALM])
+        if (!_socket[CONNECTION_TYPE_REALM])
             return false;                                       //Will remove this session from the world session map
     }
 
@@ -503,8 +505,8 @@ void WorldSession::LogoutPlayer(bool save)
     while (_player && _player->IsBeingTeleportedFar())
         HandleMoveWorldportAck();
 
-    m_playerLogout = true;
-    m_playerSave = save;
+    _isPlayerLogout = true;
+    _isPlayerSave = save;
 
     if (_player)
     {
@@ -537,8 +539,8 @@ void WorldSession::LogoutPlayer(bool save)
             bg->EventPlayerLoggedOut(_player);
 
         ///- Teleport to home if the player is in an invalid instance
-        if (!_player->m_InstanceValid && !_player->IsGameMaster())
-            _player->TeleportTo(_player->m_homebindMapId, _player->m_homebindX, _player->m_homebindY, _player->m_homebindZ, _player->GetOrientation());
+        if (!_player->_instanceValid && !_player->IsGameMaster())
+            _player->TeleportTo(_player->_homebindMapId, _player->_homebindX, _player->_homebindY, _player->_homebindZ, _player->GetOrientation());
 
         sOutdoorPvPMgr->HandlePlayerLeaveZone(_player, _player->GetZoneId());
 
@@ -590,7 +592,7 @@ void WorldSession::LogoutPlayer(bool save)
 
         // remove player from the group if he is:
         // a) in group; b) not in raid group; c) logging out normally (not being kicked or disconnected)
-        if (_player->GetGroup() && !_player->GetGroup()->isRaidGroup() && m_Socket[CONNECTION_TYPE_REALM])
+        if (_player->GetGroup() && !_player->GetGroup()->isRaidGroup() && _socket[CONNECTION_TYPE_REALM])
             _player->RemoveFromGroup();
 
         //! Send update to group and reset stored max enchanting level
@@ -633,15 +635,15 @@ void WorldSession::LogoutPlayer(bool save)
         CharacterDatabase.Execute(stmt);
     }
 
-    if (m_Socket[CONNECTION_TYPE_INSTANCE])
+    if (_socket[CONNECTION_TYPE_INSTANCE])
     {
-        m_Socket[CONNECTION_TYPE_INSTANCE]->CloseSocket();
-        m_Socket[CONNECTION_TYPE_INSTANCE].reset();
+        _socket[CONNECTION_TYPE_INSTANCE]->CloseSocket();
+        _socket[CONNECTION_TYPE_INSTANCE].reset();
     }
 
-    m_playerLogout = false;
-    m_playerSave = false;
-    m_playerRecentlyLogout = true;
+    _isPlayerLogout = false;
+    _isPlayerSave = false;
+    _playerRecentlyLogout = true;
     SetLogoutStartTime(0);
 }
 
@@ -650,10 +652,10 @@ void WorldSession::KickPlayer()
 {
     for (uint8 i = 0; i < 2; ++i)
     {
-        if (m_Socket[i])
+        if (_socket[i])
         {
-            m_Socket[i]->CloseSocket();
-            forceExit = true;
+            _socket[i]->CloseSocket();
+            _isForceExit = true;
         }
     }
 }
@@ -696,7 +698,7 @@ char const* WorldSession::GetTrinityString(uint32 entry) const
 
 void WorldSession::ResetTimeOutTime()
 {
-    m_timeOutTime = int32(sWorld->getIntConfig(CONFIG_SOCKET_TIMEOUTTIME));
+    _timeOutTime = int32(sWorld->getIntConfig(CONFIG_SOCKET_TIMEOUTTIME));
 }
 
 void WorldSession::Handle_NULL(WorldPackets::Null& null)
@@ -785,11 +787,11 @@ void WorldSession::SetAccountData(AccountDataType type, uint32 time, std::string
     else
     {
         // _player can be NULL and packet received after logout but m_GUID still store correct guid
-        if (!m_GUIDLow)
+        if (!_lowGUID)
             return;
 
         PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_REP_PLAYER_ACCOUNT_DATA);
-        stmt->setUInt64(0, m_GUIDLow);
+        stmt->setUInt64(0, _lowGUID);
         stmt->setUInt8(1, type);
         stmt->setUInt32(2, time);
         stmt->setString(3, data);
@@ -870,9 +872,9 @@ void WorldSession::SetPlayer(Player* player)
 {
     _player = player;
 
-    // set m_GUID that can be used while player loggined and later until m_playerRecentlyLogout not reset
+    // set m_GUID that can be used while player loggined and later until _playerRecentlyLogout not reset
     if (_player)
-        m_GUIDLow = _player->GetGUID().GetCounter();
+        _lowGUID = _player->GetGUID().GetCounter();
 }
 
 void WorldSession::ProcessQueryCallbacks()
@@ -1049,13 +1051,15 @@ void WorldSession::InitializeSessionCallback(SQLQueryHolder* realmHolder, SQLQue
     _collectionMgr->LoadAccountMounts(holder->GetPreparedResult(AccountInfoQueryHolder::MOUNTS));
     _collectionMgr->LoadAccountItemAppearances(holder->GetPreparedResult(AccountInfoQueryHolder::ITEM_APPEARANCES), holder->GetPreparedResult(AccountInfoQueryHolder::ITEM_FAVORITE_APPEARANCES));
 
-    if (!m_inQueue)
+    if (!_inQueue)
         SendAuthResponse(ERROR_OK, false);
     else
         SendAuthWaitQue(0);
 
     SetInQueue(false);
     ResetTimeOutTime();
+
+    // 客户端请求进入游戏时发送信息给客户端....
 
     SendSetTimeZoneInformation();
     SendFeatureSystemStatusGlueScreen();

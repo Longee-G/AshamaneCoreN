@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2005 - 2011 MaNGOS <http://www.getmangos.org/>
  * Copyright (C) 2008 - 2011 TrinityCore <http://www.trinitycore.org/>
@@ -385,7 +385,7 @@ class npc_halfus_dragon : public CreatureScript
             if (creature->HasAura(SPELL_UNRESPONSIVE))
                 return false;
 
-            player->PlayerTalkClass->ClearMenus();
+            player->playerTalkClass->ClearMenus();
             CloseGossipMenuFor(player);
 
             creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);

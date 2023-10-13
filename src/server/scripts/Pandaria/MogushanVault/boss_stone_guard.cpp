@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -1531,12 +1531,13 @@ void AddSC_boss_stone_guard()
 {
     new boss_stone_guard_controler();   // 60089
     new boss_generic_guardian();        // 59915 - 60043 - 60047 - 50051
-    new mob_cobalt_mine();              // 65803
-    new mob_living_crystal();           // 60304 - 60306 - 60307 - 60308
-    new mob_tiling_creature();          // 62026
-    new spell_petrification();          // 115852 - 116006 - 116036 - 116057
-    new spell_jasper_chains();          // 130395
-    new spell_jasper_chains_damage();   // 130404
-    new spell_energized_tiles();        // 116541
-    RegisterAreaTriggerAI(at_amethyst_pool);             ///< 116235
+    //new mob_cobalt_mine();              // 65803
+    //new mob_living_crystal();           // 60304 - 60306 - 60307 - 60308
+    //new mob_tiling_creature();          // 62026
+    //new spell_petrification();          // 115852 - 116006 - 116036 - 116057
+    //new spell_jasper_chains();          // 130395
+    //new spell_jasper_chains_damage();   // 130404
+    //new spell_energized_tiles();        // 116541
+
+    //RegisterAreaTriggerAI(at_amethyst_pool);             ///< 116235
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -214,7 +214,7 @@ class npc_whack_gnoll_mola : public CreatureScript
             if (player->GetQuestStatus(QUEST_WHACK_A_GNOLL) == QUEST_STATUS_INCOMPLETE)
                 AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Je souhaite jouer a Cogne-Gnoll !", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->PlayerTalkClass->SendGossipMenu(player->GetGossipTextId(creature), creature->GetGUID());
+            player->playerTalkClass->SendGossipMenu(player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 

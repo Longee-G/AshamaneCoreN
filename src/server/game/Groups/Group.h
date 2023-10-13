@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -440,7 +440,7 @@ class TC_GAME_API Group
         MemberSlotList      m_memberSlots;
         GroupRefManager     m_memberMgr;
         InvitesList         m_invitees;
-        ObjectGuid          m_leaderGuid;
+        ObjectGuid          _leaderGuid;
         std::string         m_leaderName;
         GroupFlags          m_groupFlags;
         GroupCategory       m_groupCategory;

@@ -40,6 +40,7 @@ namespace WorldPackets
     }
 }
 
+// lfg -- looking for group
 namespace lfg
 {
 

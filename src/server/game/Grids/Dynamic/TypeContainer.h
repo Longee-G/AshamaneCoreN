@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -52,7 +52,7 @@ template<class H, class T>
 struct ContainerMapList<TypeList<H, T> >
 {
     ContainerMapList<H> _elements;
-    ContainerMapList<T> _TailElements;
+    ContainerMapList<T> _tailElements;
 };
 
 template<class OBJECT, class KEY_TYPE>
@@ -70,7 +70,7 @@ template<class H, class T, class KEY_TYPE>
 struct ContainerUnorderedMap<TypeList<H, T>, KEY_TYPE>
 {
     ContainerUnorderedMap<H, KEY_TYPE> _elements;
-    ContainerUnorderedMap<T, KEY_TYPE> _TailElements;
+    ContainerUnorderedMap<T, KEY_TYPE> _tailElements;
 };
 
 #include "TypeContainerFunctions.h"

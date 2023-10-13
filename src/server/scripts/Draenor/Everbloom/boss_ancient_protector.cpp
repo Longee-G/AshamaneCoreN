@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -472,6 +472,7 @@ public:
     }
 };
 
+// 168375, 168376 
 class aura_grasping_vine : public SpellScriptLoader
 {
 public:
@@ -489,7 +490,8 @@ public:
 
         void Register() override
         {
-            OnEffectRemove += AuraEffectRemoveFn(aura_grasping_vine_AuraScript::OnRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+            uint32 aura = (m_scriptSpellId == 168376) ? 4 : 0;
+            OnEffectRemove += AuraEffectRemoveFn(aura_grasping_vine_AuraScript::OnRemove, EFFECT_0, aura, AURA_EFFECT_HANDLE_REAL);
         }
     };
 

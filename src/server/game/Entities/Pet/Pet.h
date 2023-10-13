@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -64,10 +64,10 @@ class TC_GAME_API Pet : public Guardian
 
         void SetDisplayId(uint32 modelId) override;
 
-        PetType getPetType() const { return m_petType; }
-        void setPetType(PetType type) { m_petType = type; }
+        PetType getPetType() const { return _petType; }
+        void setPetType(PetType type) { _petType = type; }
         bool isControlled() const { return getPetType() == SUMMON_PET || getPetType() == HUNTER_PET; }
-        bool isTemporarySummoned() const { return m_duration > 0; }
+        bool isTemporarySummoned() const { return _duration > 0; }
 
         bool IsPermanentPetFor(Player* owner) const;        // pet have tab in character windows and set UNIT_FIELD_PETNUMBER
 
@@ -76,7 +76,7 @@ class TC_GAME_API Pet : public Guardian
         bool CreateBaseAtCreatureInfo(CreatureTemplate const* cinfo, Unit* owner);
         bool CreateBaseAtTamed(CreatureTemplate const* cinfo, Map* map);
         bool LoadPetData(Player* owner, uint32 petentry = 0, uint32 petnumber = 0, bool current = false);
-        bool IsLoading() const override { return m_loading;}
+        bool IsLoading() const override { return _isLoading;}
         void SavePetToDB(PetSaveMode mode);
         void Remove(PetSaveMode mode, bool returnreagent = false);
         static void DeleteFromDB(uint32 guidlow);
@@ -84,13 +84,13 @@ class TC_GAME_API Pet : public Guardian
         void setDeathState(DeathState s) override;                   // overwrite virtual Creature::setDeathState and Unit::setDeathState
         void Update(uint32 diff) override;                           // overwrite virtual Creature::Update and Unit::Update
 
-        uint8 GetPetAutoSpellSize() const override { return uint8(m_autospells.size()); }
+        uint8 GetPetAutoSpellSize() const override { return uint8(_autoSpells.size()); }
         uint32 GetPetAutoSpellOnPos(uint8 pos) const override
         {
-            if (pos >= m_autospells.size())
+            if (pos >= _autoSpells.size())
                 return 0;
             else
-                return m_autospells[pos];
+                return _autoSpells[pos];
         }
 
         void GivePetXP(uint32 xp);
@@ -98,8 +98,8 @@ class TC_GAME_API Pet : public Guardian
         void SynchronizeLevelWithOwner();
         bool HaveInDiet(ItemTemplate const* item) const;
         uint32 GetCurrentFoodBenefitLevel(uint32 itemlevel) const;
-        void SetDuration(int32 dur) { m_duration = dur; }
-        int32 GetDuration() const { return m_duration; }
+        void SetDuration(int32 dur) { _duration = dur; }
+        int32 GetDuration() const { return _duration; }
 
         /*
         bool UpdateStats(Stats stat);
@@ -138,51 +138,54 @@ class TC_GAME_API Pet : public Guardian
         void CleanupActionBar();
         std::string GenerateActionBarData() const;
 
-        PetSpellMap     m_spells;
-        AutoSpellList   m_autospells;
+        PetSpellMap     _spells;
+        AutoSpellList   _autoSpells;
 
         void InitPetCreateSpells();
 
-        uint16 GetSpecialization() { return m_petSpecialization; }
+        uint16 GetSpecialization() { return _petSpec; }
         void SetSpecialization(uint16 spec);
         void LearnSpecializationSpells();
         void RemoveSpecializationSpells(bool clearActionBar);
 
-        uint32 GetGroupUpdateFlag() const { return m_groupUpdateMask; }
+        uint32 GetGroupUpdateFlag() const { return _groupUpdateMask; }
         void SetGroupUpdateFlag(uint32 flag);
         void ResetGroupUpdateFlag();
 
-        DeclinedName const* GetDeclinedNames() const { return m_declinedname; }
-
-        bool    m_removed;                                  // prevent overwrite pet state in DB at next Pet::Update if pet already removed(saved)
+        DeclinedName const* GetDeclinedNames() const { return _declinedName; }
+        // prevent overwrite pet state in DB at next Pet::Update if pet already removed(saved)
+        bool    _isRemoved;
 
         Player* GetOwner() const;
 
-        uint32 GetSlot() { return m_petSlot; }
-        void SetSlot(uint32 newPetSlot) { m_petSlot = newPetSlot; } // use only together with DB update
+        uint32 GetSlot() { return _petSlot; }
+        void SetSlot(uint32 newPetSlot) { _petSlot = newPetSlot; } // use only together with DB update
 
-        bool IsActive() { return m_petActive; }
-        void SetActive(bool active) { m_petActive = active; }
+        bool IsActive() { return _isPetActive; }
+        void SetActive(bool active) { _isPetActive = active; }
 
     protected:
-        PetType m_petType;
-        int32   m_duration;                                 // time until unsummon (used mostly for summoned guardians and not used for controlled pets)
-        bool    m_loading;
-        uint32  m_focusRegenTimer;
-        uint32  m_groupUpdateMask;
+        PetType _petType;
+        // time until unsummon (used mostly for summoned guardians and not used for controlled pets)
+        int32   _duration;                                 
+        bool    _isLoading;
+        uint32  _focusRegenTimer;
+        uint32  _groupUpdateMask;
 
-        DeclinedName *m_declinedname;
-
-        uint16 m_petSpecialization;
-        uint32 m_petSlot;
-        bool m_petActive = false;
+        DeclinedName *_declinedName;
+        // pet specialization id
+        uint16 _petSpec;
+        uint32 _petSlot;
+        bool _isPetActive = false;
 
     private:
-        void SaveToDB(uint32, uint64) override              // override of Creature::SaveToDB     - must not be called
+        // override of Creature::SaveToDB     - must not be called
+        void SaveToDB(uint32, uint64) override              
         {
             ABORT();
         }
-        void DeleteFromDB() override                                 // override of Creature::DeleteFromDB - must not be called
+        // override of Creature::DeleteFromDB - must not be called
+        void DeleteFromDB() override                                
         {
             ABORT();
         }

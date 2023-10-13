@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -74,22 +74,22 @@ Map::~Map()
 
     sScriptMgr->OnDestroyMap(this);
 
-    while (!i_worldObjects.empty())
+    while (!_worldObjects.empty())
     {
-        WorldObject* obj = *i_worldObjects.begin();
+        WorldObject* obj = *_worldObjects.begin();
         ASSERT(obj->IsWorldObject());
         //ASSERT(obj->GetTypeId() == TYPEID_CORPSE);
         obj->RemoveFromWorld();
         obj->ResetMap();
     }
 
-    if (!m_scriptSchedule.empty())
-        sMapMgr->DecreaseScheduledScriptCount(m_scriptSchedule.size());
+    if (!_scriptSchedule.empty())
+        sMapMgr->DecreaseScheduledScriptCount(_scriptSchedule.size());
 
-    if (m_parentMap == this)
-        delete m_childTerrainMaps;
+    if (_parentMap == this)
+        delete _childTerrainMaps;
 
-    MMAP::MMapFactory::createOrGetMMapManager()->unloadMapInstance(GetId(), i_InstanceId);
+    MMAP::MMapFactory::createOrGetMMapManager()->unloadMapInstance(GetId(), _instanceId);
 }
 
 bool Map::ExistMap(uint32 mapid, int gx, int gy)
@@ -153,6 +153,8 @@ void Map::LoadMMap(int gx, int gy)
         TC_LOG_ERROR("mmaps", "Could not load MMAP name:%s, id:%d, x:%d, y:%d (mmap rep.: x:%d, y:%d)", GetMapName(), GetId(), gx, gy, gx, gy);
 }
 
+// 加载的是地图的高度信息？怎么将grid坐标转换成相应的地图文件索引？
+// 地图提供了接口，可以只加载地图的其中一个grid的信息...
 void Map::LoadVMap(int gx, int gy)
 {
     if (!VMAP::VMapFactory::createOrGetVMapManager()->isMapLoadingEnabled())
@@ -172,20 +174,21 @@ void Map::LoadVMap(int gx, int gy)
             break;
     }
 }
-
+// gx - grid x  or tile x 
 void Map::LoadMap(int gx, int gy)
 {
     LoadMapImpl(this, gx, gy);
-    for (Map* childBaseMap : *m_childTerrainMaps)
+    for (Map* childBaseMap : *_childTerrainMaps)
         childBaseMap->LoadMap(gx, gy);
 }
 
+// map加载内部函数... 
 void Map::LoadMapImpl(Map* map, int gx, int gy)
 {
     if (map->GridMaps[gx][gy])
         return;
 
-    Map* parent = map->m_parentMap;
+    Map* parent = map->_parentMap;
     ++parent->GridMapReference[gx][gy];
 
     // load grid map for base map
@@ -212,7 +215,7 @@ void Map::LoadMapImpl(Map* map, int gx, int gy)
 
 void Map::UnloadMap(int gx, int gy)
 {
-    for (Map* childBaseMap : *m_childTerrainMaps)
+    for (Map* childBaseMap : *_childTerrainMaps)
         childBaseMap->UnloadMap(gx, gy);
 
     UnloadMapImpl(this, gx, gy);
@@ -222,7 +225,7 @@ void Map::UnloadMapImpl(Map* map, int gx, int gy)
 {
     if (map->GridMaps[gx][gy])
     {
-        Map* parent = map->m_parentMap;
+        Map* parent = map->_parentMap;
         if (!--parent->GridMapReference[gx][gy])
         {
             parent->GridMaps[gx][gy]->unloadData();
@@ -234,6 +237,8 @@ void Map::UnloadMapImpl(Map* map, int gx, int gy)
     map->GridMaps[gx][gy] = nullptr;
 }
 
+// gx -- grid x
+// gy -- grid y
 void Map::LoadMapAndVMap(int gx, int gy)
 {
     LoadMap(gx, gy);
@@ -264,26 +269,30 @@ void Map::DeleteStateMachine()
     delete si_GridStates[GRID_STATE_REMOVAL];
 }
 
-Map::Map(uint32 id, time_t expiry, uint32 InstanceId, uint8 SpawnMode, Map* _parent):
-_creatureToMoveLock(false), _gameObjectsToMoveLock(false), _dynamicObjectsToMoveLock(false), _areaTriggersToMoveLock(false),
-i_mapEntry(sMapStore.LookupEntry(id)), i_spawnMode(SpawnMode), i_InstanceId(InstanceId),
-m_unloadTimer(0), m_VisibleDistance(DEFAULT_VISIBILITY_DISTANCE),
-m_VisibilityNotifyPeriod(DEFAULT_VISIBILITY_NOTIFY_PERIOD),
-m_activeNonPlayersIter(m_activeNonPlayers.end()), _transportsUpdateIter(_transports.end()),
-i_gridExpiry(expiry),
-i_scriptLock(false), _defaultLight(DB2Manager::GetDefaultMapLight(id))
-{
-    if (_parent)
+
+// 在数据表中，地图是分成3级的，Map->Zone->Area
+// 但是代码中class Map可以是上述3级地图中的任意一种...
+// Map被设计成只有在有player进入的时候才加载到内存中，并且在所用的player从当前的map中离开的时候进行unload处理...
+Map::Map(uint32 id, time_t expiry, uint32 InstanceId, uint8 SpawnMode, Map* parentMap) :
+    _creatureToMoveLock(false), _gameObjectsToMoveLock(false), _dynamicObjectsToMoveLock(false), _areaTriggersToMoveLock(false),
+    _mapEntry(sMapStore.LookupEntry(id)), _spawnMode(SpawnMode), _instanceId(InstanceId),
+    _unloadTimer(0), _visibleDistance(DEFAULT_VISIBILITY_DISTANCE),
+    _visibilityNotifyPeriod(DEFAULT_VISIBILITY_NOTIFY_PERIOD),
+    _activeNonPlayersIter(_activeNonPlayers.end()), _transportsUpdateIter(_transports.end()),
+    _gridExpiry(expiry),
+    _scriptLock(false), _defaultLight(DB2Manager::GetDefaultMapLight(id))
+{    
+    if (parentMap)
     {
-        m_parentMap = _parent;
-        m_parentTerrainMap = m_parentMap->m_parentTerrainMap;
-        m_childTerrainMaps = m_parentMap->m_childTerrainMaps;
+        _parentMap = parentMap;
+        _parentTerrainMap = _parentMap->_parentTerrainMap;
+        _childTerrainMaps = _parentMap->_childTerrainMaps;
     }
     else
     {
-        m_parentMap = this;
-        m_parentTerrainMap = this;
-        m_childTerrainMaps = new std::vector<Map*>();
+        _parentMap = this;
+        _parentTerrainMap = this;
+        _childTerrainMaps = new std::vector<Map*>();
     }
 
     for (uint32 x = 0; x < MAX_NUMBER_OF_GRIDS; ++x)
@@ -304,7 +313,7 @@ i_scriptLock(false), _defaultLight(DB2Manager::GetDefaultMapLight(id))
 
     GetGuidSequenceGenerator<HighGuid::Transport>().Set(sObjectMgr->GetGenerator<HighGuid::Transport>().GetNextAfterMaxUsed());
 
-    MMAP::MMapFactory::createOrGetMMapManager()->loadMapInstance(sWorld->GetDataPath(), GetId(), i_InstanceId);
+    MMAP::MMapFactory::createOrGetMMapManager()->loadMapInstance(sWorld->GetDataPath(), GetId(), _instanceId);
 
     sScriptMgr->OnCreateMap(this);
 }
@@ -312,8 +321,8 @@ i_scriptLock(false), _defaultLight(DB2Manager::GetDefaultMapLight(id))
 void Map::InitVisibilityDistance()
 {
     //init visibility for continents
-    m_VisibleDistance = World::GetMaxVisibleDistanceOnContinents();
-    m_VisibilityNotifyPeriod = World::GetVisibilityNotifyPeriodOnContinents();
+    _visibleDistance = World::GetMaxVisibleDistanceOnContinents();
+    _visibilityNotifyPeriod = World::GetVisibilityNotifyPeriodOnContinents();
 }
 
 // Template specialization of utility methods
@@ -430,7 +439,7 @@ void Map::SwitchGridContainers(Creature* obj, bool on)
         RemoveWorldObject(obj);
     }
 
-    obj->m_isTempWorldObject = on;
+    obj->_isTempWorldObject = on;
 }
 
 template<>
@@ -510,9 +519,9 @@ void Map::EnsureGridCreated_i(const GridCoord &p)
 {
     if (!getNGrid(p.x_coord, p.y_coord))
     {
-        TC_LOG_DEBUG("maps", "Creating grid[%u, %u] for map %u instance %u", p.x_coord, p.y_coord, GetId(), i_InstanceId);
+        TC_LOG_DEBUG("maps", "Creating grid[%u, %u] for map %u instance %u", p.x_coord, p.y_coord, GetId(), _instanceId);
 
-        NGridType* ngrid = new NGridType(p.x_coord*MAX_NUMBER_OF_GRIDS + p.y_coord, p.x_coord, p.y_coord, i_gridExpiry, sWorld->getBoolConfig(CONFIG_GRID_UNLOAD));
+        NGridType* ngrid = new NGridType(p.x_coord*MAX_NUMBER_OF_GRIDS + p.y_coord, p.x_coord, p.y_coord, _gridExpiry, sWorld->getBoolConfig(CONFIG_GRID_UNLOAD));
         setNGrid(ngrid, p.x_coord, p.y_coord);
 
         // build a linkage between this map and NGridType
@@ -525,7 +534,7 @@ void Map::EnsureGridCreated_i(const GridCoord &p)
         int gy = (MAX_NUMBER_OF_GRIDS - 1) - p.y_coord;
 
         if (!GridMaps[gx][gy])
-            m_parentTerrainMap->LoadMapAndVMap(gx, gy);
+            _parentTerrainMap->LoadMapAndVMap(gx, gy);
     }
 }
 
@@ -545,6 +554,8 @@ void Map::EnsureGridLoadedForActiveObject(const Cell &cell, WorldObject* object)
     }
 }
 
+// 服务器内存中的地图数据是被分成一个个小网格（grid）的，每个grid不会在服务器一开始启动的时候就加载
+// -- 应该是等到有player进入的时候才进行加载... 那么在相应位置的的npc不需要进行更新吗？
 //Create NGrid and load the object data in it
 bool Map::EnsureGridLoaded(const Cell &cell)
 {
@@ -554,7 +565,7 @@ bool Map::EnsureGridLoaded(const Cell &cell)
     ASSERT(grid != NULL);
     if (!isGridObjectDataLoaded(cell.GridX(), cell.GridY()))
     {
-        TC_LOG_DEBUG("maps", "Loading grid[%u, %u] for map %u instance %u", cell.GridX(), cell.GridY(), GetId(), i_InstanceId);
+        TC_LOG_DEBUG("maps", "Loading grid[%u, %u] for map %u instance %u", cell.GridX(), cell.GridY(), GetId(), _instanceId);
 
         setGridObjectDataLoaded(true, cell.GridX(), cell.GridY());
 
@@ -577,7 +588,7 @@ void Map::LoadGrid(float x, float y)
 {
     EnsureGridLoaded(Cell(x, y));
 }
-
+// 将player添加到当前地图...
 bool Map::AddPlayerToMap(Player* player, bool initPlayer /*= true*/)
 {
     CellCoord cellCoord = Trinity::ComputeCellCoord(player->GetPositionX(), player->GetPositionY());
@@ -722,6 +733,8 @@ void Map::VisitNearbyCellsOf(WorldObject* obj, TypeContainerVisitor<Trinity::Obj
     if (!obj->IsPositionValid())
         return;
 
+    // 获取obj感知的区域？
+
     // Update mobs/objects in ALL visible cells around object!
     CellArea area = Cell::CalculateCellArea(obj->GetPositionX(), obj->GetPositionY(), obj->GetGridActivationRange());
 
@@ -749,9 +762,9 @@ void Map::Update(const uint32 t_diff)
 {
     _dynamicTree.update(t_diff);
     /// update worldsessions for existing players
-    for (m_mapRefIter = m_mapRefManager.begin(); m_mapRefIter != m_mapRefManager.end(); ++m_mapRefIter)
+    for (_mapRefIter = _mapRefManager.begin(); _mapRefIter != _mapRefManager.end(); ++_mapRefIter)
     {
-        Player* player = m_mapRefIter->GetSource();
+        Player* player = _mapRefIter->GetSource();
         if (player && player->IsInWorld())
         {
             //player->Update(t_diff);
@@ -769,11 +782,14 @@ void Map::Update(const uint32 t_diff)
     // for pets
     TypeContainerVisitor<Trinity::ObjectUpdater, WorldTypeMapContainer > world_object_update(updater);
 
+
+    // 遍历此Map上的所有player，将Map上的object更新给Player...
+
     // the player iterator is stored in the map object
     // to make sure calls to Map::Remove don't invalidate it
-    for (m_mapRefIter = m_mapRefManager.begin(); m_mapRefIter != m_mapRefManager.end(); ++m_mapRefIter)
+    for (_mapRefIter = _mapRefManager.begin(); _mapRefIter != _mapRefManager.end(); ++_mapRefIter)
     {
-        Player* player = m_mapRefIter->GetSource();
+        Player* player = _mapRefIter->GetSource();
 
         if (!player || !player->IsInWorld())
             continue;
@@ -796,12 +812,18 @@ void Map::Update(const uint32 t_diff)
         if (player->IsInCombat())
         {
             std::vector<Creature*> updateList;
+
+            // 当player在战斗中，获取player的仇恨列表...对仇恨列表中的obj进行更新..
             HostileReference* ref = player->getHostileRefManager().getFirst();
 
             while (ref)
             {
+                // 为什么只更新不在player视线范围内的本地图仇恨对象呢？
+                // 是不是写反了，应该更新的是在视线范围内的仇恨对象才对吧？
+                // 修改成视线内 in sight 试试
+
                 if (Unit* unit = ref->GetSource()->GetOwner())
-                    if (unit->ToCreature() && unit->GetMapId() == player->GetMapId() && !unit->IsWithinDistInMap(player, GetVisibilityRange(), false))
+                    if (unit->ToCreature() && unit->GetMapId() == player->GetMapId() && unit->IsWithinDistInMap(player, GetVisibilityRange(), false))
                         updateList.push_back(unit->ToCreature());
 
                 ref = ref->next();
@@ -814,10 +836,10 @@ void Map::Update(const uint32 t_diff)
     }
 
     // non-player active objects, increasing iterator in the loop in case of object removal
-    for (m_activeNonPlayersIter = m_activeNonPlayers.begin(); m_activeNonPlayersIter != m_activeNonPlayers.end();)
+    for (_activeNonPlayersIter = _activeNonPlayers.begin(); _activeNonPlayersIter != _activeNonPlayers.end();)
     {
-        WorldObject* obj = *m_activeNonPlayersIter;
-        ++m_activeNonPlayersIter;
+        WorldObject* obj = *_activeNonPlayersIter;
+        ++_activeNonPlayersIter;
 
         if (!obj || !obj->IsInWorld())
             continue;
@@ -839,11 +861,11 @@ void Map::Update(const uint32 t_diff)
     SendObjectUpdates();
 
     ///- Process necessary scripts
-    if (!m_scriptSchedule.empty())
+    if (!_scriptSchedule.empty())
     {
-        i_scriptLock = true;
+        _scriptLock = true;
         ScriptsProcess();
-        i_scriptLock = false;
+        _scriptLock = false;
     }
 
     if (_weatherUpdateTimer.Passed())
@@ -859,7 +881,7 @@ void Map::Update(const uint32 t_diff)
     MoveAllGameObjectsInMoveList();
     MoveAllAreaTriggersInMoveList();
 
-    if (!m_mapRefManager.isEmpty() || !m_activeNonPlayers.empty())
+    if (!_mapRefManager.isEmpty() || !_activeNonPlayers.empty())
         ProcessRelocationNotifies(t_diff);
 
     sScriptMgr->OnMapUpdate(this, t_diff);
@@ -929,7 +951,7 @@ void Map::ProcessRelocationNotifies(const uint32 diff)
         if (!grid->getGridInfoRef()->getRelocationTimer().TPassed())
             continue;
 
-        grid->getGridInfoRef()->getRelocationTimer().TReset(diff, m_VisibilityNotifyPeriod);
+        grid->getGridInfoRef()->getRelocationTimer().TReset(diff, _visibilityNotifyPeriod);
 
         uint32 gx = grid->getX(), gy = grid->getY();
 
@@ -1808,7 +1830,7 @@ bool Map::UnloadGrid(NGridType& ngrid, bool unloadAll)
             ngrid.VisitAllGrids(visitor);
         }
 
-        ASSERT(i_objectsToRemove.empty());
+        ASSERT(_objectsToRemove.empty());
 
         delete &ngrid;
         setNGrid(NULL, x, y);
@@ -1819,9 +1841,9 @@ bool Map::UnloadGrid(NGridType& ngrid, bool unloadAll)
     // delete grid map, but don't delete if it is from parent map (and thus only reference)
     if (GridMaps[gx][gy])
     {
-        m_parentTerrainMap->UnloadMap(gx, gy);
-        VMAP::VMapFactory::createOrGetVMapManager()->unloadMap(m_parentTerrainMap->GetId(), gx, gy);
-        MMAP::MMapFactory::createOrGetMMapManager()->unloadMap(m_parentTerrainMap->GetId(), gx, gy);
+        _parentTerrainMap->UnloadMap(gx, gy);
+        VMAP::VMapFactory::createOrGetVMapManager()->unloadMap(_parentTerrainMap->GetId(), gx, gy);
+        MMAP::MMapFactory::createOrGetMMapManager()->unloadMap(_parentTerrainMap->GetId(), gx, gy);
     }
 
     TC_LOG_DEBUG("maps", "Unloading grid[%u, %u] for map %u finished", x, y, GetId());
@@ -1832,14 +1854,14 @@ void Map::RemoveAllPlayers()
 {
     if (HavePlayers())
     {
-        for (MapRefManager::iterator itr = m_mapRefManager.begin(); itr != m_mapRefManager.end(); ++itr)
+        for (MapRefManager::iterator itr = _mapRefManager.begin(); itr != _mapRefManager.end(); ++itr)
         {
             Player* player = itr->GetSource();
             if (!player->IsBeingTeleportedFar())
             {
                 // this is happening for bg
                 TC_LOG_ERROR("maps", "Map::UnloadAll: player %s is still in map %u during unload, this should not happen!", player->GetName().c_str(), GetId());
-                player->TeleportTo(player->m_homebindMapId, player->m_homebindX, player->m_homebindY, player->m_homebindZ, player->GetOrientation());
+                player->TeleportTo(player->_homebindMapId, player->_homebindX, player->_homebindY, player->_homebindZ, player->GetOrientation());
             }
         }
     }
@@ -2541,8 +2563,8 @@ GridMap* Map::GetGrid(uint32 mapId, float x, float y)
     EnsureGridCreated(GridCoord((MAX_NUMBER_OF_GRIDS - 1) - gx, (MAX_NUMBER_OF_GRIDS - 1) - gy));
 
     GridMap* grid = GridMaps[gx][gy];
-    auto childMapItr = std::find_if(m_childTerrainMaps->begin(), m_childTerrainMaps->end(), [mapId](Map* childTerrainMap) { return childTerrainMap->GetId() == mapId; });
-    if (childMapItr != m_childTerrainMaps->end() && (*childMapItr)->GridMaps[gx][gy]->fileExists())
+    auto childMapItr = std::find_if(_childTerrainMaps->begin(), _childTerrainMaps->end(), [mapId](Map* childTerrainMap) { return childTerrainMap->GetId() == mapId; });
+    if (childMapItr != _childTerrainMaps->end() && (*childMapItr)->GridMaps[gx][gy]->fileExists())
         grid = (*childMapItr)->GridMaps[gx][gy];
 
     return grid;
@@ -2550,8 +2572,8 @@ GridMap* Map::GetGrid(uint32 mapId, float x, float y)
 
 bool Map::HasGrid(uint32 mapId, int32 gx, int32 gy) const
 {
-    auto childMapItr = std::find_if(m_childTerrainMaps->begin(), m_childTerrainMaps->end(), [mapId](Map* childTerrainMap) { return childTerrainMap->GetId() == mapId; });
-    return childMapItr != m_childTerrainMaps->end() && (*childMapItr)->GridMaps[gx][gy] && (*childMapItr)->GridMaps[gx][gy]->fileExists();
+    auto childMapItr = std::find_if(_childTerrainMaps->begin(), _childTerrainMaps->end(), [mapId](Map* childTerrainMap) { return childTerrainMap->GetId() == mapId; });
+    return childMapItr != _childTerrainMaps->end() && (*childMapItr)->GridMaps[gx][gy] && (*childMapItr)->GridMaps[gx][gy]->fileExists();
 }
 
 float Map::GetWaterOrGroundLevel(PhaseShift const& phaseShift, float x, float y, float z, float* ground /*= nullptr*/, bool /*swim = false*/) const
@@ -2577,7 +2599,7 @@ float Map::GetStaticHeight(PhaseShift const& phaseShift, float x, float y, float
     // find raw .map surface under Z coordinates
     float mapHeight = VMAP_INVALID_HEIGHT_VALUE;
     uint32 terrainMapId = PhasingHandler::GetTerrainMapId(phaseShift, this, x, y);
-    if (GridMap* gmap = m_parentTerrainMap->GetGrid(terrainMapId, x, y))
+    if (GridMap* gmap = _parentTerrainMap->GetGrid(terrainMapId, x, y))
     {
         float gridHeight = gmap->getHeight(x, y);
         // look from a bit higher pos to find the floor, ignore under surface case
@@ -2702,7 +2724,7 @@ bool Map::GetAreaInfo(PhaseShift const& phaseShift, float x, float y, float z, u
     if (hasVmapAreaInfo || hasDynamicAreaInfo)
     {
         // check if there's terrain between player height and object height
-        if (GridMap* gmap = m_parentTerrainMap->GetGrid(terrainMapId, x, y))
+        if (GridMap* gmap = _parentTerrainMap->GetGrid(terrainMapId, x, y))
         {
             float mapHeight = gmap->getHeight(x, y);
             // z + 2.0f condition taken from GetHeight(), not sure if it's such a great choice...
@@ -2736,12 +2758,12 @@ uint32 Map::GetAreaId(PhaseShift const& phaseShift, float x, float y, float z, b
 
     if (!areaId)
     {
-        if (GridMap* gmap = m_parentTerrainMap->GetGrid(PhasingHandler::GetTerrainMapId(phaseShift, this, x, y), x, y))
+        if (GridMap* gmap = _parentTerrainMap->GetGrid(PhasingHandler::GetTerrainMapId(phaseShift, this, x, y), x, y))
             areaId = gmap->getArea(x, y);
 
         // this used while not all *.map files generated (instances)
         if (!areaId)
-            areaId = i_mapEntry->AreaTableID;
+            areaId = _mapEntry->AreaTableID;
     }
 
     if (isOutdoors)
@@ -2779,7 +2801,7 @@ void Map::GetZoneAndAreaId(PhaseShift const& phaseShift, uint32& zoneid, uint32&
 
 uint8 Map::GetTerrainType(PhaseShift const& phaseShift, float x, float y) const
 {
-    if (GridMap* gmap = m_parentTerrainMap->GetGrid(PhasingHandler::GetTerrainMapId(phaseShift, this, x, y), x, y))
+    if (GridMap* gmap = _parentTerrainMap->GetGrid(PhasingHandler::GetTerrainMapId(phaseShift, this, x, y), x, y))
         return gmap->getTerrainType(x, y);
     else
         return 0;
@@ -2850,7 +2872,7 @@ ZLiquidStatus Map::getLiquidStatus(PhaseShift const& phaseShift, float x, float 
         }
     }
 
-    if (GridMap* gmap = m_parentTerrainMap->GetGrid(terrainMapId, x, y))
+    if (GridMap* gmap = _parentTerrainMap->GetGrid(terrainMapId, x, y))
     {
         LiquidData map_data;
         ZLiquidStatus map_result = gmap->getLiquidStatus(x, y, z, ReqLiquidType, &map_data);
@@ -2873,7 +2895,7 @@ ZLiquidStatus Map::getLiquidStatus(PhaseShift const& phaseShift, float x, float 
 
 float Map::GetWaterLevel(PhaseShift const& phaseShift, float x, float y) const
 {
-    if (GridMap* gmap = m_parentTerrainMap->GetGrid(PhasingHandler::GetTerrainMapId(phaseShift, this, x, y), x, y))
+    if (GridMap* gmap = _parentTerrainMap->GetGrid(PhasingHandler::GetTerrainMapId(phaseShift, this, x, y), x, y))
         return gmap->getLiquidLevel(x, y);
     else
         return 0;
@@ -2935,7 +2957,7 @@ bool Map::CheckGridIntegrity(Creature* c, bool moved) const
 
 char const* Map::GetMapName() const
 {
-    return i_mapEntry ? i_mapEntry->MapName->Str[sWorld->GetDefaultDbcLocale()] : "UNNAMEDMAP\x0";
+    return _mapEntry ? _mapEntry->MapName->Str[sWorld->GetDefaultDbcLocale()] : "UNNAMEDMAP\x0";
 }
 
 void Map::SendInitSelf(Player* player)
@@ -3095,35 +3117,35 @@ void Map::AddObjectToRemoveList(WorldObject* obj)
 
     obj->CleanupsBeforeDelete(false);                            // remove or simplify at least cross referenced links
 
-    i_objectsToRemove.insert(obj);
+    _objectsToRemove.insert(obj);
     //TC_LOG_DEBUG("maps", "Object (GUID: %u TypeId: %u) added to removing list.", obj->GetGUIDLow(), obj->GetTypeId());
 }
 
 void Map::AddObjectToSwitchList(WorldObject* obj, bool on)
 {
     ASSERT(obj->GetMapId() == GetId() && obj->GetInstanceId() == GetInstanceId());
-    // i_objectsToSwitch is iterated only in Map::RemoveAllObjectsInRemoveList() and it uses
+    // _objectsToSwitch is iterated only in Map::RemoveAllObjectsInRemoveList() and it uses
     // the contained objects only if GetTypeId() == TYPEID_UNIT , so we can return in all other cases
     if (obj->GetTypeId() != TYPEID_UNIT && obj->GetTypeId() != TYPEID_GAMEOBJECT)
         return;
 
-    std::map<WorldObject*, bool>::iterator itr = i_objectsToSwitch.find(obj);
-    if (itr == i_objectsToSwitch.end())
-        i_objectsToSwitch.insert(itr, std::make_pair(obj, on));
+    std::map<WorldObject*, bool>::iterator itr = _objectsToSwitch.find(obj);
+    if (itr == _objectsToSwitch.end())
+        _objectsToSwitch.insert(itr, std::make_pair(obj, on));
     else if (itr->second != on)
-        i_objectsToSwitch.erase(itr);
+        _objectsToSwitch.erase(itr);
     else
         ABORT();
 }
 
 void Map::RemoveAllObjectsInRemoveList()
 {
-    while (!i_objectsToSwitch.empty())
+    while (!_objectsToSwitch.empty())
     {
-        std::map<WorldObject*, bool>::iterator itr = i_objectsToSwitch.begin();
+        std::map<WorldObject*, bool>::iterator itr = _objectsToSwitch.begin();
         WorldObject* obj = itr->first;
         bool on = itr->second;
-        i_objectsToSwitch.erase(itr);
+        _objectsToSwitch.erase(itr);
 
         if (!obj->IsPermanentWorldObject())
         {
@@ -3142,9 +3164,9 @@ void Map::RemoveAllObjectsInRemoveList()
     }
 
     //TC_LOG_DEBUG("maps", "Object remover 1 check.");
-    while (!i_objectsToRemove.empty())
+    while (!_objectsToRemove.empty())
     {
-        std::set<WorldObject*>::iterator itr = i_objectsToRemove.begin();
+        std::set<WorldObject*>::iterator itr = _objectsToRemove.begin();
         WorldObject* obj = *itr;
 
         switch (obj->GetTypeId())
@@ -3190,7 +3212,7 @@ void Map::RemoveAllObjectsInRemoveList()
                 break;
         }
 
-        i_objectsToRemove.erase(itr);
+        _objectsToRemove.erase(itr);
     }
 
     //TC_LOG_DEBUG("maps", "Object remover 2 check.");
@@ -3199,15 +3221,19 @@ void Map::RemoveAllObjectsInRemoveList()
 uint32 Map::GetPlayersCountExceptGMs() const
 {
     uint32 count = 0;
-    for (MapRefManager::const_iterator itr = m_mapRefManager.begin(); itr != m_mapRefManager.end(); ++itr)
+    for (MapRefManager::const_iterator itr = _mapRefManager.begin(); itr != _mapRefManager.end(); ++itr)
         if (!itr->GetSource()->IsGameMaster())
             ++count;
     return count;
 }
 
+// [Longee] 这个有可能是更新地图上的worldobject给player的消息包了.... 分析下...
+// 在什么情况下调用这个函数的？
+// ... 这个接口是提供给其他类调用的通用接口，用来将消息广播给地图上的所用player....
+
 void Map::SendToPlayers(WorldPacket const* data) const
 {
-    for (MapRefManager::const_iterator itr = m_mapRefManager.begin(); itr != m_mapRefManager.end(); ++itr)
+    for (MapRefManager::const_iterator itr = _mapRefManager.begin(); itr != _mapRefManager.end(); ++itr)
         itr->GetSource()->GetSession()->SendPacket(data);
 }
 
@@ -3225,7 +3251,7 @@ bool Map::ActiveObjectsNearGrid(NGridType const& ngrid) const
     cell_max.inc_x(cell_range);
     cell_max.inc_y(cell_range);
 
-    for (MapRefManager::const_iterator iter = m_mapRefManager.begin(); iter != m_mapRefManager.end(); ++iter)
+    for (MapRefManager::const_iterator iter = _mapRefManager.begin(); iter != _mapRefManager.end(); ++iter)
     {
         Player* player = iter->GetSource();
 
@@ -3235,7 +3261,7 @@ bool Map::ActiveObjectsNearGrid(NGridType const& ngrid) const
             return true;
     }
 
-    for (ActiveNonPlayers::const_iterator iter = m_activeNonPlayers.begin(); iter != m_activeNonPlayers.end(); ++iter)
+    for (ActiveNonPlayers::const_iterator iter = _activeNonPlayers.begin(); iter != _activeNonPlayers.end(); ++iter)
     {
         WorldObject* obj = *iter;
 
@@ -3331,30 +3357,30 @@ template TC_GAME_API void Map::RemoveFromMap(Conversation*, bool);
 
 /* ******* Dungeon Instance Maps ******* */
 
-InstanceMap::InstanceMap(uint32 id, time_t expiry, uint32 InstanceId, uint8 SpawnMode, Map* _parent)
-  : Map(id, expiry, InstanceId, SpawnMode, _parent),
-    m_resetAfterUnload(false), m_unloadWhenEmpty(false),
-    i_data(NULL), i_script_id(0), i_scenario(nullptr)
+InstanceMap::InstanceMap(uint32 id, time_t expiry, uint32 InstanceId, uint8 SpawnMode, Map* pParent)
+  : Map(id, expiry, InstanceId, SpawnMode, pParent),
+    _resetAfterUnload(false), _unloadWhenEmpty(false),
+    _data(NULL), _scriptId(0), _scenario(nullptr)
 {
     //lets initialize visibility distance for dungeons
     InstanceMap::InitVisibilityDistance();
 
     // the timer is started by default, and stopped when the first player joins
     // this make sure it gets unloaded if for some reason no player joins
-    m_unloadTimer = std::max(sWorld->getIntConfig(CONFIG_INSTANCE_UNLOAD_DELAY), (uint32)MIN_UNLOAD_DELAY);
+    _unloadTimer = std::max(sWorld->getIntConfig(CONFIG_INSTANCE_UNLOAD_DELAY), (uint32)MIN_UNLOAD_DELAY);
 }
 
 InstanceMap::~InstanceMap()
 {
-    delete i_data;
-    delete i_scenario;
+    delete _data;
+    delete _scenario;
 }
 
 void InstanceMap::InitVisibilityDistance()
 {
     //init visibility distance for instances
-    m_VisibleDistance = World::GetMaxVisibleDistanceInInstances();
-    m_VisibilityNotifyPeriod = World::GetVisibilityNotifyPeriodInInstances();
+    _visibleDistance = World::GetMaxVisibleDistanceInInstances();
+    _visibilityNotifyPeriod = World::GetVisibilityNotifyPeriodInInstances();
 }
 
 /*
@@ -3475,7 +3501,7 @@ bool InstanceMap::AddPlayerToMap(Player* player, bool initPlayer /*= true*/)
                         {
                             WorldPackets::Instance::PendingRaidLock pendingRaidLock;
                             pendingRaidLock.TimeUntilLock = 60000;
-                            pendingRaidLock.CompletedMask = i_data ? i_data->GetCompletedEncounterMask() : 0;
+                            pendingRaidLock.CompletedMask = _data ? _data->GetCompletedEncounterMask() : 0;
                             pendingRaidLock.Extending = false;
                             pendingRaidLock.WarningOnly = false; // events it throws:  1 : INSTANCE_LOCK_WARNING   0 : INSTANCE_LOCK_STOP / INSTANCE_LOCK_START
                             player->GetSession()->SendPacket(pendingRaidLock.Write());
@@ -3501,19 +3527,19 @@ bool InstanceMap::AddPlayerToMap(Player* player, bool initPlayer /*= true*/)
 
         TC_LOG_DEBUG("maps", "MAP: Player '%s' entered instance '%u' of map '%s'", player->GetName().c_str(), GetInstanceId(), GetMapName());
         // initialize unload state
-        m_unloadTimer = 0;
-        m_resetAfterUnload = false;
-        m_unloadWhenEmpty = false;
+        _unloadTimer = 0;
+        _resetAfterUnload = false;
+        _unloadWhenEmpty = false;
     }
 
     // this will acquire the same mutex so it cannot be in the previous block
     Map::AddPlayerToMap(player, initPlayer);
 
-    if (i_data)
-        i_data->OnPlayerEnter(player);
+    if (_data)
+        _data->OnPlayerEnter(player);
 
-    if (i_scenario)
-        i_scenario->OnPlayerEnter(player);
+    if (_scenario)
+        _scenario->OnPlayerEnter(player);
 
     return true;
 }
@@ -3522,27 +3548,27 @@ void InstanceMap::Update(const uint32 t_diff)
 {
     Map::Update(t_diff);
 
-    if (i_data)
+    if (_data)
     {
-        i_data->UpdateOperations(t_diff);
-        i_data->Update(t_diff);
-        i_data->UpdateCombatResurrection(t_diff);
+        _data->UpdateOperations(t_diff);
+        _data->Update(t_diff);
+        _data->UpdateCombatResurrection(t_diff);
     }
 
-    if (i_scenario)
-        i_scenario->Update(t_diff);
+    if (_scenario)
+        _scenario->Update(t_diff);
 }
 
 void InstanceMap::RemovePlayerFromMap(Player* player, bool remove)
 {
     TC_LOG_DEBUG("maps", "MAP: Removing player '%s' from instance '%u' of map '%s' before relocating to another map", player->GetName().c_str(), GetInstanceId(), GetMapName());
     //if last player set unload timer
-    if (!m_unloadTimer && m_mapRefManager.getSize() == 1)
-        m_unloadTimer = m_unloadWhenEmpty ? MIN_UNLOAD_DELAY : std::max(sWorld->getIntConfig(CONFIG_INSTANCE_UNLOAD_DELAY), (uint32)MIN_UNLOAD_DELAY);
-    if (i_scenario)
-        i_scenario->OnPlayerExit(player);
-    if (i_data)
-        i_data->OnPlayerExit(player);
+    if (!_unloadTimer && _mapRefManager.getSize() == 1)
+        _unloadTimer = _unloadWhenEmpty ? MIN_UNLOAD_DELAY : std::max(sWorld->getIntConfig(CONFIG_INSTANCE_UNLOAD_DELAY), (uint32)MIN_UNLOAD_DELAY);
+    if (_scenario)
+        _scenario->OnPlayerExit(player);
+    if (_data)
+        _data->OnPlayerExit(player);
     Map::RemovePlayerFromMap(player, remove);
     // for normal instances schedule the reset after all players have left
     SetResetSchedule(true);
@@ -3551,39 +3577,39 @@ void InstanceMap::RemovePlayerFromMap(Player* player, bool remove)
 
 void InstanceMap::CreateInstanceData(bool load)
 {
-    if (i_data != NULL)
+    if (_data != NULL)
         return;
 
     InstanceTemplate const* mInstance = sObjectMgr->GetInstanceTemplate(GetId());
     if (mInstance)
     {
-        i_script_id = mInstance->ScriptId;
-        i_data = sScriptMgr->CreateInstanceData(this);
+        _scriptId = mInstance->ScriptId;
+        _data = sScriptMgr->CreateInstanceData(this);
     }
 
-    if (!i_data)
+    if (!_data)
         return;
 
-    i_data->Initialize();
+    _data->Initialize();
 
     if (load)
     {
         /// @todo make a global storage for this
         PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_SEL_INSTANCE);
         stmt->setUInt16(0, uint16(GetId()));
-        stmt->setUInt32(1, i_InstanceId);
+        stmt->setUInt32(1, _instanceId);
         PreparedQueryResult result = CharacterDatabase.Query(stmt);
 
         if (result)
         {
             Field* fields = result->Fetch();
             std::string data = fields[0].GetString();
-            i_data->SetCompletedEncountersMask(fields[1].GetUInt32());
-            i_data->SetEntranceLocation(fields[2].GetUInt32());
+            _data->SetCompletedEncountersMask(fields[1].GetUInt32());
+            _data->SetEntranceLocation(fields[2].GetUInt32());
             if (!data.empty())
             {
-                TC_LOG_DEBUG("maps", "Loading instance data for `%s` with id %u", sObjectMgr->GetScriptName(i_script_id).c_str(), i_InstanceId);
-                i_data->Load(data.c_str());
+                TC_LOG_DEBUG("maps", "Loading instance data for `%s` with id %u", sObjectMgr->GetScriptName(_scriptId).c_str(), _instanceId);
+                _data->Load(data.c_str());
             }
         }
     }
@@ -3602,7 +3628,7 @@ bool InstanceMap::Reset(uint8 method)
         if (method == INSTANCE_RESET_ALL || method == INSTANCE_RESET_CHANGE_DIFFICULTY)
         {
             // notify the players to leave the instance so it can be reset
-            for (MapRefManager::iterator itr = m_mapRefManager.begin(); itr != m_mapRefManager.end(); ++itr)
+            for (MapRefManager::iterator itr = _mapRefManager.begin(); itr != _mapRefManager.end(); ++itr)
                 itr->GetSource()->SendResetFailedNotify(GetId());
         }
         else
@@ -3611,13 +3637,13 @@ bool InstanceMap::Reset(uint8 method)
             if (method == INSTANCE_RESET_GLOBAL)
             {
                 // set the homebind timer for players inside (1 minute)
-                for (MapRefManager::iterator itr = m_mapRefManager.begin(); itr != m_mapRefManager.end(); ++itr)
+                for (MapRefManager::iterator itr = _mapRefManager.begin(); itr != _mapRefManager.end(); ++itr)
                 {
                     InstancePlayerBind* bind = itr->GetSource()->GetBoundInstance(GetId(), GetDifficultyID());
                     if (bind && bind->extendState && bind->save->GetInstanceId() == GetInstanceId())
                         doUnload = false;
                     else
-                        itr->GetSource()->m_InstanceValid = false;
+                        itr->GetSource()->_instanceValid = false;
                 }
 
                 if (doUnload && HasPermBoundPlayers()) // check if any unloaded players have a nonexpired save to this
@@ -3628,24 +3654,24 @@ bool InstanceMap::Reset(uint8 method)
             {
                 // the unload timer is not started
                 // instead the map will unload immediately after the players have left
-                m_unloadWhenEmpty = true;
-                m_resetAfterUnload = true;
+                _unloadWhenEmpty = true;
+                _resetAfterUnload = true;
             }
         }
     }
     else
     {
         // unloaded at next update
-        m_unloadTimer = MIN_UNLOAD_DELAY;
-        m_resetAfterUnload = !(method == INSTANCE_RESET_GLOBAL && HasPermBoundPlayers());
+        _unloadTimer = MIN_UNLOAD_DELAY;
+        _resetAfterUnload = !(method == INSTANCE_RESET_GLOBAL && HasPermBoundPlayers());
     }
 
-    return m_mapRefManager.isEmpty();
+    return _mapRefManager.isEmpty();
 }
 
 std::string const& InstanceMap::GetScriptName() const
 {
-    return sObjectMgr->GetScriptName(i_script_id);
+    return sObjectMgr->GetScriptName(_scriptId);
 }
 
 void InstanceMap::PermBindAllPlayers()
@@ -3661,7 +3687,7 @@ void InstanceMap::PermBindAllPlayers()
     }
 
     // perm bind all players that are currently inside the instance
-    for (MapRefManager::iterator itr = m_mapRefManager.begin(); itr != m_mapRefManager.end(); ++itr)
+    for (MapRefManager::iterator itr = _mapRefManager.begin(); itr != _mapRefManager.end(); ++itr)
     {
         Player* player = itr->GetSource();
         // never instance bind GMs with GM mode enabled
@@ -3700,7 +3726,7 @@ void InstanceMap::UnloadAll()
 {
     ASSERT(!HavePlayers());
 
-    if (m_resetAfterUnload)
+    if (_resetAfterUnload)
     {
         DeleteRespawnTimes();
         DeleteCorpseData();
@@ -3711,7 +3737,7 @@ void InstanceMap::UnloadAll()
 
 void InstanceMap::SendResetWarnings(uint32 timeLeft) const
 {
-    for (MapRefManager::const_iterator itr = m_mapRefManager.begin(); itr != m_mapRefManager.end(); ++itr)
+    for (MapRefManager::const_iterator itr = _mapRefManager.begin(); itr != _mapRefManager.end(); ++itr)
         itr->GetSource()->SendInstanceResetWarning(GetId(), itr->GetSource()->GetDifficultyID(GetEntry()), timeLeft, true);
 }
 
@@ -3749,27 +3775,27 @@ uint8 Map::GetDifficultyLootItemContext() const
 
 uint32 Map::GetId() const
 {
-    return i_mapEntry->ID;
+    return _mapEntry->ID;
 }
 
 bool Map::Instanceable() const
 {
-    return i_mapEntry && i_mapEntry->Instanceable();
+    return _mapEntry && _mapEntry->Instanceable();
 }
 
 bool Map::IsDungeon() const
 {
-    return i_mapEntry && i_mapEntry->IsDungeon();
+    return _mapEntry && _mapEntry->IsDungeon();
 }
 
 bool Map::IsNonRaidDungeon() const
 {
-    return i_mapEntry && i_mapEntry->IsNonRaidDungeon();
+    return _mapEntry && _mapEntry->IsNonRaidDungeon();
 }
 
 bool Map::IsRaid() const
 {
-    return i_mapEntry && i_mapEntry->IsRaid();
+    return _mapEntry && _mapEntry->IsRaid();
 }
 
 // Will also return true for Mythics
@@ -3780,51 +3806,51 @@ bool Map::IsRaidOrHeroicDungeon() const
 
 bool Map::IsHeroic() const
 {
-    if (DifficultyEntry const* difficulty = sDifficultyStore.LookupEntry(i_spawnMode))
+    if (DifficultyEntry const* difficulty = sDifficultyStore.LookupEntry(_spawnMode))
         return difficulty->Flags & DIFFICULTY_FLAG_HEROIC;
     return false;
 }
 
 bool Map::IsMythic() const
 {
-    return i_spawnMode == DIFFICULTY_MYTHIC || i_spawnMode == DIFFICULTY_MYTHIC_KEYSTONE || i_spawnMode == DIFFICULTY_MYTHIC_RAID;
+    return _spawnMode == DIFFICULTY_MYTHIC || _spawnMode == DIFFICULTY_MYTHIC_KEYSTONE || _spawnMode == DIFFICULTY_MYTHIC_RAID;
 }
 
 bool Map::Is25ManRaid() const
 {
-    return IsRaid() && (i_spawnMode == DIFFICULTY_25_N || i_spawnMode == DIFFICULTY_25_HC);
+    return IsRaid() && (_spawnMode == DIFFICULTY_25_N || _spawnMode == DIFFICULTY_25_HC);
 }
 
 bool Map::IsLFR() const
 {
-    return IsRaid() && (i_spawnMode == DIFFICULTY_LFR || i_spawnMode == DIFFICULTY_LFR_NEW);
+    return IsRaid() && (_spawnMode == DIFFICULTY_LFR || _spawnMode == DIFFICULTY_LFR_NEW);
 }
 
 bool Map::IsBattleground() const
 {
-    return i_mapEntry && i_mapEntry->IsBattleground();
+    return _mapEntry && _mapEntry->IsBattleground();
 }
 
 bool Map::IsBattleArena() const
 {
-    return i_mapEntry && i_mapEntry->IsBattleArena();
+    return _mapEntry && _mapEntry->IsBattleArena();
 }
 
 bool Map::IsBattlegroundOrArena() const
 {
-    return i_mapEntry && i_mapEntry->IsBattlegroundOrArena();
+    return _mapEntry && _mapEntry->IsBattlegroundOrArena();
 }
 
 bool Map::IsGarrison() const
 {
-    return i_mapEntry && i_mapEntry->IsGarrison();
+    return _mapEntry && _mapEntry->IsGarrison();
 }
 
 bool Map::GetEntrancePos(int32 &mapid, float &x, float &y)
 {
-    if (!i_mapEntry)
+    if (!_mapEntry)
         return false;
-    return i_mapEntry->GetEntrancePos(mapid, x, y);
+    return _mapEntry->GetEntrancePos(mapid, x, y);
 }
 
 bool InstanceMap::HasPermBoundPlayers() const
@@ -3851,8 +3877,8 @@ uint32 InstanceMap::GetMaxResetDelay() const
 
 /* ******* Battleground Instance Maps ******* */
 
-BattlegroundMap::BattlegroundMap(uint32 id, time_t expiry, uint32 InstanceId, Map* _parent, uint8 spawnMode)
-  : Map(id, expiry, InstanceId, spawnMode, _parent), m_bg(NULL)
+BattlegroundMap::BattlegroundMap(uint32 id, time_t expiry, uint32 InstanceId, Map* pParent, uint8 spawnMode)
+  : Map(id, expiry, InstanceId, spawnMode, pParent), _bg(NULL)
 {
     //lets initialize visibility distance for BG/Arenas
     BattlegroundMap::InitVisibilityDistance();
@@ -3860,19 +3886,19 @@ BattlegroundMap::BattlegroundMap(uint32 id, time_t expiry, uint32 InstanceId, Ma
 
 BattlegroundMap::~BattlegroundMap()
 {
-    if (m_bg)
+    if (_bg)
     {
         //unlink to prevent crash, always unlink all pointer reference before destruction
-        m_bg->SetBgMap(NULL);
-        m_bg = NULL;
+        _bg->SetBgMap(NULL);
+        _bg = NULL;
     }
 }
 
 void BattlegroundMap::InitVisibilityDistance()
 {
     //init visibility distance for BG/Arenas
-    m_VisibleDistance = World::GetMaxVisibleDistanceInBGArenas();
-    m_VisibilityNotifyPeriod = World::GetVisibilityNotifyPeriodInBGArenas();
+    _visibleDistance = World::GetMaxVisibleDistanceInBGArenas();
+    _visibilityNotifyPeriod = World::GetVisibilityNotifyPeriodInBGArenas();
 }
 
 Map::EnterState BattlegroundMap::CannotEnter(Player* player)
@@ -3900,7 +3926,7 @@ bool BattlegroundMap::AddPlayerToMap(Player* player, bool initPlayer /*= true*/)
         //if (!CanEnter(player))
             //return false;
         // reset instance validity, battleground maps do not homebind
-        player->m_InstanceValid = true;
+        player->_instanceValid = true;
     }
     return Map::AddPlayerToMap(player, initPlayer);
 }
@@ -3913,13 +3939,13 @@ void BattlegroundMap::RemovePlayerFromMap(Player* player, bool remove)
 
 void BattlegroundMap::SetUnload()
 {
-    m_unloadTimer = MIN_UNLOAD_DELAY;
+    _unloadTimer = MIN_UNLOAD_DELAY;
 }
 
 void BattlegroundMap::RemoveAllPlayers()
 {
     if (HavePlayers())
-        for (MapRefManager::iterator itr = m_mapRefManager.begin(); itr != m_mapRefManager.end(); ++itr)
+        for (MapRefManager::iterator itr = _mapRefManager.begin(); itr != _mapRefManager.end(); ++itr)
             if (Player* player = itr->GetSource())
                 if (!player->IsBeingTeleportedFar())
                     player->TeleportTo(player->GetBattlegroundEntryPoint());
@@ -3995,8 +4021,8 @@ Transport* Map::GetTransport(ObjectGuid const& guid)
 
 void Map::UpdateIteratorBack(Player* player)
 {
-    if (m_mapRefIter == player->GetMapRef())
-        m_mapRefIter = m_mapRefIter->nocheck_prev();
+    if (_mapRefIter == player->GetMapRef())
+        _mapRefIter = _mapRefIter->nocheck_prev();
 }
 
 void Map::SaveCreatureRespawnTime(ObjectGuid::LowType dbGuid, time_t respawnTime)

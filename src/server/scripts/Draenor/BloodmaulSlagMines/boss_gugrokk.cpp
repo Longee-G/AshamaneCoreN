@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -87,11 +87,11 @@ namespace Instances { namespace Bloodmaul
                 }
 
                 InstanceScript* m_Instance;
-                EventMap m_Events;
+                EventMap _events;
 
                 void Reset() override
                 {
-                    m_Events.Reset();
+                    _events.Reset();
 
                     _Reset();
 
@@ -129,11 +129,11 @@ namespace Instances { namespace Bloodmaul
                     Talk(eTalks::TalkAggro);
 
                     if (IsHeroic())
-                        m_Events.ScheduleEvent(eEvents::EventFlameBuffet, 6 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventFlameBuffet, 6 * TimeConstants::IN_MILLISECONDS);
 
-                    m_Events.ScheduleEvent(eEvents::EventMagmaEruption, 7 * TimeConstants::IN_MILLISECONDS);
-                    m_Events.ScheduleEvent(eEvents::EventMoltenBlast, 1 * TimeConstants::IN_MILLISECONDS);
-                    m_Events.ScheduleEvent(eEvents::EventSummonUnstableSlag, 20 * TimeConstants::IN_MILLISECONDS);
+                    _events.ScheduleEvent(eEvents::EventMagmaEruption, 7 * TimeConstants::IN_MILLISECONDS);
+                    _events.ScheduleEvent(eEvents::EventMoltenBlast, 1 * TimeConstants::IN_MILLISECONDS);
+                    _events.ScheduleEvent(eEvents::EventSummonUnstableSlag, 20 * TimeConstants::IN_MILLISECONDS);
                 }
 
                 void KilledUnit(Unit* killed) override
@@ -191,18 +191,18 @@ namespace Instances { namespace Bloodmaul
                     if (!UpdateVictim())
                         return;
 
-                    m_Events.Update(diff);
+                    _events.Update(diff);
 
                     if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                         return;
 
-                    switch (m_Events.ExecuteEvent())
+                    switch (_events.ExecuteEvent())
                     {
                         case eEvents::EventMagmaEruption:
                         {
                             Talk(eTalks::TalkMagmaEruption);
                             me->CastSpell(me, eSpells::SpellMagmaEruptionDummy, false);
-                            m_Events.ScheduleEvent(eEvents::EventMagmaEruption, 28 * TimeConstants::IN_MILLISECONDS);
+                            _events.ScheduleEvent(eEvents::EventMagmaEruption, 28 * TimeConstants::IN_MILLISECONDS);
 
                             std::list<Player*> playerList;
                             me->GetPlayerListInGrid(playerList, 100.0f);
@@ -219,17 +219,17 @@ namespace Instances { namespace Bloodmaul
                         }
                         case eEvents::EventFlameBuffet:
                             me->CastSpell(me, eSpells::SpellFlameBuffet, false);
-                            m_Events.ScheduleEvent(eEvents::EventFlameBuffet, 12 * TimeConstants::IN_MILLISECONDS);
+                            _events.ScheduleEvent(eEvents::EventFlameBuffet, 12 * TimeConstants::IN_MILLISECONDS);
                             break;
                         case eEvents::EventMoltenBlast:
                             if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_RANDOM))
                                 me->CastSpell(target, eSpells::SpellMoltenBlast, false);
-                            m_Events.ScheduleEvent(eEvents::EventMoltenBlast, 16 * TimeConstants::IN_MILLISECONDS);
+                            _events.ScheduleEvent(eEvents::EventMoltenBlast, 16 * TimeConstants::IN_MILLISECONDS);
                             break;
                         case eEvents::EventSummonUnstableSlag:
                             me->CastSpell(me, eSpells::SpellSummonUnstableSlag, false);
                             Talk(eTalks::TalkUnstableSlag);
-                            m_Events.ScheduleEvent(eEvents::EventSummonUnstableSlag, 25 * TimeConstants::IN_MILLISECONDS);
+                            _events.ScheduleEvent(eEvents::EventSummonUnstableSlag, 25 * TimeConstants::IN_MILLISECONDS);
                             break;
                         default:
                             break;
@@ -268,12 +268,12 @@ namespace Instances { namespace Bloodmaul
                     EventActivate
                 };
 
-                EventMap m_Events;
+                EventMap _events;
 
                 void Reset() override
                 {
-                    m_Events.ScheduleEvent(eEvents::EventActivate, 3 * TimeConstants::IN_MILLISECONDS);
-                    m_Events.ScheduleEvent(eEvents::EventDespawn, 2 * TimeConstants::MINUTE * TimeConstants::IN_MILLISECONDS);
+                    _events.ScheduleEvent(eEvents::EventActivate, 3 * TimeConstants::IN_MILLISECONDS);
+                    _events.ScheduleEvent(eEvents::EventDespawn, 2 * TimeConstants::MINUTE * TimeConstants::IN_MILLISECONDS);
 
                     me->SetReactState(ReactStates::REACT_PASSIVE);
                     me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
@@ -281,9 +281,9 @@ namespace Instances { namespace Bloodmaul
 
                 void UpdateAI(uint32 const diff) override
                 {
-                    m_Events.Update(diff);
+                    _events.Update(diff);
 
-                    switch (m_Events.ExecuteEvent())
+                    switch (_events.ExecuteEvent())
                     {
                         case eEvents::EventCheckPlayers:
                         {
@@ -293,7 +293,7 @@ namespace Instances { namespace Bloodmaul
                             for (Player* player : playerList)
                                 me->CastSpell(player, eSpells::SpellPeriodicDamage, true);
 
-                            m_Events.ScheduleEvent(eEvents::EventCheckPlayers, 1 * TimeConstants::IN_MILLISECONDS);
+                            _events.ScheduleEvent(eEvents::EventCheckPlayers, 1 * TimeConstants::IN_MILLISECONDS);
                             break;
                         }
                         case eEvents::EventDespawn:
@@ -301,7 +301,7 @@ namespace Instances { namespace Bloodmaul
                             break;
                         case eEvents::EventActivate:
                             me->CastSpell(me, eSpells::SpellMagmaEruptionAura, true);
-                            m_Events.ScheduleEvent(eEvents::EventCheckPlayers, 100);
+                            _events.ScheduleEvent(eEvents::EventCheckPlayers, 100);
                             break;
                         default:
                             break;
@@ -337,7 +337,7 @@ namespace Instances { namespace Bloodmaul
                     EventCheckSLG = 1
                 };
 
-                EventMap m_Events;
+                EventMap _events;
 
                 ObjectGuid m_FollowingSLG;
 
@@ -345,7 +345,7 @@ namespace Instances { namespace Bloodmaul
                 {
                     me->SetReactState(ReactStates::REACT_PASSIVE);
 
-                    m_Events.ScheduleEvent(eEvents::EventCheckSLG, 1 * TimeConstants::IN_MILLISECONDS);
+                    _events.ScheduleEvent(eEvents::EventCheckSLG, 1 * TimeConstants::IN_MILLISECONDS);
 
                     me->SetSpeed(UnitMoveType::MOVE_WALK, 0.7f);
                     me->SetSpeed(UnitMoveType::MOVE_RUN, 0.7f);
@@ -364,9 +364,9 @@ namespace Instances { namespace Bloodmaul
 
                 void UpdateAI(uint32 const diff) override
                 {
-                    m_Events.Update(diff);
+                    _events.Update(diff);
 
-                    switch (m_Events.ExecuteEvent())
+                    switch (_events.ExecuteEvent())
                     {
                         case eEvents::EventCheckSLG:
                         {
@@ -376,7 +376,7 @@ namespace Instances { namespace Bloodmaul
                                 {
                                     me->CastSpell(l_SLG, eSpells::SpellSiphonFlames, false);
                                     me->GetMotionMaster()->MoveChase(l_SLG, 2.5f);
-                                    m_Events.ScheduleEvent(eEvents::EventCheckSLG, 1 * TimeConstants::IN_MILLISECONDS);
+                                    _events.ScheduleEvent(eEvents::EventCheckSLG, 1 * TimeConstants::IN_MILLISECONDS);
                                     break;
                                 }
                             }

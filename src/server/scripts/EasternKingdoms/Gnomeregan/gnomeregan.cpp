@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -133,7 +133,7 @@ public:
                 me->setFaction(player->getFaction());
                 SetData(1, 0);
 
-                player->PlayerTalkClass->SendCloseGossip();
+                player->playerTalkClass->SendCloseGossip();
             }
         }
 

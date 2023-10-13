@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -99,11 +99,13 @@ enum OpcodeClient : uint16
     CMSG_BATTLENET_CHALLENGE_RESPONSE                 = 0x36D2,
     CMSG_BATTLENET_REQUEST                            = 0x36F6,
     CMSG_BATTLENET_REQUEST_REALM_LIST_TICKET          = 0x36F7,
+
     CMSG_BATTLE_PAY_ACK_FAILED_RESPONSE               = 0x36CA,
     CMSG_BATTLE_PAY_CONFIRM_PURCHASE_RESPONSE         = 0x36C9,
     CMSG_BATTLE_PAY_DISTRIBUTION_ASSIGN_TO_TARGET     = 0x36C0,
     CMSG_BATTLE_PAY_GET_PRODUCT_LIST                  = 0x36BA,
     CMSG_BATTLE_PAY_GET_PURCHASE_LIST                 = 0x36BB,
+    CMSG_BATTLE_PAY_PURCHASE_PRODUCT                        = 0x36C8,
     CMSG_BATTLE_PAY_QUERY_CLASS_TRIAL_BOOST_RESULT    = 0x36C3,
     CMSG_BATTLE_PAY_REQUEST_CHARACTER_BOOST_UNREVOKE  = 0x36C1,
     CMSG_BATTLE_PAY_REQUEST_CURRENT_VAS_TRANSFER_QUEUES = 0x3708,
@@ -112,7 +114,10 @@ enum OpcodeClient : uint16
     CMSG_BATTLE_PAY_START_PURCHASE                    = 0x36F2,
     CMSG_BATTLE_PAY_START_VAS_PURCHASE                = 0x36F3,
     CMSG_BATTLE_PAY_TRIAL_BOOST_CHARACTER             = 0x36C2,
+    CMSG_BATTLE_PAY_PURCHASE_DETAILS_RESPONSE               = 0x370B,
+    CMSG_BATTLE_PAY_PURCHASE_UNK_RESPONSE                   = 0x370D,
     CMSG_BATTLE_PAY_VALIDATE_BNET_VAS_TRANSFER        = 0x370A,
+
     CMSG_BATTLE_PET_CLEAR_FANFARE                     = 0x312C,
     CMSG_BATTLE_PET_DELETE_PET                        = 0x3624,
     CMSG_BATTLE_PET_DELETE_PET_CHEAT                  = 0x3625,
@@ -416,6 +421,7 @@ enum OpcodeClient : uint16
     CMSG_LIVE_REGION_ACCOUNT_RESTORE                  = 0x36B9,
     CMSG_LIVE_REGION_CHARACTER_COPY                   = 0x36B8,
     CMSG_LIVE_REGION_GET_ACCOUNT_CHARACTER_LIST       = 0x36B7,
+    CMSG_GET_ACCOUNT_CHARACTER_LIST                   = 0x36B6,
     CMSG_LOADING_SCREEN_NOTIFY                        = 0x35F8,
     CMSG_LOAD_SELECTED_TROPHY                         = 0x32F2,
     CMSG_LOGOUT_CANCEL                                = 0x34DC,
@@ -853,7 +859,10 @@ enum OpcodeServer : uint16
     SMSG_BATTLENET_REALM_LIST_TICKET                  = 0x2845,
     SMSG_BATTLENET_RESPONSE                           = 0x2842,
     SMSG_BATTLENET_SET_SESSION_STATE                  = 0x2844,
+
     SMSG_BATTLE_PAY_ACK_FAILED                        = 0x27C6,
+    SMSG_BATTLE_PAY_PURCHASE_DETAILS                        = 0x2861,
+    SMSG_BATTLE_PAY_PURCHASE_UNK                            = 0x285D,
     SMSG_BATTLE_PAY_BATTLE_PET_DELIVERED              = 0x27BB,
     SMSG_BATTLE_PAY_CONFIRM_PURCHASE                  = 0x27C5,
     SMSG_BATTLE_PAY_DELIVERY_ENDED                    = 0x27B9,
@@ -876,6 +885,8 @@ enum OpcodeServer : uint16
     SMSG_BATTLE_PAY_VAS_PURCHASE_STARTED              = 0x2832,
     SMSG_BATTLE_PAY_VAS_REALM_LIST                    = 0x2831,
     SMSG_BATTLE_PAY_VAS_TRANSFER_QUEUE_STATUS         = 0x2858,
+    SMSG_BATTLE_PAY_UNK                               = 0x285F,
+
     SMSG_BATTLE_PETS_HEALED                           = 0x2609,
     SMSG_BATTLE_PET_CAGE_DATE_ERROR                   = 0x26A0,
     SMSG_BATTLE_PET_DELETED                           = 0x2606,
@@ -1022,6 +1033,7 @@ enum OpcodeServer : uint16
     SMSG_DISPLAY_GAME_ERROR                           = 0x25B5,
     SMSG_DISPLAY_PLAYER_CHOICE                        = 0x26A1,
     SMSG_DISPLAY_PROMOTION                            = 0x2668,
+    
     SMSG_DISPLAY_QUEST_POPUP                          = 0x2A9D,
     SMSG_DISPLAY_TOAST                                = 0x2638,
     SMSG_DONT_AUTO_PUSH_SPELLS_TO_ACTION_BAR          = 0x25F6,
@@ -1749,9 +1761,9 @@ enum OpcodeServer : uint16
     SMSG_XP_GAIN_ABORTED                              = 0x25E0,
     SMSG_XP_GAIN_ENABLED                              = 0x27F0,
     SMSG_ZONE_UNDER_ATTACK                            = 0x2BB5,
+    SMSG_ACCOUNT_HEIRLOOM_UPDATE                      = 0x25C5, // 0xBADD => 0x25C5
 
     // Opcodes that are not generated automatically
-    SMSG_ACCOUNT_HEIRLOOM_UPDATE                      = 0xBADD, // no client handler
     SMSG_ITEM_UPGRADE_RESULT                          = 0xBADD, // no client handler
     SMSG_COMPRESSED_PACKET                            = 0x3052,
     SMSG_MULTIPLE_PACKETS                             = 0x3051,
@@ -1789,10 +1801,10 @@ inline bool IsInstanceOnlyOpcode(uint32 opcode)
 /// Player state
 enum SessionStatus
 {
-    STATUS_AUTHED = 0,                                      // Player authenticated (_player == NULL, m_playerRecentlyLogout = false or will be reset before handler call, m_GUID have garbage)
+    STATUS_AUTHED = 0,                                      // Player authenticated (_player == NULL, _playerRecentlyLogout = false or will be reset before handler call, m_GUID have garbage)
     STATUS_LOGGEDIN,                                        // Player in game (_player != NULL, m_GUID == _player->GetGUID(), inWorld())
     STATUS_TRANSFER,                                        // Player transferring to another map (_player != NULL, m_GUID == _player->GetGUID(), !inWorld())
-    STATUS_LOGGEDIN_OR_RECENTLY_LOGGOUT,                    // _player != NULL or _player == NULL && m_playerRecentlyLogout && m_playerLogout, m_GUID store last _player guid)
+    STATUS_LOGGEDIN_OR_RECENTLY_LOGGOUT,                    // _player != NULL or _player == NULL && _playerRecentlyLogout && _isPlayerLogout, m_GUID store last _player guid)
     STATUS_NEVER,                                           // Opcode not accepted from client (deprecated or server side only)
     STATUS_UNHANDLED                                        // Opcode not handled yet
 };

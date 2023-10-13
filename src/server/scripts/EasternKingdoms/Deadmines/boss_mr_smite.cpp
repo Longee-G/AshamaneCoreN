@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
@@ -157,7 +157,7 @@ public:
                             break;
                         case 3:
                             SetCombatMovement(true);
-                            me->GetMotionMaster()->MoveChase(me->GetVictim(), me->m_CombatDistance);
+                            me->GetMotionMaster()->MoveChase(me->GetVictim(), me->_combatDistance);
                             uiPhase = 0;
                             break;
                     }

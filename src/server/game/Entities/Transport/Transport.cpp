@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -38,7 +38,7 @@ Transport::Transport() : GameObject(),
     _triggeredArrivalEvent(false), _triggeredDepartureEvent(false),
     _passengerTeleportItr(_passengers.begin()), _delayedAddModel(false), _delayedTeleport(false)
 {
-    m_updateFlag = UPDATEFLAG_TRANSPORT | UPDATEFLAG_STATIONARY_POSITION | UPDATEFLAG_ROTATION;
+    _updateFlag = UPDATEFLAG_TRANSPORT | UPDATEFLAG_STATIONARY_POSITION | UPDATEFLAG_ROTATION;
 }
 
 Transport::~Transport()
@@ -67,8 +67,8 @@ bool Transport::Create(ObjectGuid::LowType guidlow, uint32 entry, uint32 mapid, 
         return false;
     }
 
-    m_goInfo = goinfo;
-    m_goTemplateAddon = sObjectMgr->GetGameObjectTemplateAddon(entry);
+    _goInfo = goinfo;
+    _goTemplateAddon = sObjectMgr->GetGameObjectTemplateAddon(entry);
 
     TransportTemplate const* tInfo = sTransportMgr->GetTransportTemplate(entry);
     if (!tInfo)
@@ -85,13 +85,13 @@ bool Transport::Create(ObjectGuid::LowType guidlow, uint32 entry, uint32 mapid, 
     _triggeredArrivalEvent = false;
     _triggeredDepartureEvent = false;
 
-    if (m_goTemplateAddon)
+    if (_goTemplateAddon)
     {
-        SetFaction(m_goTemplateAddon->faction);
-        SetUInt32Value(GAMEOBJECT_FLAGS, m_goTemplateAddon->flags);
+        SetFaction(_goTemplateAddon->faction);
+        SetUInt32Value(GAMEOBJECT_FLAGS, _goTemplateAddon->flags);
     }
 
-    m_goValue.Transport.PathProgress = 0;
+    _goValue.Transport.PathProgress = 0;
     SetObjectScale(goinfo->size);
     SetPeriod(tInfo->pathTime);
     SetEntry(goinfo->entry);
@@ -103,7 +103,7 @@ bool Transport::Create(ObjectGuid::LowType guidlow, uint32 entry, uint32 mapid, 
     SetWorldRotation(0.0f, 0.0f, 0.0f, 1.0f);
     SetParentRotation(QuaternionData());
 
-    m_model = CreateModel();
+    _model = CreateModel();
     return true;
 }
 
@@ -132,9 +132,9 @@ void Transport::Update(uint32 diff)
         return;
 
     if (IsMoving() || !_pendingStop)
-        m_goValue.Transport.PathProgress += diff;
+        _goValue.Transport.PathProgress += diff;
 
-    uint32 timer = m_goValue.Transport.PathProgress % GetTransportPeriod();
+    uint32 timer = _goValue.Transport.PathProgress % GetTransportPeriod();
     bool justStopped = false;
 
     // Set current waypoint
@@ -158,9 +158,9 @@ void Transport::Update(uint32 diff)
                 if (_pendingStop && GetGoState() != GO_STATE_READY)
                 {
                     SetGoState(GO_STATE_READY);
-                    m_goValue.Transport.PathProgress = (m_goValue.Transport.PathProgress / GetTransportPeriod());
-                    m_goValue.Transport.PathProgress *= GetTransportPeriod();
-                    m_goValue.Transport.PathProgress += _currentFrame->ArriveTime;
+                    _goValue.Transport.PathProgress = (_goValue.Transport.PathProgress / GetTransportPeriod());
+                    _goValue.Transport.PathProgress *= GetTransportPeriod();
+                    _goValue.Transport.PathProgress += _currentFrame->ArriveTime;
                 }
                 break;  // its a stop frame and we are waiting
             }
@@ -198,8 +198,8 @@ void Transport::Update(uint32 diff)
     if (_delayedAddModel)
     {
         _delayedAddModel = false;
-        if (m_model)
-            GetMap()->InsertGameObjectModel(*m_model);
+        if (_model)
+            GetMap()->InsertGameObjectModel(*_model);
     }
 
     // Set position
@@ -255,7 +255,7 @@ void Transport::AddPassenger(WorldObject* passenger)
     if (_passengers.insert(passenger).second)
     {
         passenger->SetTransport(this);
-        passenger->m_movementInfo.transport.guid = GetGUID();
+        passenger->_movementInfo.transport.guid = GetGUID();
         TC_LOG_DEBUG("entities.transport", "Object %s boarded transport %s.", passenger->GetName().c_str(), GetName().c_str());
 
         if (Player* plr = passenger->ToPlayer())
@@ -284,7 +284,7 @@ void Transport::RemovePassenger(WorldObject* passenger)
     if (erased || _staticPassengers.erase(passenger)) // static passenger can remove itself in case of grid unload
     {
         passenger->SetTransport(NULL);
-        passenger->m_movementInfo.transport.Reset();
+        passenger->_movementInfo.transport.Reset();
         TC_LOG_DEBUG("entities.transport", "Object %s removed from transport %s.", passenger->GetName().c_str(), GetName().c_str());
 
         if (Player* plr = passenger->ToPlayer())
@@ -308,13 +308,13 @@ Creature* Transport::CreateNPCPassenger(ObjectGuid::LowType guid, CreatureData c
     float o = data->orientation;
 
     creature->SetTransport(this);
-    creature->m_movementInfo.transport.guid = GetGUID();
-    creature->m_movementInfo.transport.pos.Relocate(x, y, z, o);
-    creature->m_movementInfo.transport.seat = -1;
+    creature->_movementInfo.transport.guid = GetGUID();
+    creature->_movementInfo.transport.pos.Relocate(x, y, z, o);
+    creature->_movementInfo.transport.seat = -1;
     CalculatePassengerPosition(x, y, z, &o);
     creature->Relocate(x, y, z, o);
     creature->SetHomePosition(creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ(), creature->GetOrientation());
-    creature->SetTransportHomePosition(creature->m_movementInfo.transport.pos);
+    creature->SetTransportHomePosition(creature->_movementInfo.transport.pos);
 
     /// @HACK - transport models are not added to map's dynamic LoS calculations
     ///         because the current GameObjectModel cannot be moved without recreating
@@ -357,9 +357,9 @@ GameObject* Transport::CreateGOPassenger(ObjectGuid::LowType guid, GameObjectDat
     float o = data->orientation;
 
     go->SetTransport(this);
-    go->m_movementInfo.transport.guid = GetGUID();
-    go->m_movementInfo.transport.pos.Relocate(x, y, z, o);
-    go->m_movementInfo.transport.seat = -1;
+    go->_movementInfo.transport.guid = GetGUID();
+    go->_movementInfo.transport.pos.Relocate(x, y, z, o);
+    go->_movementInfo.transport.seat = -1;
     CalculatePassengerPosition(x, y, z, &o);
     go->Relocate(x, y, z, o);
     go->RelocateStationaryPosition(x, y, z, o);
@@ -473,8 +473,8 @@ TempSummon* Transport::SummonPassenger(uint32 entry, Position const& pos, TempSu
     summon->SetUInt32Value(UNIT_CREATED_BY_SPELL, spellId);
 
     summon->SetTransport(this);
-    summon->m_movementInfo.transport.guid = GetGUID();
-    summon->m_movementInfo.transport.pos.Relocate(pos);
+    summon->_movementInfo.transport.guid = GetGUID();
+    summon->_movementInfo.transport.pos.Relocate(pos);
     summon->Relocate(x, y, z, o);
     summon->SetHomePosition(x, y, z, o);
     summon->SetTransportHomePosition(pos);
@@ -505,7 +505,7 @@ void Transport::UpdatePosition(float x, float y, float z, float o)
     Cell oldCell(GetPositionX(), GetPositionY());
 
     Relocate(x, y, z, o);
-    m_stationaryPosition.SetOrientation(o);
+    _stationaryPosition.SetOrientation(o);
     UpdateModelPosition();
 
     UpdatePassengerPositions(_passengers);
@@ -578,8 +578,8 @@ void Transport::MoveToNextWaypoint()
 float Transport::CalculateSegmentPos(float now)
 {
     KeyFrame const& frame = *_currentFrame;
-    const float speed = float(m_goInfo->moTransport.moveSpeed);
-    const float accel = float(m_goInfo->moTransport.accelRate);
+    const float speed = float(_goInfo->moTransport.moveSpeed);
+    const float accel = float(_goInfo->moTransport.accelRate);
     float timeSinceStop = frame.TimeFrom + (now - (1.0f/IN_MILLISECONDS) * frame.DepartureTime);
     float timeUntilStop = frame.TimeTo - (now - (1.0f/IN_MILLISECONDS) * frame.DepartureTime);
     float segmentPos, dist;
@@ -631,7 +631,7 @@ bool Transport::TeleportTransport(uint32 newMapid, float x, float y, float z, fl
                         continue;
 
                 float destX, destY, destZ, destO;
-                (*itr)->m_movementInfo.transport.pos.GetPosition(destX, destY, destZ, destO);
+                (*itr)->_movementInfo.transport.pos.GetPosition(destX, destY, destZ, destO);
                 TransportBase::CalculatePassengerPosition(destX, destY, destZ, &destO, x, y, z, o);
 
                 (*itr)->ToUnit()->NearTeleportTo(destX, destY, destZ, destO);
@@ -662,7 +662,7 @@ void Transport::DelayedTeleportTransport()
         WorldObject* obj = (*_passengerTeleportItr++);
 
         float destX, destY, destZ, destO;
-        obj->m_movementInfo.transport.pos.GetPosition(destX, destY, destZ, destO);
+        obj->_movementInfo.transport.pos.GetPosition(destX, destY, destZ, destO);
         TransportBase::CalculatePassengerPosition(destX, destY, destZ, &destO, x, y, z, o);
 
         switch (obj->GetTypeId())
@@ -703,7 +703,7 @@ void Transport::UpdatePassengerPositions(PassengerSet& passengers)
         // Do not use Unit::UpdatePosition here, we don't want to remove auras
         // as if regular movement occurred
         float x, y, z, o;
-        passenger->m_movementInfo.transport.pos.GetPosition(x, y, z, o);
+        passenger->_movementInfo.transport.pos.GetPosition(x, y, z, o);
         CalculatePassengerPosition(x, y, z, &o);
         switch (passenger->GetTypeId())
         {

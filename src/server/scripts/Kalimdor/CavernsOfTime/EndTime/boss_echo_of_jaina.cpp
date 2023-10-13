@@ -236,7 +236,7 @@ class spell_flarecore : public SpellScriptLoader
 
             void Register() override
             {
-                OnEffectHitTarget += SpellEffectFn(spell_flarecore_SpellScript::HandleOnHit, EFFECT_0, SPELL_EFFECT_DUMMY);
+                OnEffectHitTarget += SpellEffectFn(spell_flarecore_SpellScript::HandleOnHit, EFFECT_0, /*SPELL_EFFECT_DUMMY*/6);
             }
         };
 

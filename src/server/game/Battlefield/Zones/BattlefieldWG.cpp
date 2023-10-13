@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -428,7 +428,7 @@ bool BattlefieldWG::SetupBattlefield()
     m_tenacityStack = 0;
 
     KickPosition.Relocate(5728.117f, 2714.346f, 697.733f, 0);
-    KickPosition.m_mapId = m_MapId;
+    KickPosition._mapId = m_MapId;
 
     RegisterZone(m_ZoneId);
 
@@ -448,13 +448,13 @@ bool BattlefieldWG::SetupBattlefield()
         sWorld->setWorldState(ClockWorldState[0], uint64(m_NoWarBattleTime));
     }
 
-    m_isActive = sWorld->getWorldState(BATTLEFIELD_WG_WORLD_STATE_ACTIVE) != 0;
+    _isActive = sWorld->getWorldState(BATTLEFIELD_WG_WORLD_STATE_ACTIVE) != 0;
     m_DefenderTeam = TeamId(sWorld->getWorldState(BATTLEFIELD_WG_WORLD_STATE_DEFENDER));
 
     m_Timer = sWorld->getWorldState(ClockWorldState[0]);
-    if (m_isActive)
+    if (_isActive)
     {
-        m_isActive = false;
+        _isActive = false;
         m_Timer = m_RestartAfterCrash;
     }
 
@@ -544,7 +544,7 @@ bool BattlefieldWG::Update(uint32 diff)
     bool m_return = Battlefield::Update(diff);
     if (m_saveTimer <= diff)
     {
-        sWorld->setWorldState(BATTLEFIELD_WG_WORLD_STATE_ACTIVE, m_isActive);
+        sWorld->setWorldState(BATTLEFIELD_WG_WORLD_STATE_ACTIVE, _isActive);
         sWorld->setWorldState(BATTLEFIELD_WG_WORLD_STATE_DEFENDER, m_DefenderTeam);
         sWorld->setWorldState(ClockWorldState[0], m_Timer);
         sWorld->setWorldState(BATTLEFIELD_WG_WORLD_STATE_ATTACKED_A, GetData(BATTLEFIELD_WG_DATA_WON_A));
@@ -1000,7 +1000,7 @@ void BattlefieldWG::HandlePromotion(Player* playerKiller, Unit* unitKilled)
 // Update rank for player
 void BattlefieldWG::PromotePlayer(Player* killer)
 {
-    if (!m_isActive)
+    if (!_isActive)
         return;
     // Updating rank of player
     if (Aura* auraRecruit = killer->GetAura(SPELL_RECRUIT))
@@ -1095,7 +1095,7 @@ void BattlefieldWG::OnPlayerLeaveWar(Player* player)
 
 void BattlefieldWG::OnPlayerLeaveZone(Player* player)
 {
-    if (!m_isActive)
+    if (!_isActive)
         RemoveAurasFromPlayer(player);
 
     player->RemoveAurasDueToSpell(SPELL_HORDE_CONTROLS_FACTORY_PHASE_SHIFT);
@@ -1106,7 +1106,7 @@ void BattlefieldWG::OnPlayerLeaveZone(Player* player)
 
 void BattlefieldWG::OnPlayerEnterZone(Player* player)
 {
-    if (!m_isActive)
+    if (!_isActive)
         RemoveAurasFromPlayer(player);
 
     player->AddAura(m_DefenderTeam == TEAM_HORDE ? SPELL_HORDE_CONTROL_PHASE_SHIFT : SPELL_ALLIANCE_CONTROL_PHASE_SHIFT, player);

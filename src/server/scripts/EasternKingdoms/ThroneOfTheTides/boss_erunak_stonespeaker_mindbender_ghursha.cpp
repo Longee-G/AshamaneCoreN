@@ -1,4 +1,4 @@
-/*
+﻿/*
 * Copyright (C) 2011-2012 Project SkyFire <http://www.projectskyfire.org/>
 * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
 *
@@ -137,8 +137,8 @@ public:
         void SpellHit(Unit* /*caster*/, SpellInfo const* spell) override
         {
             if (me->GetCurrentSpell(CURRENT_GENERIC_SPELL))
-            if (me->GetCurrentSpell(CURRENT_GENERIC_SPELL)->m_spellInfo->Id == SPELL_LAVA_BOLT
-                || me->GetCurrentSpell(CURRENT_GENERIC_SPELL)->m_spellInfo->Id == SPELL_LAVA_BOLT_H)
+            if (me->GetCurrentSpell(CURRENT_GENERIC_SPELL)->_spellInfo->Id == SPELL_LAVA_BOLT
+                || me->GetCurrentSpell(CURRENT_GENERIC_SPELL)->_spellInfo->Id == SPELL_LAVA_BOLT_H)
             for (uint8 i = 0; i < 3; ++i)
             if (spell->GetEffect(i)->Effect == SPELL_EFFECT_INTERRUPT_CAST)
                 me->InterruptSpell(CURRENT_GENERIC_SPELL);

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -56,7 +56,7 @@ class npc_tb_spirit_guide : public CreatureScript
 
             void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId) override
             {
-                player->PlayerTalkClass->SendCloseGossip();
+                player->playerTalkClass->SendCloseGossip();
 
                 uint32 areaId = 0;
                 switch (gossipListId)

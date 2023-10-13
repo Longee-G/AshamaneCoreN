@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -47,6 +47,7 @@ enum CorpseFlags
     CORPSE_FLAG_FFA_PVP     = 0x40
 };
 
+// dead body
 class TC_GAME_API Corpse : public WorldObject, public GridObject<Corpse>
 {
     public:
@@ -69,7 +70,7 @@ class TC_GAME_API Corpse : public WorldObject, public GridObject<Corpse>
 
         time_t const& GetGhostTime() const { return m_time; }
         void ResetGhostTime() { m_time = time(NULL); }
-        CorpseType GetType() const { return m_type; }
+        CorpseType GetType() const { return _type; }
 
         CellCoord const& GetCellCoord() const { return _cellCoord; }
         void SetCellCoord(CellCoord const& cellCoord) { _cellCoord = cellCoord; }
@@ -81,7 +82,7 @@ class TC_GAME_API Corpse : public WorldObject, public GridObject<Corpse>
         bool IsExpired(time_t t) const;
 
     private:
-        CorpseType m_type;
+        CorpseType _type;
         time_t m_time;
         CellCoord _cellCoord;
 };

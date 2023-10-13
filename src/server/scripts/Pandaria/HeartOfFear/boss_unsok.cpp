@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -1437,20 +1437,20 @@ public:
 
 void AddSC_boss_unsok()
 {
-    new boss_unsok();                   // 62511
-    new mob_mutated_construct();        // 62701
-    new mob_amber_monstruosity();       // 62711
-    new mob_living_amber();             // 62691
-    new mob_amber_pool_stalker();       // 62762
-    new mob_amber_globule();            // 64283
-    new mob_amber_scalpel();            // 62510
-    new spell_amber_scalpel();          // 121995
-    new spell_struggle_for_control();   // 122395
-    new spell_consume_amber();          // 123156
-    new spell_break_free();             // 123060
-    new spell_grab();                   // 122415
-    new spell_fling();                  // 122413
-    new spell_fling_thrown();           // 122420
-    new spell_unsok_draw_power();       // 122547
-    new spell_volatile_amber();         // 123014
+    //new boss_unsok();                   // 62511
+    //new mob_mutated_construct();        // 62701
+    //new mob_amber_monstruosity();       // 62711
+    //new mob_living_amber();             // 62691
+    //new mob_amber_pool_stalker();       // 62762
+    //new mob_amber_globule();            // 64283
+    //new mob_amber_scalpel();            // 62510
+    //new spell_amber_scalpel();          // 121995
+    //new spell_struggle_for_control();   // 122395
+    //new spell_consume_amber();          // 123156
+    //new spell_break_free();             // 123060
+    //new spell_grab();                   // 122415
+    //new spell_fling();                  // 122413
+    //new spell_fling_thrown();           // 122420
+    //new spell_unsok_draw_power();       // 122547
+    //new spell_volatile_amber();         // 123014
 }

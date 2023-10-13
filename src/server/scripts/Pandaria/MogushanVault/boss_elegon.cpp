@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -1873,8 +1873,8 @@ class spell_grasping_energy_tendrils : public SpellScriptLoader
                 {
                     if (Unit* target = GetHitUnit())
                     {
-                        SpellInfo const* m_spellInfo = sSpellMgr->GetSpellInfo(SPELL_GRASPING_ENERGY_GRIP);
-                        if (!m_spellInfo)
+                        SpellInfo const* _spellInfo = sSpellMgr->GetSpellInfo(SPELL_GRASPING_ENERGY_GRIP);
+                        if (!_spellInfo)
                             return;
 
                         // Init dest coordinates
@@ -1884,10 +1884,10 @@ class spell_grasping_energy_tendrils : public SpellScriptLoader
                         float dist = target->GetExactDist2d(x, y);
 
                         float speedZ, speedXY;
-                        if (m_spellInfo->GetEffect(0)->MiscValue)
-                            speedZ = float(m_spellInfo->GetEffect(0)->MiscValue)/10;
-                        else if (m_spellInfo->GetEffect(0)->MiscValueB)
-                            speedZ = float(m_spellInfo->GetEffect(0)->MiscValueB)/10;
+                        if (_spellInfo->GetEffect(0)->MiscValue)
+                            speedZ = float(_spellInfo->GetEffect(0)->MiscValue)/10;
+                        else if (_spellInfo->GetEffect(0)->MiscValueB)
+                            speedZ = float(_spellInfo->GetEffect(0)->MiscValueB)/10;
                         else
                             speedZ = 10.0f;
 
@@ -2065,5 +2065,5 @@ void AddSC_boss_elegon()
     new spell_destabilizing_energies();     ///< 132222
     new spell_total_annihilation();         ///< 127911
     new spell_unstable_energy();            ///< 116994
-    RegisterAreaTriggerAI(at_draw_power);                    ///< 116546
+    //RegisterAreaTriggerAI(at_draw_power);                    ///< 116546
 }

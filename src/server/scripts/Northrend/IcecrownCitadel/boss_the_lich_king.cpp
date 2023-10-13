@@ -469,7 +469,7 @@ class TriggerWickedSpirit : public BasicEvent
 
             if (--_counter)
             {
-                _owner->m_Events.AddEvent(this, _owner->m_Events.CalculateTime(3000));
+                _owner->_events.AddEvent(this, _owner->_events.CalculateTime(3000));
                 return false;
             }
 
@@ -713,7 +713,7 @@ class boss_the_lich_king : public CreatureScript
                         summon->CastSpell(summon, SPELL_RISEN_WITCH_DOCTOR_SPAWN, true);
                         summon->SetReactState(REACT_PASSIVE);
                         summon->HandleEmoteCommand(EMOTE_ONESHOT_EMERGE);
-                        summon->m_Events.AddEvent(new StartMovementEvent(me, summon), summon->m_Events.CalculateTime(5000));
+                        summon->_events.AddEvent(new StartMovementEvent(me, summon), summon->_events.CalculateTime(5000));
                         break;
                     case NPC_ICE_SPHERE:
                     {
@@ -751,7 +751,7 @@ class boss_the_lich_king : public CreatureScript
                         summon->SetSpeedRate(MOVE_FLIGHT, 0.5f);
                         summon->GetMotionMaster()->MoveRandom(10.0f);
                         if (!events.IsInPhase(PHASE_FROSTMOURNE))
-                            summon->m_Events.AddEvent(new VileSpiritActivateEvent(summon), summon->m_Events.CalculateTime(15000));
+                            summon->_events.AddEvent(new VileSpiritActivateEvent(summon), summon->_events.CalculateTime(15000));
                         return;
                     }
                     case NPC_STRANGULATE_VEHICLE:
@@ -1032,7 +1032,7 @@ class boss_the_lich_king : public CreatureScript
                                     Creature* spawner = triggers.front();
                                     spawner->CastSpell(spawner, SPELL_SUMMON_SPIRIT_BOMB_1, true);  // summons bombs randomly
                                     spawner->CastSpell(spawner, SPELL_SUMMON_SPIRIT_BOMB_2, true);  // summons bombs on players
-                                    spawner->m_Events.AddEvent(new TriggerWickedSpirit(spawner), spawner->m_Events.CalculateTime(3000));
+                                    spawner->_events.AddEvent(new TriggerWickedSpirit(spawner), spawner->_events.CalculateTime(3000));
                                 }
 
                                 for (SummonList::iterator i = summons.begin(); i != summons.end(); ++i)
@@ -1040,8 +1040,8 @@ class boss_the_lich_king : public CreatureScript
                                     Creature* summon = ObjectAccessor::GetCreature(*me, *i);
                                     if (summon && summon->GetEntry() == NPC_VILE_SPIRIT)
                                     {
-                                        summon->m_Events.KillAllEvents(true);
-                                        summon->m_Events.AddEvent(new VileSpiritActivateEvent(summon), summon->m_Events.CalculateTime(50000));
+                                        summon->_events.KillAllEvents(true);
+                                        summon->_events.AddEvent(new VileSpiritActivateEvent(summon), summon->_events.CalculateTime(50000));
                                         summon->GetMotionMaster()->MoveRandom(10.0f);
                                         summon->SetReactState(REACT_PASSIVE);
                                     }
@@ -2805,7 +2805,7 @@ class spell_the_lich_king_harvest_soul : public SpellScriptLoader
 
             void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
             {
-                // m_originalCaster to allow stacking from different casters, meh
+                // _originalCaster to allow stacking from different casters, meh
                 if (GetTargetApplication()->GetRemoveMode() == AURA_REMOVE_BY_DEATH)
                     GetTarget()->CastSpell((Unit*)NULL, SPELL_HARVESTED_SOUL, true, NULL, NULL, GetTarget()->GetInstanceScript()->GetGuidData(DATA_THE_LICH_KING));
             }
@@ -2921,7 +2921,7 @@ class spell_the_lich_king_restore_soul : public SpellScriptLoader
                 GetCaster()->GetCreatureListWithEntryInGrid(spirits, NPC_WICKED_SPIRIT, 200.0f);
                 for (std::list<Creature*>::iterator itr = spirits.begin(); itr != spirits.end(); ++itr)
                 {
-                    (*itr)->m_Events.KillAllEvents(true);
+                    (*itr)->_events.KillAllEvents(true);
                     (*itr)->SetReactState(REACT_PASSIVE);
                     (*itr)->AI()->EnterEvadeMode();
                 }
@@ -3004,7 +3004,7 @@ class spell_the_lich_king_in_frostmourne_room : public SpellScriptLoader
 
             void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
             {
-                // m_originalCaster to allow stacking from different casters, meh
+                // _originalCaster to allow stacking from different casters, meh
                 if (GetTargetApplication()->GetRemoveMode() == AURA_REMOVE_BY_DEATH)
                     GetTarget()->CastSpell((Unit*)NULL, SPELL_HARVESTED_SOUL, true, NULL, NULL, GetTarget()->GetInstanceScript()->GetGuidData(DATA_THE_LICH_KING));
             }

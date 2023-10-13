@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -328,7 +328,7 @@ bool OPvPCapturePointZM_GraveYard::HandleGossipOption(Player* player, Creature* 
             m_FlagCarrierGUID = player->GetGUID();
         }
         UpdateTowerState();
-        player->PlayerTalkClass->SendCloseGossip();
+        player->playerTalkClass->SendCloseGossip();
         return true;
     }
     return false;

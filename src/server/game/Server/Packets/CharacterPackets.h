@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@ class Field;
 
 namespace WorldPackets
 {
+    // 和角色相关的消息包名空间...
     namespace Character
     {
         class EnumCharacters final : public ClientPacket
@@ -752,6 +753,48 @@ namespace WorldPackets
 
             ObjectGuid Player;
             int32 ResultCode = 0;
+        };
+
+        // TODO:
+        class EngineSurvey final : public ClientPacket
+        {
+        public:
+            EngineSurvey(WorldPacket&& packet) : ClientPacket(CMSG_ENGINE_SURVEY, std::move(packet)) { }
+
+            void Read() override;
+
+            uint64 TotalPhysMemory = 0;
+            uint64 GPUVideoMemory = 0;
+            uint64 GPUSystemMemory = 0;
+            uint64 GPUSharedMemory = 0;
+            uint32 GPUVendorID = 0;
+            uint32 GPUModelID = 0;
+            uint32 ProcessorUnkUnk = 0;
+            uint32 ProcessorFeatures = 0;
+            uint32 ProcessorVendor = 0;
+            uint32 ProcessorNumberOfProcessors = 0;
+            uint32 ProcessorNumberOfThreads = 0;
+            uint32 GXDisplayResWidth = 0;
+            uint32 GXDisplayResHeight = 0;
+            uint32 GXUnk = 0;
+            uint32 SystemOSIndex = 0;
+            uint32 UnkDword4C = 0;
+            uint32 UnkDword50 = 0;
+            uint32 Farclip = 0;
+            uint16 UnkWord58 = 0;
+            uint16 UnkWord5A = 0;
+            uint8 HasHDPlayerModels = 0;
+            uint8 Is64BitSystem = 0;
+            uint8 UnkByte5E = 0;
+            uint8 UnkByte5F = 0;
+            uint8 UnkByte60 = 0;
+            uint8 UnkByte61 = 0;
+            uint8 UnkByte62 = 0;
+            uint8 UnkByte63 = 0;
+            uint8 UnkByte64 = 0;
+            uint8 UnkByte65 = 0;
+            uint8 UnkByte66 = 0;
+            uint8 UnkByte67 = 0;
         };
     }
 }

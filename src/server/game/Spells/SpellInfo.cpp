@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -568,8 +568,8 @@ int32 SpellEffectInfo::CalcValue(Unit const* caster /*= nullptr*/, int32 const* 
     if (caster)
     {
         // bonus amount from combo points
-        if (caster->m_playerMovingMe && comboDamage)
-            if (uint32 comboPoints = caster->m_playerMovingMe->GetComboPoints())
+        if (caster->_playerMovingMe && comboDamage)
+            if (uint32 comboPoints = caster->_playerMovingMe->GetComboPoints())
                 value += comboDamage * comboPoints;
 
         value = caster->ApplyEffectModifiers(_spellInfo, EffectIndex, value);
@@ -1000,6 +1000,7 @@ SpellInfo::SpellInfo(SpellInfoLoadHelper const& data, SpellEffectEntryMap const&
 {
     Id = data.Entry->ID;
 
+    // _effects 的数据来自 `spellEffect.db2`
     for (SpellEffectEntryMap::value_type const& itr : effectsMap)
     {
         SpellEffectEntryVector const& effects = itr.second;
@@ -1322,6 +1323,10 @@ bool SpellInfo::IsExplicitDiscovery() const
 
 bool SpellInfo::IsLootCrafting() const
 {
+    // [Longee] 增加189判断... 不知道是否正确
+    if (HasEffect(SPELL_EFFECT_LOOT))
+        return true;
+
     return HasEffect(SPELL_EFFECT_CREATE_RANDOM_ITEM) || HasEffect(SPELL_EFFECT_CREATE_LOOT);
 }
 
@@ -2150,6 +2155,7 @@ SpellCastResult SpellInfo::CheckTarget(Unit const* caster, WorldObject const* ta
     if (TargetAuraSpell && !unitTarget->HasAura(TargetAuraSpell))
         return SPELL_FAILED_TARGET_AURASTATE;
 
+    // 如果设置了`ExcludeTargetAuraSpell`并且在target的身上发现这个Aura存在，则返回错误..表示法术施放失败？
     if (ExcludeTargetAuraSpell && unitTarget->HasAura(ExcludeTargetAuraSpell))
         return SPELL_FAILED_TARGET_AURASTATE;
 

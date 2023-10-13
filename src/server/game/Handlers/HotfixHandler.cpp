@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -25,9 +25,15 @@
 
 void WorldSession::HandleDBQueryBulk(WorldPackets::Hotfix::DBQueryBulk& dbQuery)
 {
+    // 客户端请求的这个数据是在数据库中还是在.db2文件中呢？
+    // 应该不是从.db2文件获取..客户端也有，估计是从hotfixes数据库中获取的，用来进行热更新的的数据...
+    // 
+
     DB2StorageBase const* store = sDB2Manager.GetStorage(dbQuery.TableHash);
     if (!store)
     {
+        // 会出现这个错误应该是服务器没有将所用的.db2文件加载导致的...
+
         TC_LOG_ERROR("network", "CMSG_DB_QUERY_BULK: %s requested unsupported unknown hotfix type: %u", GetPlayerInfo().c_str(), dbQuery.TableHash);
         return;
     }

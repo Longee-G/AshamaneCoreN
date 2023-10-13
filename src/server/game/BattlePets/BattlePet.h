@@ -36,6 +36,7 @@ struct BattlePetOwnerInfo
     uint32 PlayerNativeRealm = 0;
 };
 
+// 这个pet用于`宠物对战系统`
 class BattlePet
 {
 public:
@@ -44,21 +45,35 @@ public:
 
     BattlePetSaveInfo SaveInfo;
 
-    ObjectGuid Guid;
-    uint32 Species = 0;
+    uint32 AccountID;               // Owner account ID
+    ObjectGuid Guid;                // journal ID?
+    int32 Slot;                     // Battle slot
+    std::string Name;               // Pet's Name
+    uint32 NameTimeStamp;           // Name timestamp
+    uint32 Species = 0;             // pet kinds
+    uint32 DisplayModelID;          // Display id for Pet?
+    uint16 Breed = 0;               // Breed quality (factor for some states)
+    uint8 Quality = 0;              // Pet quality (factor for some states)
+    uint32 Abilities[3];            // avialable abilities in battle...
+    uint16 Level = 0;               // Pet Level
+    uint16 Exp = 0;                 // Pet Exp
+    uint16 Flags = 0;               
+
     uint32 CreatureID = 0;
-    uint32 CollarID = 0;
-    uint16 Breed = 0;
-    uint16 Level = 0;
-    uint16 Exp = 0;
-    uint16 Flags = 0;
-    uint32 Power = 0;
-    uint32 Health = 0;
+    uint32 CollarID = 0;            // 
+    
+    
+    uint32 Health = 0;              // Current health
     uint32 MaxHealth = 0;
+    uint32 Power = 0;
     uint32 Speed = 0;
-    uint8 Quality = 0;
+    int32 PetGender;                // pet's gender
+    
     Optional<BattlePetOwnerInfo> OwnerInfo;
-    std::string Name;
+
+public:
+    ObjectGuid::LowType AddToPlayer(Player* player);
+    
 };
 
 #endif // BattlePet_h__

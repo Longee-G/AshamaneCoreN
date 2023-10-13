@@ -1,4 +1,4 @@
-#include "ScriptMgr.h"
+﻿#include "ScriptMgr.h"
 #include "blackwing_descent.h"
 #include "Vehicle.h"
 #include "Unit.h"
@@ -337,7 +337,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*uiSender*/, uint32 uiAction) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        player->playerTalkClass->ClearMenus();
 
         switch (uiAction)
         {

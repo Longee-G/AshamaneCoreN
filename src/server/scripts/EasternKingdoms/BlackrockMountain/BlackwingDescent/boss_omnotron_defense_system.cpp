@@ -1,4 +1,4 @@
-#include "ScriptMgr.h"
+﻿#include "ScriptMgr.h"
 #include "blackwing_descent.h"
 #include "Vehicle.h"
 #include "Unit.h"
@@ -1061,6 +1061,7 @@ public:
     }
 };
 
+// 7448 -
 class spell_fire : public SpellScriptLoader
 {
     public:
@@ -1078,7 +1079,8 @@ class spell_fire : public SpellScriptLoader
 
             void Register() override
             {
-                OnEffectPeriodic += AuraEffectPeriodicFn(spell_fire_AuraScript::HandlePeriodic, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL);
+                // 7.3.5 SPELL_AURA_PERIODIC_TRIGGER_SPELL -> 4
+                OnEffectPeriodic += AuraEffectPeriodicFn(spell_fire_AuraScript::HandlePeriodic, EFFECT_0, SPELL_AURA_DUMMY);
             }
         };
 

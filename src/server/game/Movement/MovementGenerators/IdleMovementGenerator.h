@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -37,7 +37,7 @@ TC_GAME_API extern IdleMovementGenerator si_idleMovement;
 class RotateMovementGenerator : public MovementGenerator
 {
     public:
-        explicit RotateMovementGenerator(uint32 time, RotateDirection direction) : m_duration(time), m_maxDuration(time), m_direction(direction) { }
+        explicit RotateMovementGenerator(uint32 time, RotateDirection direction) : _duration(time), _maxDuration(time), m_direction(direction) { }
 
         void Initialize(Unit*) override;
         void Finalize(Unit*) override;
@@ -46,14 +46,14 @@ class RotateMovementGenerator : public MovementGenerator
         MovementGeneratorType GetMovementGeneratorType() const override { return ROTATE_MOTION_TYPE; }
 
     private:
-        uint32 m_duration, m_maxDuration;
+        uint32 _duration, _maxDuration;
         RotateDirection m_direction;
 };
 
 class DistractMovementGenerator : public MovementGenerator
 {
     public:
-        explicit DistractMovementGenerator(uint32 timer) : m_timer(timer) { }
+        explicit DistractMovementGenerator(uint32 timer) : _timer(timer) { }
 
         void Initialize(Unit*) override;
         void Finalize(Unit*) override;
@@ -62,7 +62,7 @@ class DistractMovementGenerator : public MovementGenerator
         MovementGeneratorType GetMovementGeneratorType() const override { return DISTRACT_MOTION_TYPE; }
 
     private:
-        uint32 m_timer;
+        uint32 _timer;
 };
 
 class AssistanceDistractMovementGenerator : public DistractMovementGenerator

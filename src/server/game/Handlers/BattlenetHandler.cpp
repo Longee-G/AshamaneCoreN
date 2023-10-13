@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -20,6 +20,7 @@
 #include "WorldserverServiceDispatcher.h"
 #include "ObjectDefines.h"
 
+// 客户端的战网请求是请求什么呢？
 void WorldSession::HandleBattlenetRequest(WorldPackets::Battlenet::Request& request)
 {
     sServiceDispatcher.Dispatch(this, request.Method.GetServiceHash(), request.Method.Token, request.Method.GetMethodId(), std::move(request.Data));

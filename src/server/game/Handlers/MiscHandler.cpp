@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -799,24 +799,24 @@ void WorldSession::HandleSetTitleOpcode(WorldPackets::Character::SetTitle& packe
 void WorldSession::HandleTimeSyncResponse(WorldPackets::Misc::TimeSyncResponse& packet)
 {
     // Prevent crashing server if queue is empty
-    if (_player->m_timeSyncQueue.empty())
+    if (_player->_timeSyncQueue.empty())
     {
         TC_LOG_ERROR("network", "Received CMSG_TIME_SYNC_RESPONSE from player %s without requesting it (hacker?)", _player->GetName().c_str());
         return;
     }
 
-    if (packet.SequenceIndex != _player->m_timeSyncQueue.front())
+    if (packet.SequenceIndex != _player->_timeSyncQueue.front())
         TC_LOG_ERROR("network", "Wrong time sync counter from player %s (cheater?)", _player->GetName().c_str());
 
-    TC_LOG_DEBUG("network", "Time sync received: counter %u, client ticks %u, time since last sync %u", packet.SequenceIndex, packet.ClientTime, packet.ClientTime - _player->m_timeSyncClient);
+    TC_LOG_DEBUG("network", "Time sync received: counter %u, client ticks %u, time since last sync %u", packet.SequenceIndex, packet.ClientTime, packet.ClientTime - _player->_timeSyncClient);
 
-    uint32 ourTicks = packet.ClientTime + (getMSTime() - _player->m_timeSyncServer);
+    uint32 ourTicks = packet.ClientTime + (getMSTime() - _player->_timeSyncServer);
 
     // diff should be small
     TC_LOG_DEBUG("network", "Our ticks: %u, diff %u, latency %u", ourTicks, ourTicks - packet.ClientTime, GetLatency());
 
-    _player->m_timeSyncClient = packet.ClientTime;
-    _player->m_timeSyncQueue.pop();
+    _player->_timeSyncClient = packet.ClientTime;
+    _player->_timeSyncQueue.pop();
 }
 
 void WorldSession::HandleResetInstancesOpcode(WorldPackets::Instance::ResetInstances& /*packet*/)
@@ -1022,6 +1022,9 @@ void WorldSession::HandleInstanceLockResponse(WorldPackets::Instance::InstanceLo
     _player->SetPendingBind(0, 0);
 }
 
+// violence level -- 暴力等级 ...
+// 好像是用来控制战斗的特效的... 血腥的程度
+// 客户端发给服务器进行设置...? 服务器需要存储这个等级
 void WorldSession::HandleViolenceLevel(WorldPackets::Misc::ViolenceLevel& /*violenceLevel*/)
 {
     // do something?
@@ -1137,6 +1140,23 @@ void WorldSession::HandleSetAdvancedCombatLogging(WorldPackets::ClientConfig::Se
     _player->SetAdvancedCombatLogging(setAdvancedCombatLogging.Enable);
 }
 
+void WorldSession::HandleUpdateClientSettings(WorldPackets::ClientConfig::UpdateClientSettings & packet)
+{
+    // TODO:
+}
+
+void WorldSession::HandleGetRemainingGameTime(WorldPackets::ClientConfig::GetRemainingGameTime & packet)
+{
+    // TODO:
+}
+
+void WorldSession::HandleSaveClientVariables(WorldPackets::ClientConfig::SaveClientVariables& /*packet*/)
+{
+    // TODO: how to save client variables ...
+}
+
+
+
 void WorldSession::HandleMountSpecialAnimOpcode(WorldPackets::Misc::MountSpecial& /*mountSpecial*/)
 {
     WorldPackets::Misc::SpecialMountAnim specialMountAnim;
@@ -1157,8 +1177,8 @@ void WorldSession::HandlePvpPrestigeRankUp(WorldPackets::Misc::PvpPrestigeRankUp
 
 void WorldSession::HandleCloseInteraction(WorldPackets::Misc::CloseInteraction& closeInteraction)
 {
-    if (_player->PlayerTalkClass->GetInteractionData().SourceGuid == closeInteraction.SourceGuid)
-        _player->PlayerTalkClass->GetInteractionData().Reset();
+    if (_player->playerTalkClass->GetInteractionData().SourceGuid == closeInteraction.SourceGuid)
+        _player->playerTalkClass->GetInteractionData().Reset();
 }
 
 void WorldSession::HandleAdventureJournalOpenQuest(WorldPackets::Misc::AdventureJournalOpenQuest& packet)
@@ -1179,6 +1199,14 @@ void WorldSession::HandleAdventureJournalStartQuest(WorldPackets::Misc::Adventur
     if (Quest const* quest = sObjectMgr->GetQuestTemplate(packet.QuestID))
         if (!_player->hasQuest(packet.QuestID))
             _player->AddQuest(quest, nullptr);
+}
+
+// 查询倒计时-- 指的是战场（battleground）的倒计时吗？
+void WorldSession::HandleQueryCountdownTimer(WorldPackets::Instance::QueryCountdownTimer & packet)
+{
+    Player* player = GetPlayer();
+    if (Battleground* bg = player->GetBattleground())
+        bg->QueryCountdownTimer(player, packet.Type);
 }
 
 void WorldSession::HandleSelectFactionOpcode(WorldPackets::Misc::FactionSelect& selectFaction)
@@ -1204,4 +1232,64 @@ void WorldSession::HandleSelectFactionOpcode(WorldPackets::Misc::FactionSelect& 
         _player->LearnSpell(108131, false);         // Language Pandaren Horde
         _player->CastSpell(_player, 113245, true);  // Faction Choice Trigger Spell: Horde
     }
+
+
+
+}
+
+
+// 客户端向服务器汇报信息 ..
+void WorldSession::HandleEngineSurvey(WorldPackets::Character::EngineSurvey& packet)
+{
+    // TODO:
+
+    /*
+
+    std::hash<std::string> hash_gen;
+    std::string baseData(
+        "TotalPhysMemory:" + std::to_string(packet.TotalPhysMemory) +
+        "GPUVideoMemory:" + std::to_string(packet.GPUVideoMemory) +
+        "GPUSystemMemory:" + std::to_string(packet.GPUSystemMemory) +
+        "GPUSharedMemory:" + std::to_string(packet.GPUSharedMemory) +
+        "GPUVendorID:" + std::to_string(packet.GPUVendorID) +
+        "GPUModelID:" + std::to_string(packet.GPUModelID) +
+        "ProcessorUnkUnk:" + std::to_string(packet.ProcessorUnkUnk) +
+        "ProcessorFeatures:" + std::to_string(packet.ProcessorFeatures) +
+        "ProcessorVendor:" + std::to_string(packet.ProcessorVendor) +
+        "ProcessorNumberOfProcessors:" + std::to_string(packet.ProcessorNumberOfProcessors) +
+        "ProcessorNumberOfThreads:" + std::to_string(packet.ProcessorNumberOfThreads) +
+        "SystemOSIndex:" + std::to_string(packet.SystemOSIndex) +
+        "Is64BitSystem:" + std::to_string(packet.Is64BitSystem)
+    );
+
+    auto str_hash = hash_gen(baseData);
+    if (_hwid == str_hash) // Not need update
+        return;
+
+    _hwid = str_hash;
+
+    LoginDatabase.PExecute("UPDATE account SET hwid = " UI64FMTD " WHERE id = %u;", _hwid, GetAccountId());
+
+    if (!_hwid)
+        return;
+
+    if (auto result = LoginDatabase.PQuery("SELECT penalties, last_reason from hwid_penalties where hwid = " UI64FMTD, _hwid))
+    {
+        auto fields = result->Fetch();
+        _countPenaltiesHwid = fields[0].GetInt32();
+
+        if ((sWorld->getIntConfig(CONFIG_ANTI_FLOOD_HWID_BANS_COUNT) && _countPenaltiesHwid >= sWorld->getIntConfig(CONFIG_ANTI_FLOOD_HWID_BANS_COUNT)) || _countPenaltiesHwid < 0)
+        {
+            std::stringstream ss;
+            ss << (fields[1].GetString().empty() ? "Antiflood unknwn" : fields[1].GetCString()) << "*";
+
+            if (sWorld->getBoolConfig(CONFIG_ANTI_FLOOD_HWID_BANS_ALLOW))
+                sWorld->BanAccount(BAN_ACCOUNT, GetAccountName(), "-1", ss.str(), "Server");
+            else if (sWorld->getBoolConfig(CONFIG_ANTI_FLOOD_HWID_MUTE_ALLOW))
+                sWorld->MuteAccount(GetAccountId(), -1, ss.str(), "Server", this);
+            else if (sWorld->getBoolConfig(CONFIG_ANTI_FLOOD_HWID_KICK_ALLOW))
+                KickPlayer();
+        }
+    }
+    */
 }

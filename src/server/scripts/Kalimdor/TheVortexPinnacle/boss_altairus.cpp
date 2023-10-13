@@ -76,7 +76,7 @@ public:
     {
         if (!_owner->HasAura(SPELL_TWISTER_AURA))
             _owner->CastSpell(_owner, SPELL_TWISTER_AURA, true);
-        _owner->m_Events.AddEvent(this, execTime + 1000);
+        _owner->_events.AddEvent(this, execTime + 1000);
         return false;
     }
 

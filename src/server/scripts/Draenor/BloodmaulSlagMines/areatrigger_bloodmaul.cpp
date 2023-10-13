@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -125,7 +125,7 @@ namespace Instances
 
 void AddSC_areatrigger_Bloodmaul()
 {
-    RegisterAreaTriggerAI(Instances::Bloodmaul::AreaTrigger_SuppresionField);
+    //RegisterAreaTriggerAI(Instances::Bloodmaul::AreaTrigger_SuppresionField);
     new Instances::Bloodmaul::AreaTrigger_at_bloodmaul_overseer_event();
     new Instances::Bloodmaul::AreaTrigger_at_magmolatus_begin_area();
     new Instances::Bloodmaul::AreaTrigger_at_SpawnSlagna();

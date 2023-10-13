@@ -1,4 +1,4 @@
-/*
+ï»¿/*
 * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
 *
 * This program is free software; you can redistribute it and/or modify it
@@ -51,7 +51,7 @@ enum
     NPC_ESTABLISH_YOUR_GARRISON_KILL_CREDIT = 79757,
 };
 
-// 79206 - Prophète Velen - Shadowmoon start
+// 79206 - Proph?e Velen - Shadowmoon start
 class npc_velen_shadowmoon_begin : public CreatureScript
 {
 public:
@@ -120,7 +120,7 @@ public:
     };
 };
 
-// 79206 - Prophète Velen - Shadowmoon start
+// 79206 - Proph?e Velen - Shadowmoon start
 class npc_velen_shadowmoon_follower : public CreatureScript
 {
 public:
@@ -383,7 +383,7 @@ struct areatrigger_aqualir_submerge : AreaTriggerAI
     }
 };
 
-//## Gara - suite de quêtes cachées chasseur
+//## Gara - suite de qu?es cach?s chasseur
 
 enum GaraQuestLineEnum
 {
@@ -477,7 +477,7 @@ public:
         if (player->GetQuestStatus(37423) == QUEST_STATUS_REWARDED && player->GetQuestStatus(37424) != QUEST_STATUS_REWARDED && player->HasItemCount(ITEM_SHADOWBERRY, 1))
             AddGossipItemFor(player, GOSSIP_ICON_CHAT, "(Beast Mastery) Show Gara the Shadowberries.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
 
-        player->PlayerTalkClass->SendGossipMenu(85645, creature->GetGUID());
+        player->playerTalkClass->SendGossipMenu(85645, creature->GetGUID());
 
         return true;
     }
@@ -487,7 +487,7 @@ public:
         if (player->getClass() != CLASS_HUNTER || player->GetSpecializationId() != TALENT_SPEC_HUNTER_BEASTMASTER)
             return false;
 
-        player->PlayerTalkClass->ClearMenus();
+        player->playerTalkClass->ClearMenus();
         if (action == GOSSIP_ACTION_INFO_DEF + 1)
         {
             SendGossipMenuFor(player, TEXT_ID_GARA_GRAVE, creature->GetGUID());
@@ -783,7 +783,7 @@ Position VoidRealmEventPos[] =
 #define SAY_OMRA_11 "She is being swallowed by the void! You must help her! There is only one way, tame her, now! Maybe you can find a way to reverse the process, and put her soul at rest, as you have done mine !"
 #define SAY_OMRA_12 "You've done it... thank you. Goodbye, Gara, my soul is at peace now. I hope... that you find this peace some day, too. I am so sorry, my dearest Gara."
 
-// 88707 - Gara invoquée dans le vide
+// 88707 - Gara invoqu? dans le vide
 class npc_void_gara : public CreatureScript
 {
 public:

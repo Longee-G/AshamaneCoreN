@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -5820,6 +5820,39 @@ struct WorldSafeLocsLoadInfo
             { false, FT_SHORT, "MapID" },
         };
         static DB2LoadInfo const loadInfo(&fields[0], std::extent<decltype(fields)>::value, WorldSafeLocsMeta::Instance(), HOTFIX_SEL_WORLD_SAFE_LOCS);
+        return &loadInfo;
+    }
+};
+
+// 加载 `CharacterLoadout.db2`
+struct CharacterLoadoutLoadInfo
+{
+    static DB2LoadInfo const* Instance()
+    {
+        static DB2FieldMeta const fields[] =
+        {
+            { true, FT_INT, "ID" },
+            { true, FT_LONG, "RaceMask" },
+            { false, FT_BYTE, "ChrClassID" },
+            { false, FT_BYTE, "Purpose" },
+        };
+        static DB2LoadInfo const loadInfo(&fields[0], std::extent<decltype(fields)>::value, CharacterLoadoutMeta::Instance(), HOTFIX_SEL_CHARACTER_LOADOUT);
+        return &loadInfo;
+    }
+};
+
+// 加载 `CharacterLoadoutItem.db2`
+struct CharacterLoadoutItemLoadInfo
+{
+    static DB2LoadInfo const* Instance()
+    {
+        static DB2FieldMeta const fields[] =
+        {
+            { true, FT_INT, "ID" },
+            { true, FT_INT, "ItemID" },
+            { false, FT_SHORT, "CharacterLoadoutID" },
+        };
+        static DB2LoadInfo const loadInfo(&fields[0], std::extent<decltype(fields)>::value, CharacterLoadoutItemMeta::Instance(), HOTFIX_SEL_CHARACTER_LOADOUT_ITEM);
         return &loadInfo;
     }
 };

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
@@ -41,133 +41,93 @@
 
 enum WarriorSpells
 {
-    SPELL_WARRIOR_ALLOW_RAGING_BLOW                 = 131116,
-    SPELL_WARRIOR_BERZERKER_RAGE_EFFECT             = 23691,
-    SPELL_WARRIOR_BLADESTORM_PERIODIC_WHIRLWIND     = 50622,
-    SPELL_WARRIOR_BLOODTHIRST                       = 23885,
-    SPELL_WARRIOR_BLOODTHIRST_DAMAGE                = 23881,
-    SPELL_WARRIOR_BLOODTHIRST_HEAL                  = 117313,
-    SPELL_WARRIOR_BLOOD_AND_THUNDER                 = 84615,
-    SPELL_WARRIOR_BOUNDING_STRIDE                   = 202163,
-    SPELL_WARRIOR_BOUNDING_STRIDE_SPEED             = 202164,
-    SPELL_WARRIOR_CHARGE                            = 34846,
-    SPELL_WARRIOR_CHARGE_EFFECT                     = 218104,
-    SPELL_WARRIOR_CHARGE_EFFECT_BLAZING_TRAIL       = 198337,
-    SPELL_WARRIOR_CHARGE_PAUSE_RAGE_DECAY           = 109128,
-    SPELL_WARRIOR_CHARGE_ROOT_EFFECT                = 105771,
-    SPELL_WARRIOR_CHARGE_SLOW_EFFECT                = 236027,
-    SPELL_WARRIOR_COLOSSUS_SMASH                    = 167105,
-    SPELL_WARRIOR_COLOSSUS_SMASH_BUFF               = 208086,
-    SPELL_WARRIOR_DEEP_WOUNDS                       = 115767,
-    SPELL_WARRIOR_DEEP_WOUNDS_PERIODIC              = 12721,
-    SPELL_WARRIOR_DEEP_WOUNDS_RANK_1                = 12162,
-    SPELL_WARRIOR_DEEP_WOUNDS_RANK_2                = 12850,
-    SPELL_WARRIOR_DEEP_WOUNDS_RANK_3                = 12868,
-    SPELL_WARRIOR_DEEP_WOUNDS_RANK_PERIODIC         = 12721,
-    SPELL_WARRIOR_DEVASTATE                         = 20243,
-    SPELL_WARRIOR_DOUBLE_TIME                       = 103827,
-    SPELL_WARRIOR_DRAGON_ROAR_KNOCK_BACK            = 118895,
-    SPELL_WARRIOR_ENRAGE                            = 184361,
-    SPELL_WARRIOR_ENRAGE_AURA                       = 184362,
-    SPELL_WARRIOR_EXECUTE                           = 163201,
-    SPELL_WARRIOR_EXECUTE_PVP                       = 217955,
-    SPELL_WARRIOR_FOCUSED_RAGE_ARMS                 = 207982,
-    SPELL_WARRIOR_FOCUSED_RAGE_PROTECTION           = 204488,
-    SPELL_WARRIOR_FURIOUS_SLASH                     = 100130,
-    SPELL_WARRIOR_GLYPH_OF_THE_BLAZING_TRAIL        = 123779,
-    SPELL_WARRIOR_GLYPH_OF_EXECUTION                = 58367,
-    SPELL_WARRIOR_GLYPH_OF_HEROIC_LEAP              = 159708,
-    SPELL_WARRIOR_GLYPH_OF_HEROIC_LEAP_BUFF         = 133278,
-    SPELL_WARRIOR_GLYPH_OF_HINDERING_STRIKES        = 58366,
-    SPELL_WARRIOR_GLYPH_OF_MORTAL_STRIKE            = 58368,
-    SPELL_WARRIOR_HEAVY_REPERCUSSIONS               = 203177,
-    SPELL_WARRIOR_HEROIC_LEAP_DAMAGE                = 52174,
-    SPELL_WARRIOR_HEROIC_LEAP_JUMP                  = 94954,
-    SPELL_WARRIOR_HEROIC_LEAP_SPEED                 = 133278,
-    SPELL_WARRIOR_IGNORE_PAIN                       = 190456,
-    SPELL_WARRIOR_IMPENDING_VICTORY                 = 202168,
-    SPELL_WARRIOR_IMPROVED_HEROIC_LEAP              = 157449,
-    SPELL_WARRIOR_INTERCEPT_STUN                    = 105771,
-    SPELL_WARRIOR_INTERVENE_TRIGGER                 = 147833,
-    SPELL_WARRIOR_ITEM_PVP_SET_4P_BONUS             = 133277,
-    SPELL_WARRIOR_JUGGERNAUT_CRIT_BONUS_BUFF        = 65156,
-    SPELL_WARRIOR_JUGGERNAUT_CRIT_BONUS_TALENT      = 64976,
-    SPELL_WARRIOR_JUMP_TO_SKYHOLD_AURA              = 215997,
-    SPELL_WARRIOR_JUMP_TO_SKYHOLD_JUMP              = 192085,
-    SPELL_WARRIOR_JUMP_TO_SKYHOLD_TELEPORT          = 216016,
-    SPELL_WARRIOR_LAST_STAND_TRIGGERED              = 12976,
-    SPELL_WARRIOR_MASSACRE                          = 206315,
-    SPELL_WARRIOR_MEAT_CLEAVER_PROC                 = 85739,
-    SPELL_WARRIOR_MOCKING_BANNER_TAUNT              = 114198,
-    SPELL_WARRIOR_MORTAL_STRIKE                     = 12294,
-    SPELL_WARRIOR_MORTAL_STRIKE_AURA                = 12294,
-    SPELL_WARRIOR_MORTAL_WOUNDS                     = 213667,
-    SPELL_WARRIOR_NEW_BLADESTORM                    = 222634,
-    SPELL_WARRIOR_OLD_BLADESTORM                    = 227847,
-    SPELL_WARRIOR_OPPORTUNITY_STRIKE_DAMAGE         = 76858,
-    SPELL_WARRIOR_OVERPOWER_PROC                    = 60503,
-    SPELL_WARRIOR_RALLYING_CRY                      = 97463,
-    SPELL_WARRIOR_RALLYING_CRY_TRIGGER              = 97463,
-    SPELL_WARRIOR_RAMPAGE                           = 184367,
-    SPELL_WARRIOR_RAVAGER                           = 152277,
-    SPELL_WARRIOR_RAVAGER_DAMAGE                    = 156287,
-    SPELL_WARRIOR_RAVAGER_ENERGIZE                  = 248439,
-    SPELL_WARRIOR_RAVAGER_PARRY                     = 227744,
-    SPELL_WARRIOR_RAVAGER_SUMMON                    = 227876,
-    SPELL_WARRIOR_REND                              = 94009,
-    SPELL_WARRIOR_RENEWED_FURY                      = 202288,
-    SPELL_WARRIOR_RENEWED_FURY_EFFECT               = 202289,
-    SPELL_WARRIOR_RETALIATION_DAMAGE                = 22858,
-    SPELL_WARRIOR_SECOND_WIND_DAMAGED               = 202149,
-    SPELL_WARRIOR_SECOND_WIND_HEAL                  = 202147,
-    SPELL_WARRIOR_SHIELD_BLOCKC_TRIGGERED           = 132404,
-    SPELL_WARRIOR_SHIELD_SLAM                       = 23922,
-    SPELL_WARRIOR_SHOCKWAVE                         = 46968,
-    SPELL_WARRIOR_SHOCKWAVE_STUN                    = 132168,
-    SPELL_WARRIOR_SLAM                              = 50782,
-    SPELL_WARRIOR_SLAM_ARMS                         = 1464,
-    SPELL_WARRIOR_SLUGGISH                          = 129923,
-    SPELL_WARRIOR_STORM_BOLT_STUN                   = 132169,
-    SPELL_WARRIOR_SUNDER_ARMOR                      = 58567,
-    SPELL_WARRIOR_SWEEPING_STRIKES_EXTRA_ATTACK     = 26654,
-    SPELL_WARRIOR_SWEEPING_STRIKES_EXTRA_ATTACK_1   = 12723,
-    SPELL_WARRIOR_SWEEPING_STRIKES_EXTRA_ATTACK_2   = 26654,
-    SPELL_WARRIOR_SWORD_AND_BOARD                   = 50227,
-    SPELL_WARRIOR_TACTICIAN_CD                      = 199854,
-    SPELL_WARRIOR_TASTE_FOR_BLOOD                   = 206333,
-    SPELL_WARRIOR_TASTE_FOR_BLOOD_DAMAGE_DONE       = 125831,
-    SPELL_WARRIOR_TAUNT                             = 355,
-    SPELL_WARRIOR_THUNDERSTRUCK                     = 199045,
-    SPELL_WARRIOR_THUNDERSTRUCK_STUN                = 199042,
-    SPELL_WARRIOR_THUNDER_CLAP                      = 6343,
-    SPELL_WARRIOR_TRAUMA_DOT                        = 215537,
-    SPELL_WARRIOR_UNCHACKLED_FURY                   = 76856,
-    SPELL_WARRIOR_UNRELENTING_ASSAULT_RANK_1        = 46859,
-    SPELL_WARRIOR_UNRELENTING_ASSAULT_RANK_2        = 46860,
-    SPELL_WARRIOR_UNRELENTING_ASSAULT_TRIGGER_1     = 64849,
-    SPELL_WARRIOR_UNRELENTING_ASSAULT_TRIGGER_2     = 64850,
-    SPELL_WARRIOR_VENGEANCE                         = 76691,
-    SPELL_WARRIOR_VENGEANCE_AURA                    = 202572,
-    SPELL_WARRIOR_VENGEANCE_FOCUSED_RAGE            = 202573,
-    SPELL_WARRIOR_VENGEANCE_IGNORE_PAIN             = 202574,
-    SPELL_WARRIOR_VICTORIOUS_STATE                  = 32216,
-    SPELL_WARRIOR_VICTORY_RUSH_DAMAGE               = 34428,
-    SPELL_WARRIOR_VICTORY_RUSH_HEAL                 = 118779,
-    SPELL_WARRIOR_VIGILANCE_PROC                    = 50725,
-    SPELL_WARRIOR_WAR_MACHINE_TALENT_AURA           = 215556,
-    SPELL_WARRIOR_WAR_MACHINE_AURA                  = 215566,
-    SPELL_WARRIOR_WARBRINGER                        = 103828,
-    SPELL_WARRIOR_WARBRINGER_ROOT                   = 105771,
-    SPELL_WARRIOR_WARBRINGER_SNARE                  = 137637,
-    SPELL_WARRIOR_WEAKENED_BLOWS                    = 115798,
-    SPELL_WARRIOR_WHIRLWIND                         = 190411,
-    SPELL_WARRIOR_WHIRLWIND_ARMS                    = 1680,
-    SPELL_WARRIOR_WHIRLWIND_MAINHAND                = 199667,
-    SPELL_WARRIOR_WHIRLWIND_OFFHAND                 = 44949,
-    SPELL_WARRIOR_WRECKING_BALL_EFFECT              = 215570,
-    SPELL_WARRIOR_COMMANDING_SHOUT                  = 97463,
+    SPELL_WARRIOR_TAUNT                             = 355,              // 嘲讽
+    SPELL_WARRIOR_SLAM_ARMS                         = 1464,             // 猛击
+    SPELL_WARRIOR_THUNDER_CLAP                      = 6343,             // 雷霆一击
+    SPELL_WARRIOR_MORTAL_STRIKE                     = 12294,            // 致死打击    
+    SPELL_WARRIOR_DEVASTATE                         = 20243,            // 毁灭打击
+    SPELL_WARRIOR_RETALIATION_DAMAGE                = 22858,            // 反击风暴
+    SPELL_WARRIOR_BERZERKER_RAGE_EFFECT             = 23691,            // 狂暴之怒效果
+    SPELL_WARRIOR_BLOODTHIRST_DAMAGE                = 23881,            // 嗜血
+    SPELL_WARRIOR_SHIELD_SLAM                       = 23922,            // 盾牌猛击
+    SPELL_WARRIOR_VICTORIOUS_STATE                  = 32216,            // 胜利 -- 乘胜追击开启...
+    SPELL_WARRIOR_VICTORY_RUSH_DAMAGE               = 34428,            // 乘胜追击
+    SPELL_WARRIOR_WHIRLWIND_OFFHAND                 = 44949,            // 副手旋风斩
+    SPELL_WARRIOR_SHOCKWAVE                         = 46968,            // 振荡波
+    SPELL_WARRIOR_BLADESTORM_PERIODIC_WHIRLWIND     = 50622,            // 剑刃风暴
+    SPELL_WARRIOR_HEROIC_LEAP_DAMAGE                = 52174,            // 英勇飞跃
+    SPELL_WARRIOR_OVERPOWER_PROC                    = 60503,            // 压制
+    SPELL_WARRIOR_CLEAVE_AURA                       = 188923,           // 顺劈斩 Aura
+    SPELL_WARRIOR_UNCHACKLED_FURY                   = 76856,            // 不羁之怒
+    SPELL_WARRIOR_MEAT_CLEAVER_PROC                 = 85739,            // 血肉顺劈
+    SPELL_WARRIOR_HEROIC_LEAP_JUMP                  = 94954,            // [DND] Cosmetic Heroic Leap (Dest)
 
-    NPC_WARRIOR_RAVAGER                             = 76168,
+    SPELL_WARRIOR_COMMANDING_SHOUT_AURA             = 97463,            // 命令怒吼
+
+    SPELL_WARRIOR_FURIOUS_SLASH                     = 100130,           // 狂暴挥砍
+    SPELL_WARRIOR_DOUBLE_TIME                       = 103827,           // 再度冲锋..
+    SPELL_WARRIOR_WARBRINGER                        = 103828,           // 战神
+    SPELL_WARRIOR_CHARGE_ROOT_EFFECT                = 105771,           // 被冲锋后的效果：定身
+    SPELL_WARRIOR_CHARGE_SLOW_EFFECT                = 236027,           // 被冲锋后的效果：减速
+    SPELL_WARRIOR_CHARGE_PAUSE_RAGE_DECAY           = 109128,           // 释放冲锋后的效果..
+    SPELL_WARRIOR_CHARGE_EFFECT                     = 218104,           // 冲锋效果触发1...
+    SPELL_WARRIOR_CHARGE_EFFECT_BLAZING_TRAIL       = 198337,           // 冲锋效果触发2...
+    SPELL_WARRIOR_DEEP_WOUNDS                       = 115767,           // 重伤
+    SPELL_WARRIOR_ALLOW_RAGING_BLOW                 = 131116,           // 怒击
+    SPELL_WARRIOR_BLOODTHIRST_HEAL                  = 117313,           // 嗜血治疗
+    SPELL_WARRIOR_BOUNDING_STRIDE                   = 202163,           // 腾跃步伐
+    SPELL_WARRIOR_BOUNDING_STRIDE_SPEED             = 202164,           // 腾跃步伐 buff
+    SPELL_WARRIOR_COLOSSUS_SMASH                    = 167105,           // 巨人打击
+    SPELL_WARRIOR_COLOSSUS_SMASH_BUFF               = 208086,           // 巨人打击 buff？ 使用167105命中目标后，给目标加这个buff
+    SPELL_WARRIOR_ENRAGE                            = 184361,       // 激怒
+    SPELL_WARRIOR_ENRAGE_AURA                       = 184362,       // 激怒 buff
+    SPELL_WARRIOR_EXECUTE                           = 163201,       // 斩杀
+    SPELL_WARRIOR_EXECUTE_PVP                       = 217955,       // 斩杀
+    SPELL_WARRIOR_FOCUSED_RAGE_ARMS                 = 207982,       // 怒火聚焦
+    SPELL_WARRIOR_FOCUSED_RAGE_PROTECTION           = 204488,       // 怒火聚焦
+    SPELL_WARRIOR_GLYPH_OF_THE_BLAZING_TRAIL        = 123779,       // 烈焰开道雕文
+    SPELL_WARRIOR_HEAVY_REPERCUSSIONS               = 203177,       // 强力反击
+    SPELL_WARRIOR_IGNORE_PAIN                       = 190456,       // 无视痛苦
+    SPELL_WARRIOR_IMPENDING_VICTORY                 = 202168,       // 胜利在望
+    SPELL_WARRIOR_INTERVENE_TRIGGER                 = 147833,       // 援护
+    SPELL_WARRIOR_ITEM_PVP_SET_4P_BONUS             = 133277,       // Item - Warrior PvP Set 4P Bonus -- 使用英勇飞跃后，移动速度提高
+    SPELL_WARRIOR_JUMP_TO_SKYHOLD_AURA              = 215997,       // 奥丁的凝视
+    SPELL_WARRIOR_JUMP_TO_SKYHOLD_JUMP              = 192085,       // 飞跃至`苍穹要塞`
+    SPELL_WARRIOR_JUMP_TO_SKYHOLD_TELEPORT          = 216016,       // 飞跃至`苍穹要塞`
+    SPELL_WARRIOR_MASSACRE                          = 206315,       // 屠杀
+    SPELL_WARRIOR_MORTAL_WOUNDS                     = 115804,       // 致死之伤
+    SPELL_WARRIOR_NEW_BLADESTORM                    = 222634,       // 剑刃风暴
+    SPELL_WARRIOR_OLD_BLADESTORM                    = 227847,       // 剑刃风暴
+    SPELL_WARRIOR_RAMPAGE                           = 184367,       // 暴怒
+    SPELL_WARRIOR_RAVAGER                           = 152277,       // 破坏者 -- 技能
+    SPELL_WARRIOR_RAVAGER_DAMAGE                    = 156287,       // 破坏者 -- debuff?
+    SPELL_WARRIOR_RAVAGER_ENERGIZE                  = 248439,       // 破坏者
+    SPELL_WARRIOR_RAVAGER_PARRY                     = 227744,       // 破坏者
+    SPELL_WARRIOR_RAVAGER_SUMMON                    = 227876,       // 破坏者
+    SPELL_WARRIOR_RENEWED_FURY                      = 202288,       // 狂暴复兴
+    SPELL_WARRIOR_RENEWED_FURY_EFFECT               = 202289,       // 狂暴复兴 buff
+    SPELL_WARRIOR_SECOND_WIND_DAMAGED               = 202149,       // 复苏之风
+    SPELL_WARRIOR_SECOND_WIND_HEAL                  = 202147,       // 复苏之风
+    SPELL_WARRIOR_SHIELD_BLOCK_AURA                 = 132404,       // 盾牌格挡
+    SPELL_WARRIOR_SHOCKWAVE_STUN                    = 132168,       // 振荡波
+    SPELL_WARRIOR_STORM_BOLT_STUN                   = 132169,       // 风暴之锤
+    SPELL_WARRIOR_TACTICIAN_CD                      = 199854,       // 战术专家
+    SPELL_WARRIOR_TASTE_FOR_BLOOD                   = 206333,       // 血腥气息
+    SPELL_WARRIOR_THUNDERSTRUCK                     = 199045,       // 雷霆打击
+    SPELL_WARRIOR_THUNDERSTRUCK_STUN                = 199042,       // 雷霆打击     荣誉天赋
+    SPELL_WARRIOR_TRAUMA_DOT                        = 215537,       // 创伤
+    SPELL_WARRIOR_VENGEANCE_AURA                    = 202572,       // 报复
+    SPELL_WARRIOR_VENGEANCE_FOCUSED_RAGE            = 202573,       // 报复：复仇
+    SPELL_WARRIOR_VENGEANCE_IGNORE_PAIN             = 202574,       // 报复：无视苦痛
+    SPELL_WARRIOR_VICTORY_RUSH_HEAL                 = 118779,       // 乘胜追击
+    SPELL_WARRIOR_WAR_MACHINE_TALENT_AURA           = 215556,       // 战争机器
+    SPELL_WARRIOR_WAR_MACHINE_AURA                  = 215566,       // 战争机器 buff
+    SPELL_WARRIOR_WHIRLWIND                         = 190411,       // 旋风斩
+    SPELL_WARRIOR_WHIRLWIND_MAINHAND                = 199667,       // 旋风斩
+    SPELL_WARRIOR_WHIRLWIND_ARMS                    = 1680,         // 旋风斩
+    SPELL_WARRIOR_WRECKING_BALL_EFFECT              = 215570,       // 摧枯拉朽
+
+    NPC_WARRIOR_RAVAGER = 76168,            // 乌钢带扣
 };
 
 enum WarriorSpellIcons
@@ -178,29 +138,49 @@ enum WarriorSpellIcons
 enum MiscSpells
 {
     SPELL_VISUAL_BLAZING_CHARGE                     = 26423,
-    SPELL_PALADIN_BLESSING_OF_SANCTUARY             = 20911,
-    SPELL_PALADIN_GREATER_BLESSING_OF_SANCTUARY     = 25899,
-    SPELL_PRIEST_RENEWED_HOPE                       = 63944
 };
 
-// 97462 Commanding Shout 7.3.5
+// 97462 - Commanding Shout <命令怒吼>
 class spell_warr_commanding_shout : public SpellScript
 {
     PrepareSpellScript(spell_warr_commanding_shout);
 
     void HandleScript(SpellEffIndex /*effIndex*/)
     {
+        // 在这里出现bug了，这个script本来就是, 将buff给小队的玩家..
+        // 处理的过程应该和萨满的`嗜血`相同
+        // `命令怒火` 不需要目标的...
         if (Unit* target = GetHitUnit())
-            GetCaster()->CastSpell(target, SPELL_WARRIOR_COMMANDING_SHOUT, true);
+            GetCaster()->CastSpell(target, SPELL_WARRIOR_COMMANDING_SHOUT_AURA, true);
+    }
+
+    // 选择合适的目标，之后将这些目标上指定的aura...
+    // 这个targets到底有多少人？包含非小队成员吗？
+    void SelectTargets(std::list<WorldObject*>& targets)
+    {
+        targets.remove_if([](WorldObject* target)
+        {
+            if (Unit* p = target->ToUnit())
+            {
+                // 命令怒吼能叠加吗？
+                return (p->HasAura(SPELL_WARRIOR_COMMANDING_SHOUT_AURA));
+            }
+            else
+            {
+                return false;
+            }
+        });
     }
 
     void Register() override
     {
         OnEffectHitTarget += SpellEffectFn(spell_warr_commanding_shout::HandleScript, EFFECT_0, SPELL_EFFECT_DUMMY);
+        // `spellEffect.db2`中设置的target是TARGET_UNIT_CASTER_AREA_RAID(56)指的是什么呢？
+        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_warr_commanding_shout::SelectTargets, EFFECT_0, TARGET_UNIT_CASTER_AREA_RAID);
     }
 };
 
-// Jump to Skyhold Jump - 192085
+// 192085 - Jump to Skyhold Jump <跳至苍穹要塞>
 class spell_warr_jump_to_skyhold : public SpellScriptLoader
 {
 public:
@@ -212,9 +192,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_WARRIOR_JUMP_TO_SKYHOLD_TELEPORT))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_WARRIOR_JUMP_TO_SKYHOLD_TELEPORT });
         }
 
         void HandleJump(SpellEffIndex effIndex)
@@ -248,8 +226,7 @@ public:
     }
 };
 
-
-// Rampage damage dealers - 218617, 184707, 184709, 201364, 201363
+// 218617, 184707, 184709, 201364, 201363 - Rampage damage dealers <暴怒buff>
 class spell_warr_rampage : public SpellScriptLoader
 {
 public:
@@ -299,7 +276,7 @@ public:
     }
 };
 
-// Whirlwind - 190411
+// 190411, 1680 - Whirlwind <旋风斩>
 class spell_warr_whirlwind : public SpellScript
 {
     PrepareSpellScript(spell_warr_whirlwind);
@@ -317,14 +294,22 @@ class spell_warr_whirlwind : public SpellScript
                 caster->RemoveAura(SPELL_WARRIOR_WRECKING_BALL_EFFECT);
     }
 
+    void HandleAfterHit()
+    {   
+        if (Player* caster = GetCaster()->ToPlayer())
+            if (caster->HasAura(SPELL_WARRIOR_CLEAVE_AURA))
+                caster->RemoveAura(SPELL_WARRIOR_CLEAVE_AURA);// remove CLEAVE aura after whirlwind hit all targets.
+    }
+
     void Register() override
     {
         OnCast += SpellCastFn(spell_warr_whirlwind::HandleProc);
         AfterCast += SpellCastFn(spell_warr_whirlwind::HandleAfterCast);
+        AfterHit += SpellHitFn(spell_warr_whirlwind::HandleAfterHit);
     }
 };
 
-// Meat Cleaver - 12950
+// 12950 - Whirlwind Rank 2 <旋风斩> 
 class spell_warr_meat_cleaver : public SpellScriptLoader
 {
 public:
@@ -351,37 +336,39 @@ public:
     }
 };
 
-// Enrage - 184361
-class spell_warr_enrage : public SpellScriptLoader
+// 845 - Cleave 顺劈斩, 当击中目标时，给自己上[aura:188923]
+class spell_warr_cleave : public SpellScriptLoader
 {
 public:
-    spell_warr_enrage() : SpellScriptLoader("spell_warr_enrage") {}
-
-    class spell_warr_enrage_AuraScript : public AuraScript
+    spell_warr_cleave() : SpellScriptLoader("spell_warr_cleave") {}
+    class spell_warr_cleave_SpellScript : public SpellScript
     {
-        PrepareAuraScript(spell_warr_enrage_AuraScript);
+        PrepareSpellScript(spell_warr_cleave_SpellScript);
 
-        bool CheckProc(ProcEventInfo& eventInfo)
+        void HandleOnHit()
         {
-            if (eventInfo.GetSpellInfo()->Id == SPELL_WARRIOR_BLOODTHIRST_DAMAGE &&
-                eventInfo.GetHitMask() & PROC_HIT_CRITICAL)
-                return true;
-            return false;
+            if(Player* player = GetCaster()->ToPlayer())
+                if (Unit* victim = GetHitUnit())
+                {
+                    // 对自己施放buff，这个buff可以叠加5次..
+                    player->CastSpell(player, SPELL_WARRIOR_CLEAVE_AURA, true);
+                }
         }
 
         void Register() override
         {
-            DoCheckProc += AuraCheckProcFn(spell_warr_enrage_AuraScript::CheckProc);
+            OnHit += SpellHitFn(spell_warr_cleave_SpellScript::HandleOnHit);
         }
     };
-
-    AuraScript* GetAuraScript() const override
+    SpellScript* GetSpellScript() const override
     {
-        return new spell_warr_enrage_AuraScript();
+        return new spell_warr_cleave_SpellScript();
     }
 };
 
-// Taste for Blood - 206333
+
+
+// 206333 - Taste for Blood <血腥气息>
 class spell_warr_taste_for_blood : public SpellScriptLoader
 {
 public:
@@ -415,7 +402,37 @@ public:
     }
 };
 
-// Enrage Aura - 184362
+// 184361 - Enrage <激怒>
+class spell_warr_enrage : public SpellScriptLoader
+{
+public:
+    spell_warr_enrage() : SpellScriptLoader("spell_warr_enrage") {}
+
+    class spell_warr_enrage_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_warr_enrage_AuraScript);
+
+        bool CheckProc(ProcEventInfo& eventInfo)
+        {
+            if (eventInfo.GetSpellInfo()->Id == SPELL_WARRIOR_BLOODTHIRST_DAMAGE &&
+                eventInfo.GetHitMask() & PROC_HIT_CRITICAL)
+                return true;
+            return false;
+        }
+
+        void Register() override
+        {
+            DoCheckProc += AuraCheckProcFn(spell_warr_enrage_AuraScript::CheckProc);
+        }
+    };
+
+    AuraScript* GetAuraScript() const override
+    {
+        return new spell_warr_enrage_AuraScript();
+    }
+};
+
+// 184362 - Enrage Aura <激怒buff>
 class spell_warr_enrage_aura : public SpellScriptLoader
 {
 public:
@@ -434,6 +451,7 @@ public:
 
         void Register() override
         {
+            // [Longee] 这个处理看不懂...
             OnEffectRemove += AuraEffectRemoveFn(spell_warr_enrage_aura_AuraScript::HandleRemove, EFFECT_0, SPELL_AURA_MOD_MELEE_RANGED_HASTE_2, AURA_EFFECT_HANDLE_REAL);
         }
     };
@@ -444,7 +462,7 @@ public:
     }
 };
 
-// Bloodthirst - 23881
+// 23881 - Bloodthirst   <嗜血>
 class spell_warr_bloodthirst : public SpellScriptLoader
 {
 public:
@@ -488,35 +506,7 @@ public:
     }
 };
 
-// 59725 - Improved Spell Reflection
-class spell_warr_improved_spell_reflection : public SpellScriptLoader
-{
-public:
-    spell_warr_improved_spell_reflection() : SpellScriptLoader("spell_warr_improved_spell_reflection") { }
-
-    class spell_warr_improved_spell_reflection_SpellScript : public SpellScript
-    {
-        PrepareSpellScript(spell_warr_improved_spell_reflection_SpellScript);
-
-        void FilterTargets(std::list<WorldObject*>& unitList)
-        {
-            if (GetCaster())
-                unitList.remove(GetCaster());
-        }
-
-        void Register() override
-        {
-            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_warr_improved_spell_reflection_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_CASTER_AREA_PARTY);
-        }
-    };
-
-    SpellScript* GetSpellScript() const override
-    {
-        return new spell_warr_improved_spell_reflection_SpellScript();
-    }
-};
-
-// 5246 - Intimidating Shout
+// 5246 - Intimidating Shout <破胆怒吼>
 class spell_warr_intimidating_shout : public SpellScriptLoader
 {
 public:
@@ -526,6 +516,7 @@ public:
     {
         PrepareSpellScript(spell_warr_intimidating_shout_SpellScript);
 
+
         void FilterTargets(std::list<WorldObject*>& unitList)
         {
             unitList.remove(GetExplTargetWorldObject());
@@ -533,8 +524,9 @@ public:
 
         void Register() override
         {
-            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_warr_intimidating_shout_SpellScript::FilterTargets, EFFECT_1, TARGET_UNIT_SRC_AREA_ENEMY);
             OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_warr_intimidating_shout_SpellScript::FilterTargets, EFFECT_2, TARGET_UNIT_SRC_AREA_ENEMY);
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_warr_intimidating_shout_SpellScript::FilterTargets, EFFECT_3, TARGET_UNIT_SRC_AREA_ENEMY);
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_warr_intimidating_shout_SpellScript::FilterTargets, EFFECT_5, TARGET_UNIT_SRC_AREA_ENEMY);
         }
     };
 
@@ -544,45 +536,10 @@ public:
     }
 };
 
-// -84583 Lambs to the Slaughter
-class spell_warr_lambs_to_the_slaughter : public SpellScriptLoader
-{
-public:
-    spell_warr_lambs_to_the_slaughter() : SpellScriptLoader("spell_warr_lambs_to_the_slaughter") { }
 
-    class spell_warr_lambs_to_the_slaughter_AuraScript : public AuraScript
-    {
-        PrepareAuraScript(spell_warr_lambs_to_the_slaughter_AuraScript);
-
-        bool Validate(SpellInfo const* /*spellInfo*/) override
-        {
-            if (!sSpellMgr->GetSpellInfo(SPELL_WARRIOR_MORTAL_STRIKE) ||
-                !sSpellMgr->GetSpellInfo(SPELL_WARRIOR_REND))
-                return false;
-            return true;
-        }
-
-        void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
-        {
-            if (Aura* aur = eventInfo.GetProcTarget()->GetAura(SPELL_WARRIOR_REND, GetTarget()->GetGUID()))
-                aur->SetDuration(aur->GetSpellInfo()->GetMaxDuration(), true);
-
-        }
-
-        void Register() override
-        {
-            OnEffectProc += AuraEffectProcFn(spell_warr_lambs_to_the_slaughter_AuraScript::OnProc, EFFECT_0, SPELL_AURA_PROC_TRIGGER_SPELL);
-        }
-    };
-
-    AuraScript* GetAuraScript() const override
-    {
-        return new spell_warr_lambs_to_the_slaughter_AuraScript();
-    }
-};
 
 /// Updated 4.3.4
-// 12975 - Last Stand
+// 12975 - Last Stand   <破釜沉舟>
 class spell_warr_last_stand : public SpellScriptLoader
 {
 public:
@@ -594,22 +551,27 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_WARRIOR_LAST_STAND_TRIGGERED))
-                return false;
+#if GAME_BUILD >= LEGION_735
             return true;
+#else
+            return ValidateSpellInfo({ SPELL_WARRIOR_LAST_STAND_TRIGGERED });
+#endif
         }
 
         void HandleDummy(SpellEffIndex /*effIndex*/)
         {
-            Unit* caster = GetCaster();
-            int32 healthModSpellBasePoints0 = int32(caster->CountPctFromMaxHealth(GetEffectValue()));
-            caster->CastCustomSpell(caster, SPELL_WARRIOR_LAST_STAND_TRIGGERED, &healthModSpellBasePoints0, NULL, NULL, true, NULL);
+            // FIXME: deprecated spell
+            //Unit* caster = GetCaster();
+            //int32 healthModSpellBasePoints0 = int32(caster->CountPctFromMaxHealth(GetEffectValue()));
+            //caster->CastCustomSpell(caster, SPELL_WARRIOR_LAST_STAND_TRIGGERED, &healthModSpellBasePoints0, NULL, NULL, true, NULL);
         }
 
         void Register() override
         {
+#if GAME_BUILD < LEGION_735
             // add dummy effect spell handler to Last Stand
             OnEffectHit += SpellEffectFn(spell_warr_last_stand_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+#endif
         }
     };
 
@@ -619,7 +581,7 @@ public:
     }
 };
 
-// 7384 - Overpower
+// 7384 - Overpower <压制>
 class spell_warr_overpower : public SpellScriptLoader
 {
 public:
@@ -634,11 +596,13 @@ public:
             if (!GetCaster())
                 return;
 
+            // FIXME: 压制--旧的版本使用的spell在735中废弃了，需要重新编写代码
+
             uint32 spellId = 0;
-            if (GetCaster()->HasAura(SPELL_WARRIOR_UNRELENTING_ASSAULT_RANK_1))
-                spellId = SPELL_WARRIOR_UNRELENTING_ASSAULT_TRIGGER_1;
-            else if (GetCaster()->HasAura(SPELL_WARRIOR_UNRELENTING_ASSAULT_RANK_2))
-                spellId = SPELL_WARRIOR_UNRELENTING_ASSAULT_TRIGGER_2;
+            //if (GetCaster()->HasAura(SPELL_WARRIOR_UNRELENTING_ASSAULT_RANK_1))
+            //    spellId = SPELL_WARRIOR_UNRELENTING_ASSAULT_TRIGGER_1;
+            //else if (GetCaster()->HasAura(SPELL_WARRIOR_UNRELENTING_ASSAULT_RANK_2))
+            //    spellId = SPELL_WARRIOR_UNRELENTING_ASSAULT_TRIGGER_2;
 
             if (!spellId)
                 return;
@@ -660,7 +624,7 @@ public:
     }
 };
 
-// 94009 - Rend
+// 94009 - Rend <撕裂><deprecated>
 class spell_warr_rend : public SpellScriptLoader
 {
 public:
@@ -698,7 +662,7 @@ public:
     }
 };
 
-// 20230 - Retaliation
+// 20230 - Retaliation <报复><deprecated>
 class spell_warr_retaliation : public SpellScriptLoader
 {
 public:
@@ -710,9 +674,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_WARRIOR_RETALIATION_DAMAGE))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_WARRIOR_RETALIATION_DAMAGE });
         }
 
         bool CheckProc(ProcEventInfo& eventInfo)
@@ -740,7 +702,7 @@ public:
     }
 };
 
-// 64380, 65941 - Shattering Throw
+// 64380, 65941 - Shattering Throw <碎裂投掷>
 class spell_warr_shattering_throw : public SpellScriptLoader
 {
 public:
@@ -772,6 +734,8 @@ public:
 };
 
 /// Updated 4.3.4
+// 1464 - <猛击>
+// 7.3.5 的<猛击>不再给目标上debuff...
 class spell_warr_slam : public SpellScriptLoader
 {
 public:
@@ -783,20 +747,21 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_WARRIOR_SLAM))
-                return false;
+            //return ValidateSpellInfo({ 187073 });
             return true;
         }
 
         void HandleDummy(SpellEffIndex /*effIndex*/)
         {
-            if (GetHitUnit())
-                GetCaster()->CastCustomSpell(SPELL_WARRIOR_SLAM, SPELLVALUE_BASE_POINT0, GetEffectValue(), GetHitUnit(), TRIGGERED_FULL_MASK);
+            //if (GetHitUnit())
+            //    GetCaster()->CastCustomSpell(/*SPELL_WARRIOR_SLAM*/187073, SPELLVALUE_BASE_POINT0, GetEffectValue(), GetHitUnit(), TRIGGERED_FULL_MASK);
         }
 
         void Register() override
         {
-            OnEffectHitTarget += SpellEffectFn(spell_warr_slam_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+            m_deprecated = true;
+            // (0, 3) ==> (0, 137)
+            //OnEffectHitTarget += SpellEffectFn(spell_warr_slam_SpellScript::HandleDummy, EFFECT_0, /*SPELL_EFFECT_DUMMY*/SPELL_EFFECT_ENERGIZE_PCT);
         }
     };
 
@@ -806,6 +771,7 @@ public:
     }
 };
 
+// 29838 - <复苏之风>
 class spell_warr_second_wind_proc : public SpellScriptLoader
 {
 public:
@@ -817,10 +783,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_WARRIOR_SECOND_WIND_DAMAGED) ||
-                !sSpellMgr->GetSpellInfo(SPELL_WARRIOR_SECOND_WIND_HEAL))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_WARRIOR_SECOND_WIND_DAMAGED, SPELL_WARRIOR_SECOND_WIND_HEAL });
         }
 
         void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
@@ -844,6 +807,7 @@ public:
     }
 };
 
+// 202149 - <复苏之风><aura>
 class spell_warr_second_wind_damaged : public SpellScriptLoader
 {
 public:
@@ -888,7 +852,7 @@ public:
     }
 };
 
-// 52437 - Sudden Death
+// 52437 - Sudden Death <猝死>
 class spell_warr_sudden_death : public SpellScriptLoader
 {
 public:
@@ -900,9 +864,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_WARRIOR_COLOSSUS_SMASH))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_WARRIOR_COLOSSUS_SMASH });
         }
 
         void HandleApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
@@ -914,7 +876,8 @@ public:
 
         void Register() override
         {
-            AfterEffectApply += AuraEffectRemoveFn(spell_warr_sudden_death_AuraScript::HandleApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL); // correct?
+            // 7.3.5 SPELL_AURA_DUMMY -> SPELL_AURA_ABILITY_IGNORE_AURASTATE
+            AfterEffectApply += AuraEffectRemoveFn(spell_warr_sudden_death_AuraScript::HandleApply, EFFECT_0, SPELL_AURA_ABILITY_IGNORE_AURASTATE, AURA_EFFECT_HANDLE_REAL);
         }
     };
 
@@ -924,7 +887,7 @@ public:
     }
 };
 
-// 12328, 18765, 35429 - Sweeping Strikes
+// 18765, 35429 - Sweeping Strikes <横扫攻击> deprecated by 7.3.5 <202161>
 class spell_warr_sweeping_strikes : public SpellScriptLoader
 {
 public:
@@ -943,9 +906,14 @@ public:
     private:
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_WARRIOR_SWEEPING_STRIKES_EXTRA_ATTACK_1) || !sSpellMgr->GetSpellInfo(SPELL_WARRIOR_SWEEPING_STRIKES_EXTRA_ATTACK_2))
-                return false;
+#if GAME_BUILD >= LEGION_735
             return true;
+#else
+            return ValidateSpellInfo({
+                SPELL_WARRIOR_SWEEPING_STRIKES_EXTRA_ATTACK_1,
+                SPELL_WARRIOR_SWEEPING_STRIKES_EXTRA_ATTACK_2
+                });
+#endif
         }
 
         bool CheckProc(ProcEventInfo& eventInfo)
@@ -965,12 +933,14 @@ public:
                     (spellInfo->Id == SPELL_WARRIOR_EXECUTE_PVP && !_procTarget->HasAuraState(AURA_STATE_HEALTHLESS_25_PERCENT))))
                 {
                     // If triggered by Execute (while target is not under 20% hp) or Bladestorm deals normalized weapon damage
-                    GetTarget()->CastSpell(_procTarget, SPELL_WARRIOR_SWEEPING_STRIKES_EXTRA_ATTACK_2, true, NULL, aurEff);
+                    // FIXME: deprecated spell
+                    //GetTarget()->CastSpell(_procTarget, SPELL_WARRIOR_SWEEPING_STRIKES_EXTRA_ATTACK_2, true, NULL, aurEff);
                 }
                 else
                 {
-                    int32 damage = eventInfo.GetDamageInfo()->GetDamage();
-                    GetTarget()->CastCustomSpell(SPELL_WARRIOR_SWEEPING_STRIKES_EXTRA_ATTACK_1, SPELLVALUE_BASE_POINT0, damage, _procTarget, true, NULL, aurEff);
+                    // FIXME: deprecated spell
+                    //int32 damage = eventInfo.GetDamageInfo()->GetDamage();
+                    //GetTarget()->CastCustomSpell(SPELL_WARRIOR_SWEEPING_STRIKES_EXTRA_ATTACK_1, SPELLVALUE_BASE_POINT0, damage, _procTarget, true, NULL, aurEff);
                 }
             }
         }
@@ -991,7 +961,7 @@ public:
     }
 };
 
-// -46951 - Sword and Board
+// -46951 - Sword and Board [为什么是负数id] <deprecated>
 class spell_warr_sword_and_board : public SpellScriptLoader
 {
 public:
@@ -1004,9 +974,7 @@ public:
     private:
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_WARRIOR_SHIELD_SLAM))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_WARRIOR_SHIELD_SLAM });
         }
 
         void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
@@ -1028,8 +996,7 @@ public:
     }
 };
 
-// 32216 - Victorious
-// 82368 - Victorious
+// 32216 - Victorious <胜利>
 class spell_warr_victorious : public SpellScriptLoader
 {
 public:
@@ -1047,7 +1014,8 @@ public:
 
         void Register() override
         {
-            OnEffectProc += AuraEffectProcFn(spell_warr_victorious_AuraScript::HandleEffectProc, EFFECT_0, SPELL_AURA_DUMMY);
+            // deprecated 7.3.5
+            //OnEffectProc += AuraEffectProcFn(spell_warr_victorious_AuraScript::HandleEffectProc, EFFECT_0, SPELL_AURA_DUMMY);
         }
     };
 
@@ -1057,61 +1025,8 @@ public:
     }
 };
 
-// 50720 - Vigilance
-class spell_warr_vigilance : public SpellScriptLoader
-{
-public:
-    spell_warr_vigilance() : SpellScriptLoader("spell_warr_vigilance") { }
 
-    class spell_warr_vigilance_AuraScript : public AuraScript
-    {
-        PrepareAuraScript(spell_warr_vigilance_AuraScript);
-
-    public:
-        spell_warr_vigilance_AuraScript()
-        {
-            _procTarget = nullptr;
-        }
-
-    private:
-        bool Validate(SpellInfo const* /*spellInfo*/) override
-        {
-            if (!sSpellMgr->GetSpellInfo(SPELL_WARRIOR_VENGEANCE))
-                return false;
-            return true;
-        }
-
-        bool Load() override
-        {
-            _procTarget = NULL;
-            return true;
-        }
-
-        void HandleRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-        {
-            if (Unit* caster = GetCaster())
-            {
-                if (caster->HasAura(SPELL_WARRIOR_VENGEANCE))
-                    caster->RemoveAurasDueToSpell(SPELL_WARRIOR_VENGEANCE);
-            }
-        }
-
-        void Register() override
-        {
-            OnEffectRemove += AuraEffectRemoveFn(spell_warr_vigilance_AuraScript::HandleRemove, EFFECT_0, SPELL_AURA_PROC_TRIGGER_SPELL, AURA_EFFECT_HANDLE_REAL);
-        }
-
-    private:
-        Unit* _procTarget;
-    };
-
-    AuraScript* GetAuraScript() const override
-    {
-        return new spell_warr_vigilance_AuraScript();
-    }
-};
-
-// 50725 Vigilance
+// 50725 Vigilance <derpecated> 7.3.5
 class spell_warr_vigilance_trigger : public SpellScriptLoader
 {
 public:
@@ -1142,47 +1057,8 @@ public:
     }
 };
 
-// 97462 - Rallying Cry
-class spell_warr_rallying_cry : public SpellScriptLoader
-{
-public:
-    spell_warr_rallying_cry() : SpellScriptLoader("spell_warr_rallying_cry") {}
 
-    class spell_warr_rallying_cry_SpellScript : public SpellScript
-    {
-        PrepareSpellScript(spell_warr_rallying_cry_SpellScript);
-
-        bool Validate(SpellInfo const* /*spellInfo*/) override
-        {
-            return sSpellMgr->GetSpellInfo(SPELL_WARRIOR_RALLYING_CRY_TRIGGER) != nullptr;
-        }
-
-        void HandleDummy(SpellEffIndex /*effIndex*/)
-        {
-            Unit* caster = GetCaster();
-            Unit* target = GetHitUnit();
-            if (!caster || !target)
-                return;
-
-            uint32 amount = CalculatePct(caster->GetMaxHealth(), GetEffectValue());
-            caster->CastCustomSpell(SPELL_WARRIOR_RALLYING_CRY_TRIGGER, SPELLVALUE_BASE_POINT0, amount, target, true);
-        }
-
-        void Register() override
-        {
-            OnEffectHitTarget += SpellEffectFn(spell_warr_rallying_cry_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
-        }
-    };
-
-    SpellScript* GetSpellScript() const override
-    {
-        return new spell_warr_rallying_cry_SpellScript();
-    }
-};
-
-// Called by Devastate - 20243
-
-// Intercept (As of Legion) - 198304
+// 198304 - Intercept (As of Legion) - <拦截>
 class spell_warr_intercept : public SpellScriptLoader
 {
 public:
@@ -1194,7 +1070,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            return sSpellMgr->GetSpellInfo(SPELL_WARRIOR_INTERVENE_TRIGGER) != nullptr;
+            return ValidateSpellInfo({ SPELL_WARRIOR_INTERVENE_TRIGGER });
         }
 
         void HandleDummy(SpellEffIndex /*effIndex*/)
@@ -1209,10 +1085,10 @@ public:
             else
             {
                 caster->CastSpell(target, SPELL_WARRIOR_CHARGE_EFFECT, true);
-                if (caster->HasAura(SPELL_WARRIOR_WARBRINGER))
-                    caster->CastSpell(target, SPELL_WARRIOR_WARBRINGER_ROOT, true);
-                else
-                    caster->CastSpell(target, SPELL_WARRIOR_INTERCEPT_STUN, true);
+
+                //caster->CastSpell(target, SPELL_WARRIOR_CHARGE_ROOT_EFFECT, true);
+                //if (caster->HasAura(SPELL_WARRIOR_WARBRINGER))
+                //    caster->CastSpell(target, SPELL_WARRIOR_CHARGE_ROOT_EFFECT, true);
             }
         }
 
@@ -1242,6 +1118,7 @@ public:
     }
 };
 
+// 223657 - <捍卫>
 class spell_warr_safeguard : public SpellScriptLoader
 {
 public:
@@ -1272,7 +1149,7 @@ public:
     }
 };
 
-//18499
+// 18499 - <狂暴之怒>
 class spell_warr_berzerker_rage : public SpellScriptLoader
 {
 public:
@@ -1301,6 +1178,7 @@ public:
     }
 };
 
+// 167105 - <巨人打击>
 class spell_warr_colossus_smash : public SpellScriptLoader
 {
 public:
@@ -1331,6 +1209,7 @@ public:
     }
 };
 
+// 118000 - <巨龙怒吼>
 class spell_warr_dragon_roar : public SpellScriptLoader
 {
 public:
@@ -1341,9 +1220,10 @@ public:
         PrepareSpellScript(spell_warr_dragon_roar_SpellScript);
         void HandleOnHit()
         {
-            if (Player* _player = GetCaster()->ToPlayer())
-                if (Unit* target = GetHitUnit())
-                    _player->CastSpell(target, SPELL_WARRIOR_DRAGON_ROAR_KNOCK_BACK, true);
+            // FIXME: deprecated spell
+            //if (Player* _player = GetCaster()->ToPlayer())
+            //    if (Unit* target = GetHitUnit())
+            //        _player->CastSpell(target, SPELL_WARRIOR_DRAGON_ROAR_KNOCK_BACK, true);
         }
 
         void Register() override
@@ -1358,7 +1238,7 @@ public:
     }
 };
 
-// Mortal Strike - 12294
+// 12294 - Mortal Strike  <致死打击>
 class spell_warr_mortal_strike : public SpellScriptLoader
 {
 public:
@@ -1375,6 +1255,7 @@ public:
             {
                 if (Unit* target = GetHitUnit())
                 {
+                    // FIXED: 7.3.5  213667->115804
                     _player->CastSpell(target, SPELL_WARRIOR_MORTAL_WOUNDS, true);
                 }
             }
@@ -1391,6 +1272,7 @@ public:
     }
 };
 
+// 85288 - <怒击>
 class spell_warr_raging_blow : public SpellScriptLoader
 {
 public:
@@ -1418,7 +1300,7 @@ public:
     }
 };
 
-// Unshackled Fury - 76856
+// 76856 - Unshackled Fury <精通：不羁之怒>
 class spell_warr_unshackled_fury : public SpellScriptLoader
 {
 public:
@@ -1447,6 +1329,7 @@ public:
     }
 };
 
+// 2565 - 盾牌格挡
 class spell_warr_shield_block : public SpellScriptLoader
 {
 public:
@@ -1459,24 +1342,27 @@ public:
         void HandleOnHit()
         {
             if (Player* _player = GetCaster()->ToPlayer())
-                _player->CastSpell(_player, SPELL_WARRIOR_SHIELD_BLOCKC_TRIGGERED, true);
+                _player->CastSpell(_player, SPELL_WARRIOR_SHIELD_BLOCK_AURA, true);
         }
 
         void Register() override
         {
-            OnHit += SpellHitFn(spell_warr_shield_block_SpellScript::HandleOnHit);
+            if(m_scriptSpellId == 2565)
+                OnHit += SpellHitFn(spell_warr_shield_block_SpellScript::HandleOnHit);
         }
     };
 
+#if GAME_BUILD < LEGION_735
+    // 735版本不再需要通过script来计算伤害加成了，在Aura的Effect中已经定义好了伤害加成参数
+    // 而在Effect中定义的一组spellClassMask值可以用来匹配Spell的SpellFamilyFlags，当effect的mask
+    // 和spell的SpellFamilyFlags匹配的时候，Effect就能在Spell上生效。    
     class spell_warr_shield_block_AuraScript : public AuraScript
     {
         PrepareAuraScript(spell_warr_shield_block_AuraScript);
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_WARRIOR_SHIELD_BLOCKC_TRIGGERED))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_WARRIOR_SHIELD_BLOCKC_TRIGGERED });
         }
 
         void CalculateAmount(AuraEffect const* /*aurEff*/, int32& amount, bool& /*canBeRecalculated*/)
@@ -1492,18 +1378,18 @@ public:
         }
     };
 
-    SpellScript* GetSpellScript() const override
-    {
-        return new spell_warr_shield_block_SpellScript();
-    }
-
     AuraScript* GetAuraScript() const override
     {
         return new spell_warr_shield_block_AuraScript();
     }
+#endif // 
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_warr_shield_block_SpellScript();
+    }
 };
 
-//107570
+// 107570 - <风暴之锤>
 class spell_warr_storm_bolt : public SpellScriptLoader
 {
 public:
@@ -1535,7 +1421,7 @@ public:
     }
 };
 
-
+// 203179 - <机遇打击>
 class spell_warr_opportunity_strike : public SpellScriptLoader
 {
 public:
@@ -1551,8 +1437,9 @@ public:
             if (!GetCaster())
                 return;
 
-            if (eventInfo.GetDamageInfo() && eventInfo.GetDamageInfo()->GetSpellInfo() && eventInfo.GetDamageInfo()->GetSpellInfo()->Id == SPELL_WARRIOR_OPPORTUNITY_STRIKE_DAMAGE)
-                return;
+            // FIXME: deprecated spell
+            //if (eventInfo.GetDamageInfo() && eventInfo.GetDamageInfo()->GetSpellInfo() && eventInfo.GetDamageInfo()->GetSpellInfo()->Id == SPELL_WARRIOR_OPPORTUNITY_STRIKE_DAMAGE)
+            //    return;
 
             if (Unit* target = eventInfo.GetActionTarget())
             {
@@ -1562,8 +1449,9 @@ public:
                     {
                         if (AuraEffect *eff = aur->GetEffect(0))
                         {
-                            if (roll_chance_i(eff->GetAmount()))
-                                _player->CastSpell(target, SPELL_WARRIOR_OPPORTUNITY_STRIKE_DAMAGE, true);
+                            // FIXME: deprecated spell
+                            //if (roll_chance_i(eff->GetAmount()))
+                            //    _player->CastSpell(target, SPELL_WARRIOR_OPPORTUNITY_STRIKE_DAMAGE, true);
                         }
                     }
                 }
@@ -1582,6 +1470,7 @@ public:
     }
 };
 
+// 6343 - <雷霆一击>
 class spell_warr_thunder_clap : public SpellScriptLoader
 {
 public:
@@ -1597,7 +1486,8 @@ public:
             {
                 if (Unit* target = GetHitUnit())
                 {
-                    _player->CastSpell(target, SPELL_WARRIOR_WEAKENED_BLOWS, true);
+                    // FIXME: deprecated spell
+                    //_player->CastSpell(target, SPELL_WARRIOR_WEAKENED_BLOWS, true);
 
                     if (_player->HasAura(SPELL_WARRIOR_THUNDERSTRUCK))
                         _player->CastSpell(target, SPELL_WARRIOR_THUNDERSTRUCK_STUN, true);
@@ -1617,6 +1507,7 @@ public:
     }
 };
 
+// 34428 - <乘胜追击>
 class spell_warr_victory_rush : public SpellScriptLoader
 {
 public:
@@ -1628,9 +1519,7 @@ public:
 
         bool Validate(SpellInfo const* /*SpellEntry*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_WARRIOR_VICTORY_RUSH_DAMAGE))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_WARRIOR_VICTORIOUS_STATE , SPELL_WARRIOR_VICTORY_RUSH_HEAL });
         }
 
         void HandleOnHit()
@@ -1658,7 +1547,7 @@ public:
     }
 };
 
-// 100 - Charge
+// 100 - Charge <冲锋>
 class spell_warr_charge : public SpellScript
 {
     PrepareSpellScript(spell_warr_charge);
@@ -1677,7 +1566,6 @@ class spell_warr_charge : public SpellScript
         uint32 spellId = SPELL_WARRIOR_CHARGE_EFFECT;
         if (GetCaster()->HasAura(SPELL_WARRIOR_GLYPH_OF_THE_BLAZING_TRAIL))
             spellId = SPELL_WARRIOR_CHARGE_EFFECT_BLAZING_TRAIL;
-
         GetCaster()->CastSpell(GetHitUnit(), spellId, true);
     }
 
@@ -1687,7 +1575,42 @@ class spell_warr_charge : public SpellScript
     }
 };
 
-// 126661 - Warrior Charge Drop Fire Periodic
+// 198337 - Charge Effect (dropping Blazing Trail)
+// 218104 - Charge Effect <冲锋效果>
+class spell_warr_charge_effect : public SpellScript
+{
+    PrepareSpellScript(spell_warr_charge_effect);
+
+    bool Validate(SpellInfo const* /*spellInfo*/) override
+    {
+        return ValidateSpellInfo
+        ({
+            SPELL_WARRIOR_CHARGE_PAUSE_RAGE_DECAY,      // 用来保持怒气？
+            SPELL_WARRIOR_CHARGE_ROOT_EFFECT,           // 定身1秒
+            SPELL_WARRIOR_CHARGE_SLOW_EFFECT            // 减速50%
+        });
+    }
+
+
+    void HandleDummy()
+    {
+        if(Unit* caster = GetCaster())
+            if (Unit* target = GetHitUnit())
+            {
+                //caster->CastCustomSpell(SPELL_WARRIOR_CHARGE_PAUSE_RAGE_DECAY, SPELLVALUE_BASE_POINT0, 0, caster, true);
+                caster->CastSpell(target, SPELL_WARRIOR_CHARGE_ROOT_EFFECT, true);
+                caster->CastSpell(target, SPELL_WARRIOR_CHARGE_SLOW_EFFECT, true);
+                caster->resetAttackTimer(); // toggle auto-attack
+            }
+    }
+
+    void Register() override
+    {
+        AfterHit += SpellHitFn(spell_warr_charge_effect::HandleDummy);
+    }
+};
+
+// 126661 - Warrior Charge Drop Fire Periodic <冲锋特效--火焰路径>
 class spell_warr_charge_drop_fire_periodic : public AuraScript
 {
     PrepareAuraScript(spell_warr_charge_drop_fire_periodic);
@@ -1712,38 +1635,7 @@ class spell_warr_charge_drop_fire_periodic : public AuraScript
     }
 };
 
-// 198337 - Charge Effect (dropping Blazing Trail)
-// 218104 - Charge Effect
-class spell_warr_charge_effect : public SpellScript
-{
-    PrepareSpellScript(spell_warr_charge_effect);
-
-    bool Validate(SpellInfo const* /*spellInfo*/) override
-    {
-        return ValidateSpellInfo
-        ({
-            SPELL_WARRIOR_CHARGE_PAUSE_RAGE_DECAY,
-            SPELL_WARRIOR_CHARGE_ROOT_EFFECT,
-            SPELL_WARRIOR_CHARGE_SLOW_EFFECT
-        });
-    }
-
-    void HandleCharge(SpellEffIndex /*effIndex*/)
-    {
-        Unit* caster = GetCaster();
-        Unit* target = GetHitUnit();
-        caster->CastCustomSpell(SPELL_WARRIOR_CHARGE_PAUSE_RAGE_DECAY, SPELLVALUE_BASE_POINT0, 0, caster, true);
-        caster->CastSpell(target, SPELL_WARRIOR_CHARGE_ROOT_EFFECT, true);
-        caster->CastSpell(target, SPELL_WARRIOR_CHARGE_SLOW_EFFECT, true);
-    }
-
-    void Register() override
-    {
-        OnEffectLaunchTarget += SpellEffectFn(spell_warr_charge_effect::HandleCharge, EFFECT_0, SPELL_EFFECT_CHARGE);
-    }
-};
-
-// Spell Reflect
+// 23920 - Spell Reflect <法术反射>
 class spell_warr_spell_reflect : public SpellScriptLoader
 {
 public:
@@ -1793,6 +1685,7 @@ public:
     }
 };
 
+// 23922 - 盾牌猛击
 class spell_warr_shield_slam : public SpellScriptLoader
 {
 public:
@@ -1813,8 +1706,8 @@ public:
         {
             //Handles the passive bonuses
             if (Unit* caster = GetCaster())
-                if (caster->HasAura(SPELL_WARRIOR_HEAVY_REPERCUSSIONS) && caster->HasAura(SPELL_WARRIOR_SHIELD_BLOCKC_TRIGGERED))
-                     caster->GetAura(SPELL_WARRIOR_SHIELD_BLOCKC_TRIGGERED)->SetDuration(caster->GetAura(SPELL_WARRIOR_SHIELD_BLOCKC_TRIGGERED)->GetDuration() + 1500);
+                if (caster->HasAura(SPELL_WARRIOR_HEAVY_REPERCUSSIONS) && caster->HasAura(SPELL_WARRIOR_SHIELD_BLOCK_AURA))
+                     caster->GetAura(SPELL_WARRIOR_SHIELD_BLOCK_AURA)->SetDuration(caster->GetAura(SPELL_WARRIOR_SHIELD_BLOCK_AURA)->GetDuration() + 1500);
         }
 
         void Register() override
@@ -1830,7 +1723,7 @@ public:
     }
 };
 
-// Heroic leap - 6544
+// 6544 - Heroic leap - <英勇飞跃>
 class spell_warr_heroic_leap : public SpellScriptLoader
 {
 public:
@@ -1842,9 +1735,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_WARRIOR_HEROIC_LEAP_JUMP))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_WARRIOR_HEROIC_LEAP_JUMP });
         }
 
         SpellCastResult CheckElevation()
@@ -1907,7 +1798,7 @@ public:
     }
 };
 
-// Bladestorm - 227847 and 46924
+// 227847, 46924 - Bladestorm <剑刃风暴>
 class spell_warr_bladestorm : public SpellScriptLoader
 {
 public:
@@ -1946,7 +1837,7 @@ public:
     }
 };
 
-// New Bladestorm - 222634
+// 222634 -  New Bladestorm <剑刃风暴>
 class spell_warr_bladestorm_new : public SpellScriptLoader
 {
 public:
@@ -1959,9 +1850,7 @@ public:
 
         bool Validate(SpellInfo const* /*SpellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_WARRIOR_NEW_BLADESTORM))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_WARRIOR_NEW_BLADESTORM });
         }
 
         void HandlePeriodicDummy(AuraEffect const* /*auraEff*/)
@@ -1981,7 +1870,7 @@ public:
     }
 };
 
-// 95738 - Bladestorm Offhand
+// 95738 - Bladestorm Offhand <副手剑刃风暴>
 class spell_warr_bladestorm_offhand : public SpellScriptLoader
 {
 public:
@@ -2015,7 +1904,7 @@ public:
     }
 };
 
-//190456 - Ignore Pain
+// 190456 - Ignore Pain<无视苦痛>
 class spell_warr_ignore_pain : public SpellScript
 {
     PrepareSpellScript(spell_warr_ignore_pain);
@@ -2042,7 +1931,7 @@ class spell_warr_ignore_pain : public SpellScript
     }
 };
 
-//190456 - Ignore Pain
+// 190456 - Ignore Pain<无视苦痛>
 class aura_warr_ignore_pain : public AuraScript
 {
     PrepareAuraScript(aura_warr_ignore_pain);
@@ -2091,7 +1980,7 @@ class aura_warr_ignore_pain : public AuraScript
     }
 };
 
-//46968 - Shockwave
+// 46968 - Shockwave <震荡波>
 class spell_warr_shockwave : public SpellScriptLoader
 {
 public:
@@ -2141,7 +2030,7 @@ public:
     }
 };
 
-//204488 - Focused Rage
+// 204488 - Focused Rage <怒火聚焦>
 class spell_warr_focused_rage_prot : public SpellScriptLoader
 {
 public:
@@ -2170,9 +2059,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_WARRIOR_VENGEANCE_IGNORE_PAIN))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_WARRIOR_VENGEANCE_IGNORE_PAIN });
         }
 
         void HandleDummy(SpellEffIndex /*effIndex*/)
@@ -2202,7 +2089,7 @@ public:
 
 };
 
-//207982 - Focused Rage
+// 207982 - Focused Rage <怒火聚焦>
 class spell_warr_focused_rage_arms : public SpellScriptLoader
 {
 public:
@@ -2232,7 +2119,7 @@ public:
 
 };
 
-//20243 - Devastate
+// 20243 - Devastate <毁灭打击>
 class spell_warr_devastate : public SpellScriptLoader
 {
 public:
@@ -2266,7 +2153,7 @@ public:
     }
 };
 
-//202168 - Impending victory
+// 202168 - Impending victory <胜利在望>
 class spell_warr_impending_victory : public SpellScriptLoader
 {
 public:
@@ -2300,7 +2187,7 @@ public:
 
 };
 
-//214871 - Odyn's fury
+// 214871 - Odyn's fury <奥丁之怒>
 class spell_warr_odyns_fury : public SpellScriptLoader
 {
 public:
@@ -2327,7 +2214,7 @@ public:
     }
 };
 
-// 215570 - Wrecking Ball
+// 215570 - Wrecking Ball <摧枯拉朽>
 class spell_warr_wrecking_ball_effect : public SpellScriptLoader
 {
 public:
@@ -2358,7 +2245,7 @@ public:
     }
 };
 
-//206315
+// 206315 - <屠杀>
 class spell_warr_massacre : public SpellScriptLoader
 {
 public:
@@ -2389,7 +2276,7 @@ public:
     }
 };
 
-// BloodBath - 12292
+// 12292 - BloodBath - <浴血奋战>
 class spell_warr_blood_bath : public SpellScriptLoader
 {
 public:
@@ -2471,7 +2358,7 @@ public:
     }
 };
 
-//206313 Frenzy
+// 206313 - Frenzy <狂乱>
 class spell_warr_frenzy : public SpellScriptLoader
 {
 public:
@@ -2500,7 +2387,7 @@ public:
     }
 };
 
-//215571 Frothing Berserker
+// 215571 - Frothing Berserker <暴乱狂战士>
 class spell_warr_frothing_berserker : public SpellScriptLoader
 {
 public:
@@ -2527,7 +2414,7 @@ public:
     }
 };
 
-//200860 Unrivaled Strenght
+// 200860 Unrivaled Strenght <无匹之力>
 class spell_warr_unrivaled_strenght : public SpellScriptLoader
 {
 public:
@@ -2556,7 +2443,7 @@ public:
     }
 };
 
-// Defensive Stance - 71
+// 71 - Defensive Stance <防御姿态>
 class spell_warr_defensive_stance : public SpellScriptLoader
 {
 public:
@@ -2594,7 +2481,7 @@ public:
     }
 };
 
-//184783
+// 184783 - <战术专家>
 class spell_warr_tactician : public SpellScriptLoader
 {
 public:
@@ -2643,7 +2530,7 @@ public:
     }
 };
 
-//215538
+// 215538 - <创伤>
 class spell_warr_trauma : public SpellScriptLoader
 {
 public:
@@ -2709,7 +2596,7 @@ public:
     }
 };
 
-// Overpower Proc Enabler - 60503
+// 60503 - Overpower Proc Enabler - <Deprecated...><压制>
 class spell_warrior_overpower_proc : public SpellScriptLoader
 {
 public:
@@ -2753,8 +2640,7 @@ public:
     }
 };
 
-// Ravager - 152277
-// Ravager - 228920
+// 152277, 228920 - Ravager - <破坏者>
 class spell_warr_ravager : public SpellScript
 {
     PrepareSpellScript(spell_warr_ravager);
@@ -2771,8 +2657,7 @@ class spell_warr_ravager : public SpellScript
     }
 };
 
-// Ravager - 152277
-// Ravager - 228920
+// 152277, 228920 - Ravager Aura <破坏者>
 class aura_warr_ravager : public AuraScript
 {
     PrepareAuraScript(aura_warr_ravager);
@@ -2797,7 +2682,7 @@ class aura_warr_ravager : public AuraScript
     }
 };
 
-// Ravager Damage - 156287
+// 156287 - Ravager Damage <破坏者>
 class spell_warr_ravager_damage : public SpellScript
 {
     PrepareSpellScript(spell_warr_ravager_damage);
@@ -2821,7 +2706,7 @@ private:
 };
 
 // 163201 - Execute
-// 217955 - Execute (PvP Talent)
+// 217955 - Execute (PvP Talent) <斩杀>
 class spell_warr_execute : public SpellScript
 {
     PrepareSpellScript(spell_warr_execute);
@@ -2864,7 +2749,7 @@ class spell_warr_execute : public SpellScript
     }
 };
 
-// War Machine 215556
+// 215556 - War Machine <战争机器>
 class aura_warr_war_machine : public AuraScript
 {
     PrepareAuraScript(aura_warr_war_machine);
@@ -2888,7 +2773,7 @@ class aura_warr_war_machine : public AuraScript
     }
 };
 
-// Ravager - 76168
+// 76168 - Ravager <乌钢带扣>
 struct npc_warr_ravager : public ScriptedAI
 {
     npc_warr_ravager(Creature* creature) : ScriptedAI(creature) { }
@@ -2933,6 +2818,125 @@ struct npc_warr_ravager : public ScriptedAI
     }
 };
 
+#if GAME_BUILD < LEGION_735
+// -84583 Lambs to the Slaughter    <为什么用负数呢> <deprecated>
+class spell_warr_lambs_to_the_slaughter : public SpellScriptLoader
+{
+public:
+    spell_warr_lambs_to_the_slaughter() : SpellScriptLoader("spell_warr_lambs_to_the_slaughter") { }
+
+    class spell_warr_lambs_to_the_slaughter_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_warr_lambs_to_the_slaughter_AuraScript);
+
+        bool Validate(SpellInfo const* /*spellInfo*/) override
+        {
+            return ValidateSpellInfo({ SPELL_WARRIOR_MORTAL_STRIKE , SPELL_WARRIOR_REND });
+        }
+
+        void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+        {
+            if (Aura* aur = eventInfo.GetProcTarget()->GetAura(SPELL_WARRIOR_REND, GetTarget()->GetGUID()))
+                aur->SetDuration(aur->GetSpellInfo()->GetMaxDuration(), true);
+
+        }
+
+        void Register() override
+        {
+            OnEffectProc += AuraEffectProcFn(spell_warr_lambs_to_the_slaughter_AuraScript::OnProc, EFFECT_0, SPELL_AURA_PROC_TRIGGER_SPELL);
+        }
+    };
+
+    AuraScript* GetAuraScript() const override
+    {
+        return new spell_warr_lambs_to_the_slaughter_AuraScript();
+    }
+};
+
+
+// 50720 - Vigilance <deprecated>
+class spell_warr_vigilance : public SpellScriptLoader
+{
+public:
+    spell_warr_vigilance() : SpellScriptLoader("spell_warr_vigilance") { }
+
+    class spell_warr_vigilance_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_warr_vigilance_AuraScript);
+
+    public:
+        spell_warr_vigilance_AuraScript()
+        {
+            _procTarget = nullptr;
+        }
+
+    private:
+        bool Validate(SpellInfo const* /*spellInfo*/) override
+        {
+            return ValidateSpellInfo({ SPELL_WARRIOR_VENGEANCE });
+        }
+
+        bool Load() override
+        {
+            _procTarget = NULL;
+            return true;
+        }
+
+        void HandleRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+        {
+            if (Unit* caster = GetCaster())
+            {
+                if (caster->HasAura(SPELL_WARRIOR_VENGEANCE))
+                    caster->RemoveAurasDueToSpell(SPELL_WARRIOR_VENGEANCE);
+            }
+        }
+
+        void Register() override
+        {
+            OnEffectRemove += AuraEffectRemoveFn(spell_warr_vigilance_AuraScript::HandleRemove, EFFECT_0, SPELL_AURA_PROC_TRIGGER_SPELL, AURA_EFFECT_HANDLE_REAL);
+        }
+
+    private:
+        Unit* _procTarget;
+    };
+
+    AuraScript* GetAuraScript() const override
+    {
+        return new spell_warr_vigilance_AuraScript();
+    }
+};
+
+
+// 59725 - Improved Spell Reflection <spell.db2中找不到这个id><deprecated>
+class spell_warr_improved_spell_reflection : public SpellScriptLoader
+{
+public:
+    spell_warr_improved_spell_reflection() : SpellScriptLoader("spell_warr_improved_spell_reflection") { }
+
+    class spell_warr_improved_spell_reflection_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_warr_improved_spell_reflection_SpellScript);
+
+        void FilterTargets(std::list<WorldObject*>& unitList)
+        {
+            if (GetCaster())
+                unitList.remove(GetCaster());
+        }
+
+        void Register() override
+        {
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_warr_improved_spell_reflection_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_CASTER_AREA_PARTY);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_warr_improved_spell_reflection_SpellScript();
+    }
+};
+
+#endif // less LEGION_735
+
 void AddSC_warrior_spell_scripts()
 {
     new spell_warr_berzerker_rage();
@@ -2941,9 +2945,6 @@ void AddSC_warrior_spell_scripts()
     new spell_warr_bladestorm_offhand();
     new spell_warr_bloodthirst();
     new spell_warr_blood_bath();
-    RegisterSpellScript(spell_warr_charge);
-    RegisterAuraScript(spell_warr_charge_drop_fire_periodic);
-    RegisterSpellScript(spell_warr_charge_effect);
     new spell_warr_colossus_smash();
     new spell_warr_defensive_stance();
     new spell_warr_devastate();
@@ -2955,12 +2956,11 @@ void AddSC_warrior_spell_scripts()
     new spell_warr_frenzy();
     new spell_warr_frothing_berserker();
     new spell_warr_heroic_leap();
-    RegisterSpellAndAuraScriptPair(spell_warr_ignore_pain, aura_warr_ignore_pain);
     new spell_warr_impending_victory();
-    new spell_warr_improved_spell_reflection();
+    //new spell_warr_improved_spell_reflection();
     new spell_warr_intercept();
     new spell_warr_intimidating_shout();
-    new spell_warr_lambs_to_the_slaughter();
+    //new spell_warr_lambs_to_the_slaughter();
     new spell_warr_last_stand();
     new spell_warr_massacre();
     new spell_warr_meat_cleaver();
@@ -2970,8 +2970,8 @@ void AddSC_warrior_spell_scripts()
     new spell_warr_overpower();
     new spell_warr_raging_blow();
     new spell_warr_rampage();
-    new spell_warr_rend();
-    new spell_warr_retaliation();
+    //new spell_warr_rend();
+    //new spell_warr_retaliation();
     new spell_warr_safeguard();
     new spell_warr_second_wind_damaged();
     new spell_warr_second_wind_proc();
@@ -2984,7 +2984,7 @@ void AddSC_warrior_spell_scripts()
     new spell_warr_storm_bolt();
     new spell_warr_sudden_death();
     new spell_warr_sweeping_strikes();
-    new spell_warr_sword_and_board();
+    //new spell_warr_sword_and_board();
     new spell_warr_tactician();
     new spell_warr_taste_for_blood();
     new spell_warr_thunder_clap();
@@ -2993,17 +2993,25 @@ void AddSC_warrior_spell_scripts()
     new spell_warr_unrivaled_strenght();
     new spell_warr_victorious();
     new spell_warr_victory_rush();
-    new spell_warr_vigilance();
-    new spell_warr_vigilance_trigger();
-    RegisterSpellScript(spell_warr_whirlwind);
+    //new spell_warr_vigilance();
+    //new spell_warr_vigilance_trigger();
     new spell_warr_wrecking_ball_effect();
-    new spell_warr_rallying_cry();
+    //new spell_warr_rallying_cry();
     new spell_warr_jump_to_skyhold();
+    new spell_warr_cleave();
+
+    RegisterAuraScript(spell_warr_charge_drop_fire_periodic);
+    RegisterAuraScript(aura_warr_war_machine);
+
+    RegisterSpellScript(spell_warr_charge);
+    RegisterSpellScript(spell_warr_charge_effect);
+    RegisterSpellScript(spell_warr_whirlwind);
     RegisterSpellScript(spell_warr_commanding_shout);
-    RegisterSpellAndAuraScriptPair(spell_warr_ravager, aura_warr_ravager);
     RegisterSpellScript(spell_warr_ravager_damage);
     RegisterSpellScript(spell_warr_execute);
-    RegisterAuraScript(aura_warr_war_machine);
+
+    RegisterSpellAndAuraScriptPair(spell_warr_ignore_pain, aura_warr_ignore_pain);
+    RegisterSpellAndAuraScriptPair(spell_warr_ravager, aura_warr_ravager);
 
     RegisterCreatureAI(npc_warr_ravager);
 }

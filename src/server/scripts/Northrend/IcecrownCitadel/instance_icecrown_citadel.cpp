@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -251,7 +251,7 @@ class instance_icecrown_citadel : public InstanceMapScript
                         // no break;
                     case NPC_SE_MURADIN_BRONZEBEARD:
                         DeathbringerSaurfangEventGUID = creature->GetGUID();
-                        creature->LastUsedScriptID = creature->GetScriptId();
+                        creature->lastUsedScriptID = creature->GetScriptId();
                         break;
                     case NPC_SE_KOR_KRON_REAVER:
                         if (TeamInInstance == ALLIANCE)

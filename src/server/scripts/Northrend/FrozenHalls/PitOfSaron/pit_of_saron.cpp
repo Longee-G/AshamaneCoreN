@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -47,10 +47,10 @@ bool ScheduledIcicleSummons::Execute(uint64 /*time*/, uint32 /*diff*/)
     if (roll_chance_i(12))
     {
         _trigger->CastSpell(_trigger, SPELL_ICICLE_SUMMON, true);
-        _trigger->m_Events.AddEvent(new ScheduledIcicleSummons(_trigger), _trigger->m_Events.CalculateTime(urand(20000, 35000)));
+        _trigger->_events.AddEvent(new ScheduledIcicleSummons(_trigger), _trigger->_events.CalculateTime(urand(20000, 35000)));
     }
     else
-        _trigger->m_Events.AddEvent(new ScheduledIcicleSummons(_trigger), _trigger->m_Events.CalculateTime(urand(1000, 20000)));
+        _trigger->_events.AddEvent(new ScheduledIcicleSummons(_trigger), _trigger->_events.CalculateTime(urand(1000, 20000)));
 
     return true;
 }
@@ -397,7 +397,7 @@ void AddSC_pit_of_saron()
     new npc_geist_ambusher();
     new npc_pit_of_saron_icicle();
     new spell_trash_npc_glacial_strike();
-    new spell_pos_ice_shards();
+    //new spell_pos_ice_shards();
     new at_pit_cavern_entrance();
     new at_pit_cavern_end();
 }

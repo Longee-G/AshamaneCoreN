@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -354,10 +354,10 @@ void WorldSession::HandleMailMarkAsRead(WorldPackets::Mail::MailMarkAsRead& pack
     Mail* m = player->GetMail(packet.MailID);
     if (m && m->state != MAIL_STATE_DELETED)
     {
-        if (player->unReadMails)
-            --player->unReadMails;
+        if (player->_unreadMails)
+            --player->_unreadMails;
         m->checked = m->checked | MAIL_CHECK_MASK_READ;
-        player->m_mailsUpdated = true;
+        player->isMailsUpdated = true;
         m->state = MAIL_STATE_CHANGED;
     }
 }
@@ -367,7 +367,7 @@ void WorldSession::HandleMailDelete(WorldPackets::Mail::MailDelete& packet)
 {
     Mail* m = _player->GetMail(packet.MailID);
     Player* player = _player;
-    player->m_mailsUpdated = true;
+    player->isMailsUpdated = true;
     if (m)
     {
         // delete shouldn't show up for COD mails
@@ -384,7 +384,7 @@ void WorldSession::HandleMailDelete(WorldPackets::Mail::MailDelete& packet)
 
 void WorldSession::HandleMailReturnToSender(WorldPackets::Mail::MailReturnToSender& packet)
 {
-    if (!CanOpenMailBox(_player->PlayerTalkClass->GetInteractionData().SourceGuid))
+    if (!CanOpenMailBox(_player->playerTalkClass->GetInteractionData().SourceGuid))
         return;
 
     Player* player = _player;
@@ -514,7 +514,7 @@ void WorldSession::HandleMailTakeItem(WorldPackets::Mail::MailTakeItem& packet)
         }
         m->COD = 0;
         m->state = MAIL_STATE_CHANGED;
-        player->m_mailsUpdated = true;
+        player->isMailsUpdated = true;
         player->RemoveMItem(it->GetGUID().GetCounter());
 
         uint32 count = it->GetCount();                      // save counts before store and possible merge with deleting
@@ -554,7 +554,7 @@ void WorldSession::HandleMailTakeMoney(WorldPackets::Mail::MailTakeMoney& packet
 
     m->money = 0;
     m->state = MAIL_STATE_CHANGED;
-    player->m_mailsUpdated = true;
+    player->isMailsUpdated = true;
 
     player->SendMailResult(packet.MailID, MAIL_MONEY_TAKEN, MAIL_OK);
 
@@ -574,7 +574,7 @@ void WorldSession::HandleGetMailList(WorldPackets::Mail::MailGetList& packet)
     Player* player = _player;
 
     //load players mails, and mailed items
-    if (!player->m_mailsLoaded)
+    if (!player->isMailsLoaded)
         player->_LoadMail();
 
     WorldPackets::Mail::MailListResult response;
@@ -593,8 +593,8 @@ void WorldSession::HandleGetMailList(WorldPackets::Mail::MailGetList& packet)
         ++response.TotalNumRecords;
     }
 
-    player->PlayerTalkClass->GetInteractionData().Reset();
-    player->PlayerTalkClass->GetInteractionData().SourceGuid = packet.Mailbox;
+    player->playerTalkClass->GetInteractionData().Reset();
+    player->playerTalkClass->GetInteractionData().SourceGuid = packet.Mailbox;
     SendPacket(response.Write());
 
     // recalculate m_nextMailDelivereTime and unReadMails
@@ -649,7 +649,7 @@ void WorldSession::HandleMailCreateTextItem(WorldPackets::Mail::MailCreateTextIt
     {
         m->checked = m->checked | MAIL_CHECK_MASK_COPIED;
         m->state = MAIL_STATE_CHANGED;
-        player->m_mailsUpdated = true;
+        player->isMailsUpdated = true;
 
         player->StoreItem(dest, bodyItem, true);
         player->SendMailResult(packet.MailID, MAIL_MADE_PERMANENT, MAIL_OK);
@@ -666,10 +666,10 @@ void WorldSession::HandleQueryNextMailTime(WorldPackets::Mail::MailQueryNextMail
 {
     WorldPackets::Mail::MailQueryNextTimeResult result;
 
-    if (!_player->m_mailsLoaded)
+    if (!_player->isMailsLoaded)
         _player->_LoadMail();
 
-    if (_player->unReadMails > 0)
+    if (_player->_unreadMails > 0)
     {
         result.NextMailTime = 0.0f;
 

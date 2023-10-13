@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -49,6 +49,7 @@
 #include "Weather.h"
 #include "WorldPacket.h"
 #include "ZoneScript.h"
+#include "BattlePayMgr.h"
 #include <unordered_map>
 
 // Trait which indicates whether this script type
@@ -132,6 +133,12 @@ struct is_script_database_bound<QuestScript>
 template<>
 struct is_script_database_bound<ZoneScript>
     : std::true_type { };
+
+// TODO:
+template<>
+struct is_script_database_bound<BattlePayProductScript>
+    : std::true_type {};
+
 
 enum Spells
 {
@@ -405,7 +412,7 @@ class CreatureGameObjectAreaTriggerScriptRegistrySwapHooks
     {
         // Remove deletable events only,
         // otherwise it causes crashes with non-deletable spell events.
-        creature->m_Events.KillAllEvents(false);
+        creature->_events.KillAllEvents(false);
 
         if (creature->IsCharmed())
             creature->RemoveCharmedBy(nullptr);
@@ -480,8 +487,8 @@ class CreatureGameObjectAreaTriggerScriptRegistrySwapHooks
 
         // Cast a dummy visual spell asynchronously here to signal
         // that the AI was hot swapped
-        creature->m_Events.AddEvent(new AsyncCastHotswapEffectEvent(creature),
-            creature->m_Events.CalculateTime(0));
+        creature->_events.AddEvent(new AsyncCastHotswapEffectEvent(creature),
+            creature->_events.CalculateTime(0));
     }
 
     // Hook which is called after a gameobject was swapped
@@ -671,6 +678,12 @@ class ScriptRegistrySwapHooks<BattlegroundScript, Base>
 /// This hook is responsible for swapping Garrison's
 template<typename Base>
 class ScriptRegistrySwapHooks<GarrisonScript, Base>
+    : public UnsupportedScriptRegistrySwapHooks<Base> { };
+
+/// This hook is responsible for swapping BattlePayProductScript's
+/// TODO:
+template<typename Base>
+class ScriptRegistrySwapHooks<BattlePayProductScript, Base>
     : public UnsupportedScriptRegistrySwapHooks<Base> { };
 
 /// This hook is responsible for swapping OutdoorPvP's
@@ -1227,8 +1240,8 @@ void ScriptMgr::Initialize()
         if (scriptName.empty())
             continue;
 
-        TC_LOG_ERROR("sql.sql", "ScriptName '%s' exists in database, "
-                     "but no core script found!", scriptName.c_str());
+        TC_LOG_ERROR("sql.sql", "ScriptName '%s' exists in database, but no core script found!",
+           scriptName.c_str());
     }
 
     TC_LOG_INFO("server.loading", ">> Loaded %u C++ scripts in %u ms",
@@ -1701,7 +1714,7 @@ bool ScriptMgr::OnQuestAccept(Player* player, Item* item, Quest const* quest)
     ASSERT(quest);
 
     GET_SCRIPT_RET(ItemScript, item->GetScriptId(), tmpscript, false);
-    player->PlayerTalkClass->ClearMenus();
+    player->playerTalkClass->ClearMenus();
     return tmpscript->OnQuestAccept(player, item, quest);
 }
 
@@ -1747,7 +1760,7 @@ bool ScriptMgr::OnGossipHello(Player* player, Creature* creature)
     ASSERT(creature);
 
     GET_SCRIPT_RET(CreatureScript, creature->GetScriptId(), tmpscript, false);
-    player->PlayerTalkClass->ClearMenus();
+    player->playerTalkClass->ClearMenus();
     return tmpscript->OnGossipHello(player, creature);
 }
 
@@ -1777,7 +1790,7 @@ bool ScriptMgr::OnQuestAccept(Player* player, Creature* creature, Quest const* q
     ASSERT(quest);
 
     GET_SCRIPT_RET(CreatureScript, creature->GetScriptId(), tmpscript, false);
-    player->PlayerTalkClass->ClearMenus();
+    player->playerTalkClass->ClearMenus();
     return tmpscript->OnQuestAccept(player, creature, quest);
 }
 
@@ -1788,7 +1801,7 @@ bool ScriptMgr::OnQuestSelect(Player* player, Creature* creature, Quest const* q
     ASSERT(quest);
 
     GET_SCRIPT_RET(CreatureScript, creature->GetScriptId(), tmpscript, false);
-    player->PlayerTalkClass->ClearMenus();
+    player->playerTalkClass->ClearMenus();
     return tmpscript->OnQuestSelect(player, creature, quest);
 }
 
@@ -1799,7 +1812,7 @@ bool ScriptMgr::OnQuestReward(Player* player, Creature* creature, Quest const* q
     ASSERT(quest);
 
     GET_SCRIPT_RET(CreatureScript, creature->GetScriptId(), tmpscript, false);
-    player->PlayerTalkClass->ClearMenus();
+    player->playerTalkClass->ClearMenus();
     return tmpscript->OnQuestReward(player, creature, quest, opt);
 }
 
@@ -1809,7 +1822,7 @@ uint32 ScriptMgr::GetDialogStatus(Player* player, Creature* creature)
     ASSERT(creature);
 
     GET_SCRIPT_RET(CreatureScript, creature->GetScriptId(), tmpscript, DIALOG_STATUS_SCRIPTED_NO_STATUS);
-    player->PlayerTalkClass->ClearMenus();
+    player->playerTalkClass->ClearMenus();
     return tmpscript->GetDialogStatus(player, creature);
 }
 
@@ -1872,6 +1885,31 @@ ZoneScript* ScriptMgr::GetZoneScript(uint32 scriptId)
     return zoneScript;
 }
 
+// what is `Battle Pay`
+std::string ScriptMgr::BattlePayGetCustomData(BattlePay::Product const & product)
+{
+    // TODO:
+    GET_SCRIPT_RET(BattlePayProductScript, sObjectMgr->GetScriptId(product.ScriptName.c_str()), tmpscript, nullptr);
+    return tmpscript->GetCustomData(product);
+}
+
+// deal with pay service ...
+void ScriptMgr::OnBattlePayProductDelivery(WorldSession * session, BattlePay::Product const & product)
+{
+    ASSERT(session);
+    GET_SCRIPT(BattlePayProductScript, sObjectMgr->GetScriptId(product.ScriptName.c_str()), tmpscript);
+    tmpscript->OnProductDelivery(session, product);
+}
+
+// 检查指定的付费服务是否可用 ...
+bool ScriptMgr::BattlePayCanBuy(WorldSession * session, BattlePay::Product const & product, std::string & reason)
+{
+    ASSERT(session);
+
+    GET_SCRIPT_RET(BattlePayProductScript, sObjectMgr->GetScriptId(product.ScriptName.c_str()), tmpscript, false);
+    return tmpscript->CanBuy(session, product, reason);
+}
+
 void ScriptMgr::OnCreatureUpdate(Creature* creature, uint32 diff)
 {
     ASSERT(creature);
@@ -1886,7 +1924,7 @@ bool ScriptMgr::OnGossipHello(Player* player, GameObject* go)
     ASSERT(go);
 
     GET_SCRIPT_RET(GameObjectScript, go->GetScriptId(), tmpscript, false);
-    player->PlayerTalkClass->ClearMenus();
+    player->playerTalkClass->ClearMenus();
     return tmpscript->OnGossipHello(player, go);
 }
 
@@ -1916,7 +1954,7 @@ bool ScriptMgr::OnQuestAccept(Player* player, GameObject* go, Quest const* quest
     ASSERT(quest);
 
     GET_SCRIPT_RET(GameObjectScript, go->GetScriptId(), tmpscript, false);
-    player->PlayerTalkClass->ClearMenus();
+    player->playerTalkClass->ClearMenus();
     return tmpscript->OnQuestAccept(player, go, quest);
 }
 
@@ -1927,7 +1965,7 @@ bool ScriptMgr::OnQuestReward(Player* player, GameObject* go, Quest const* quest
     ASSERT(quest);
 
     GET_SCRIPT_RET(GameObjectScript, go->GetScriptId(), tmpscript, false);
-    player->PlayerTalkClass->ClearMenus();
+    player->playerTalkClass->ClearMenus();
     return tmpscript->OnQuestReward(player, go, quest, opt);
 }
 
@@ -1937,7 +1975,7 @@ uint32 ScriptMgr::GetDialogStatus(Player* player, GameObject* go)
     ASSERT(go);
 
     GET_SCRIPT_RET(GameObjectScript, go->GetScriptId(), tmpscript, DIALOG_STATUS_SCRIPTED_NO_STATUS);
-    player->PlayerTalkClass->ClearMenus();
+    player->playerTalkClass->ClearMenus();
     return tmpscript->GetDialogStatus(player, go);
 }
 
@@ -2918,6 +2956,13 @@ ZoneScript::ZoneScript(const char* name)
     ScriptRegistry<ZoneScript>::Instance()->AddScript(this);
 }
 
+// implement `BattlePayProductScript`
+BattlePayProductScript::BattlePayProductScript(std::string scriptName)
+    : ScriptObject(scriptName.c_str())
+{
+    ScriptRegistry<BattlePayProductScript>::Instance()->AddScript(this);
+}
+
 // Specialize for each script type class like so:
 template class TC_GAME_API ScriptRegistry<SpellScriptLoader>;
 template class TC_GAME_API ScriptRegistry<ServerScript>;
@@ -2952,3 +2997,4 @@ template class TC_GAME_API ScriptRegistry<ConversationScript>;
 template class TC_GAME_API ScriptRegistry<SceneScript>;
 template class TC_GAME_API ScriptRegistry<QuestScript>;
 template class TC_GAME_API ScriptRegistry<ZoneScript>;
+template class TC_GAME_API ScriptRegistry<BattlePayProductScript>;

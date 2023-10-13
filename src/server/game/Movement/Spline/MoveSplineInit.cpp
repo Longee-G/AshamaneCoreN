@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -71,7 +71,7 @@ namespace Movement
             if (!transport)
                 pos = unit;
             else
-                pos = &unit->m_movementInfo.transport.pos;
+                pos = &unit->_movementInfo.transport.pos;
 
             real_position.x = pos->GetPositionX();
             real_position.y = pos->GetPositionY();
@@ -88,7 +88,7 @@ namespace Movement
         args.initialOrientation = real_position.orientation;
         move_spline.onTransport = !unit->GetTransGUID().IsEmpty();
 
-        uint32 moveFlags = unit->m_movementInfo.GetMovementFlags();
+        uint32 moveFlags = unit->_movementInfo.GetMovementFlags();
         if (!args.flags.backward)
             moveFlags = (moveFlags & ~MOVEMENTFLAG_BACKWARD) | MOVEMENTFLAG_FORWARD;
         else
@@ -113,7 +113,7 @@ namespace Movement
         if (!args.Validate(unit))
             return 0;
 
-        unit->m_movementInfo.SetMovementFlags(moveFlags);
+        unit->_movementInfo.SetMovementFlags(moveFlags);
         move_spline.Initialize(args);
 
         WorldPackets::Movement::MonsterMove packet;
@@ -149,7 +149,7 @@ namespace Movement
             if (!transport)
                 pos = unit;
             else
-                pos = &unit->m_movementInfo.transport.pos;
+                pos = &unit->_movementInfo.transport.pos;
 
             loc.x = pos->GetPositionX();
             loc.y = pos->GetPositionY();
@@ -158,7 +158,7 @@ namespace Movement
         }
 
         args.flags = MoveSplineFlag::Done;
-        unit->m_movementInfo.RemoveMovementFlag(MOVEMENTFLAG_FORWARD);
+        unit->_movementInfo.RemoveMovementFlag(MOVEMENTFLAG_FORWARD);
         move_spline.onTransport = transport;
         move_spline.Initialize(args);
 

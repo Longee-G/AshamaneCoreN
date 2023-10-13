@@ -664,6 +664,13 @@ enum CharacterDatabaseStatements : uint32
     CHAR_SEL_RECOVERY,
     CHAR_UPD_RECOVERY_DELIVERED,
 
+    // new defines for BattlePet
+    CHAR_SEL_PETBATTLE_ACCOUNT,
+    CHAR_REP_PETBATTLE,
+    CHAR_INS_PETBATTLE,
+    CHAR_DEL_PETBATTLE,
+
+
     MAX_CHARACTERDATABASE_STATEMENTS
 };
 

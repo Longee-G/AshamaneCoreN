@@ -1,4 +1,4 @@
-/*
+ï»¿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
@@ -104,7 +104,7 @@ public:
     }
 };
 
-// PNJ Permettant un passage entre nouveau/anciennes terres foudroyées
+// PNJ Permettant un passage entre nouveau/anciennes terres foudroy?s
 class npc_zidormi : public CreatureScript
 {
 public:
@@ -131,7 +131,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        player->playerTalkClass->ClearMenus();
         if (action == GOSSIP_ACTION_INFO_DEF + 0)
         {
             player->CastSpell(player, SPELL_TIME_TRAVELLING, true);

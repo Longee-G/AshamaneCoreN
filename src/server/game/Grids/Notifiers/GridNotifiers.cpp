@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -100,7 +100,7 @@ void VisibleChangesNotifier::Visit(PlayerMapType &m)
             for (SharedVisionList::const_iterator i = iter->GetSource()->GetSharedVisionList().begin();
                 i != iter->GetSource()->GetSharedVisionList().end(); ++i)
             {
-                if ((*i)->m_seer == iter->GetSource())
+                if ((*i)->_seer == iter->GetSource())
                     (*i)->UpdateVisibilityOf(&i_object);
             }
         }
@@ -113,7 +113,7 @@ void VisibleChangesNotifier::Visit(CreatureMapType &m)
         if (iter->GetSource()->HasSharedVision())
             for (SharedVisionList::const_iterator i = iter->GetSource()->GetSharedVisionList().begin();
                 i != iter->GetSource()->GetSharedVisionList().end(); ++i)
-                if ((*i)->m_seer == iter->GetSource())
+                if ((*i)->_seer == iter->GetSource())
                     (*i)->UpdateVisibilityOf(&i_object);
 }
 
@@ -122,7 +122,7 @@ void VisibleChangesNotifier::Visit(DynamicObjectMapType &m)
     for (DynamicObjectMapType::iterator iter = m.begin(); iter != m.end(); ++iter)
         if (Unit* caster = iter->GetSource()->GetCaster())
             if (Player* player = caster->ToPlayer())
-                if (player->m_seer == iter->GetSource())
+                if (player->_seer == iter->GetSource())
                     player->UpdateVisibilityOf(&i_object);
 }
 
@@ -155,7 +155,7 @@ void PlayerRelocationNotifier::Visit(PlayerMapType &m)
 
         i_player.UpdateVisibilityOf(player, i_data, i_visibleNow);
 
-        if (player->m_seer->isNeedNotify(NOTIFY_VISIBILITY_CHANGED))
+        if (player->_seer->isNeedNotify(NOTIFY_VISIBILITY_CHANGED))
             continue;
 
         player->UpdateVisibilityOf(&i_player);
@@ -164,7 +164,7 @@ void PlayerRelocationNotifier::Visit(PlayerMapType &m)
 
 void PlayerRelocationNotifier::Visit(CreatureMapType &m)
 {
-    bool relocated_for_ai = (&i_player == i_player.m_seer);
+    bool relocated_for_ai = (&i_player == i_player._seer);
 
     for (CreatureMapType::iterator iter=m.begin(); iter != m.end(); ++iter)
     {
@@ -185,7 +185,7 @@ void CreatureRelocationNotifier::Visit(PlayerMapType &m)
     {
         Player* player = iter->GetSource();
 
-        if (!player->m_seer->isNeedNotify(NOTIFY_VISIBILITY_CHANGED))
+        if (!player->_seer->isNeedNotify(NOTIFY_VISIBILITY_CHANGED))
             player->UpdateVisibilityOf(&i_creature);
 
         CreatureUnitRelocationWorker(&i_creature, player);
@@ -230,7 +230,7 @@ void DelayedUnitRelocation::Visit(PlayerMapType &m)
     for (PlayerMapType::iterator iter = m.begin(); iter != m.end(); ++iter)
     {
         Player* player = iter->GetSource();
-        WorldObject const* viewPoint = player->m_seer;
+        WorldObject const* viewPoint = player->_seer;
 
         if (!viewPoint->isNeedNotify(NOTIFY_VISIBILITY_CHANGED))
             continue;
@@ -271,11 +271,11 @@ void MessageDistDeliverer::Visit(PlayerMapType &m)
         {
             SharedVisionList::const_iterator i = target->GetSharedVisionList().begin();
             for (; i != target->GetSharedVisionList().end(); ++i)
-                if ((*i)->m_seer == target)
+                if ((*i)->_seer == target)
                     SendPacket(*i);
         }
 
-        if (target->m_seer == target || target->GetVehicle())
+        if (target->_seer == target || target->GetVehicle())
             SendPacket(target);
     }
 }
@@ -296,7 +296,7 @@ void MessageDistDeliverer::Visit(CreatureMapType &m)
         {
             SharedVisionList::const_iterator i = target->GetSharedVisionList().begin();
             for (; i != target->GetSharedVisionList().end(); ++i)
-                if ((*i)->m_seer == target)
+                if ((*i)->_seer == target)
                     SendPacket(*i);
         }
     }
@@ -317,7 +317,7 @@ void MessageDistDeliverer::Visit(DynamicObjectMapType &m)
         {
             // Send packet back to the caster if the caster has vision of dynamic object
             Player* player = caster->ToPlayer();
-            if (player && player->m_seer == target)
+            if (player && player->_seer == target)
                 SendPacket(player);
         }
     }
@@ -337,6 +337,9 @@ MessageDistDeliverer::VisitObject(Player* player)
 template<class T>
 void ObjectUpdater::Visit(GridRefManager<T> &m)
 {
+    // GetSource() what class imple this method?
+    // the class Reference<TO, FROM>
+    // the Source() is FROM ...
     for (typename GridRefManager<T>::iterator iter = m.begin(); iter != m.end(); ++iter)
         if (iter->GetSource()->IsInWorld())
             iter->GetSource()->Update(i_timeDiff);

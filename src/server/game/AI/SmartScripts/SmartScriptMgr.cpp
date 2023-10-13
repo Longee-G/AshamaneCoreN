@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -553,6 +553,7 @@ bool SmartAIMgr::IsAnimKitValid(SmartScriptHolder const& e, uint32 entry)
     return true;
 }
 
+// 检查事件是否有效...
 bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
 {
     if (e.event.type >= SMART_EVENT_END)
@@ -691,7 +692,8 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
             case SMART_EVENT_VICTIM_CASTING:
                 if (e.event.targetCasting.spellId > 0 && !sSpellMgr->GetSpellInfo(e.event.targetCasting.spellId))
                 {
-                    TC_LOG_ERROR("sql.sql", "SmartAIMgr: Entry " SI64FMTD " SourceType %u Event %u Action %u uses non-existent Spell entry %u, skipped.", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), e.event.spellHit.spell);
+                    // e.event.spellHit.spell
+                    TC_LOG_ERROR("sql.sql", "SmartAIMgr: Entry " SI64FMTD " SourceType %u Event %u Action %u uses non-existent Spell entry %u, skipped.", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), e.event.targetCasting.spellId);
                     return false;
                 }
 
@@ -1054,7 +1056,7 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
                 if (effect && (effect->IsEffect(SPELL_EFFECT_KILL_CREDIT) || effect->IsEffect(SPELL_EFFECT_KILL_CREDIT2)))
                 {
                     if (effect->TargetA.GetTarget() == TARGET_UNIT_CASTER)
-                        TC_LOG_ERROR("sql.sql", "SmartAIMgr: Entry " SI64FMTD " SourceType %u Event %u Action %u Effect: SPELL_EFFECT_KILL_CREDIT: (SpellId: %u targetA: %u - targetB: %u) has invalid target for this Action",
+                        TC_LOG_DEBUG("sql.sql", "SmartAIMgr: Entry " SI64FMTD " SourceType %u Event %u Action %u Effect: SPELL_EFFECT_KILL_CREDIT: (SpellId: %u targetA: %u - targetB: %u) has invalid target for this Action",
                         e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), e.action.cast.spell, effect->TargetA.GetTarget(), effect->TargetB.GetTarget());
                 }
             }
@@ -1135,10 +1137,10 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
         {
             if (!IsCreatureValid(e, e.action.summonCreature.creature))
                 return false;
-
+            // 怪召唤的记录...
             CacheSpellContainerBounds sBounds = GetSummonCreatureSpellContainerBounds(e.action.summonCreature.creature);
             for (CacheSpellContainer::const_iterator itr = sBounds.first; itr != sBounds.second; ++itr)
-                TC_LOG_ERROR("sql.sql", "SmartAIMgr: Entry " SI64FMTD " SourceType %u Event %u Action %u creature summon: There is a summon spell for creature entry %u (SpellId: %u, effect: %u)",
+                TC_LOG_DEBUG("sql.sql", "SmartAIMgr: Entry " SI64FMTD " SourceType %u Event %u Action %u creature summon: There is a summon spell for creature entry %u (SpellId: %u, effect: %u)",
                                 e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), e.action.summonCreature.creature, itr->second.first, itr->second.second);
 
             if (e.action.summonCreature.type < TEMPSUMMON_TIMED_OR_DEAD_DESPAWN || e.action.summonCreature.type > TEMPSUMMON_MANUAL_DESPAWN)
@@ -1148,16 +1150,18 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
             }
             break;
         }
-        case SMART_ACTION_CALL_KILLEDMONSTER:
+        case SMART_ACTION_CALL_KILLEDMONSTER:       // 怪物击杀统计吗？
         {
             if (!IsCreatureValid(e, e.action.killedMonster.creature))
                 return false;
-
+            // 击杀统计...
             CacheSpellContainerBounds sBounds = GetKillCreditSpellContainerBounds(e.action.killedMonster.creature);
             for (CacheSpellContainer::const_iterator itr = sBounds.first; itr != sBounds.second; ++itr)
-                TC_LOG_ERROR("sql.sql", "SmartAIMgr: Entry " SI64FMTD " SourceType %u Event %u Action %u Kill Credit: There is a killcredit spell for creatureEntry %u (SpellId: %u effect: %u)",
+            {
+                // 这个并不是错误，不能用LOG_ERROR...
+                TC_LOG_DEBUG("sql.sql", "SmartAIMgr: Entry " SI64FMTD " SourceType %u Event %u Action %u Kill Credit: There is a killcredit spell for creatureEntry %u (SpellId: %u effect: %u)",
                                 e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), e.action.killedMonster.creature, itr->second.first, itr->second.second);
-
+            }
             if (e.GetTargetType() == SMART_TARGET_POSITION)
             {
                 TC_LOG_ERROR("sql.sql", "SmartAIMgr: Entry " SI64FMTD " SourceType %u Event %u Action %u uses incorrect TargetType %u, skipped.", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), e.GetTargetType());
@@ -1576,10 +1580,11 @@ bool SmartAIMgr::IsTextValid(SmartScriptHolder const& e, uint32 id)
                 break;
         }
     }
-
+    // entry = creature entry
     if (!entry || !sCreatureTextMgr->TextExist(entry, uint8(id)))
     {
-        TC_LOG_ERROR("sql.sql", "SmartAIMgr: Entry " SI64FMTD "SourceType %u Event %u Action %u using non-existent Text id %d, skipped.", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), id);
+        TC_LOG_ERROR("sql.sql", "SmartAIMgr: Entry " SI64FMTD " SourceType %u Event %u Action %u using non-existent Text id %d [CreatureEntry %u], skipped.",
+            e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), id, entry);
         return false;
     }
 
@@ -1601,7 +1606,7 @@ void SmartAIMgr::LoadHelperStores()
         {
             if (!effect)
                 continue;
-
+            
             if (effect->IsEffect(SPELL_EFFECT_SUMMON))
                 SummonCreatureSpellStore.insert(std::make_pair(uint32(effect->MiscValue), std::make_pair(i, SpellEffIndex(effect->EffectIndex))));
 

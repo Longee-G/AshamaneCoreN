@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -1855,15 +1855,15 @@ void AddSC_boss_spirit_kings()
 {
     new boss_spirit_kings_controler();
     new boss_spirit_kings();
-    new mob_pinning_arrow();
-    new mob_undying_shadow();
-    new spell_massive_attacks();
-    new spell_volley();
-    new spell_pinned_down();
-    new spell_maddening_shout();
-    new spell_crazed_cowardice();
-    new spell_crazy_thought();
-    new spell_coalescing_shadow();
-    new spell_sleight_of_hand();
-    new spell_shield_of_darkness();
+    //new mob_pinning_arrow();
+    //new mob_undying_shadow();
+    //new spell_massive_attacks();
+    //new spell_volley();
+    //new spell_pinned_down();
+    //new spell_maddening_shout();
+    //new spell_crazed_cowardice();
+    //new spell_crazy_thought();
+    //new spell_coalescing_shadow();
+    //new spell_sleight_of_hand();
+    //new spell_shield_of_darkness();
 }

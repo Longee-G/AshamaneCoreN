@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -21,50 +21,55 @@
 #include "WorldPacket.h"
 #include "Opcodes.h"
 
-UpdateData::UpdateData(uint32 map) : m_map(map), m_blockCount(0) { }
+UpdateData::UpdateData(uint32 map) : _map(map), _blockCount(0) { }
 
+// the guids out of player's sight
 void UpdateData::AddOutOfRangeGUID(GuidSet& guids)
 {
-    m_outOfRangeGUIDs.insert(guids.begin(), guids.end());
+    _outOfRangeGUIDs.insert(guids.begin(), guids.end());
 }
 
 void UpdateData::AddOutOfRangeGUID(ObjectGuid guid)
 {
-    m_outOfRangeGUIDs.insert(guid);
+    _outOfRangeGUIDs.insert(guid);
 }
 
+// 添加一份数据块到UpdateData中...
 void UpdateData::AddUpdateBlock(const ByteBuffer &block)
 {
-    m_data.append(block);
-    ++m_blockCount;
+    _data.append(block);
+    ++_blockCount;
 }
 
+// 将updateData的数据复制到消息包中
 bool UpdateData::BuildPacket(WorldPacket* packet)
 {
     ASSERT(packet->empty());                                // shouldn't happen
-    packet->Initialize(SMSG_UPDATE_OBJECT, 2 + 4 + (m_outOfRangeGUIDs.empty() ? 0 : 1 + 4 + 9 * m_outOfRangeGUIDs.size()) + m_data.wpos());
+    packet->Initialize(SMSG_UPDATE_OBJECT, 2 + 4 + (_outOfRangeGUIDs.empty() ? 0 : 1 + 4 + 9 * _outOfRangeGUIDs.size()) + _data.wpos());
 
-    *packet << uint32(m_blockCount);
-    *packet << uint16(m_map);
+    // 这个消息包定义的真是奇葩，_blockCount在最前面，实际的数据在最后面，中间插入了要被删除的ojbect guid列表...
 
-    if (packet->WriteBit(!m_outOfRangeGUIDs.empty()))
+    *packet << uint32(_blockCount);
+    *packet << uint16(_map);
+
+    if (packet->WriteBit(!_outOfRangeGUIDs.empty()))
     {
-        *packet << uint16(0);   // object limit to instantly destroy - objects before this index on m_outOfRangeGUIDs list get "smoothly phased out"
-        *packet << uint32(m_outOfRangeGUIDs.size());
+        *packet << uint16(0);   // object limit to instantly destroy - objects before this index on _outOfRangeGUIDs list get "smoothly phased out"
+        *packet << uint32(_outOfRangeGUIDs.size());
 
-        for (GuidSet::const_iterator i = m_outOfRangeGUIDs.begin(); i != m_outOfRangeGUIDs.end(); ++i)
+        for (GuidSet::const_iterator i = _outOfRangeGUIDs.begin(); i != _outOfRangeGUIDs.end(); ++i)
             *packet << *i;
     }
 
-    *packet << uint32(m_data.size());
-    packet->append(m_data);
+    *packet << uint32(_data.size());
+    packet->append(_data);
     return true;
 }
 
 void UpdateData::Clear()
 {
-    m_data.clear();
-    m_outOfRangeGUIDs.clear();
-    m_blockCount = 0;
-    m_map = 0;
+    _data.clear();
+    _outOfRangeGUIDs.clear();
+    _blockCount = 0;
+    _map = 0;
 }

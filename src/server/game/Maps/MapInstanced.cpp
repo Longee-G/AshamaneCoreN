@@ -60,7 +60,7 @@ void MapInstanced::Update(const uint32 t)
         {
             if (!DestroyInstance(i))                             // iterator incremented
             {
-                //m_unloadTimer
+                //_unloadTimer
             }
         }
         else

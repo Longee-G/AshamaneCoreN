@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -187,6 +187,7 @@ namespace WorldPackets
             std::vector<GarrisonRemoteBuildingInfo> Buildings;
         };
 
+        // 要塞信息... 这个应该是90的要塞信息
         class GarrisonRemoteInfo final : public ServerPacket
         {
         public:
@@ -565,6 +566,14 @@ namespace WorldPackets
             GarrisonFollower NewFollower;
 
             WorldPacket const* Write() override;
+        };
+
+        class GarrisonRequestLandingPageShipmentInfo final : public ClientPacket
+        {
+        public:
+            GarrisonRequestLandingPageShipmentInfo(WorldPacket&& packet) : ClientPacket(CMSG_GARRISON_REQUEST_LANDING_PAGE_SHIPMENT_INFO, std::move(packet)) { }
+
+            void Read() override { }
         };
     }
 }

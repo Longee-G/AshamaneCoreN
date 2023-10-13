@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -1910,18 +1910,18 @@ class spell_visions_of_demise : public SpellScriptLoader
 
 void AddSC_boss_shekzeer()
 {
-    new boss_shekzeer();                // 62837 - Shek'zeer
-    new mob_add_setthik_windblade();    // 63589 - Set'thik Windblade
-    new mob_korthik_reaver();           // 63591 - Kor'thik Reaver
-    new mob_sticky_resin();             // 63730 - Sticky Resin
-    new mob_amber_trap();               // 64351 - Amber trap
-    new mob_dissonance_field();         // 62847 - Dissonance Field
-    new mob_sha_of_fear();              // 63942 - Sha of Fear
-    new mob_heart_of_fear();            // 63445 - Heart of fear
-    new spell_eyes_of_the_empress();    // 123707 - Eyes of the empress
-    new spell_servant_of_the_empress(); // 123713 - Servant of the empress
-    new spell_cry_of_terror();          // 123792 - Cry of terror
-    new spell_amassing_darkness();      // 124843 - Amassing Darkness
-    new spell_calamity();               // 124845 - Calamity
-    new spell_visions_of_demise();      // 124862 - Visions of Demise
+    //new boss_shekzeer();                // 62837 - Shek'zeer
+    //new mob_add_setthik_windblade();    // 63589 - Set'thik Windblade
+    //new mob_korthik_reaver();           // 63591 - Kor'thik Reaver
+    //new mob_sticky_resin();             // 63730 - Sticky Resin
+    //new mob_amber_trap();               // 64351 - Amber trap
+    //new mob_dissonance_field();         // 62847 - Dissonance Field
+    //new mob_sha_of_fear();              // 63942 - Sha of Fear
+    //new mob_heart_of_fear();            // 63445 - Heart of fear
+    //new spell_eyes_of_the_empress();    // 123707 - Eyes of the empress
+    //new spell_servant_of_the_empress(); // 123713 - Servant of the empress
+    //new spell_cry_of_terror();          // 123792 - Cry of terror
+    //new spell_amassing_darkness();      // 124843 - Amassing Darkness
+    //new spell_calamity();               // 124845 - Calamity
+    //new spell_visions_of_demise();      // 124862 - Visions of Demise
 }

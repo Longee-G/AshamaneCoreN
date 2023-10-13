@@ -406,6 +406,8 @@ enum WorldIntConfigs
     CONFIG_TALENTS_INSPECTING,
     CONFIG_BLACKMARKET_MAXAUCTIONS,
     CONFIG_BLACKMARKET_UPDATE_PERIOD,
+    CONFIG_REFERRAL_TRACKER_TOKEN_TYPE,     //TODO:
+    CONFIG_REFERRAL_TRACKER_LEVEL_THRESHOLD,    // TODO:
     INT_CONFIG_VALUE_COUNT
 };
 
@@ -870,6 +872,7 @@ class TC_GAME_API World
         LocaleConstant m_defaultDbcLocale;                     // from config for one from loaded DBC locales
         uint32 m_availableDbcLocaleMask;                       // by loaded DBC
         bool m_allowMovement;
+        // message of the day ... 
         std::vector<std::string> _motd;
         std::string m_dataPath;
 

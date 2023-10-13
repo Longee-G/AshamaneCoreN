@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -130,18 +130,20 @@ class TC_GAME_API Aura
         void _InitEffects(uint32 effMask, Unit* caster, int32 *baseAmount);
         virtual ~Aura();
 
-        SpellInfo const* GetSpellInfo() const { return m_spellInfo; }
+        SpellInfo const* GetSpellInfo() const { return _spellInfo; }
         uint32 GetId() const{ return GetSpellInfo()->Id; }
 
-        ObjectGuid GetCastGUID() const { return m_castGuid; }
-        ObjectGuid GetCasterGUID() const { return m_casterGuid; }
-        ObjectGuid GetCastItemGUID() const { return m_castItemGuid; }
-        int32 GetCastItemLevel() const { return m_castItemLevel; }
-        uint32 GetSpellXSpellVisualId() const { return m_spellXSpellVisualId; }
+        ObjectGuid GetCastGUID() const { return _castGuid; }
+        ObjectGuid GetCasterGUID() const { return _casterGuid; }
+        ObjectGuid GetCastItemGUID() const { return _castItemGuid; }
+        int32 GetCastItemLevel() const { return _castItemLevel; }
+        uint32 GetSpellXSpellVisualId() const { return _spellXSpellVisualId; }
+        void SetSpellXSpellVisualId(uint32 visual) { _spellXSpellVisualId = visual; }
+
         Unit* GetCaster() const;
-        WorldObject* GetOwner() const { return m_owner; }
-        Unit* GetUnitOwner() const { ASSERT(GetType() == UNIT_AURA_TYPE); return (Unit*)m_owner; }
-        DynamicObject* GetDynobjOwner() const { ASSERT(GetType() == DYNOBJ_AURA_TYPE); return (DynamicObject*)m_owner; }
+        WorldObject* GetOwner() const { return _owner; }
+        Unit* GetUnitOwner() const { ASSERT(GetType() == UNIT_AURA_TYPE); return (Unit*)_owner; }
+        DynamicObject* GetDynobjOwner() const { ASSERT(GetType() == DYNOBJ_AURA_TYPE); return (DynamicObject*)_owner; }
 
         AuraObjectType GetType() const;
 
@@ -160,20 +162,22 @@ class TC_GAME_API Aura
         void UpdateOwner(uint32 diff, WorldObject* owner);
         void Update(uint32 diff, Unit* caster);
 
-        time_t GetApplyTime() const { return m_applyTime; }
-        int32 GetMaxDuration() const { return m_maxDuration; }
-        void SetMaxDuration(int32 duration) { m_maxDuration = duration; }
+        time_t GetApplyTime() const { return _applyTime; }
+        int32 GetMaxDuration() const { return _maxDuration; }
+        void SetMaxDuration(int32 duration) { _maxDuration = duration; }
         int32 CalcMaxDuration() const { return CalcMaxDuration(GetCaster()); }
         int32 CalcMaxDuration(Unit* caster) const;
-        int32 GetDuration() const { return m_duration; }
+        int32 GetDuration() const { return _duration; }
         void SetDuration(int32 duration, bool withMods = false);
         void ModDuration(int32 duration, bool withMods = false) { SetDuration(GetDuration() + duration, withMods); }
         void RefreshDuration(bool withMods = false);
         void RefreshTimers(bool resetPeriodicTimer);
-        bool IsExpired() const { return !GetDuration() && !m_dropEvent; }
+        bool IsExpired() const { return !GetDuration() && !_dropEvent; }
         bool IsPermanent() const { return GetMaxDuration() == -1; }
+        
+        
 
-        uint8 GetCharges() const { return m_procCharges; }
+        uint8 GetCharges() const { return _procCharges; }
         void SetCharges(uint8 charges);
         uint8 CalcMaxCharges(Unit* caster) const;
         uint8 CalcMaxCharges() const { return CalcMaxCharges(GetCaster()); }
@@ -182,12 +186,12 @@ class TC_GAME_API Aura
         void ModChargesDelayed(int32 num, AuraRemoveMode removeMode = AURA_REMOVE_BY_DEFAULT);
         void DropChargeDelayed(uint32 delay, AuraRemoveMode removeMode = AURA_REMOVE_BY_DEFAULT);
 
-        uint8 GetStackAmount() const { return m_stackAmount; }
+        uint8 GetStackAmount() const { return _stackAmount; }
         uint32 GetMaxStackAmount() const;
         void SetStackAmount(uint8 num);
         bool ModStackAmount(int32 num, AuraRemoveMode removeMode = AURA_REMOVE_BY_DEFAULT, bool resetPeriodicTimer = true, bool refresh = true);
 
-        uint8 GetCasterLevel() const { return m_casterLevel; }
+        uint8 GetCasterLevel() const { return _casterLevel; }
 
         bool HasMoreThanOneEffectForType(AuraType auraType) const;
         bool IsArea() const;
@@ -197,17 +201,17 @@ class TC_GAME_API Aura
         bool IsRemovedOnShapeLost(Unit* target) const
         {
             return GetCasterGUID() == target->GetGUID()
-                    && m_spellInfo->Stances
-                    && !m_spellInfo->HasAttribute(SPELL_ATTR2_NOT_NEED_SHAPESHIFT)
-                    && !m_spellInfo->HasAttribute(SPELL_ATTR0_NOT_SHAPESHIFT);
+                    && _spellInfo->Stances
+                    && !_spellInfo->HasAttribute(SPELL_ATTR2_NOT_NEED_SHAPESHIFT)
+                    && !_spellInfo->HasAttribute(SPELL_ATTR0_NOT_SHAPESHIFT);
         }
 
         bool CanBeSaved() const;
-        bool IsRemoved() const { return m_isRemoved; }
+        bool IsRemoved() const { return _isRemoved; }
         // Single cast aura helpers
-        bool IsSingleTarget() const {return m_isSingleTarget; }
+        bool IsSingleTarget() const {return _isSingleTarget; }
         bool IsSingleTargetWith(Aura const* aura) const;
-        void SetIsSingleTarget(bool val) { m_isSingleTarget = val; }
+        void SetIsSingleTarget(bool val) { _isSingleTarget = val; }
         void UnregisterSingleTarget();
         int32 CalcDispelChance(Unit const* auraTarget, bool offensive) const;
 
@@ -232,11 +236,11 @@ class TC_GAME_API Aura
         void HandleAllEffects(AuraApplication * aurApp, uint8 mode, bool apply);
 
         // Helpers for targets
-        ApplicationMap const& GetApplicationMap() { return m_applications; }
+        ApplicationMap const& GetApplicationMap() { return _applications; }
         void GetApplicationList(Unit::AuraApplicationList& applicationList) const;
-        const AuraApplication* GetApplicationOfTarget(ObjectGuid guid) const { ApplicationMap::const_iterator itr = m_applications.find(guid); if (itr != m_applications.end()) return itr->second; return NULL; }
-        AuraApplication* GetApplicationOfTarget(ObjectGuid guid) { ApplicationMap::iterator itr = m_applications.find(guid); if (itr != m_applications.end()) return itr->second; return NULL; }
-        bool IsAppliedOnTarget(ObjectGuid guid) const { return m_applications.find(guid) != m_applications.end(); }
+        const AuraApplication* GetApplicationOfTarget(ObjectGuid guid) const { ApplicationMap::const_iterator itr = _applications.find(guid); if (itr != _applications.end()) return itr->second; return NULL; }
+        AuraApplication* GetApplicationOfTarget(ObjectGuid guid) { ApplicationMap::iterator itr = _applications.find(guid); if (itr != _applications.end()) return itr->second; return NULL; }
+        bool IsAppliedOnTarget(ObjectGuid guid) const { return _applications.find(guid) != _applications.end(); }
 
         void SetNeedClientUpdateForTargets() const;
         void HandleAuraSpecificMods(AuraApplication const* aurApp, Unit* caster, bool apply, bool onReapply);
@@ -247,15 +251,15 @@ class TC_GAME_API Aura
 
         bool IsProcOnCooldown(std::chrono::steady_clock::time_point now) const;
         void AddProcCooldown(std::chrono::steady_clock::time_point cooldownEnd);
-        bool IsUsingCharges() const { return m_isUsingCharges; }
-        void SetUsingCharges(bool val) { m_isUsingCharges = val; }
+        bool IsUsingCharges() const { return _isUsingCharges; }
+        void SetUsingCharges(bool val) { _isUsingCharges = val; }
         void PrepareProcToTrigger(AuraApplication* aurApp, ProcEventInfo& eventInfo, std::chrono::steady_clock::time_point now);
         uint32 IsProcTriggeredOnEvent(AuraApplication* aurApp, ProcEventInfo& eventInfo, std::chrono::steady_clock::time_point now) const;
         float CalcProcChance(SpellProcEntry const& procEntry, ProcEventInfo& eventInfo) const;
         void TriggerProcOnEvent(uint32 procEffectMask, AuraApplication* aurApp, ProcEventInfo& eventInfo);
         float CalcPPMProcChance(Unit* actor) const;
-        void SetLastProcAttemptTime(std::chrono::steady_clock::time_point lastProcAttemptTime) { m_lastProcAttemptTime = lastProcAttemptTime; }
-        void SetLastProcSuccessTime(std::chrono::steady_clock::time_point lastProcSuccessTime) { m_lastProcSuccessTime = lastProcSuccessTime; }
+        void SetLastProcAttemptTime(std::chrono::steady_clock::time_point lastProcAttemptTime) { _lastProcAttemptTime = lastProcAttemptTime; }
+        void SetLastProcSuccessTime(std::chrono::steady_clock::time_point lastProcSuccessTime) { _lastProcSuccessTime = lastProcSuccessTime; }
 
         // AuraScript
         void LoadScripts();
@@ -305,39 +309,49 @@ class TC_GAME_API Aura
         void _DeleteRemovedApplications();
 
     protected:
-        SpellInfo const* const m_spellInfo;
-        ObjectGuid const m_castGuid;
-        ObjectGuid const m_casterGuid;
-        ObjectGuid const m_castItemGuid;                    // it is NOT safe to keep a pointer to the item because it may get deleted
-        int32 m_castItemLevel;
-        uint32 const m_spellXSpellVisualId;
-        time_t const m_applyTime;
-        WorldObject* const m_owner;
+        SpellInfo const* const _spellInfo;
+        ObjectGuid const _castGuid;
+        ObjectGuid const _casterGuid;
+        // it is NOT safe to keep a pointer to the item because it may get deleted
+        ObjectGuid const _castItemGuid;                    
+        int32 _castItemLevel;
+        // how to use this id ???
+        uint32 _spellXSpellVisualId;                       
+        time_t const _applyTime;
+        WorldObject* const _owner;
 
-        int32 m_maxDuration;                                // Max aura duration
-        int32 m_duration;                                   // Current time
-        int32 m_timeCla;                                    // Timer for power per sec calcultion
-        std::vector<SpellPowerEntry const*> m_periodicCosts;// Periodic costs
-        int32 m_updateTargetMapInterval;                    // Timer for UpdateTargetMapOfEffect
+        // Max aura duration (secs or msecs?)
+        int32 _maxDuration;
+        // Current time
+        int32 _duration;
+        // Timer for power per sec calcultion
+        int32 _timeCla;
+        // Periodic costs
+        std::vector<SpellPowerEntry const*> _periodicCosts;
+        // Timer for UpdateTargetMapOfEffect
+        int32 _updateTargetMapInterval;                    
+        // Aura level (store caster level for correct show level dep amount)
+        uint8 const _casterLevel;
+        // Aura charges (0 for infinite)
+        uint8 _procCharges;
+        // Aura stack amount
+        uint8 _stackAmount;                    
 
-        uint8 const m_casterLevel;                          // Aura level (store caster level for correct show level dep amount)
-        uint8 m_procCharges;                                // Aura charges (0 for infinite)
-        uint8 m_stackAmount;                                // Aura stack amount
+        ApplicationMap _applications;
 
-        ApplicationMap m_applications;
+        bool _isRemoved;
+        // true if it's a single target spell and registered at caster - can change at spell steal for example
+        bool _isSingleTarget;                              
+        bool _isUsingCharges;
 
-        bool m_isRemoved;
-        bool m_isSingleTarget;                              // true if it's a single target spell and registered at caster - can change at spell steal for example
-        bool m_isUsingCharges;
+        ChargeDropEvent* _dropEvent;
 
-        ChargeDropEvent* m_dropEvent;
-
-        std::chrono::steady_clock::time_point m_procCooldown;
-        std::chrono::steady_clock::time_point m_lastProcAttemptTime;
-        std::chrono::steady_clock::time_point m_lastProcSuccessTime;
+        std::chrono::steady_clock::time_point _procCooldown;
+        std::chrono::steady_clock::time_point _lastProcAttemptTime;
+        std::chrono::steady_clock::time_point _lastProcSuccessTime;
 
     private:
-        Unit::AuraApplicationList m_removedApplications;
+        Unit::AuraApplicationList _removedApplications;
 
         AuraEffectVector _effects;
         SpellEffectInfoVector _spelEffectInfos;

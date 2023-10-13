@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -1338,21 +1338,21 @@ class mob_zephyr : public CreatureScript
                 me->SetReactState(REACT_PASSIVE);
             }
 
-            EventMap m_Events;
+            EventMap _events;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
                 me->CastSpell(me, SPELL_ZEPHYR, false);
                 me->DespawnOrUnsummon(30000);
-                m_Events.ScheduleEvent(EVENT_ZEPHYR_MOVE, 500);
+                _events.ScheduleEvent(EVENT_ZEPHYR_MOVE, 500);
             }
 
             void UpdateAI(uint32 const p_Diff) override
             {
-                m_Events.Update(p_Diff);
+                _events.Update(p_Diff);
 
-                if (m_Events.ExecuteEvent() == EVENT_ZEPHYR_MOVE)
+                if (_events.ExecuteEvent() == EVENT_ZEPHYR_MOVE)
                 {
                     float l_PosX = me->GetPositionX() + 100.0f * cos(me->GetOrientation());
                     float l_PosY = me->GetPositionY() + 100.0f * sin(me->GetOrientation());
@@ -2208,34 +2208,34 @@ class spell_vital_strikes : public SpellScriptLoader
 void AddSC_heart_of_fear()
 {
     // Trashes
-    new mob_kor_thik_slicer();          // 63048 - Kor'thik Slicer
-    new mob_kor_thik_extremist();       // 63036 - Kor'thik extremist
-    new mob_sra_thik_shield_master();   // 63032 - Sra'thik Shield Master
-    new mob_set_thik_swiftblade();      // 63049 - Set'thik Swiftblade
-    new mob_zar_thik_supplicant();      // 67177 - 66181 - 63853 - Zar'thik Supplicant
-    new mob_enslaved_bonesmasher();     // 63030 - Enslaved Bonesmasher
-    new mob_set_thik_tempest();         // 64358 - Set'thik Tempest
-    new mob_set_thik_fanatic();         // 63031 - Set'thik Fanatic
-    new mob_set_thik_zephyrian();       // 63593 - Set'thik Zephyrian
-    new mob_set_thik_gale_slicer();     // 64353 - Set'thik Gale-Slicer
-    new mob_instructor_kli_thak();      // 64338 - Instructor Kli'thak <Keeper of Wind Step>
-    new mob_instructor_tak_thok();      // 64339 - Instructor Tak'thok <Keeper of Overwhelming Assault>
-    new mob_instructor_maltik();        // 64340 - Instructor Maltik <Keeper of Unseen Strike>
-    new mob_instructor_zarik();         // 64341 - Instructor Zarik <Keeper of Tempest Slash>
-    new mob_zar_thik_zealot();          // 63035 - Zar'thik Zealot
-    new mob_kor_thik_swarmer();         // 64357 - Kor'thik Swarmer
-    new mob_set_thik_gustwing();        // 63592 - Set'thik Gustwing
-    new mob_coagulated_amber();         // 63597 / 63594 - Coagulated Amber
-    new mob_kor_thik_silentwing();      // 64355 - Kor'thik Silentwing
-    new mob_zephyr();                   // 63599 - Zephyr (summoned by Set'thik Zephyrian - 63593)
-    new mob_korthik_swarmguard();       // 64916 - Kor'thik Swarmguard
-    new mob_srathik_ambercaller();      // 64917 - Sra'thik Ambercaller
-    new mob_korthik_fleshrender();      // 64902 - Kor'thik Fleshrender
-    new mob_amber_searsting();          // 63569 - Amber Searsting
-    new mob_amberridden_mushan();       // 63568 - Amber-Ridden Mushan
-    new mob_srathik_pooltender();       // 63570 - Sra'thik Pool-Tender
-    new mob_setthik_windblade();        // 64453 - Set'thik Windblade
-    new mob_zarthik_augurer();          // 64454 - Zar'thik Augurer
-    new mob_korthik_warsinger();        // 64458 - Kor'thik Warsinger
-    new spell_vital_strikes();          // 123421 - Vital Strikes
+    //new mob_kor_thik_slicer();          // 63048 - Kor'thik Slicer
+    //new mob_kor_thik_extremist();       // 63036 - Kor'thik extremist
+    //new mob_sra_thik_shield_master();   // 63032 - Sra'thik Shield Master
+    //new mob_set_thik_swiftblade();      // 63049 - Set'thik Swiftblade
+    //new mob_zar_thik_supplicant();      // 67177 - 66181 - 63853 - Zar'thik Supplicant
+    //new mob_enslaved_bonesmasher();     // 63030 - Enslaved Bonesmasher
+    //new mob_set_thik_tempest();         // 64358 - Set'thik Tempest
+    //new mob_set_thik_fanatic();         // 63031 - Set'thik Fanatic
+    //new mob_set_thik_zephyrian();       // 63593 - Set'thik Zephyrian
+    //new mob_set_thik_gale_slicer();     // 64353 - Set'thik Gale-Slicer
+    //new mob_instructor_kli_thak();      // 64338 - Instructor Kli'thak <Keeper of Wind Step>
+    //new mob_instructor_tak_thok();      // 64339 - Instructor Tak'thok <Keeper of Overwhelming Assault>
+    //new mob_instructor_maltik();        // 64340 - Instructor Maltik <Keeper of Unseen Strike>
+    //new mob_instructor_zarik();         // 64341 - Instructor Zarik <Keeper of Tempest Slash>
+    //new mob_zar_thik_zealot();          // 63035 - Zar'thik Zealot
+    //new mob_kor_thik_swarmer();         // 64357 - Kor'thik Swarmer
+    //new mob_set_thik_gustwing();        // 63592 - Set'thik Gustwing
+    //new mob_coagulated_amber();         // 63597 / 63594 - Coagulated Amber
+    //new mob_kor_thik_silentwing();      // 64355 - Kor'thik Silentwing
+    //new mob_zephyr();                   // 63599 - Zephyr (summoned by Set'thik Zephyrian - 63593)
+    //new mob_korthik_swarmguard();       // 64916 - Kor'thik Swarmguard
+    //new mob_srathik_ambercaller();      // 64917 - Sra'thik Ambercaller
+    //new mob_korthik_fleshrender();      // 64902 - Kor'thik Fleshrender
+    //new mob_amber_searsting();          // 63569 - Amber Searsting
+    //new mob_amberridden_mushan();       // 63568 - Amber-Ridden Mushan
+    //new mob_srathik_pooltender();       // 63570 - Sra'thik Pool-Tender
+    //new mob_setthik_windblade();        // 64453 - Set'thik Windblade
+    //new mob_zarthik_augurer();          // 64454 - Zar'thik Augurer
+    //new mob_korthik_warsinger();        // 64458 - Kor'thik Warsinger
+    //new spell_vital_strikes();          // 123421 - Vital Strikes
 }

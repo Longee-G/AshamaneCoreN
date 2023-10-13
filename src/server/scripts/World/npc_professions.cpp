@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  *
@@ -32,6 +32,7 @@ EndScriptData */
 #include "SpellInfo.h"
 #include "SpellMgr.h"
 #include "WorldSession.h"
+
 
 /*
 A few notes for future developement:
@@ -1252,4 +1253,5 @@ void AddSC_npc_professions()
     new npc_engineering_tele_trinket();
     new npc_prof_leather();
     new npc_prof_tailor();
+
 }

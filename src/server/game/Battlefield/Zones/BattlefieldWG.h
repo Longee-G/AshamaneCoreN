@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -235,6 +235,8 @@ class WintergraspCapturePoint : public BfCapturePoint
  * WinterGrasp Battlefield   *
  * ######################### */
 
+
+// 冬握湖战场？如果Battlefield是战场 ... 那Battlegound这个类是啥呢？
 class TC_GAME_API BattlefieldWG : public Battlefield
 {
     public:

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -107,9 +107,9 @@ void WorldSession::SendTrainerList(Creature* npc, uint32 trainerId)
         return;
     }
 
-    _player->PlayerTalkClass->GetInteractionData().Reset();
-    _player->PlayerTalkClass->GetInteractionData().SourceGuid = npc->GetGUID();
-    _player->PlayerTalkClass->GetInteractionData().TrainerId = trainerId;
+    _player->playerTalkClass->GetInteractionData().Reset();
+    _player->playerTalkClass->GetInteractionData().SourceGuid = npc->GetGUID();
+    _player->playerTalkClass->GetInteractionData().TrainerId = trainerId;
     trainer->SendSpells(npc, _player, GetSessionDbLocaleIndex());
 }
 
@@ -221,13 +221,13 @@ void WorldSession::HandleTrainerBuySpellOpcode(WorldPackets::NPC::TrainerBuySpel
     if (GetPlayer()->HasUnitState(UNIT_STATE_DIED))
         GetPlayer()->RemoveAurasByType(SPELL_AURA_FEIGN_DEATH);
 
-    if (_player->PlayerTalkClass->GetInteractionData().SourceGuid != packet.TrainerGUID)
+    if (_player->playerTalkClass->GetInteractionData().SourceGuid != packet.TrainerGUID)
     {
         HandleTrainerBuySpellOpcodeLegacy(packet);
         return;
     }
 
-    if (_player->PlayerTalkClass->GetInteractionData().TrainerId != uint32(packet.TrainerID))
+    if (_player->playerTalkClass->GetInteractionData().TrainerId != uint32(packet.TrainerID))
     {
         HandleTrainerBuySpellOpcodeLegacy(packet);
         return;
@@ -315,6 +315,7 @@ void WorldSession::HandleTrainerBuySpellOpcodeLegacy(WorldPackets::NPC::TrainerB
         _player->LearnSpell(packet.SpellID, false);
 }
 
+// 点击npc的时候，客户端发这个消息...
 void WorldSession::HandleGossipHelloOpcode(WorldPackets::NPC::Hello& packet)
 {
     Creature* unit = GetPlayer()->GetNPCIfCanInteractWith(packet.Unit, UNIT_NPC_FLAG_GOSSIP);
@@ -359,11 +360,11 @@ void WorldSession::HandleGossipHelloOpcode(WorldPackets::NPC::Hello& packet)
 
 void WorldSession::HandleGossipSelectOptionOpcode(WorldPackets::NPC::GossipSelectOption& packet)
 {
-    if (!_player->PlayerTalkClass->GetGossipMenu().GetItem(packet.GossipIndex))
+    if (!_player->playerTalkClass->GetGossipMenu().GetItem(packet.GossipIndex))
         return;
 
     // Prevent cheating on C++ scripted menus
-    if (_player->PlayerTalkClass->GetInteractionData().SourceGuid != packet.GossipUnit)
+    if (_player->playerTalkClass->GetInteractionData().SourceGuid != packet.GossipUnit)
         return;
 
     Creature* unit = nullptr;
@@ -397,15 +398,15 @@ void WorldSession::HandleGossipSelectOptionOpcode(WorldPackets::NPC::GossipSelec
     if (GetPlayer()->HasUnitState(UNIT_STATE_DIED))
         GetPlayer()->RemoveAurasByType(SPELL_AURA_FEIGN_DEATH);
 
-    if ((unit && unit->GetScriptId() != unit->LastUsedScriptID) || (go && go->GetScriptId() != go->LastUsedScriptID))
+    if ((unit && unit->GetScriptId() != unit->lastUsedScriptID) || (go && go->GetScriptId() != go->lastUsedScriptID))
     {
         TC_LOG_DEBUG("network", "WORLD: HandleGossipSelectOptionOpcode - Script reloaded while in use, ignoring and set new scipt id");
         if (unit)
-            unit->LastUsedScriptID = unit->GetScriptId();
+            unit->lastUsedScriptID = unit->GetScriptId();
 
         if (go)
-            go->LastUsedScriptID = go->GetScriptId();
-        _player->PlayerTalkClass->SendCloseGossip();
+            go->lastUsedScriptID = go->GetScriptId();
+        _player->playerTalkClass->SendCloseGossip();
         return;
     }
 
@@ -414,13 +415,13 @@ void WorldSession::HandleGossipSelectOptionOpcode(WorldPackets::NPC::GossipSelec
         if (unit)
         {
             unit->AI()->sGossipSelectCode(_player, packet.GossipID, packet.GossipIndex, packet.PromotionCode.c_str());
-            if (!sScriptMgr->OnGossipSelectCode(_player, unit, _player->PlayerTalkClass->GetGossipOptionSender(packet.GossipIndex), _player->PlayerTalkClass->GetGossipOptionAction(packet.GossipIndex), packet.PromotionCode.c_str()))
+            if (!sScriptMgr->OnGossipSelectCode(_player, unit, _player->playerTalkClass->GetGossipOptionSender(packet.GossipIndex), _player->playerTalkClass->GetGossipOptionAction(packet.GossipIndex), packet.PromotionCode.c_str()))
                 _player->OnGossipSelect(unit, packet.GossipIndex, packet.GossipID);
         }
         else
         {
             go->AI()->GossipSelectCode(_player, packet.GossipID, packet.GossipIndex, packet.PromotionCode.c_str());
-            if (!sScriptMgr->OnGossipSelectCode(_player, go, _player->PlayerTalkClass->GetGossipOptionSender(packet.GossipIndex), _player->PlayerTalkClass->GetGossipOptionAction(packet.GossipIndex), packet.PromotionCode.c_str()))
+            if (!sScriptMgr->OnGossipSelectCode(_player, go, _player->playerTalkClass->GetGossipOptionSender(packet.GossipIndex), _player->playerTalkClass->GetGossipOptionAction(packet.GossipIndex), packet.PromotionCode.c_str()))
                 _player->OnGossipSelect(go, packet.GossipIndex, packet.GossipID);
         }
     }
@@ -429,13 +430,13 @@ void WorldSession::HandleGossipSelectOptionOpcode(WorldPackets::NPC::GossipSelec
         if (unit)
         {
             unit->AI()->sGossipSelect(_player, packet.GossipID, packet.GossipIndex);
-            if (!sScriptMgr->OnGossipSelect(_player, unit, _player->PlayerTalkClass->GetGossipOptionSender(packet.GossipIndex), _player->PlayerTalkClass->GetGossipOptionAction(packet.GossipIndex)))
+            if (!sScriptMgr->OnGossipSelect(_player, unit, _player->playerTalkClass->GetGossipOptionSender(packet.GossipIndex), _player->playerTalkClass->GetGossipOptionAction(packet.GossipIndex)))
                 _player->OnGossipSelect(unit, packet.GossipIndex, packet.GossipID);
         }
         else
         {
             go->AI()->GossipSelect(_player, packet.GossipID, packet.GossipIndex);
-            if (!sScriptMgr->OnGossipSelect(_player, go, _player->PlayerTalkClass->GetGossipOptionSender(packet.GossipIndex), _player->PlayerTalkClass->GetGossipOptionAction(packet.GossipIndex)))
+            if (!sScriptMgr->OnGossipSelect(_player, go, _player->playerTalkClass->GetGossipOptionSender(packet.GossipIndex), _player->playerTalkClass->GetGossipOptionAction(packet.GossipIndex)))
                 _player->OnGossipSelect(go, packet.GossipIndex, packet.GossipID);
         }
     }
@@ -519,7 +520,7 @@ void WorldSession::SendBindPoint(Creature* npc)
     // send spell for homebinding (3286)
     npc->CastSpell(_player, bindspell, true);
 
-    _player->PlayerTalkClass->SendCloseGossip();
+    _player->playerTalkClass->SendCloseGossip();
 }
 
 void WorldSession::HandleRequestStabledPets(WorldPackets::NPC::RequestStabledPets& packet)
@@ -547,7 +548,7 @@ void WorldSession::SendStablePet(ObjectGuid guid)
 
     packet.StableMaster = guid;
 
-    for (PlayerPetData* p : _player->PlayerPetDataStore)
+    for (PlayerPetData* p : _player->_playerPetDataStore)
     {
 
         WorldPackets::Pet::PetStableInfo stableEntry;

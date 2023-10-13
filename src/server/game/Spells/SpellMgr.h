@@ -533,6 +533,9 @@ typedef std::pair<SpellLearnSpellMap::const_iterator, SpellLearnSpellMap::const_
 typedef std::multimap<uint32, SkillLineAbilityEntry const*> SkillLineAbilityMap;
 typedef std::pair<SkillLineAbilityMap::const_iterator, SkillLineAbilityMap::const_iterator> SkillLineAbilityMapBounds;
 
+// <skillid, ...>
+typedef std::map<uint32, std::list<SkillLineAbilityEntry const*>> SkillTradeSpellMap;
+
 typedef std::set<uint32> PetFamilySpellsSet;
 typedef std::map<uint32, PetFamilySpellsSet> PetFamilySpellsStore;
 
@@ -659,6 +662,10 @@ class TC_GAME_API SpellMgr
 
         SkillLineAbilityMapBounds GetSkillLineAbilityMapBounds(uint32 spell_id) const;
 
+        // TODO:
+        std::list<SkillLineAbilityEntry const*> const& GetTradeSpellFromSkill(uint32 skillid);
+
+
         PetAura const* GetPetAura(uint32 spell_id, uint8 eff) const;
 
         SpellEnchantProcEntry const* GetSpellEnchantProcEvent(uint32 enchId) const;
@@ -692,6 +699,9 @@ class TC_GAME_API SpellMgr
         void LoadPetFamilySpellsStore();
 
         uint32 GetModelForTotem(uint32 spellId, uint8 race) const;
+
+        //
+
 
     private:
         SpellInfo* _GetSpellInfo(uint32 spellId) { return spellId < GetSpellInfoStoreSize() ?  mSpellInfoMap[spellId] : NULL; }
@@ -727,6 +737,7 @@ class TC_GAME_API SpellMgr
         void LoadSpellInfoDiminishing();
         void LoadSpellInfoImmunities();
         void LoadSpellTotemModel();
+        void LoadSkillTradeSpells();
 
     private:
         SpellDifficultySearcherMap mSpellDifficultySearcherMap;
@@ -756,6 +767,9 @@ class TC_GAME_API SpellMgr
         PetDefaultSpellsMap        mPetDefaultSpellsMap;           // only spells not listed in related mPetLevelupSpellMap entry
         SpellInfoMap               mSpellInfoMap;
         SpellTotemModelMap         mSpellTotemModel;
+
+        // TODO:
+        SkillTradeSpellMap         mSkillTradeSpells;
 };
 
 #define sSpellMgr SpellMgr::instance()

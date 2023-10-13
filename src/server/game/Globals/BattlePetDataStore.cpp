@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
@@ -24,9 +24,13 @@ void BattlePetDataStore::Initialize()
     if (QueryResult result = LoginDatabase.Query("SELECT MAX(guid) FROM battle_pets"))
         sObjectMgr->GetGenerator<HighGuid::BattlePet>().Set((*result)[0].GetUInt64() + 1);
 
+    // sBattlePetBreedStateStore 是从`BattlePetBreedState.db2`中获取数据的
+    // 这张表通过不同的[breed, state] 组合的value...
+    // 在创建一只新的pet的时候，可以通过这张表来得到初始的属性值....
     for (BattlePetBreedStateEntry const* battlePetBreedState : sBattlePetBreedStateStore)
         _battlePetBreedStates[battlePetBreedState->BattlePetBreedID][BattlePetState(battlePetBreedState->BattlePetStateID)] = battlePetBreedState->Value;
 
+    // pet属性相关的第2张表，存储[species, state] 组合的值...
     for (BattlePetSpeciesStateEntry const* battlePetSpeciesState : sBattlePetSpeciesStateStore)
         _battlePetSpeciesStates[battlePetSpeciesState->BattlePetSpeciesID][BattlePetState(battlePetSpeciesState->BattlePetStateID)] = battlePetSpeciesState->Value;
 
@@ -94,6 +98,7 @@ void BattlePetDataStore::LoadDefaultPetQualities()
     TC_LOG_INFO("server.loading", ">> Loaded %u battle pet qualities.", uint32(_defaultQualityPerSpecies.size()));
 }
 
+// 随机得到Pet的breed(相性)值
 uint16 BattlePetDataStore::RollPetBreed(uint32 species) const
 {
     auto itr = _availableBreedsPerSpecies.find(species);
@@ -103,6 +108,7 @@ uint16 BattlePetDataStore::RollPetBreed(uint32 species) const
     return Trinity::Containers::SelectRandomContainerElement(itr->second);
 }
 
+// 获取pet的品质...
 uint8 BattlePetDataStore::GetDefaultPetQuality(uint32 species) const
 {
     auto itr = _defaultQualityPerSpecies.find(species);

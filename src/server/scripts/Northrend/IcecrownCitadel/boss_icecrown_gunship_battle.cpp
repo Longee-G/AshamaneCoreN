@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -530,7 +530,7 @@ public:
         _creature->CastSpell(_creature, ExperiencedSpells[_level], TRIGGERED_FULL_MASK);
         if (_level < (_creature->GetMap()->IsHeroic() ? 4 : 3))
         {
-            _creature->m_Events.AddEvent(this, timer + ExperiencedTimes[_level]);
+            _creature->_events.AddEvent(this, timer + ExperiencedTimes[_level]);
             return false;
         }
 
@@ -604,7 +604,7 @@ struct gunship_npc_AI : public ScriptedAI
         if (pointId == EVENT_CHARGE_PREPATH && Slot)
         {
             me->SetFacingTo(Slot->TargetPosition.GetOrientation());
-            me->m_Events.AddEvent(new BattleExperienceEvent(me), me->m_Events.CalculateTime(BattleExperienceEvent::ExperiencedTimes[0]));
+            me->_events.AddEvent(new BattleExperienceEvent(me), me->_events.CalculateTime(BattleExperienceEvent::ExperiencedTimes[0]));
             DoCast(me, SPELL_BATTLE_EXPERIENCE, true);
             me->SetReactState(REACT_AGGRESSIVE);
         }
@@ -794,8 +794,8 @@ class npc_gunship : public CreatureScript
                 else
                 {
                     uint32 teleportSpellId = _teamInInstance == HORDE ? SPELL_TELEPORT_PLAYERS_ON_RESET_H : SPELL_TELEPORT_PLAYERS_ON_RESET_A;
-                    me->m_Events.AddEvent(new ResetEncounterEvent(me, teleportSpellId, me->GetInstanceScript()->GetGuidData(DATA_ENEMY_GUNSHIP)),
-                        me->m_Events.CalculateTime(8000));
+                    me->_events.AddEvent(new ResetEncounterEvent(me, teleportSpellId, me->GetInstanceScript()->GetGuidData(DATA_ENEMY_GUNSHIP)),
+                        me->_events.CalculateTime(8000));
                 }
             }
 
@@ -852,7 +852,7 @@ class npc_high_overlord_saurfang_igb : public CreatureScript
                 _controller.ResetSlots(HORDE);
                 _controller.SetTransport(creature->GetTransport());
                 me->setRegeneratingHealth(false);
-                me->m_CombatDistance = 70.0f;
+                me->_combatDistance = 70.0f;
                 _firstMageCooldown = time(NULL) + 60;
                 _axethrowersYellCooldown = time_t(0);
                 _rocketeersYellCooldown = time_t(0);
@@ -1120,7 +1120,7 @@ class npc_muradin_bronzebeard_igb : public CreatureScript
                 _controller.ResetSlots(ALLIANCE);
                 _controller.SetTransport(creature->GetTransport());
                 me->setRegeneratingHealth(false);
-                me->m_CombatDistance = 70.0f;
+                me->_combatDistance = 70.0f;
                 _firstMageCooldown = time(NULL) + 60;
                 _riflemanYellCooldown = time_t(0);
                 _mortarYellCooldown = time_t(0);
@@ -1417,7 +1417,7 @@ struct npc_gunship_boarding_addAI : public gunship_npc_AI
 {
     npc_gunship_boarding_addAI(Creature* creature) : gunship_npc_AI(creature)
     {
-        me->m_CombatDistance = 80.0f;
+        me->_combatDistance = 80.0f;
         _usedDesperateResolve = false;
     }
 
@@ -1430,7 +1430,7 @@ struct npc_gunship_boarding_addAI : public gunship_npc_AI
 
             me->SetReactState(REACT_PASSIVE);
 
-            me->m_Events.AddEvent(new DelayedMovementEvent(me, Slot->TargetPosition), me->m_Events.CalculateTime(3000 * (Index - SLOT_MARINE_1)));
+            me->_events.AddEvent(new DelayedMovementEvent(me, Slot->TargetPosition), me->_events.CalculateTime(3000 * (Index - SLOT_MARINE_1)));
 
             if (Creature* captain = me->FindNearestCreature(Instance->GetData(DATA_TEAM_IN_INSTANCE) == HORDE ? NPC_IGB_MURADIN_BRONZEBEARD : NPC_IGB_HIGH_OVERLORD_SAURFANG, 200.0f))
                 captain->AI()->SetData(ACTION_CLEAR_SLOT, Index);
@@ -1463,7 +1463,7 @@ struct npc_gunship_boarding_addAI : public gunship_npc_AI
             myTransport->CalculatePassengerOffset(x, y, z, &o);
             me->SetTransportHomePosition(x, y, z, o);
 
-            me->m_Events.AddEvent(new BattleExperienceEvent(me), me->m_Events.CalculateTime(BattleExperienceEvent::ExperiencedTimes[0]));
+            me->_events.AddEvent(new BattleExperienceEvent(me), me->_events.CalculateTime(BattleExperienceEvent::ExperiencedTimes[0]));
             DoCast(me, SPELL_BATTLE_EXPERIENCE, true);
             DoCast(me, SPELL_TELEPORT_TO_ENEMY_SHIP, true);
             DoCast(me, Instance->GetData(DATA_TEAM_IN_INSTANCE) == HORDE ? SPELL_MELEE_TARGETING_ON_ORGRIMS_HAMMER : SPELL_MELEE_TARGETING_ON_SKYBREAKER, true);
@@ -1635,7 +1635,7 @@ class npc_gunship_gunner : public CreatureScript
         {
             npc_gunship_gunnerAI(Creature* creature) : gunship_npc_AI(creature)
             {
-                creature->m_CombatDistance = 200.0f;
+                creature->_combatDistance = 200.0f;
             }
 
             void AttackStart(Unit* target) override
@@ -1677,7 +1677,7 @@ class npc_gunship_rocketeer : public CreatureScript
         {
             npc_gunship_rocketeerAI(Creature* creature) : gunship_npc_AI(creature)
             {
-                creature->m_CombatDistance = 200.0f;
+                creature->_combatDistance = 200.0f;
             }
 
             void MovementInform(uint32 type, uint32 pointId) override
@@ -2175,7 +2175,7 @@ class spell_igb_teleport_to_enemy_ship : public SpellScriptLoader
                 float x, y, z, o;
                 dest->GetPosition(x, y, z, o);
                 target->GetTransport()->CalculatePassengerOffset(x, y, z, &o);
-                target->m_movementInfo.transport.pos.Relocate(x, y, z, o);
+                target->_movementInfo.transport.pos.Relocate(x, y, z, o);
             }
 
             void Register() override

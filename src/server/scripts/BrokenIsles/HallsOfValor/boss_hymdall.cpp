@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -245,9 +245,21 @@ struct areatrigger_dancing_blade : AreaTriggerAI
     }
 };
 
+// 121247 - <Hymdall's Dancing Blade>
+// [NYI]
+struct npc_hymdall_dancing_blade : public ScriptedAI
+{
+    npc_hymdall_dancing_blade(Creature* creature) : ScriptedAI(creature) { }
+
+    void IsSummonedBy(Unit* /*summoner*/) override
+    {
+    }
+};
+
 void AddSC_boss_hymdall()
 {
     RegisterCreatureAI(boss_hymdall);
-    RegisterAreaTriggerAI(areatrigger_storm_breath);
+    RegisterCreatureAI(npc_hymdall_dancing_blade);
     RegisterAreaTriggerAI(areatrigger_dancing_blade);
+    //RegisterAreaTriggerAI(areatrigger_storm_breath);
 }

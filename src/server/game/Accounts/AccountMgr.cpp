@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -420,6 +420,13 @@ bool AccountMgr::IsPlayerAccount(uint32 gmlevel)
 bool AccountMgr::IsAdminAccount(uint32 gmlevel)
 {
     return gmlevel >= SEC_ADMINISTRATOR && gmlevel <= SEC_CONSOLE;
+}
+
+// 为什么需要这样的接口呢？
+// 版主 < GM < 管理员
+bool AccountMgr::IsModeratorAccount(uint32 gmlevel)
+{
+    return gmlevel >= SEC_MODERATOR && gmlevel <= SEC_CONSOLE;
 }
 
 bool AccountMgr::IsConsoleAccount(uint32 gmlevel)

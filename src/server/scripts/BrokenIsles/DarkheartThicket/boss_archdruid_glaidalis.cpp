@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -458,7 +458,8 @@ class spell_archdruid_glaidalis_primal_rage_charge : public AuraScript
 
     void Register() override
     {
-        OnEffectRemove += AuraEffectRemoveFn(spell_archdruid_glaidalis_primal_rage_charge::HandleRemove, EFFECT_0, SPELL_AURA_AREA_TRIGGER, AURA_EFFECT_HANDLE_REAL);
+        // 7.3.5 EFFECT_0 -> EFFECT_1
+        OnEffectRemove += AuraEffectRemoveFn(spell_archdruid_glaidalis_primal_rage_charge::HandleRemove, EFFECT_1, SPELL_AURA_AREA_TRIGGER, AURA_EFFECT_HANDLE_REAL);
     }
 };
 

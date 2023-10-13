@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
@@ -691,7 +691,8 @@ class spell_warl_devour_magic : public SpellScript
 
     bool Validate(SpellInfo const* /*spellInfo*/) override
     {
-        return ValidateSpellInfo({ SPELL_WARLOCK_GLYPH_OF_DEMON_TRAINING, SPELL_WARLOCK_DEVOUR_MAGIC_HEAL });
+        // 7.3.5 SPELL_WARLOCK_GLYPH_OF_DEMON_TRAINING <deprecated>
+        return ValidateSpellInfo({ SPELL_WARLOCK_DEVOUR_MAGIC_HEAL });
     }
 
     void OnSuccessfulDispel(SpellEffIndex /*effIndex*/)
@@ -949,13 +950,13 @@ class spell_warl_soul_swap : public SpellScript
 
     bool Validate(SpellInfo const* /*spellInfo*/) override
     {
-        return ValidateSpellInfo({ SPELL_WARLOCK_SOUL_SWAP_CD_MARKER, SPELL_WARLOCK_SOUL_SWAP_OVERRIDE });
+        return ValidateSpellInfo({  SPELL_WARLOCK_SOUL_SWAP_OVERRIDE });
     }
 
     void HandleHit(SpellEffIndex /*effIndex*/)
     {
         GetCaster()->CastSpell(GetCaster(), SPELL_WARLOCK_SOUL_SWAP_OVERRIDE, true);
-        GetHitUnit()->CastSpell(GetCaster(), SPELL_WARLOCK_SOUL_SWAP_DOT_MARKER, true);
+        //GetHitUnit()->CastSpell(GetCaster(), SPELL_WARLOCK_SOUL_SWAP_DOT_MARKER, true);
     }
 
     void Register() override
@@ -1060,7 +1061,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            return ValidateSpellInfo({ SPELL_WARLOCK_SOUL_SWAP_MOD_COST, SPELL_WARLOCK_SOUL_SWAP_OVERRIDE });
+            return ValidateSpellInfo({  SPELL_WARLOCK_SOUL_SWAP_OVERRIDE });
         }
 
         SpellCastResult CheckCast()
@@ -1080,7 +1081,8 @@ public:
 
         void OnEffectHit(SpellEffIndex /*effIndex*/)
         {
-            GetCaster()->CastSpell(GetCaster(), SPELL_WARLOCK_SOUL_SWAP_MOD_COST, true);
+            // 7.3.5 deprecated
+            //GetCaster()->CastSpell(GetCaster(), SPELL_WARLOCK_SOUL_SWAP_MOD_COST, true);
 
             std::list<uint32> dotList;
             Unit* swapSource = nullptr;
@@ -1133,9 +1135,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_WARLOCK_SOULSHATTER))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_WARLOCK_SOULSHATTER });
         }
 
         void HandleDummy(SpellEffIndex /*effIndex*/)
@@ -1258,8 +1258,10 @@ public:
 
         void Register() override
         {
+            m_deprecated = true;
             OnCheckCast += SpellCheckCastFn(spell_warl_life_tap_SpellScript::CheckLife);
-            OnEffectHitTarget += SpellEffectFn(spell_warl_life_tap_SpellScript::HandleOnHitTarget, EFFECT_0, SPELL_EFFECT_ENERGIZE);
+            // SPELL_EFFECT_ENERGIZE(30) ==> 137(SPELL_EFFECT_ENERGIZE_PCT)
+            OnEffectHitTarget += SpellEffectFn(spell_warl_life_tap_SpellScript::HandleOnHitTarget, EFFECT_0, SPELL_EFFECT_ENERGIZE_PCT);
         }
     };
 
@@ -1268,6 +1270,7 @@ public:
         return new spell_warl_life_tap_SpellScript();
     }
 
+    // _AuraScript 是怎么工作的，没有分析清楚...
     class spell_warl_life_tap_AuraScript : public AuraScript
     {
         PrepareAuraScript(spell_warl_life_tap_AuraScript);
@@ -1282,7 +1285,9 @@ public:
 
         void Register() override
         {
-            DoEffectCalcAmount += AuraEffectCalcAmountFn(spell_warl_life_tap_AuraScript::CalculateAmount, EFFECT_2, SPELL_AURA_SCHOOL_HEAL_ABSORB);
+            // fixed (2, 301) ==> (1, 165)
+            //DoEffectCalcAmount += AuraEffectCalcAmountFn(spell_warl_life_tap_AuraScript::CalculateAmount, EFFECT_2, SPELL_AURA_SCHOOL_HEAL_ABSORB);
+            DoEffectCalcAmount += AuraEffectCalcAmountFn(spell_warl_life_tap_AuraScript::CalculateAmount, EFFECT_1, SPELL_AURA_MELEE_ATTACK_POWER_ATTACKER_BONUS);
         }
     };
 
@@ -1842,6 +1847,7 @@ public:
     }
 };
 
+// 17767 - 
 class spell_warl_shadow_bulwark : public SpellScriptLoader
 {
 public:
@@ -1858,7 +1864,8 @@ public:
         }
         void Register() override
         {
-            DoEffectCalcAmount += AuraEffectCalcAmountFn(spell_warl_shadow_bulwark_AuraScript::CalculateAmount, EFFECT_0, SPELL_AURA_MOD_INCREASE_HEALTH_2);
+            // 7.3.5 SPELL_AURA_MOD_INCREASE_HEALTH_2(250) -> 382
+            DoEffectCalcAmount += AuraEffectCalcAmountFn(spell_warl_shadow_bulwark_AuraScript::CalculateAmount, EFFECT_0, SPELL_AURA_MOD_PET_STAT_PCT);
         }
     };
 
@@ -2015,9 +2022,7 @@ class spell_warl_create_healthstone_soulwell : public SpellScript
 
     bool Validate(SpellInfo const* /*spellInfo*/) override
     {
-        if (!sSpellMgr->GetSpellInfo(SPELL_WARLOCK_SOULWELL_CREATE_HEALTHSTONE))
-            return false;
-        return true;
+        return ValidateSpellInfo({ SPELL_WARLOCK_SOULWELL_CREATE_HEALTHSTONE });
     }
 
     void HandleScriptEffect(SpellEffIndex /*effIndex*/)
@@ -2304,6 +2309,7 @@ struct at_warl_rain_of_fire : AreaTriggerAI
 };
 
 /// npc_demonic_gateway_purple - 59271
+// FIXME: 应该设计成 SpellScript 因为这个脚本被关联到 spell id上了...
 class spell_npc_warl_demonic_gateway_purple : public CreatureScript
 {
 public:
@@ -2412,7 +2418,7 @@ public:
     }
 };
 
-/// npc_demonic_gateway_green - 59262
+/// 59262 - npc_demonic_gateway_green - 59262
 class spell_npc_warl_demonic_gateway_green : public CreatureScript
 {
 public:
@@ -3148,13 +3154,13 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(eServiceSpells::SPELL_FELGUARD_AXE_TOSS) ||
-                !sSpellMgr->GetSpellInfo(eServiceSpells::SPELL_FELHUNTER_SPELL_LOCK) ||
-                !sSpellMgr->GetSpellInfo(eServiceSpells::SPELL_IMP_SINGE_MAGIC) ||
-                !sSpellMgr->GetSpellInfo(eServiceSpells::SPELL_SUCCUBUS_SEDUCTION) ||
-                !sSpellMgr->GetSpellInfo(eServiceSpells::SPELL_VOIDWALKER_SUFFERING))
-                return false;
-            return true;
+            return ValidateSpellInfo({
+                SPELL_FELGUARD_AXE_TOSS,
+                SPELL_FELHUNTER_SPELL_LOCK,
+                SPELL_IMP_SINGE_MAGIC,
+                SPELL_SUCCUBUS_SEDUCTION,
+                SPELL_VOIDWALKER_SUFFERING
+                });
         }
 
         void HandleSummon(Creature* creature)
@@ -3241,7 +3247,7 @@ public:
                     {
                         pet->CastStop();
                         pet->CastSpell(target, SPELL_WARLOCK_IMPLOSION_JUMP, true);
-                        player->m_Events.AddEvent(new ImplosionDamageEvent(caster, pet), player->m_Events.CalculateTime(1000));
+                        player->_events.AddEvent(new ImplosionDamageEvent(caster, pet), player->_events.CalculateTime(1000));
                     }
                 }
             }*/
@@ -3321,7 +3327,7 @@ public:
 
         void Register() override
         {
-            DoCheckProc += AuraCheckProcFn(spell_warl_grimoire_of_synergy_AuraScript::CheckProc);
+            //DoCheckProc += AuraCheckProcFn(spell_warl_grimoire_of_synergy_AuraScript::CheckProc);
         }
     };
 
@@ -3456,9 +3462,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_WARLOCK_DEMONIC_CALLING_TRIGGER))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_WARLOCK_DEMONIC_CALLING_TRIGGER });
         }
 
         bool CheckProc(ProcEventInfo& eventInfo)
@@ -3627,8 +3631,39 @@ class spell_warl_incinerate : public SpellScript
     }
 };
 
+// 196408 - spell<硫磺烈火>
+class spell_warl_fire_and_brimstone : public SpellScriptLoader
+{
+public:
+    spell_warl_fire_and_brimstone() : SpellScriptLoader("spell_warl_fire_and_brimstone") { }
+
+    class spell_warl_fire_and_brimstone_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_warl_fire_and_brimstone_SpellScript);
+
+        void HandleOnHit()
+        {
+            if (Player* _player = GetCaster()->ToPlayer())
+                if (GetHitUnit())
+                    if (_player->HasAura(SPELL_WARLOCK_FIRE_AND_BRIMSTONE))
+                        _player->RemoveAura(SPELL_WARLOCK_FIRE_AND_BRIMSTONE);
+        }
+
+        void Register() override
+        {
+            OnHit += SpellHitFn(spell_warl_fire_and_brimstone_SpellScript::HandleOnHit);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_warl_fire_and_brimstone_SpellScript();
+    }
+};
+
 void AddSC_warlock_spell_scripts()
 {
+    new spell_warl_fire_and_brimstone();
     RegisterAuraScript(spell_warl_demonskin);
     RegisterAuraScript(spell_warl_doom);
     RegisterSpellScript(spell_warl_banish);
@@ -3637,13 +3672,13 @@ void AddSC_warlock_spell_scripts()
     RegisterSpellScript(spell_warl_chaos_bolt);
     RegisterSpellScript(spell_warl_conflagrate);
     RegisterSpellScript(spell_warl_conflagrate_aura);
-    RegisterAuraScript(spell_warl_corruption_effect);
+    //RegisterAuraScript(spell_warl_corruption_effect);
     RegisterSpellScript(spell_warl_create_healthstone);
     RegisterSpellScript(spell_warl_create_healthstone_soulwell);
     RegisterAuraScript(spell_warl_dark_pact);
     RegisterAuraScript(spell_warl_dark_regeneration);
     RegisterSpellScript(spell_warl_demonbolt);
-    RegisterSpellScript(spell_warl_demonic_call);
+    //RegisterSpellScript(spell_warl_demonic_call);
     RegisterAuraScript(spell_warl_demonic_circle_summon);
     RegisterAuraScript(spell_warl_demonic_circle_teleport);
     RegisterSpellScript(spell_warl_demonic_empowerment);
@@ -3661,9 +3696,9 @@ void AddSC_warlock_spell_scripts()
     RegisterSpellScript(spell_warl_healthstone_heal);
     new spell_warl_immolate();
     RegisterAuraScript(spell_warl_immolate_aura);
-    new spell_warl_life_tap();
-    new spell_warl_metamorphosis_cost();
-    new spell_warl_molten_core_dot();
+    //new spell_warl_life_tap();
+    //new spell_warl_metamorphosis_cost();
+    //new spell_warl_molten_core_dot();
     RegisterSpellAndAuraScriptPair(spell_warl_seed_of_corruption, aura_warl_seed_of_corruption);
     RegisterSpellScript(spell_warl_seed_of_corruption_damage);
     RegisterSpellScript(spell_warl_shadow_bolt);
@@ -3677,7 +3712,7 @@ void AddSC_warlock_spell_scripts()
     new spell_warl_soul_swap_exhale();
     new spell_warl_soul_swap_override();
     new spell_warl_soulshatter();
-    new spell_warl_twilight_ward_s12();
+    //new spell_warl_twilight_ward_s12();
     RegisterSpellScript(spell_warl_unstable_affliction);
     RegisterAuraScript(aura_warl_unstable_affliction);
     new spell_warl_void_ray();

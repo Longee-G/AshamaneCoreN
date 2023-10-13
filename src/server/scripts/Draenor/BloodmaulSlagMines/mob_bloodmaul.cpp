@@ -1,4 +1,4 @@
-/*
+ï»¿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -131,15 +131,15 @@ namespace Instances { namespace Bloodmaul
                     me->SetUInt32Value(UNIT_FIELD_FLAGS, 0);
                 }
 
-                EventMap m_Events;
+                EventMap _events;
 
                 void EnterCombat(Unit* target) override
                 {
                     me->getThreatManager().addThreat(target, 1000.0f);
 
-                    m_Events.Reset();
+                    _events.Reset();
 
-                    m_Events.ScheduleEvent(eEvents::EventTraumaticStrike, 4000);
+                    _events.ScheduleEvent(eEvents::EventTraumaticStrike, 4000);
                 }
 
                 void UpdateAI(const uint32 diff) override
@@ -147,9 +147,9 @@ namespace Instances { namespace Bloodmaul
                     if (!UpdateVictim())
                         return;
 
-                    m_Events.Update(diff);
+                    _events.Update(diff);
 
-                    switch (m_Events.ExecuteEvent())
+                    switch (_events.ExecuteEvent())
                     {
                         case eEvents::EventTraumaticStrike:
                             DoCastVictim(eSpells::SpellTraumaticStrike);
@@ -802,17 +802,17 @@ namespace Instances { namespace Bloodmaul
                     EventMassiveStomp
                 };
 
-                EventMap m_Events;
+                EventMap _events;
 
                 void Reset() override
                 {
-                    m_Events.Reset();
+                    _events.Reset();
                 }
 
                 void EnterCombat(Unit*) override
                 {
-                    m_Events.ScheduleEvent(eEvents::EventColossalRoar, 5000);
-                    m_Events.ScheduleEvent(eEvents::EventMassiveStomp, 9000);
+                    _events.ScheduleEvent(eEvents::EventColossalRoar, 5000);
+                    _events.ScheduleEvent(eEvents::EventMassiveStomp, 9000);
                 }
 
                 void UpdateAI(const uint32 diff) override
@@ -820,20 +820,20 @@ namespace Instances { namespace Bloodmaul
                     if (!UpdateVictim())
                         return;
 
-                    m_Events.Update(diff);
+                    _events.Update(diff);
 
                     if (me->HasUnitState(UnitState::UNIT_STATE_CASTING) || me->HasUnitState(UnitState::UNIT_STATE_STUNNED))
                         return;
 
-                    switch (m_Events.ExecuteEvent())
+                    switch (_events.ExecuteEvent())
                     {
                         case eEvents::EventColossalRoar:
                             me->CastSpell(me, eSpells::SpellColossalRoar, true);
-                            m_Events.ScheduleEvent(eEvents::EventColossalRoar, 10000);
+                            _events.ScheduleEvent(eEvents::EventColossalRoar, 10000);
                             break;
                         case eEvents::EventMassiveStomp:
                             me->CastSpell(me, eSpells::SpellMassiveStomp, true);
-                            m_Events.ScheduleEvent(eEvents::EventMassiveStomp, 15000);
+                            _events.ScheduleEvent(eEvents::EventMassiveStomp, 15000);
                             break;
                         default:
                             break;
@@ -871,17 +871,17 @@ namespace Instances { namespace Bloodmaul
                     EventExplodingFlames
                 };
 
-                EventMap m_Events;
+                EventMap _events;
 
                 void Reset() override
                 {
-                    m_Events.Reset();
+                    _events.Reset();
                 }
 
                 void EnterCombat(Unit*) override
                 {
-                    m_Events.ScheduleEvent(eEvents::EventChannelFlames, 5000);
-                    m_Events.ScheduleEvent(eEvents::EventExplodingFlames, 10000);
+                    _events.ScheduleEvent(eEvents::EventChannelFlames, 5000);
+                    _events.ScheduleEvent(eEvents::EventExplodingFlames, 10000);
                 }
 
                 void UpdateAI(uint32 const diff) override
@@ -889,22 +889,22 @@ namespace Instances { namespace Bloodmaul
                     if (!UpdateVictim())
                         return;
 
-                    m_Events.Update(diff);
+                    _events.Update(diff);
 
                     if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                         return;
 
-                    switch (m_Events.ExecuteEvent())
+                    switch (_events.ExecuteEvent())
                     {
                         case eEvents::EventChannelFlames:
                             me->SetFacingTo(me->GetOrientation());
                             me->CastSpell(me, eSpells::SpellChannelFlames, false);
-                            m_Events.ScheduleEvent(eEvents::EventChannelFlames, 30000);
+                            _events.ScheduleEvent(eEvents::EventChannelFlames, 30000);
                             break;
                         case eEvents::EventExplodingFlames:
                             if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_RANDOM))
                                 me->CastSpell(target, eSpells::SpellExplodingFlames, false);
-                            m_Events.ScheduleEvent(eEvents::EventExplodingFlames, 20000);
+                            _events.ScheduleEvent(eEvents::EventExplodingFlames, 20000);
                             break;
                         default:
                             break;
@@ -972,16 +972,16 @@ namespace Instances { namespace Bloodmaul
                     EventLavaArc = 1,
                 };
 
-                EventMap m_Events;
+                EventMap _events;
 
                 void Reset() override
                 {
-                    m_Events.Reset();
+                    _events.Reset();
                 }
 
                 void EnterCombat(Unit*) override
                 {
-                    m_Events.ScheduleEvent(Events::EventLavaArc, 3000);
+                    _events.ScheduleEvent(Events::EventLavaArc, 3000);
                 }
 
                 void UpdateAI(const uint32 diff) override
@@ -989,12 +989,12 @@ namespace Instances { namespace Bloodmaul
                     if (!UpdateVictim())
                         return;
 
-                    m_Events.Update(diff);
+                    _events.Update(diff);
 
                     if (me->HasUnitState(UnitState::UNIT_STATE_CASTING) || me->HasUnitState(UnitState::UNIT_STATE_STUNNED))
                         return;
 
-                    switch ((Events)m_Events.ExecuteEvent())
+                    switch ((Events)_events.ExecuteEvent())
                     {
                         case Events::EventLavaArc:
                         {
@@ -1003,7 +1003,7 @@ namespace Instances { namespace Bloodmaul
                                     break;
 
                             me->CastSpell(me, Spells::SpellLavaArc, false);
-                            m_Events.ScheduleEvent(Events::EventLavaArc, 12000);*/
+                            _events.ScheduleEvent(Events::EventLavaArc, 12000);*/
                             break;
                         }
                         default:
@@ -1042,11 +1042,11 @@ namespace Instances { namespace Bloodmaul
                     EventCinderSplash = 2
                 };
 
-                EventMap m_Events;
+                EventMap _events;
 
                 void Reset() override
                 {
-                    m_Events.Reset();
+                    _events.Reset();
 
                     if (Map* l_Map = me->GetMap())
                         m_IsHC = l_Map->IsHeroic()/* || l_Map->IsChallengeMode()*/;
@@ -1056,7 +1056,7 @@ namespace Instances { namespace Bloodmaul
 
                 void EnterCombat(Unit*) override
                 {
-                    m_Events.ScheduleEvent(Events::EventArmorDent, 3000);
+                    _events.ScheduleEvent(Events::EventArmorDent, 3000);
                 }
 
                 void UpdateAI(const uint32 diff) override
@@ -1064,20 +1064,20 @@ namespace Instances { namespace Bloodmaul
                     if (!UpdateVictim())
                         return;
 
-                    m_Events.Update(diff);
+                    _events.Update(diff);
 
                     if (me->HasUnitState(UnitState::UNIT_STATE_CASTING) || me->HasUnitState(UnitState::UNIT_STATE_STUNNED))
                         return;
 
-                    switch ((Events)m_Events.ExecuteEvent())
+                    switch ((Events)_events.ExecuteEvent())
                     {
                         case Events::EventArmorDent:
                             me->CastSpell(me->GetVictim(), Spells::SpellArmorDent, false);
-                            m_Events.ScheduleEvent(m_IsHC ? urand(Events::EventArmorDent, Events::EventCinderSplash) : Events::EventArmorDent, 6000);
+                            _events.ScheduleEvent(m_IsHC ? urand(Events::EventArmorDent, Events::EventCinderSplash) : Events::EventArmorDent, 6000);
                             break;
                         case Events::EventCinderSplash:
                             me->CastSpell(me->GetVictim(), Spells::SpellCinderSplash, false);
-                            m_Events.ScheduleEvent(urand(Events::EventArmorDent, Events::EventCinderSplash), 6000);
+                            _events.ScheduleEvent(urand(Events::EventArmorDent, Events::EventCinderSplash), 6000);
                             break;
                         default:
                             break;
@@ -1159,15 +1159,15 @@ namespace Instances { namespace Bloodmaul
                     EventDamage = 1,
                 };
 
-                EventMap m_Events;
+                EventMap _events;
 
                 void Reset() override
                 {
-                    m_Events.Reset();
+                    _events.Reset();
                     m_CanDamage = false;
                     me->SetControlled(true, UNIT_STATE_ROOT);
                     me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NON_ATTACKABLE);
-                    m_Events.ScheduleEvent(Events::EventDamage, 3000);
+                    _events.ScheduleEvent(Events::EventDamage, 3000);
                     me->CastSpell(me, Spells::SpellATSummon, false);
                     me->DespawnOrUnsummon(6000);
                 }
@@ -1183,12 +1183,12 @@ namespace Instances { namespace Bloodmaul
                     if (!UpdateVictim())
                         return;
 
-                    m_Events.Update(diff);
+                    _events.Update(diff);
 
                     if (me->HasUnitState(UnitState::UNIT_STATE_CASTING) || me->HasUnitState(UnitState::UNIT_STATE_STUNNED))
                         return;
 
-                    switch ((Events)m_Events.ExecuteEvent())
+                    switch ((Events)_events.ExecuteEvent())
                     {
                         case Events::EventDamage:
                         {
@@ -1251,7 +1251,7 @@ namespace Instances { namespace Bloodmaul
                     if (Creature* eventMob = me->FindNearestCreature(eventPnjEntries[i], 100.0f))
                     {
                         eventMob->AddAura(83613, eventMob); // Aura de peur
-                        eventMob->AddAura(152148, eventMob); // Trainée de feu
+                        eventMob->AddAura(152148, eventMob); // Train? de feu
                         eventMob->GetMotionMaster()->MovePoint(1, eventMob->GetPositionX(), -140.0f + frand(-10.0f, 10.0f), 231.0f);
                     }
                 }

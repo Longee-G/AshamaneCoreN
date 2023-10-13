@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  *
@@ -811,5 +811,5 @@ void AddSC_emerald_dragons()
 
     // dragon spellscripts
     new spell_dream_fog_sleep();
-    new spell_mark_of_nature();
+    //new spell_mark_of_nature();
 }

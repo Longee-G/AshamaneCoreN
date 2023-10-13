@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -354,16 +354,21 @@ bool WorldSocket::ReadHeaderHandler()
     return true;
 }
 
+// socket的处理流程是什么？
+// - 服务器处理客户端的消息包...
+
 WorldSocket::ReadDataHandlerResult WorldSocket::ReadDataHandler()
 {
     PacketHeader* header = reinterpret_cast<PacketHeader*>(_headerBuffer.GetReadPointer());
     OpcodeClient opcode = static_cast<OpcodeClient>(header->Command);
 
+    // 将消息流解包...
     WorldPacket packet(opcode, std::move(_packetBuffer), GetConnectionType());
 
     if (sPacketLog->CanLogPacket())
         sPacketLog->LogPacket(packet, CLIENT_TO_SERVER, GetRemoteIpAddress(), GetRemotePort(), GetConnectionType());
 
+    // unique_lock的用法是什么呢？
     std::unique_lock<std::mutex> sessionGuard(_worldSessionLock, std::defer_lock);
 
     switch (opcode)
@@ -938,6 +943,7 @@ void WorldSocket::HandleConnectToFailed(WorldPackets::Auth::ConnectToFailed& con
     }
 }
 
+// 服务器向客户端发送允许消息加密，客户端回给服务器的是什么东西？
 void WorldSocket::HandleEnableEncryptionAck()
 {
     if (_type == CONNECTION_TYPE_REALM)
@@ -959,10 +965,11 @@ void WorldSocket::SendAuthResponseError(uint32 code)
     SendPacketAndLogOpcode(*response.Write());
 }
 
+// handle client ping message...
 bool WorldSocket::HandlePing(WorldPackets::Auth::Ping& ping)
 {
     using namespace std::chrono;
-
+    // 这个等于的判断是怎么进行比较的？
     if (_LastPingTime == steady_clock::time_point())
     {
         _LastPingTime = steady_clock::now();
@@ -970,14 +977,15 @@ bool WorldSocket::HandlePing(WorldPackets::Auth::Ping& ping)
     else
     {
         steady_clock::time_point now = steady_clock::now();
-
+        // 计算和上一次ping的时间差...
         steady_clock::duration diff = now - _LastPingTime;
 
         _LastPingTime = now;
 
-        if (diff < seconds(27))
+        if (diff < seconds(27))     // 小于27秒？ 这个设置是怎么定下来的？
         {
-            ++_OverSpeedPings;
+            ++_OverSpeedPings;      // 统计超速ping的次数...  这个是不是为了访问客户端不断ping服务器导致错误？
+                                    // 如果连续短时间内ping服务器超过一定次数将会被服务器踢下线..
 
             uint32 maxAllowed = sWorld->getIntConfig(CONFIG_MAX_OVERSPEED_PINGS);
 
@@ -1003,6 +1011,7 @@ bool WorldSocket::HandlePing(WorldPackets::Auth::Ping& ping)
 
         if (_worldSession)
         {
+            // 设置延迟值，ping的作用是客户端报给服务器延迟值吗？
             _worldSession->SetLatency(ping.Latency);
             _worldSession->ResetClientTimeDelay();
         }

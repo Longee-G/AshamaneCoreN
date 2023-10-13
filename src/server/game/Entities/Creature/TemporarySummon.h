@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -93,31 +93,33 @@ class TC_GAME_API TempSummon : public Creature
         void SaveToDB(uint32 /*mapid*/, uint64 /*spawnMask*/) override { }
         Unit* GetSummoner() const;
         Creature* GetSummonerCreatureBase() const;
-        ObjectGuid GetSummonerGUID() const { return m_summonerGUID; }
-        TempSummonType const& GetSummonType() { return m_type; }
-        uint32 GetTimer() const { return m_timer; }
+        ObjectGuid GetSummonerGUID() const { return _summonerGUID; }
+        TempSummonType const& GetSummonType() { return _type; }
+        uint32 GetTimer() const { return _timer; }
 
-        void SetVisibleBySummonerOnly(bool visibleBySummonerOnly) { m_visibleBySummonerOnly = visibleBySummonerOnly; }
-        bool IsVisibleBySummonerOnly() const { return m_visibleBySummonerOnly; }
+        void SetVisibleBySummonerOnly(bool visibleBySummonerOnly) { _visibleBySummonerOnly = visibleBySummonerOnly; }
+        bool IsVisibleBySummonerOnly() const { return _visibleBySummonerOnly; }
 
-        const SummonPropertiesEntry* const m_Properties;
+        const SummonPropertiesEntry* const _properties;
     private:
-        TempSummonType m_type;
-        uint32 m_timer;
-        uint32 m_lifetime;
-        ObjectGuid m_summonerGUID;
-        bool m_visibleBySummonerOnly;
+        TempSummonType _type;
+        uint32 _timer;
+        // the duration of the summon's existence (secs???)
+        uint32 _lifetime;
+        ObjectGuid _summonerGUID;
+        bool _visibleBySummonerOnly;
 };
 
+// who use `Minion`
 class TC_GAME_API Minion : public TempSummon
 {
     public:
         Minion(SummonPropertiesEntry const* properties, Unit* owner, bool isWorldObject);
         void InitStats(uint32 duration) override;
         void RemoveFromWorld() override;
-        Unit* GetOwner() const { return m_owner; }
-        float GetFollowAngle() const override { return m_followAngle; }
-        void SetFollowAngle(float angle) { m_followAngle = angle; }
+        Unit* GetOwner() const { return _owner; }
+        float GetFollowAngle() const override { return _followAngle; }
+        void SetFollowAngle(float angle) { _followAngle = angle; }
 
         // Warlock pets
         bool IsPetImp() const { return GetEntry() == PET_IMP; }
@@ -138,8 +140,8 @@ class TC_GAME_API Minion : public TempSummon
         bool IsWarlockMinion() const;
         bool HasSameSpellPowerAsOwner() const;
     protected:
-        Unit* const m_owner;
-        float m_followAngle;
+        Unit* const _owner;
+        float _followAngle;
 };
 
 class TC_GAME_API Guardian : public Minion
@@ -159,12 +161,12 @@ class TC_GAME_API Guardian : public Minion
         void UpdateDamagePhysical(WeaponAttackType attType) override;
         void UpdateSpellPower();
 
-        int32 GetBonusDamage() const { return m_bonusSpellDamage; }
+        int32 GetBonusDamage() const { return _bonusSpellDamage; }
         void SetBonusDamage(int32 damage);
         void UpdatePlayerFieldModPetHaste();
     protected:
-        int32   m_bonusSpellDamage;
-        float   m_statFromOwner[MAX_STATS];
+        int32   _bonusSpellDamage;
+        float   _statFromOwner[MAX_STATS];
 };
 
 class TC_GAME_API Puppet : public Minion
@@ -180,10 +182,10 @@ class TC_GAME_API Puppet : public Minion
 class TC_GAME_API ForcedUnsummonDelayEvent : public BasicEvent
 {
 public:
-    ForcedUnsummonDelayEvent(TempSummon& owner) : BasicEvent(), m_owner(owner) { }
+    ForcedUnsummonDelayEvent(TempSummon& owner) : BasicEvent(), _owner(owner) { }
     bool Execute(uint64 e_time, uint32 p_time) override;
 
 private:
-    TempSummon& m_owner;
+    TempSummon& _owner;
 };
 #endif

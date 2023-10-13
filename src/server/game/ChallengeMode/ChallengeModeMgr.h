@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -17,8 +17,12 @@
 
 #ifndef _CHALLENGEMODEMGR_H
 #define _CHALLENGEMODEMGR_H
+#include "Common.h"
 
 struct MapChallengeModeEntry;
+
+
+// 挑战模式？ 什么地方的玩法？
 
 class TC_GAME_API ChallengeModeMgr
 {

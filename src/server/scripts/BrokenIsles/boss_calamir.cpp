@@ -1,4 +1,4 @@
-/*
+﻿/*
 * Copyright (C) 2008-2017 TrinityCore <http://www.trinitycore.org/>
 *
 * This program is free software; you can redistribute it and/or modify it
@@ -637,8 +637,8 @@ void AddSC_boss_calamir()
 {
     new at_calamir_arcanopulse();
     new at_calamir_howling_gale();
-    new at_calamir_icy_comet();
-    new at_calamir_wrathful_flames();
+    //new at_calamir_icy_comet();
+    //new at_calamir_wrathful_flames();
 
     new boss_calamir();
 

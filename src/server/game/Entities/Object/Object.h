@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -119,7 +119,7 @@ class TC_GAME_API Object
         Ashamane::AnyData Variables;
         virtual ~Object();
 
-        bool IsInWorld() const { return m_inWorld; }
+        bool IsInWorld() const { return _isInWorld; }
 
         virtual void AddToWorld();
         virtual void RemoveFromWorld();
@@ -131,8 +131,8 @@ class TC_GAME_API Object
         float GetObjectScale() const { return GetFloatValue(OBJECT_FIELD_SCALE_X); }
         virtual void SetObjectScale(float scale) { SetFloatValue(OBJECT_FIELD_SCALE_X, scale); }
 
-        TypeID GetTypeId() const { return m_objectTypeId; }
-        bool isType(uint16 mask) const { return (mask & m_objectType) != 0; }
+        TypeID GetTypeId() const { return _objectTypeId; }
+        bool isType(uint16 mask) const { return (mask & _objectType) != 0; }
 
         virtual void BuildCreateUpdateBlockForPlayer(UpdateData* data, Player* target) const;
         void SendUpdateToPlayer(Player* player);
@@ -244,7 +244,7 @@ class TC_GAME_API Object
 
         void ClearUpdateMask(bool remove);
 
-        uint16 GetValuesCount() const { return m_valuesCount; }
+        uint16 GetValuesCount() const { return _valuesCount; }
 
         virtual bool hasQuest(uint32 /* quest_id */) const { return false; }
         virtual bool hasInvolvedQuest(uint32 /* quest_id */) const { return false; }
@@ -308,16 +308,16 @@ class TC_GAME_API Object
         virtual void BuildValuesUpdate(uint8 updatetype, ByteBuffer* data, Player* target) const;
         virtual void BuildDynamicValuesUpdate(uint8 updatetype, ByteBuffer* data, Player* target) const;
 
-        uint16 m_objectType;
+        uint16 _objectType;
 
-        TypeID m_objectTypeId;
-        uint32 m_updateFlag;
+        TypeID _objectTypeId;
+        uint32 _updateFlag;
 
         union
         {
-            int32  *m_int32Values;
-            uint32 *m_uint32Values;
-            float  *m_floatValues;
+            int32  *_int32Values;
+            uint32 *_uint32Values;
+            float  *_floatValues;
         };
 
         std::vector<uint32>* _dynamicValues;
@@ -326,7 +326,7 @@ class TC_GAME_API Object
         std::vector<UpdateMask::DynamicFieldChangeType> _dynamicChangesMask;
         std::vector<uint8>* _dynamicChangesArrayMask;
 
-        uint16 m_valuesCount;
+        uint16 _valuesCount;
         uint16 _dynamicValuesCount;
 
         uint16 _fieldNotifyFlags;
@@ -335,10 +335,10 @@ class TC_GAME_API Object
         virtual void RemoveFromObjectUpdate() = 0;
         void AddToObjectUpdateIfNeeded();
 
-        bool m_objectUpdated;
+        bool _objectUpdated;
 
     private:
-        bool m_inWorld;
+        bool _isInWorld;
 
         // for output helpfull error messages from asserts
         bool PrintIndexError(uint32 index, bool set) const;
@@ -366,22 +366,22 @@ class FlaggedValuesArray32
         FlaggedValuesArray32()
         {
             for (uint32 i = 0; i < ARRAY_SIZE; ++i)
-                m_values[i] = T_VALUES(0);
-            m_flags = 0;
+                _values[i] = T_VALUES(0);
+            _flags = 0;
         }
 
-        T_FLAGS  GetFlags() const { return m_flags; }
-        bool     HasFlag(FLAG_TYPE flag) const { return m_flags & (1 << flag); }
-        void     AddFlag(FLAG_TYPE flag) { m_flags |= (1 << flag); }
-        void     DelFlag(FLAG_TYPE flag) { m_flags &= ~(1 << flag); }
+        T_FLAGS  GetFlags() const { return _flags; }
+        bool     HasFlag(FLAG_TYPE flag) const { return _flags & (1 << flag); }
+        void     AddFlag(FLAG_TYPE flag) { _flags |= (1 << flag); }
+        void     DelFlag(FLAG_TYPE flag) { _flags &= ~(1 << flag); }
 
-        T_VALUES GetValue(FLAG_TYPE flag) const { return m_values[flag]; }
-        void     SetValue(FLAG_TYPE flag, T_VALUES value) { m_values[flag] = value; }
-        void     AddValue(FLAG_TYPE flag, T_VALUES value) { m_values[flag] += value; }
+        T_VALUES GetValue(FLAG_TYPE flag) const { return _values[flag]; }
+        void     SetValue(FLAG_TYPE flag, T_VALUES value) { _values[flag] = value; }
+        void     AddValue(FLAG_TYPE flag, T_VALUES value) { _values[flag] += value; }
 
     private:
-        T_VALUES m_values[ARRAY_SIZE];
-        T_FLAGS m_flags;
+        T_VALUES _values[ARRAY_SIZE];
+        T_FLAGS _flags;
 };
 
 class TC_GAME_API WorldObject : public Object, public WorldLocation
@@ -412,7 +412,7 @@ class TC_GAME_API WorldObject : public Object, public WorldLocation
         void GetRandomPoint(Position const &srcPos, float distance, float &rand_x, float &rand_y, float &rand_z) const;
         Position GetRandomPoint(Position const &srcPos, float distance) const;
 
-        uint32 GetInstanceId() const { return m_InstanceId; }
+        uint32 GetInstanceId() const { return _instanceId; }
 
         bool IsInPhase(WorldObject const* obj) const
         {
@@ -425,8 +425,8 @@ class TC_GAME_API WorldObject : public Object, public WorldLocation
         PhaseShift const& GetSuppressedPhaseShift() const { return _suppressedPhaseShift; }
         int32 GetDBPhase() const { return _dbPhase; }
 
-        void SetVisibleBySummonerOnly(bool visibleBySummonerOnly) { m_visibleBySummonerOnly = visibleBySummonerOnly; }
-        bool IsVisibleBySummonerOnly() const { return m_visibleBySummonerOnly; }
+        void SetVisibleBySummonerOnly(bool visibleBySummonerOnly) { _visibleBySummonerOnly = visibleBySummonerOnly; }
+        bool IsVisibleBySummonerOnly() const { return _visibleBySummonerOnly; }
 
         // if negative it is used as PhaseGroupId
         void SetDBPhase(int32 p) { _dbPhase = p; }
@@ -437,10 +437,10 @@ class TC_GAME_API WorldObject : public Object, public WorldLocation
 
         InstanceScript* GetInstanceScript() const;
 
-        std::string const& GetName() const { return m_name; }
-        void SetName(std::string const& newname) { m_name=newname; }
+        std::string const& GetName() const { return _name; }
+        void SetName(std::string const& newname) { _name=newname; }
 
-        virtual std::string const& GetNameForLocaleIdx(LocaleConstant /*locale_idx*/) const { return m_name; }
+        virtual std::string const& GetNameForLocaleIdx(LocaleConstant /*locale_idx*/) const { return _name; }
 
         float GetDistance(WorldObject const* obj) const;
         float GetDistance(Position const &pos) const;
@@ -495,23 +495,23 @@ class TC_GAME_API WorldObject : public Object, public WorldLocation
         float GetSightRange(WorldObject const* target = NULL) const;
         bool CanSeeOrDetect(WorldObject const* obj, bool ignoreStealth = false, bool distanceCheck = false, bool checkAlert = false) const;
 
-        FlaggedValuesArray32<int32, uint32, StealthType, TOTAL_STEALTH_TYPES> m_stealth;
-        FlaggedValuesArray32<int32, uint32, StealthType, TOTAL_STEALTH_TYPES> m_stealthDetect;
+        FlaggedValuesArray32<int32, uint32, StealthType, TOTAL_STEALTH_TYPES> _stealth;
+        FlaggedValuesArray32<int32, uint32, StealthType, TOTAL_STEALTH_TYPES> _stealthDetect;
 
-        FlaggedValuesArray32<int32, uint32, InvisibilityType, TOTAL_INVISIBILITY_TYPES> m_invisibility;
-        FlaggedValuesArray32<int32, uint32, InvisibilityType, TOTAL_INVISIBILITY_TYPES> m_invisibilityDetect;
+        FlaggedValuesArray32<int32, uint32, InvisibilityType, TOTAL_INVISIBILITY_TYPES> _invisibility;
+        FlaggedValuesArray32<int32, uint32, InvisibilityType, TOTAL_INVISIBILITY_TYPES> _invisibilityDetect;
 
-        FlaggedValuesArray32<int32, uint32, ServerSideVisibilityType, TOTAL_SERVERSIDE_VISIBILITY_TYPES> m_serverSideVisibility;
-        FlaggedValuesArray32<int32, uint32, ServerSideVisibilityType, TOTAL_SERVERSIDE_VISIBILITY_TYPES> m_serverSideVisibilityDetect;
+        FlaggedValuesArray32<int32, uint32, ServerSideVisibilityType, TOTAL_SERVERSIDE_VISIBILITY_TYPES> _serverSideVisibility;
+        FlaggedValuesArray32<int32, uint32, ServerSideVisibilityType, TOTAL_SERVERSIDE_VISIBILITY_TYPES> _serverSideVisibilityDetect;
 
         virtual void SetMap(Map* map);
         virtual void ResetMap();
-        Map* GetMap() const { ASSERT(m_currMap); return m_currMap; }
-        Map* FindMap() const { return m_currMap; }
+        Map* GetMap() const { ASSERT(_currMap); return _currMap; }
+        Map* FindMap() const { return _currMap; }
         //used to check all object's GetMap() calls when object is not in world!
 
         void SetZoneScript();
-        ZoneScript* GetZoneScript() const { return m_zoneScript; }
+        ZoneScript* GetZoneScript() const { return _zoneScript; }
 
         Scenario* GetScenario() const;
 
@@ -570,34 +570,34 @@ class TC_GAME_API WorldObject : public Object, public WorldLocation
         void RemoveFromObjectUpdate() override;
 
         //relocation and visibility system functions
-        void AddToNotify(uint16 f) { m_notifyflags |= f;}
-        bool isNeedNotify(uint16 f) const { return (m_notifyflags & f) != 0; }
-        uint16 GetNotifyFlags() const { return m_notifyflags; }
-        bool NotifyExecuted(uint16 f) const { return (m_executed_notifies & f) != 0; }
-        void SetNotified(uint16 f) { m_executed_notifies |= f;}
-        void ResetAllNotifies() { m_notifyflags = 0; m_executed_notifies = 0; }
+        void AddToNotify(uint16 f) { _notifyFlags |= f;}
+        bool isNeedNotify(uint16 f) const { return (_notifyFlags & f) != 0; }
+        uint16 GetNotifyFlags() const { return _notifyFlags; }
+        bool NotifyExecuted(uint16 f) const { return (_executedNotifies & f) != 0; }
+        void SetNotified(uint16 f) { _executedNotifies |= f;}
+        void ResetAllNotifies() { _notifyFlags = 0; _executedNotifies = 0; }
 
-        bool isActiveObject() const { return m_isActive; }
+        bool isActiveObject() const { return _isActive; }
         void setActive(bool isActiveObject);
         void SetWorldObject(bool apply);
-        bool IsPermanentWorldObject() const { return m_isWorldObject; }
+        bool IsPermanentWorldObject() const { return _isWorldObject; }
         bool IsWorldObject() const;
 
-        uint32  LastUsedScriptID;
+        uint32  lastUsedScriptID;
 
         // Transports
-        Transport* GetTransport() const { return m_transport; }
-        float GetTransOffsetX() const { return m_movementInfo.transport.pos.GetPositionX(); }
-        float GetTransOffsetY() const { return m_movementInfo.transport.pos.GetPositionY(); }
-        float GetTransOffsetZ() const { return m_movementInfo.transport.pos.GetPositionZ(); }
-        float GetTransOffsetO() const { return m_movementInfo.transport.pos.GetOrientation(); }
-        Position const& GetTransOffset() const { return m_movementInfo.transport.pos; }
-        uint32 GetTransTime()   const { return m_movementInfo.transport.time; }
-        int8 GetTransSeat()     const { return m_movementInfo.transport.seat; }
+        Transport* GetTransport() const { return _transport; }
+        float GetTransOffsetX() const { return _movementInfo.transport.pos.GetPositionX(); }
+        float GetTransOffsetY() const { return _movementInfo.transport.pos.GetPositionY(); }
+        float GetTransOffsetZ() const { return _movementInfo.transport.pos.GetPositionZ(); }
+        float GetTransOffsetO() const { return _movementInfo.transport.pos.GetOrientation(); }
+        Position const& GetTransOffset() const { return _movementInfo.transport.pos; }
+        uint32 GetTransTime()   const { return _movementInfo.transport.time; }
+        int8 GetTransSeat()     const { return _movementInfo.transport.seat; }
         virtual ObjectGuid GetTransGUID() const;
-        void SetTransport(Transport* t) { m_transport = t; }
+        void SetTransport(Transport* t) { _transport = t; }
 
-        MovementInfo m_movementInfo;
+        MovementInfo _movementInfo;
 
         virtual float GetStationaryX() const { return GetPositionX(); }
         virtual float GetStationaryY() const { return GetPositionY(); }
@@ -609,19 +609,19 @@ class TC_GAME_API WorldObject : public Object, public WorldLocation
         virtual uint16 GetMeleeAnimKitId() const { return 0; }
 
     protected:
-        std::string m_name;
-        bool m_isActive;
-        const bool m_isWorldObject;
-        ZoneScript* m_zoneScript;
+        std::string _name;
+        bool _isActive;
+        const bool _isWorldObject;
+        ZoneScript* _zoneScript;
 
         // transports
-        Transport* m_transport;
+        Transport* _transport;
 
         //these functions are used mostly for Relocate() and Corpse/Player specific stuff...
         //use them ONLY in LoadFromDB()/Create() funcs and nowhere else!
         //mapId/instanceId should be set in SetMap() function!
-        void SetLocationMapId(uint32 _mapId) { m_mapId = _mapId; }
-        void SetLocationInstanceId(uint32 _instanceId) { m_InstanceId = _instanceId; }
+        void SetLocationMapId(uint32 _mapId) { _mapId = _mapId; }
+        void SetLocationInstanceId(uint32 _instanceId) { _instanceId = _instanceId; }
 
         virtual bool IsNeverVisibleFor(WorldObject const* /*seer*/) const { return !IsInWorld(); }
         virtual bool IsAlwaysVisibleFor(WorldObject const* /*seer*/) const { return false; }
@@ -629,17 +629,20 @@ class TC_GAME_API WorldObject : public Object, public WorldLocation
         //difference from IsAlwaysVisibleFor: 1. after distance check; 2. use owner or charmer as seer
         virtual bool IsAlwaysDetectableFor(WorldObject const* /*seer*/) const { return false; }
     private:
-        Map* m_currMap;                                    //current object's Map location
-
-        //uint32 m_mapId;                                     // object at map with map_id
-        uint32 m_InstanceId;                                // in map copy with instance id
+        //current object's Map location
+        Map* _currMap;                                    
+        // object at map with map_id
+        //uint32 _mapId;
+        // in map copy with instance id
+        uint32 _instanceId;
         PhaseShift _phaseShift;
-        PhaseShift _suppressedPhaseShift;                   // contains phases for current area but not applied due to conditions
+        // contains phases for current area but not applied due to conditions
+        PhaseShift _suppressedPhaseShift;
         int32 _dbPhase;
-        bool m_visibleBySummonerOnly;
+        bool _visibleBySummonerOnly;
 
-        uint16 m_notifyflags;
-        uint16 m_executed_notifies;
+        uint16 _notifyFlags;
+        uint16 _executedNotifies;
         virtual bool _IsWithinDist(WorldObject const* obj, float dist2compare, bool is3D) const;
 
         bool CanNeverSee(WorldObject const* obj) const;

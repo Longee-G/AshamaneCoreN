@@ -1,4 +1,4 @@
-/*
+ï»¿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -83,7 +83,7 @@ public:
                 player->CastSpell(player, SPELL_DRUID_CLASS_HALL_TP, true);
                 break;
             case CLASS_HUNTER:
-                player->m_taxi.SetTaximaskNode(1848); // Hunter Class Hall
+                player->_taxi.SetTaximaskNode(1848); // Hunter Class Hall
                 break;
             default:
                 break;
@@ -132,7 +132,7 @@ public:
     }
 };
 
-// 228329 & 228330 - Téléportation
+// 228329 & 228330 - T??ortation
 class spell_dalaran_teleportation : public SpellScript
 {
     PrepareSpellScript(spell_dalaran_teleportation);

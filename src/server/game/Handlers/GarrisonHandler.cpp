@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -23,6 +23,7 @@
 #include "GarrisonPackets.h"
 #include "ObjectMgr.h"
 #include "Player.h"
+#include "Garrison.h"
 
 void WorldSession::HandleGetGarrisonInfo(WorldPackets::Garrison::GetGarrisonInfo& /*getGarrisonInfo*/)
 {
@@ -160,4 +161,11 @@ void WorldSession::HandleGarrisonMissionBonusRoll(WorldPackets::Garrison::Garris
         return;
 
     garrison->CalculateMissonBonusRoll(missionBonusRoll.MissionID);
+}
+
+// 90年代的要塞吗？
+void WorldSession::HandleGarrisonRequestLandingPageShipmentInfo(WorldPackets::Garrison::GarrisonRequestLandingPageShipmentInfo & packet)
+{
+    if (Garrison* garrison = _player->GetGarrison(GARRISON_TYPE_GARRISON))  // TODO:
+        garrison->SendGarrisonShipmentLandingPage();
 }

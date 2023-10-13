@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -136,12 +136,12 @@ enum ConditionTypes
 enum ConditionSourceType
 {
     CONDITION_SOURCE_TYPE_NONE                           = 0,
-    CONDITION_SOURCE_TYPE_CREATURE_LOOT_TEMPLATE         = 1,
+    CONDITION_SOURCE_TYPE_CREATURE_LOOT_TEMPLATE         = 1,       // loot from creature's corpse
     CONDITION_SOURCE_TYPE_DISENCHANT_LOOT_TEMPLATE       = 2,
-    CONDITION_SOURCE_TYPE_FISHING_LOOT_TEMPLATE          = 3,
+    CONDITION_SOURCE_TYPE_FISHING_LOOT_TEMPLATE          = 3,       // loot by fishing skill 
     CONDITION_SOURCE_TYPE_GAMEOBJECT_LOOT_TEMPLATE       = 4,
     CONDITION_SOURCE_TYPE_ITEM_LOOT_TEMPLATE             = 5,
-    CONDITION_SOURCE_TYPE_MAIL_LOOT_TEMPLATE             = 6,
+    CONDITION_SOURCE_TYPE_MAIL_LOOT_TEMPLATE             = 6,       // loot from mail
     CONDITION_SOURCE_TYPE_MILLING_LOOT_TEMPLATE          = 7,
     CONDITION_SOURCE_TYPE_PICKPOCKETING_LOOT_TEMPLATE    = 8,
     CONDITION_SOURCE_TYPE_PROSPECTING_LOOT_TEMPLATE      = 9,

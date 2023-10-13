@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -284,6 +284,7 @@ void AreaTriggerDataStore::LoadAreaTriggers()
     }
 
     // Build single time for check spawnmask
+    // <map_id, difficulty_val>
     std::map<uint32, uint32> spawnMasks;
     for (auto& mapDifficultyPair : sDB2Manager.GetMapDifficulties())
         for (auto& difficultyPair : mapDifficultyPair.second)
@@ -313,8 +314,12 @@ void AreaTriggerDataStore::LoadAreaTriggers()
         }
 
         // Skip spawnMask check for transport maps
-        if (!sObjectMgr->IsTransportMap(my_temp.map_id) && my_temp.spawn_mask & ~spawnMasks[my_temp.spawn_mask])
-            TC_LOG_ERROR("sql.sql", "Table `areatrigger` has areatrigger (GUID: " UI64FMTD ") that have wrong spawn mask %u including unsupported difficulty modes for map (Id: %u).", my_temp.guid, my_temp.spawn_mask, my_temp.map_id);
+        if (!sObjectMgr->IsTransportMap(my_temp.map_id) && my_temp.spawn_mask & ~spawnMasks[my_temp.map_id])
+        {
+            uint32 map_mask = spawnMasks[my_temp.map_id];
+            TC_LOG_ERROR("sql.sql", "Table `areatrigger` has areatrigger (GUID: " UI64FMTD ") that have wrong spawn mask %u/%u including unsupported difficulty modes for map (Id: %u).", my_temp.guid, my_temp.spawn_mask, map_mask, my_temp.map_id);
+        }
+            
 
         _areaTriggerData[my_temp.map_id].push_back(my_temp);
 

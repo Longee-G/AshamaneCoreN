@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -1276,6 +1276,7 @@ class spell_lightning_strike_effect : public SpellScriptLoader
         };
 };
 
+// 89104 --
 class AreaTrigger_at_reletness_storm : public AreaTriggerScript
 {
     public:
@@ -1324,7 +1325,7 @@ void AddSC_boss_alakir()
     new npc_stormling_pre_effect();
     new npc_stormling();
     new spell_electrocute();
-    new spell_wind_burst();
+    //new spell_wind_burst();
     new npc_wind_burst_trigger();
     new npc_relentless_storm_initial_vehicle();
     new npc_lightning_coulds();

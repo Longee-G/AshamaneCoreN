@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2010 - 2012 ProjectSkyfire <http://www.projectskyfire.org/>
  *
@@ -616,7 +616,7 @@ public :
 
         void Register() override
         {
-            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_asaad_supremacy_entry_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENTRY);
+            //OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_asaad_supremacy_entry_SpellScript::FilterTargets, EFFECT_0, 1);
         }
     };
 
@@ -661,7 +661,8 @@ public :
 
         void Register() override
         {
-            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_asaad_supremacy_dummy_SpellScript::FilterTargets, EFFECT_0,  TARGET_UNIT_SRC_AREA_ENEMY);
+            // 22 and 7
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_asaad_supremacy_dummy_SpellScript::FilterTargets, EFFECT_0,  7);
         }
     };
 

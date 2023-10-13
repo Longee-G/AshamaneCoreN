@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2014-2018 RoG_WoW Source <http://wow.rog.snet>
  *
@@ -1506,7 +1506,7 @@ class npc_dragon_soul_sky_captain_swayze : public CreatureScript
 
         bool OnGossipSelect(Player* pPlayer, Creature* pCreature, uint32 /*sender*/, uint32 action) override
         {
-            pPlayer->PlayerTalkClass->SendCloseGossip();
+            pPlayer->playerTalkClass->SendCloseGossip();
 
             if (pPlayer->IsInCombat())
                 return true;

@@ -3412,5 +3412,23 @@ struct WorldSafeLocsEntry
     uint16 MapID;
 };
 
+// new code begins here ... TODO:
+// for db2 file `CharacterLoadout.db2`
+struct CharacterLoadoutEntry
+{
+    int32 ID;               // loadoutID
+    int64 RaceMask;         // 
+    uint8 ChrClassID;       //
+    uint8 Purpose;
+};
+
+// design for db2 file `CharacterLoadoutItem.db2`
+struct CharacterLoadoutItemEntry
+{
+    int32 ID;
+    int32 ItemID;
+    uint16 CharacterLoadoutID;  // point to `CharacterLoadoutEntry.ID`
+};
+
 #pragma pack(pop)
 #endif

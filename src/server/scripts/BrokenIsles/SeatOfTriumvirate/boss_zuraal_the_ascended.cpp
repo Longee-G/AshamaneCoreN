@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -176,9 +176,10 @@ class aura_void_phased : public AuraScript
 
     void Register() override
     {
-        OnEffectApply += AuraEffectApplyFn(aura_void_phased::OnApply, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY, AURA_EFFECT_HANDLE_REAL);
-        OnEffectPeriodic += AuraEffectPeriodicFn(aura_void_phased::OnPeriodic, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
-        OnEffectRemove += AuraEffectRemoveFn(aura_void_phased::OnRemove, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY, AURA_EFFECT_HANDLE_REAL);
+        // 7.3.5 SPELL_AURA_PERIODIC_DUMMY -> 40
+        OnEffectApply += AuraEffectApplyFn(aura_void_phased::OnApply, EFFECT_0, 40, AURA_EFFECT_HANDLE_REAL);
+        OnEffectPeriodic += AuraEffectPeriodicFn(aura_void_phased::OnPeriodic, EFFECT_0, 40);
+        OnEffectRemove += AuraEffectRemoveFn(aura_void_phased::OnRemove, EFFECT_0, 40, AURA_EFFECT_HANDLE_REAL);
     }
 };
 

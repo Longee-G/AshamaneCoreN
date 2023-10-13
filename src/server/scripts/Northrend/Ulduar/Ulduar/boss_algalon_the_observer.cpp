@@ -256,7 +256,7 @@ class ActivateLivingConstellation : public BasicEvent
                 return true;    // delete event
 
             _owner->CastSpell((Unit*)NULL, SPELL_TRIGGER_3_ADDS, TRIGGERED_FULL_MASK);
-            _owner->m_Events.AddEvent(this, execTime + urand(45000, 50000));
+            _owner->_events.AddEvent(this, execTime + urand(45000, 50000));
             return false;
         }
 
@@ -292,7 +292,7 @@ class SummonUnleashedDarkMatter : public BasicEvent
         bool Execute(uint64 execTime, uint32 /*diff*/) override
         {
             _caster->CastSpell((Unit*)NULL, SPELL_SUMMON_UNLEASHED_DARK_MATTER, TRIGGERED_FULL_MASK);
-            _caster->m_Events.AddEvent(this, execTime + 30000);
+            _caster->_events.AddEvent(this, execTime + 30000);
             return false;
         }
 
@@ -433,7 +433,7 @@ class boss_algalon_the_observer : public CreatureScript
                 std::list<Creature*> stalkers;
                 me->GetCreatureListWithEntryInGrid(stalkers, NPC_ALGALON_STALKER, 200.0f);
                 for (std::list<Creature*>::iterator itr = stalkers.begin(); itr != stalkers.end(); ++itr)
-                    (*itr)->m_Events.KillAllEvents(true);
+                    (*itr)->_events.KillAllEvents(true);
             }
 
             void MovementInform(uint32 movementType, uint32 pointId) override
@@ -485,7 +485,7 @@ class boss_algalon_the_observer : public CreatureScript
                         summon->CastSpell(summon, SPELL_COSMIC_SMASH_VISUAL_STATE, TRIGGERED_FULL_MASK);
                         break;
                     case NPC_ALGALON_STALKER_ASTEROID_TARGET_02:
-                        summon->m_Events.AddEvent(new CosmicSmashDamageEvent(summon), summon->m_Events.CalculateTime(3250));
+                        summon->_events.AddEvent(new CosmicSmashDamageEvent(summon), summon->_events.CalculateTime(3250));
                         break;
                     case NPC_WORM_HOLE:
                         summon->SetReactState(REACT_PASSIVE);
@@ -528,10 +528,10 @@ class boss_algalon_the_observer : public CreatureScript
                     std::list<Creature*> stalkers;
                     me->GetCreatureListWithEntryInGrid(stalkers, NPC_ALGALON_STALKER, 200.0f);
                     for (std::list<Creature*>::iterator itr = stalkers.begin(); itr != stalkers.end(); ++itr)
-                        (*itr)->m_Events.KillAllEvents(true);
+                        (*itr)->_events.KillAllEvents(true);
                     for (uint32 i = 0; i < COLLAPSING_STAR_COUNT; ++i)
                         if (Creature* wormHole = DoSummon(NPC_WORM_HOLE, CollapsingStarPos[i], TEMPSUMMON_MANUAL_DESPAWN))
-                            wormHole->m_Events.AddEvent(new SummonUnleashedDarkMatter(wormHole), wormHole->m_Events.CalculateTime(i >= 2 ? 8000 : 6000));
+                            wormHole->_events.AddEvent(new SummonUnleashedDarkMatter(wormHole), wormHole->_events.CalculateTime(i >= 2 ? 8000 : 6000));
                 }
                 else if ((int32(me->GetHealth()) - int32(damage)) < CalculatePct<int32>(int32(me->GetMaxHealth()), 2.5f) && !_fightWon)
                 {
@@ -605,7 +605,7 @@ class boss_algalon_the_observer : public CreatureScript
                             if (!stalkers.empty())
                             {
                                 Unit* stalker = Trinity::Containers::SelectRandomContainerElement(stalkers);
-                                stalker->m_Events.AddEvent(new ActivateLivingConstellation(stalker), stalker->m_Events.CalculateTime(urand(45000, 50000)));
+                                stalker->_events.AddEvent(new ActivateLivingConstellation(stalker), stalker->_events.CalculateTime(urand(45000, 50000)));
                             }
                             break;
                         }

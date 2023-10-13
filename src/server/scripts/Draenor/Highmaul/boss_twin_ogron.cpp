@@ -149,7 +149,7 @@ class boss_twin_ogron_pol : public CreatureScript
                 m_Instance  = creature->GetInstanceScript();
             }
 
-            EventMap m_Events;
+            EventMap _events;
             InstanceScript* m_Instance;
 
             bool m_ShieldChargeScheduled;
@@ -157,7 +157,7 @@ class boss_twin_ogron_pol : public CreatureScript
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
 
                 _Reset();
 
@@ -288,8 +288,8 @@ class boss_twin_ogron_pol : public CreatureScript
 
                 m_Instance->SetBossState(eHighmaulDatas::BossTwinOgron, EncounterState::IN_PROGRESS);
 
-                m_Events.ScheduleEvent(eEvents::EventBerserker, IsMythic() ? 420 * TimeConstants::IN_MILLISECONDS : 480 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventShieldBash, 22 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventBerserker, IsMythic() ? 420 * TimeConstants::IN_MILLISECONDS : 480 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventShieldBash, 22 * TimeConstants::IN_MILLISECONDS);
 
                 StartOgrons(me, attacker);
 
@@ -428,12 +428,12 @@ class boss_twin_ogron_pol : public CreatureScript
                     return;
 
                 if (!me->HasAura(eSpells::WarmingUp))
-                    m_Events.Update(diff);
+                    _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvents::EventBerserker:
                     {
@@ -444,7 +444,7 @@ class boss_twin_ogron_pol : public CreatureScript
                     {
                         if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
                             me->CastSpell(target, eSpells::ShieldBash, false);
-                        m_Events.ScheduleEvent(eEvents::EventShieldBash, 22 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventShieldBash, 22 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     default:
@@ -564,7 +564,7 @@ class boss_twin_ogron_phemos : public CreatureScript
             }
 
             EventMap m_CosmeticEvents;
-            EventMap m_Events;
+            EventMap _events;
             InstanceScript* m_Instance;
 
             std::set<ObjectGuid> m_TrashsMobs;
@@ -586,7 +586,7 @@ class boss_twin_ogron_phemos : public CreatureScript
                 if (!m_HomeChanged)
                     m_CosmeticEvents.ScheduleEvent(eEvents::EventCheckPlayer, 1 * TimeConstants::IN_MILLISECONDS);
 
-                m_Events.Reset();
+                _events.Reset();
 
                 _Reset();
 
@@ -779,11 +779,11 @@ class boss_twin_ogron_phemos : public CreatureScript
 
                 m_Instance->SetBossState(eHighmaulDatas::BossTwinOgron, EncounterState::IN_PROGRESS);
 
-                m_Events.ScheduleEvent(eEvents::EventBerserker, IsMythic() ? 420 * TimeConstants::IN_MILLISECONDS : 480 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventDoubleSlash, 26 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventBerserker, IsMythic() ? 420 * TimeConstants::IN_MILLISECONDS : 480 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventDoubleSlash, 26 * TimeConstants::IN_MILLISECONDS);
 
                 if(IsMythic())
-                    m_Events.ScheduleEvent(eEvents::EventsArcaneVolatility, urand(20, 60) * IN_MILLISECONDS);
+                    _events.ScheduleEvent(eEvents::EventsArcaneVolatility, urand(20, 60) * IN_MILLISECONDS);
 
                 StartOgrons(me, attacker);
 
@@ -943,12 +943,12 @@ class boss_twin_ogron_phemos : public CreatureScript
                     return;
 
                 if (!me->HasAura(eSpells::WarmingUp))
-                    m_Events.Update(diff);
+                    _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvents::EventBerserker:
                     {
@@ -970,7 +970,7 @@ class boss_twin_ogron_phemos : public CreatureScript
                             });
                         }
 
-                        m_Events.ScheduleEvent(eEvents::EventDoubleSlash, 27 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventDoubleSlash, 27 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     case EventsArcaneVolatility:
@@ -979,7 +979,7 @@ class boss_twin_ogron_phemos : public CreatureScript
                         for(uint8 i = 0; i < urand(1, 4); i++)
                             me->CastSpell(me, SpellArcaneVolatilityMi, false);
 
-                        m_Events.ScheduleEvent(eEvents::EventsArcaneVolatility, urand(50, 60) * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventsArcaneVolatility, urand(50, 60) * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     default:

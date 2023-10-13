@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -18,6 +18,7 @@
 #ifndef DEF_SHADOWFANG_H
 #define DEF_SHADOWFANG_H
 
+// 影牙要塞... 
 enum ShadowfangKeepBoss
 {
    BOSS_BARON_ASHBURY             = 46962,

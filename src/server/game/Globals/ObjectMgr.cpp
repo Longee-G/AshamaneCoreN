@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -532,6 +532,7 @@ void ObjectMgr::LoadCreatureTemplate(Field* fields)
     creatureTemplate.ScriptID               = GetScriptId(fields[78].GetString());
 }
 
+// 加载附加数据
 void ObjectMgr::LoadCreatureTemplateAddons()
 {
     uint32 oldMSTime = getMSTime();
@@ -574,6 +575,7 @@ void ObjectMgr::LoadCreatureTemplateAddons()
         Tokenizer tokens(fields[9].GetString(), ' ');
         uint8 i = 0;
         creatureAddon.auras.resize(tokens.size());
+        // 检查buff？
         for (Tokenizer::const_iterator itr = tokens.begin(); itr != tokens.end(); ++itr)
         {
             uint32 spellId = uint32(atoul(*itr));
@@ -583,7 +585,7 @@ void ObjectMgr::LoadCreatureTemplateAddons()
                 TC_LOG_ERROR("sql.sql", "Creature (Entry: %u) has wrong spell %u defined in `auras` field in `creature_template_addon`.", entry, spellId);
                 continue;
             }
-
+            // 这个检查的是什么？导致出现错误提示的，不能定义这个值吗？
             if (AdditionalSpellInfo->HasAura(DIFFICULTY_NONE, SPELL_AURA_CONTROL_VEHICLE))
                 TC_LOG_ERROR("sql.sql", "Creature (Entry: %u) has SPELL_AURA_CONTROL_VEHICLE aura %u defined in `auras` field in `creature_template_addon`.", entry, spellId);
 
@@ -2087,6 +2089,7 @@ void ObjectMgr::LoadCreatures()
         {
             if (data.spawndist != 0.0f)
             {
+                // movementType=0，spawndist必须是0.0才正确...
                 TC_LOG_ERROR("sql.sql", "Table `creature` has creature (GUID: " UI64FMTD " Entry: %u) with `MovementType`=0 (idle) have `spawndist`<>0, set to 0.", guid, data.id);
                 data.spawndist = 0.0f;
             }
@@ -2421,8 +2424,16 @@ void ObjectMgr::LoadGameobjects()
 
         data.spawnMask      = fields[14].GetUInt64();
 
-        if (!IsTransportMap(data.mapid) && data.spawnMask & ~spawnMasks[data.mapid])
+        // 感觉好像这个判断有问题，如果gameObject有0，1两种难度，而map只有0一种难度应该是没有问题的
+        // 旧的判断却认为有问题。
+        // 原因：可以在难度n的map中不创建难度n的gameObject，但是如果有难度n的gameObject，却找不到难度为n的map就会出现错误。
+        if (!IsTransportMap(data.mapid) && data.spawnMask & ~spawnMasks[data.mapid])       
+        {
+            // 并且将数据进行修正...
+            data.spawnMask = spawnMasks[data.mapid];
             TC_LOG_ERROR("sql.sql", "Table `gameobject` has gameobject (GUID: " UI64FMTD " Entry: %u) that has wrong spawn mask " UI64FMTD " including unsupported difficulty modes for map (Id: %u), skip", guid, data.id, data.spawnMask, data.mapid);
+        }
+            
 
         int16 gameEvent     = fields[15].GetInt8();
         uint32 PoolId       = fields[16].GetUInt32();
@@ -5368,7 +5379,7 @@ void ObjectMgr::LoadSpellScriptNames()
         bool allRanks = false;
         if (spellId < 0)
         {
-            allRanks = true;
+            allRanks = true;            // 这个标记起什么作用
             spellId = -spellId;
         }
 
@@ -5379,6 +5390,7 @@ void ObjectMgr::LoadSpellScriptNames()
             continue;
         }
 
+        // rank指的是spell的等级，例如法师的火球，有1级火球，2级火球...火球法术的等级随着角色等级的提升而提升
         if (allRanks)
         {
             if (!spellInfo->IsRanked())
@@ -5410,6 +5422,7 @@ void ObjectMgr::LoadSpellScriptNames()
     TC_LOG_INFO("server.loading", ">> Loaded %u spell script names in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
 
+// 校验法术脚本是否正确...
 void ObjectMgr::ValidateSpellScripts()
 {
     uint32 oldMSTime = getMSTime();
@@ -5422,26 +5435,40 @@ void ObjectMgr::ValidateSpellScripts()
 
     uint32 count = 0;
 
+    // <spell_id, <script_id, enabled>> : _spellScriptsStore    
     for (auto spell : _spellScriptsStore)
     {
+        // spell.first = spell_id
         SpellInfo const* spellEntry = sSpellMgr->GetSpellInfo(spell.first);
 
+        // 获取一组spell关联的script
         auto const bounds = sObjectMgr->GetSpellScriptsBounds(spell.first);
 
+        // walk through all the <script> bind to <spell>
         for (auto itr = bounds.first; itr != bounds.second; ++itr)
         {
+            if (!itr->second.first) // invalid script_id(0)
+            {
+                itr->second.second = false;
+                continue;
+            }
+
+            // get script by script id
             if (SpellScriptLoader* spellScriptLoader = sScriptMgr->GetSpellScriptLoader(itr->second.first))
             {
                 ++count;
-
+                // spellScriptLoader->GetSpellScript() 是创建了一个新的script吗？[Longee]
                 std::unique_ptr<SpellScript> spellScript(spellScriptLoader->GetSpellScript());
                 std::unique_ptr<AuraScript> auraScript(spellScriptLoader->GetAuraScript());
 
                 if (!spellScript && !auraScript)
                 {
-                    TC_LOG_ERROR("scripts", "Functions GetSpellScript() and GetAuraScript() of script `%s` do not return objects - script skipped", GetScriptName(itr->second.first).c_str());
+                    TC_LOG_ERROR("scripts", "Functions GetSpellScript() and GetAuraScript() of script `%s` do not return objects - script skipped",
+                        GetScriptName(itr->second.first).c_str());
 
-                    itr->second.second = false;
+                    // script被标记成disabled之后，在调用ScriptMgr::CreateSpellOrAuraScripts(scriptid)创建
+                    // 的时候将会被跳过，不让创建这个script
+                    itr->second.second = false;     // 标记该script不能用... 在castSpell的时候会检测这个标志吗
                     continue;
                 }
 
@@ -5452,7 +5479,7 @@ void ObjectMgr::ValidateSpellScripts()
 
                     if (!spellScript->_Validate(spellEntry))
                     {
-                        itr->second.second = false;
+                        itr->second.second = false; // 标记script不能用.. 
                         continue;
                     }
                 }
@@ -5464,7 +5491,7 @@ void ObjectMgr::ValidateSpellScripts()
 
                     if (!auraScript->_Validate(spellEntry))
                     {
-                        itr->second.second = false;
+                        itr->second.second = false; // 标记script不能用
                         continue;
                     }
                 }
@@ -5473,7 +5500,12 @@ void ObjectMgr::ValidateSpellScripts()
                 itr->second.second = true;
             }
             else
+            {
+                    TC_LOG_ERROR("scripts", ">> Script(%u) `%s` SpellScriptLoader NOT implemented.", itr->second.first, sObjectMgr->GetScriptName(itr->second.first));
+
                 itr->second.second = false;
+            }
+                
         }
     }
 
@@ -5838,7 +5870,7 @@ void ObjectMgr::ReturnOrDeleteOldMails(bool serverUp)
         if (serverUp)
             player = ObjectAccessor::FindConnectedPlayer(ObjectGuid::Create<HighGuid::Player>(m->receiver));
 
-        if (player && player->m_mailsLoaded)
+        if (player && player->isMailsLoaded)
         {                                                   // this code will run very improbably (the time is between 4 and 5 am, in game is online a player, who has old mail
             // his in mailbox and he has already listed his mails)
             delete m;
@@ -5935,7 +5967,7 @@ void ObjectMgr::LoadQuestAreaTriggers()
         AreaTriggerEntry const* atEntry = sAreaTriggerStore.LookupEntry(trigger_ID);
         if (!atEntry)
         {
-            TC_LOG_ERROR("sql.sql", "Area trigger (ID:%u) does not exist in `AreaTrigger.dbc`.", trigger_ID);
+            TC_LOG_ERROR("sql.sql", "Area trigger[involvedrelation] (ID:%u) does not exist in `AreaTrigger.dbc`.", trigger_ID);
             continue;
         }
 
@@ -6078,7 +6110,7 @@ void ObjectMgr::LoadTavernAreaTriggers()
         AreaTriggerEntry const* atEntry = sAreaTriggerStore.LookupEntry(Trigger_ID);
         if (!atEntry)
         {
-            TC_LOG_ERROR("sql.sql", "Area trigger (ID:%u) does not exist in `AreaTrigger.dbc`.", Trigger_ID);
+            TC_LOG_ERROR("sql.sql", "Area trigger[tavern] (ID:%u) does not exist in `AreaTrigger.dbc`.", Trigger_ID);
             continue;
         }
 
@@ -8368,6 +8400,7 @@ uint32 ObjectMgr::GetAreaTriggerScriptId(uint32 trigger_id) const
     return 0;
 }
 
+// 返回spellId关联的一组script数据...
 SpellScriptsBounds ObjectMgr::GetSpellScriptsBounds(uint32 spellId)
 {
     return SpellScriptsBounds(_spellScriptsStore.equal_range(spellId));

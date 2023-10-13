@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  *
@@ -40,6 +40,7 @@
 #include "TemporarySummon.h"
 #include "Vehicle.h"
 #include "MoveSplineInit.h"
+#include "Creature.h"
 
 /*########
 # npc_air_force_bots
@@ -97,6 +98,30 @@ SpawnAssociation spawnAssociations[] =
     {22125, 22122, SPAWNTYPE_ALARMBOT},                     //Air Force Guard Post (Cenarion - Stormcrow)
     {22126, 22122, SPAWNTYPE_ALARMBOT}                      //Air Force Trip Wire - Rooftop (Cenarion Expedition)
 };
+
+
+// Generic scripting text function.
+void DoScriptText(int32 textEntry, WorldObject* pSource, Unit* pTarget)
+{
+    if (!pSource)
+    {
+        TC_LOG_ERROR("script.abc", "DoScriptText entry %i, invalid Source pointer.", textEntry);
+        return;
+    }
+
+    if (textEntry >= 0)
+    {
+        TC_LOG_ERROR("script.abc", "DoScriptText with source entry %u (TypeId=%u, guid=%u) attempts to process text entry %i, but text entry must be negative.", pSource->GetEntry(), pSource->GetTypeId(), pSource->GetGUID().GetCounter(), textEntry);
+        return;
+    }
+
+    
+    // NYI
+    // TODO:... 需要分析其他的脚本是怎么让npc说话的？
+
+}
+
+
 
 class npc_air_force_bots : public CreatureScript
 {
@@ -2244,7 +2269,7 @@ struct npc_argent_squire_gruntling : public ScriptedAI
                     DoCastSelf(bannerSpells[gossipListId - 3].spellGruntling, true);
                 break;
         }
-        player->PlayerTalkClass->SendCloseGossip();
+        player->playerTalkClass->SendCloseGossip();
     }
 
     bool IsArgentSquire() const { return me->GetEntry() == NPC_ARGENT_SQUIRE; }
@@ -2310,6 +2335,135 @@ public:
     }
 };
 
+enum eTruuen
+{
+    NPC_GHOST_UTHER = 17233,
+    NPC_THEL_DANIS = 1854,
+    NPC_GHOUL = 1791,      //ambush
+
+    QUEST_TOMB_LIGHTBRINGER = 9446,
+
+    SAY_WP_0 = -1800064,  //Beware! We are attacked!
+    SAY_WP_1 = -1800065,  //It must be the purity of the Mark of the Lightbringer that is drawing forth the Scourge to attack us. We must proceed with caution lest we be overwhelmed!
+    SAY_WP_2 = -1800066,  //This land truly needs to be cleansed by the Light! Let us continue on to the tomb. It isn't far now...
+    SAY_WP_3 = -1800067,  //Be welcome, friends!
+    SAY_WP_4 = -1800068,  //Thank you for coming here in remembrance of me. Your efforts in recovering that symbol, while unnecessary, are certainly touching to an old man's heart.
+    SAY_WP_5 = -1800069,  //Please, rise my friend. Keep the Blessing as a symbol of the strength of the Light and how heroes long gone might once again rise in each of us to inspire.
+    SAY_WP_6 = -1800070   //Thank you my friend for making this possible. This is a day that I shall never forget! I think I will stay a while. Please return to High Priestess MacDonnell at the camp. I know that she'll be keenly interested to know of what has transpired here.
+};
+// 17238 - Anchorite Truuen<Western Plaguelands>
+// 西瘟疫之地npc...
+class npc_anchorite_truuen : public CreatureScript
+{
+public:
+    npc_anchorite_truuen() : CreatureScript("npc_anchorite_truuen") {}
+    // 护送npc的任务...
+    bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest)
+    {
+        npc_escortAI* pAI = CAST_AI(npc_anchorite_truuen::npc_anchorite_truuenAI, creature->AI());
+        if (quest->GetQuestId() == 9446) // tomb lightbringer
+            pAI->Start(true, true, player->GetGUID());
+
+        // [Longee] 这个脚本是不是不完整..为什么这里返回false
+        return false;
+    }
+
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_anchorite_truuenAI(creature);
+    }
+
+    // npc ai
+    struct npc_anchorite_truuenAI : public npc_escortAI
+    {
+        npc_anchorite_truuenAI(Creature* creature) : npc_escortAI(creature) { }
+
+        uint32 m_uiChatTimer;
+
+        ObjectGuid UghostGUID;
+        ObjectGuid TheldanisGUID;
+
+        Creature* Ughost;
+        Creature* Theldanis;
+
+        void Reset()
+        {
+            m_uiChatTimer = 7000;
+        }
+
+        void JustSummoned(Creature* summoned)
+        {
+            if (summoned->GetEntry() == 1791)       // npc ghoul
+                summoned->AI()->AttackStart(me);
+        }
+
+        void WaypointReached(uint32 waypointId)
+        {
+            Player* player = GetPlayerForEscort();
+
+            switch (waypointId)
+            {
+            case 8:
+                DoScriptText(SAY_WP_0, me, nullptr);
+                me->SummonCreature(NPC_GHOUL, me->GetPositionX() + 7.0f, me->GetPositionY() + 7.0f, me->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 90000);
+                me->SummonCreature(NPC_GHOUL, me->GetPositionX() + 5.0f, me->GetPositionY() + 5.0f, me->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 90000);
+                break;
+            case 9:
+                DoScriptText(SAY_WP_1, me, nullptr);
+                break;
+            case 14:
+                me->SummonCreature(NPC_GHOUL, me->GetPositionX() + 7.0f, me->GetPositionY() + 7.0f, me->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 90000);
+                me->SummonCreature(NPC_GHOUL, me->GetPositionX() + 5.0f, me->GetPositionY() + 5.0f, me->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 90000);
+                me->SummonCreature(NPC_GHOUL, me->GetPositionX() + 10.0f, me->GetPositionY() + 10.0f, me->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 90000);
+                me->SummonCreature(NPC_GHOUL, me->GetPositionX() + 8.0f, me->GetPositionY() + 8.0f, me->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 90000);
+                break;
+            case 15:
+                DoScriptText(SAY_WP_2, me, nullptr);
+            case 21:
+                Theldanis = GetClosestCreatureWithEntry(me, NPC_THEL_DANIS, 150);
+                DoScriptText(SAY_WP_3, Theldanis, nullptr);
+                break;
+            case 22:
+                break;
+            case 23:
+                Ughost = me->SummonCreature(NPC_GHOST_UTHER, 971.86f, -1825.42f, 81.99f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000);
+                Ughost->SetDisableGravity(true);
+                DoScriptText(SAY_WP_4, Ughost, me);
+                m_uiChatTimer = 4000;
+                break;
+            case 24:
+                DoScriptText(SAY_WP_5, Ughost, me);
+                m_uiChatTimer = 4000;
+                break;
+            case 25:
+                DoScriptText(SAY_WP_6, Ughost, me);
+                m_uiChatTimer = 4000;
+                break;
+            case 26:
+                if (player)
+                    player->GroupEventHappens(QUEST_TOMB_LIGHTBRINGER, me);
+                break;
+            }
+        }
+
+        void EnterCombat(Unit* /*who*/) {}
+
+        void JustDied(Unit* /*killer*/)
+        {
+            if (Player* player = GetPlayerForEscort())
+                player->FailQuest(QUEST_TOMB_LIGHTBRINGER);
+        }
+
+        void UpdateAI(uint32 uiDiff)
+        {
+            npc_escortAI::UpdateAI(uiDiff);
+            DoMeleeAttackIfReady();
+            if (HasEscortState(STATE_ESCORT_ESCORTING))
+                m_uiChatTimer = 6000;
+        }
+    };
+};
+
 void AddSC_npcs_special()
 {
     new npc_air_force_bots();
@@ -2332,4 +2486,5 @@ void AddSC_npcs_special()
     RegisterCreatureAI(npc_argent_squire_gruntling);
     new npc_creature_damage_limit();
     new npc_regzar();
+    new npc_anchorite_truuen();
 }

@@ -93,6 +93,7 @@
 #include "WorldQuestMgr.h"
 #include "WorldSession.h"
 #include "WorldSocket.h"
+#include "BattlePayDataStore.h"
 
 #include <boost/algorithm/string.hpp>
 
@@ -1623,6 +1624,9 @@ void World::SetInitialWorldSettings()
     TC_LOG_INFO("server.loading", "Loading Spell Totem models...");
     sSpellMgr->LoadSpellTotemModel();
 
+    TC_LOG_INFO("server.loading", "Loading Trade Spells...");
+    sSpellMgr->LoadSkillTradeSpells();
+    
     TC_LOG_INFO("server.loading", "Loading GameObject models...");
     LoadGameObjectModelList(m_dataPath);
 
@@ -2220,6 +2224,11 @@ void World::SetInitialWorldSettings()
 
     TC_LOG_INFO("server.loading", "Loading active world quests...");
     sWorldQuestMgr->LoadActiveWorldQuests();
+
+    // [Longee]
+    TC_LOG_INFO("server.loading", "Loading battle pay data...");
+    sBattlePayDataStore->Initialize();
+
 
     // Preload all cells, if required for the base maps
     if (sWorld->getBoolConfig(CONFIG_BASEMAP_LOAD_GRIDS))

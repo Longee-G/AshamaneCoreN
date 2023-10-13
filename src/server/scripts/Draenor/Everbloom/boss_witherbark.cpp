@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -289,8 +289,10 @@ public:
         }
 
         void Register() override
-        {
-            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_agitated_water_SpellScript::SelectTarget, EFFECT_0, TARGET_UNIT_SRC_AREA_ENTRY);
+        {            
+            // 7.3.5 TARGET_UNIT_SRC_AREA_ENTRY -> 63
+            //uint32 targetId = (m_scriptSpellId == 177731) ? 63 : 22;
+            //OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_agitated_water_SpellScript::SelectTarget, EFFECT_0, targetId);
             OnEffectHitTarget += SpellEffectFn(spell_agitated_water_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
         }
     };

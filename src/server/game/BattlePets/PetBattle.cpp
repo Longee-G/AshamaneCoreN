@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -23,10 +23,10 @@
 #include "Player.h"
 
 PetBattle::PetBattle(uint64 battleID, Player* player1, Player* player2, ObjectGuid wildBattlePet) :
-    m_battleId(battleID), m_currentRound(0), m_player1(player1->GetGUID()), m_player2(player2->GetGUID()), m_wildBattlePet(wildBattlePet)
+    m_battleId(battleID), m_currentRound(0), m_player1(player1->GetGUID()), m_player2(player2->GetGUID()), _wildBattlePet(wildBattlePet)
 {
     // Player1 must have at least 1 opponent
-    ASSERT(!m_player2.IsEmpty() || !m_wildBattlePet.IsEmpty());
+    ASSERT(!m_player2.IsEmpty() || !_wildBattlePet.IsEmpty());
 
     if (m_player2.IsEmpty())
         m_battleType = PET_BATTLE_PVE;
@@ -112,7 +112,7 @@ void PetBattle::End()
 WildBattlePet* PetBattle::GetOriginalWildPet()
 {
     if (Player* player1 = GetPlayer1())
-        if (Creature* creature = ObjectAccessor::GetCreature(*player1, m_wildBattlePet))
+        if (Creature* creature = ObjectAccessor::GetCreature(*player1, _wildBattlePet))
             creature->GetWildBattlePet();
 
     return nullptr;

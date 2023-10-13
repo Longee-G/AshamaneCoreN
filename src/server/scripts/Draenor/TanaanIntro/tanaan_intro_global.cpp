@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -112,7 +112,7 @@ public:
             case TanaanQuests::QuestCostOfWar:
             {
                 player->GetSceneMgr().PlaySceneByPackageId(TanaanSceneObjects::SceneCostOfWarEscort);
-                player->PlayerTalkClass->SendCloseGossip();
+                player->playerTalkClass->SendCloseGossip();
                 break;
             }
             case TanaanQuests::QuestBlazeOfGlory:
@@ -125,7 +125,7 @@ public:
                 player->RemoveAurasDueToSpell(TanaanPhases::PhaseAfterBlazeAlliance);
                 player->RemoveAurasDueToSpell(TanaanPhases::PhaseAfterBlazeHorde);
 
-                player->PlayerTalkClass->SendCloseGossip();
+                player->playerTalkClass->SendCloseGossip();
                 break;
             }
             default:

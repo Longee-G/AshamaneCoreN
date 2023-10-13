@@ -267,18 +267,18 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         Map(uint32 id, time_t, uint32 InstanceId, uint8 SpawnMode, Map* _parent = NULL);
         virtual ~Map();
 
-        MapEntry const* GetEntry() const { return i_mapEntry; }
+        MapEntry const* GetEntry() const { return _mapEntry; }
 
         // currently unused for normal maps
         bool CanUnload(uint32 diff)
         {
-            if (!m_unloadTimer)
+            if (!_unloadTimer)
                 return false;
 
-            if (m_unloadTimer <= diff)
+            if (_unloadTimer <= diff)
                 return true;
 
-            m_unloadTimer -= diff;
+            _unloadTimer -= diff;
             return false;
         }
 
@@ -291,7 +291,7 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         void VisitNearbyCellsOf(WorldObject* obj, TypeContainerVisitor<Trinity::ObjectUpdater, GridTypeMapContainer> &gridVisitor, TypeContainerVisitor<Trinity::ObjectUpdater, WorldTypeMapContainer> &worldVisitor);
         virtual void Update(const uint32);
 
-        float GetVisibilityRange() const { return m_VisibleDistance; }
+        float GetVisibilityRange() const { return _visibleDistance; }
         //function for setting up visibility distance for maps on per-type/per-Id basis
         virtual void InitVisibilityDistance();
 
@@ -324,10 +324,10 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
 
         void ResetGridExpiry(NGridType &grid, float factor = 1) const
         {
-            grid.ResetTimeTracker(time_t(float(i_gridExpiry)*factor));
+            grid.ResetTimeTracker(time_t(float(_gridExpiry)*factor));
         }
 
-        time_t GetGridExpiry() const { return i_gridExpiry; }
+        time_t GetGridExpiry() const { return _gridExpiry; }
 
         bool HasGrid(uint32 mapId, int32 gx, int32 gy) const;
         static bool ExistMap(uint32 mapid, int gx, int gy);
@@ -336,8 +336,8 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         static void InitStateMachine();
         static void DeleteStateMachine();
 
-        void AddChildTerrainMap(Map* map) { m_childTerrainMaps->push_back(map); map->m_parentTerrainMap = this; }
-        void UnlinkAllChildTerrainMaps() { m_childTerrainMaps->clear(); }
+        void AddChildTerrainMap(Map* map) { _childTerrainMaps->push_back(map); map->_parentTerrainMap = this; }
+        void UnlinkAllChildTerrainMaps() { _childTerrainMaps->clear(); }
 
         // some calls like isInWater should not use vmaps due to processor power
         // can return INVALID_HEIGHT if under z+2 z coord not found height
@@ -373,8 +373,8 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         // assert print helper
         bool CheckGridIntegrity(Creature* c, bool moved) const;
 
-        uint32 GetInstanceId() const { return i_InstanceId; }
-        uint8 GetSpawnMode() const { return (i_spawnMode); }
+        uint32 GetInstanceId() const { return _instanceId; }
+        uint8 GetSpawnMode() const { return (_spawnMode); }
 
         enum EnterState
         {
@@ -423,17 +423,17 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         bool isCellMarked(uint32 pCellId) { return marked_cells.test(pCellId); }
         void markCell(uint32 pCellId) { marked_cells.set(pCellId); }
 
-        bool HavePlayers() const { return !m_mapRefManager.isEmpty(); }
+        bool HavePlayers() const { return !_mapRefManager.isEmpty(); }
         uint32 GetPlayersCountExceptGMs() const;
         bool ActiveObjectsNearGrid(NGridType const& ngrid) const;
 
-        void AddWorldObject(WorldObject* obj) { i_worldObjects.insert(obj); }
-        void RemoveWorldObject(WorldObject* obj) { i_worldObjects.erase(obj); }
+        void AddWorldObject(WorldObject* obj) { _worldObjects.insert(obj); }
+        void RemoveWorldObject(WorldObject* obj) { _worldObjects.erase(obj); }
 
         void SendToPlayers(WorldPacket const* data) const;
 
         typedef MapRefManager PlayerList;
-        PlayerList const& GetPlayers() const { return m_mapRefManager; }
+        PlayerList const& GetPlayers() const { return _mapRefManager; }
 
         //per-map script storage
         void ScriptsStart(std::map<uint32, std::multimap<uint32, ScriptInfo> > const& scripts, uint32 id, Object* source, Object* target);
@@ -590,7 +590,7 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         GridMap* GetGrid(float x, float y);
         GridMap* GetGrid(uint32 mapId, float x, float y);
 
-        void SetTimer(uint32 t) { i_gridExpiry = t < MIN_GRID_DELAY ? MIN_GRID_DELAY : t; }
+        void SetTimer(uint32 t) { _gridExpiry = t < MIN_GRID_DELAY ? MIN_GRID_DELAY : t; }
 
         void SendInitSelf(Player* player);
 
@@ -649,21 +649,21 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         std::mutex _mapLock;
         std::mutex _gridLock;
 
-        MapEntry const* i_mapEntry;
-        uint8 i_spawnMode;
-        uint32 i_InstanceId;
-        uint32 m_unloadTimer;
-        float m_VisibleDistance;
+        MapEntry const* _mapEntry;
+        uint8 _spawnMode;
+        uint32 _instanceId;
+        uint32 _unloadTimer;
+        float _visibleDistance;
         DynamicMapTree _dynamicTree;
 
-        MapRefManager m_mapRefManager;
-        MapRefManager::iterator m_mapRefIter;
+        MapRefManager _mapRefManager;
+        MapRefManager::iterator _mapRefIter;
 
-        int32 m_VisibilityNotifyPeriod;
+        int32 _visibilityNotifyPeriod;
 
         typedef std::set<WorldObject*> ActiveNonPlayers;
-        ActiveNonPlayers m_activeNonPlayers;
-        ActiveNonPlayers::iterator m_activeNonPlayersIter;
+        ActiveNonPlayers _activeNonPlayers;
+        ActiveNonPlayers::iterator _activeNonPlayersIter;
 
         // Objects that must update even in inactive grids without activating them
         typedef std::set<Transport*> TransportsContainer;
@@ -680,13 +680,13 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         void _ScriptProcessDoor(Object* source, Object* target, const ScriptInfo* scriptInfo) const;
         GameObject* _FindGameObject(WorldObject* pWorldObject, ObjectGuid::LowType guid) const;
 
-        time_t i_gridExpiry;
+        time_t _gridExpiry;
 
         //used for fast base_map (e.g. MapInstanced class object) search for
         //InstanceMaps and BattlegroundMaps...
-        Map* m_parentMap;                                           // points to MapInstanced* or self (always same map id)
-        Map* m_parentTerrainMap;                                    // points to m_parentMap of MapEntry::ParentMapID
-        std::vector<Map*>* m_childTerrainMaps;                      // contains m_parentMap of maps that have MapEntry::ParentMapID == GetId()
+        Map* _parentMap;                                           // points to MapInstanced* or self (always same map id)
+        Map* _parentTerrainMap;                                    // points to _parentMap of MapEntry::ParentMapID
+        std::vector<Map*>* _childTerrainMaps;                      // contains _parentMap of maps that have MapEntry::ParentMapID == GetId()
 
         NGridType* i_grids[MAX_NUMBER_OF_GRIDS][MAX_NUMBER_OF_GRIDS];
         GridMap* GridMaps[MAX_NUMBER_OF_GRIDS][MAX_NUMBER_OF_GRIDS];
@@ -697,13 +697,13 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         //visibility calculations. Highly optimized for massive calculations
         void ProcessRelocationNotifies(const uint32 diff);
 
-        bool i_scriptLock;
-        std::set<WorldObject*> i_objectsToRemove;
-        std::map<WorldObject*, bool> i_objectsToSwitch;
-        std::set<WorldObject*> i_worldObjects;
+        bool _scriptLock;
+        std::set<WorldObject*> _objectsToRemove;
+        std::map<WorldObject*, bool> _objectsToSwitch;
+        std::set<WorldObject*> _worldObjects;
 
         typedef std::multimap<time_t, ScriptAction> ScriptScheduleMap;
-        ScriptScheduleMap m_scriptSchedule;
+        ScriptScheduleMap _scriptSchedule;
 
         // Type specific code for add/remove to/from grid
         template<class T>
@@ -714,23 +714,23 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
 
         void AddToActiveHelper(WorldObject* obj)
         {
-            m_activeNonPlayers.insert(obj);
+            _activeNonPlayers.insert(obj);
         }
 
         void RemoveFromActiveHelper(WorldObject* obj)
         {
             // Map::Update for active object in proccess
-            if (m_activeNonPlayersIter != m_activeNonPlayers.end())
+            if (_activeNonPlayersIter != _activeNonPlayers.end())
             {
-                ActiveNonPlayers::iterator itr = m_activeNonPlayers.find(obj);
-                if (itr == m_activeNonPlayers.end())
+                ActiveNonPlayers::iterator itr = _activeNonPlayers.find(obj);
+                if (itr == _activeNonPlayers.end())
                     return;
-                if (itr == m_activeNonPlayersIter)
-                    ++m_activeNonPlayersIter;
-                m_activeNonPlayers.erase(itr);
+                if (itr == _activeNonPlayersIter)
+                    ++_activeNonPlayersIter;
+                _activeNonPlayers.erase(itr);
             }
             else
-                m_activeNonPlayers.erase(obj);
+                _activeNonPlayers.erase(obj);
         }
 
         std::unordered_map<ObjectGuid::LowType /*dbGUID*/, time_t> _creatureRespawnTimes;
@@ -781,13 +781,13 @@ class TC_GAME_API InstanceMap : public Map
         void Update(const uint32) override;
         void CreateInstanceData(bool load);
         bool Reset(uint8 method);
-        uint32 GetScriptId() const { return i_script_id; }
+        uint32 GetScriptId() const { return _scriptId; }
         std::string const& GetScriptName() const;
-        InstanceScript* GetInstanceScript() { return i_data; }
-        InstanceScript const* GetInstanceScript() const { return i_data; }
-        InstanceScenario* GetInstanceScenario() { return i_scenario; }
-        InstanceScenario const* GetInstanceScenario() const { return i_scenario; }
-        void SetInstanceScenario(InstanceScenario* scenario) { i_scenario = scenario; }
+        InstanceScript* GetInstanceScript() { return _data; }
+        InstanceScript const* GetInstanceScript() const { return _data; }
+        InstanceScenario* GetInstanceScenario() { return _scenario; }
+        InstanceScenario const* GetInstanceScenario() const { return _scenario; }
+        void SetInstanceScenario(InstanceScenario* scenario) { _scenario = scenario; }
         void PermBindAllPlayers();
         void UnloadAll() override;
         EnterState CannotEnter(Player* player) override;
@@ -802,11 +802,11 @@ class TC_GAME_API InstanceMap : public Map
 
         virtual void InitVisibilityDistance() override;
     private:
-        bool m_resetAfterUnload;
-        bool m_unloadWhenEmpty;
-        InstanceScript* i_data;
-        uint32 i_script_id;
-        InstanceScenario* i_scenario;
+        bool _resetAfterUnload;
+        bool _unloadWhenEmpty;
+        InstanceScript* _data;
+        uint32 _scriptId;
+        InstanceScenario* _scenario;
 };
 
 class TC_GAME_API BattlegroundMap : public Map
@@ -823,10 +823,10 @@ class TC_GAME_API BattlegroundMap : public Map
         void RemoveAllPlayers() override;
 
         virtual void InitVisibilityDistance() override;
-        Battleground* GetBG() { return m_bg; }
-        void SetBG(Battleground* bg) { m_bg = bg; }
+        Battleground* GetBG() { return _bg; }
+        void SetBG(Battleground* bg) { _bg = bg; }
     private:
-        Battleground* m_bg;
+        Battleground* _bg;
 };
 
 template<class T, class CONTAINER>

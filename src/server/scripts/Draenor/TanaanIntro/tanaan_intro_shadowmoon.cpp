@@ -245,7 +245,7 @@ struct npc_tanaan_yrel_summon : public FollowerAI
         EventCheckSummoner      = 3
     };
 
-    EventMap m_Events;
+    EventMap _events;
     ObjectGuid m_PlayerGuid;
 
     void IsSummonedBy(Unit* summoner) override
@@ -257,7 +257,7 @@ struct npc_tanaan_yrel_summon : public FollowerAI
 
         StartFollow(summoner->ToPlayer(), 35);
 
-        m_Events.ScheduleEvent(eEvents::EventCheckStopFollow, 6000);
+        _events.ScheduleEvent(eEvents::EventCheckStopFollow, 6000);
     }
 
     void MovementInform(uint32 type, uint32 id) override
@@ -301,10 +301,10 @@ struct npc_tanaan_yrel_summon : public FollowerAI
 
     void UpdateAI(uint32 diff) override
     {
-        m_Events.Update(diff);
+        _events.Update(diff);
         FollowerAI::UpdateAI(diff);
 
-        switch (m_Events.ExecuteEvent())
+        switch (_events.ExecuteEvent())
         {
             case eEvents::EventCheckStopFollow:
             {
@@ -315,11 +315,11 @@ struct npc_tanaan_yrel_summon : public FollowerAI
                     me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
                     SetFollowPaused(true);
 
-                    m_Events.CancelEvent(eEvents::EventCheckStopFollow);
-                    m_Events.ScheduleEvent(eEvents::EventContinueRun, 1000);
+                    _events.CancelEvent(eEvents::EventCheckStopFollow);
+                    _events.ScheduleEvent(eEvents::EventContinueRun, 1000);
                 }
                 else
-                    m_Events.ScheduleEvent(eEvents::EventCheckStopFollow, 800);
+                    _events.ScheduleEvent(eEvents::EventCheckStopFollow, 800);
 
                 break;
             }

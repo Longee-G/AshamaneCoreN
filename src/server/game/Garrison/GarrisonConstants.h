@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2008-2017 TrinityCore <http://www.trinitycore.org/>
  *
@@ -39,11 +39,12 @@ enum GarrisonSite
     GARRISON_SITE_CLASS_HALL_HORDE      = 163,
 };
 
+// 要塞类型
 enum GarrisonType
 {
     GARRISON_TYPE_NONE          = 0,
-    GARRISON_TYPE_GARRISON      = 2,
-    GARRISON_TYPE_CLASS_HALL    = 3,
+    GARRISON_TYPE_GARRISON      = 2,            // 90级的要塞
+    GARRISON_TYPE_CLASS_HALL    = 3,            // 职业大厅？ 110级的吗
     //GARRISON_TYPE_WAR_CAMPAIGN  = 9,
 
     GARRISON_TYPE_MIN           = GARRISON_TYPE_GARRISON,

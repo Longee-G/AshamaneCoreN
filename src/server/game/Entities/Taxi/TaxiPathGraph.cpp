@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -47,20 +47,20 @@ void TaxiPathGraph::Initialize()
     }
 
     // create graph
-    m_graph = Graph(GetVertexCount());
-    WeightMap weightmap = boost::get(boost::edge_weight, m_graph);
+    _graph = Graph(GetVertexCount());
+    WeightMap weightmap = boost::get(boost::edge_weight, _graph);
 
     for (std::size_t j = 0; j < edges.size(); ++j)
     {
-        edge_descriptor e = boost::add_edge(edges[j].first.first, edges[j].first.second, m_graph).first;
+        edge_descriptor e = boost::add_edge(edges[j].first.first, edges[j].first.second, _graph).first;
         weightmap[e] = edges[j].second;
     }
 }
 
 uint32 TaxiPathGraph::GetNodeIDFromVertexID(vertex_descriptor vertexID)
 {
-    if (vertexID < m_vertices.size())
-        return m_vertices[vertexID]->ID;
+    if (vertexID < _vertices.size())
+        return _vertices[vertexID]->ID;
 
     return std::numeric_limits<uint32>::max();
 }
@@ -73,7 +73,7 @@ TaxiPathGraph::vertex_descriptor TaxiPathGraph::GetVertexIDFromNodeID(TaxiNodesE
 std::size_t TaxiPathGraph::GetVertexCount()
 {
     //So we can use this function for readability, we define either max defined vertices or already loaded in graph count
-    return std::max(boost::num_vertices(m_graph), m_vertices.size());
+    return std::max(boost::num_vertices(_graph), _vertices.size());
 }
 
 void TaxiPathGraph::AddVerticeAndEdgeFromNodeInfo(TaxiNodesEntry const* from, TaxiNodesEntry const* to, uint32 pathId, std::vector<std::pair<edge, EdgeCost>>& edges)
@@ -146,13 +146,13 @@ std::size_t TaxiPathGraph::GetCompleteNodeRoute(TaxiNodesEntry const* from, Taxi
     else
     {
         shortestPath.clear();
-        std::vector<vertex_descriptor> p(boost::num_vertices(m_graph));
-        std::vector<uint32> d(boost::num_vertices(m_graph));
+        std::vector<vertex_descriptor> p(boost::num_vertices(_graph));
+        std::vector<uint32> d(boost::num_vertices(_graph));
 
-        boost::dijkstra_shortest_paths(m_graph, GetVertexIDFromNodeID(from),
-            boost::predecessor_map(boost::make_iterator_property_map(p.begin(), boost::get(boost::vertex_index, m_graph)))
-            .distance_map(boost::make_iterator_property_map(d.begin(), boost::get(boost::vertex_index, m_graph)))
-            .vertex_index_map(boost::get(boost::vertex_index, m_graph))
+        boost::dijkstra_shortest_paths(_graph, GetVertexIDFromNodeID(from),
+            boost::predecessor_map(boost::make_iterator_property_map(p.begin(), boost::get(boost::vertex_index, _graph)))
+            .distance_map(boost::make_iterator_property_map(d.begin(), boost::get(boost::vertex_index, _graph)))
+            .vertex_index_map(boost::get(boost::vertex_index, _graph))
             .distance_compare(std::less<uint32>())
             .distance_combine(boost::closed_plus<uint32>())
             .distance_inf(std::numeric_limits<uint32>::max())
@@ -160,7 +160,7 @@ std::size_t TaxiPathGraph::GetCompleteNodeRoute(TaxiNodesEntry const* from, Taxi
             .visitor(boost::dijkstra_visitor<boost::null_visitor>())
             .weight_map(boost::make_transform_value_property_map(
                 [player](EdgeCost const& edgeCost) { return edgeCost.EvaluateDistance(player); },
-                boost::get(boost::edge_weight, m_graph))));
+                boost::get(boost::edge_weight, _graph))));
 
         // found a path to the goal
         for (vertex_descriptor v = GetVertexIDFromNodeID(to); ; v = p[v])
@@ -179,10 +179,10 @@ std::size_t TaxiPathGraph::GetCompleteNodeRoute(TaxiNodesEntry const* from, Taxi
 TaxiPathGraph::vertex_descriptor TaxiPathGraph::CreateVertexFromFromNodeInfoIfNeeded(TaxiNodesEntry const* node)
 {
     //Check if we need a new one or if it may be already created
-    if (m_vertices.size() <= node->CharacterBitNumber)
-        m_vertices.resize(node->CharacterBitNumber + 1);
+    if (_vertices.size() <= node->CharacterBitNumber)
+        _vertices.resize(node->CharacterBitNumber + 1);
 
-    m_vertices[node->CharacterBitNumber] = node;
+    _vertices[node->CharacterBitNumber] = node;
     return node->CharacterBitNumber;
 }
 

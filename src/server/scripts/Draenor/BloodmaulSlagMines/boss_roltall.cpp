@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -99,7 +99,7 @@ namespace Instances { namespace Bloodmaul
                 }
 
                 InstanceScript* m_Instance;
-                EventMap m_Events;
+                EventMap _events;
 
                 uint8 m_FieryBoulderCount;
                 uint8 m_FieryBoulderFlags;
@@ -108,7 +108,7 @@ namespace Instances { namespace Bloodmaul
 
                 void Reset() override
                 {
-                    m_Events.Reset();
+                    _events.Reset();
 
                     _Reset();
 
@@ -144,10 +144,10 @@ namespace Instances { namespace Bloodmaul
                 {
                     _EnterCombat();
 
-                    m_Events.ScheduleEvent(eEvents::EventHeatWave, 20 * TimeConstants::IN_MILLISECONDS);
-                    m_Events.ScheduleEvent(eEvents::EventFieryBoulder, 7 * TimeConstants::IN_MILLISECONDS);
-                    m_Events.ScheduleEvent(eEvents::EventBurningSlag, 28 * TimeConstants::IN_MILLISECONDS);
-                    m_Events.ScheduleEvent(eEvents::EventCheckVictimDistance, 2 * TimeConstants::IN_MILLISECONDS);
+                    _events.ScheduleEvent(eEvents::EventHeatWave, 20 * TimeConstants::IN_MILLISECONDS);
+                    _events.ScheduleEvent(eEvents::EventFieryBoulder, 7 * TimeConstants::IN_MILLISECONDS);
+                    _events.ScheduleEvent(eEvents::EventBurningSlag, 28 * TimeConstants::IN_MILLISECONDS);
+                    _events.ScheduleEvent(eEvents::EventCheckVictimDistance, 2 * TimeConstants::IN_MILLISECONDS);
 
                     if (m_Instance != nullptr)
                         m_Instance->SendEncounterUnit(EncounterFrameType::ENCOUNTER_FRAME_ENGAGE, me);
@@ -236,7 +236,7 @@ namespace Instances { namespace Bloodmaul
 
                             me->SetFacingTo(me->GetHomePosition().GetOrientation());
                             me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
-                            m_Events.ScheduleEvent(eEvents::EventHeatWaveEnd, 8 * TimeConstants::IN_MILLISECONDS);
+                            _events.ScheduleEvent(eEvents::EventHeatWaveEnd, 8 * TimeConstants::IN_MILLISECONDS);
                             break;
                         }
                         case eSpells::SpellBurningSlagDummy:
@@ -263,16 +263,16 @@ namespace Instances { namespace Bloodmaul
                     if (!UpdateVictim())
                         return;
 
-                    m_Events.Update(diff);
+                    _events.Update(diff);
 
                     if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                         return;
 
-                    switch (m_Events.ExecuteEvent())
+                    switch (_events.ExecuteEvent())
                     {
                         case eEvents::EventHeatWave:
                             me->CastSpell(me, eSpells::SpellHeatWaveAuraDummy, false);
-                            m_Events.ScheduleEvent(eEvents::EventHeatWave, 40 * TimeConstants::IN_MILLISECONDS);
+                            _events.ScheduleEvent(eEvents::EventHeatWave, 40 * TimeConstants::IN_MILLISECONDS);
                             break;
                         case eEvents::EventHeatWaveEnd:
                             me->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
@@ -286,11 +286,11 @@ namespace Instances { namespace Bloodmaul
                             ++m_FieryBoulderCount;
 
                             if (m_FieryBoulderCount < eDatas::MaxFieryBoulder)
-                                m_Events.ScheduleEvent(eEvents::EventFieryBoulder, 100);
+                                _events.ScheduleEvent(eEvents::EventFieryBoulder, 100);
                             else
                             {
                                 m_FieryBoulderCount = 0;
-                                m_Events.ScheduleEvent(eEvents::EventFieryBoulder, 30 * TimeConstants::IN_MILLISECONDS);
+                                _events.ScheduleEvent(eEvents::EventFieryBoulder, 30 * TimeConstants::IN_MILLISECONDS);
                             }
 
                             break;
@@ -300,12 +300,12 @@ namespace Instances { namespace Bloodmaul
                             if (!m_BurningSlagCount)
                             {
                                 m_BurningSlagCount = eDatas::MaxBurningSlag;
-                                m_Events.ScheduleEvent(eEvents::EventBurningSlag, 28 * TimeConstants::IN_MILLISECONDS);
+                                _events.ScheduleEvent(eEvents::EventBurningSlag, 28 * TimeConstants::IN_MILLISECONDS);
                             }
                             else
                             {
                                 me->CastSpell(me, eSpells::SpellBurningSlagDummy, false);
-                                m_Events.ScheduleEvent(eEvents::EventBurningSlag, 550);
+                                _events.ScheduleEvent(eEvents::EventBurningSlag, 550);
                             }
                             break;
                         }
@@ -314,7 +314,7 @@ namespace Instances { namespace Bloodmaul
                             if (me->GetVictim() && me->GetVictim()->GetDistance(me) > 50.0f)
                                 EnterEvadeMode(EVADE_REASON_BOUNDARY);
 
-                            m_Events.ScheduleEvent(eEvents::EventCheckVictimDistance, 2 * TimeConstants::IN_MILLISECONDS);
+                            _events.ScheduleEvent(eEvents::EventCheckVictimDistance, 2 * TimeConstants::IN_MILLISECONDS);
                             break;
                         }
                         default:
@@ -367,14 +367,14 @@ namespace Instances { namespace Bloodmaul
             {
                 npc_fiery_boulderAI(Creature* creature) : ScriptedAI(creature) { }
 
-                EventMap m_Events;
+                EventMap _events;
 
                 void Reset() override
                 {
                     me->SetReactState(ReactStates::REACT_PASSIVE);
                     me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
 
-                    m_Events.ScheduleEvent(eEvents::EventMovePoint, 2 * TimeConstants::IN_MILLISECONDS);
+                    _events.ScheduleEvent(eEvents::EventMovePoint, 2 * TimeConstants::IN_MILLISECONDS);
                 }
 
                 void MovementInform(uint32 type, uint32 id) override
@@ -404,15 +404,15 @@ namespace Instances { namespace Bloodmaul
                     {
                         me->CastSpell(me, eSpells::SpellAlphaFadeOut, true);    ///< This makes ModelID disappear
                         me->DespawnOrUnsummon(200);
-                        m_Events.CancelEvent(eEvents::EventDealDamage);
+                        _events.CancelEvent(eEvents::EventDealDamage);
                     }
                 }
 
                 void UpdateAI(uint32 const diff) override
                 {
-                    m_Events.Update(diff);
+                    _events.Update(diff);
 
-                    switch (m_Events.ExecuteEvent())
+                    switch (_events.ExecuteEvent())
                     {
                         case eEvents::EventDealDamage:
                         {
@@ -423,7 +423,7 @@ namespace Instances { namespace Bloodmaul
                                 if (!player->HasAura(eSpells::SpellFieryBoulderStun))
                                     me->CastSpell(player, eSpells::SpellFieryBoulderStun, true);
 
-                            m_Events.ScheduleEvent(eEvents::EventDealDamage, 500);
+                            _events.ScheduleEvent(eEvents::EventDealDamage, 500);
                             break;
                         }
                         case eEvents::EventMovePoint:
@@ -436,7 +436,7 @@ namespace Instances { namespace Bloodmaul
 
                             me->GetMotionMaster()->Clear();
                             me->GetMotionMaster()->MovePoint(eMoves::FirstMove, l_X, l_Y, s_PositionZ);
-                            m_Events.ScheduleEvent(eEvents::EventDealDamage, 500);
+                            _events.ScheduleEvent(eEvents::EventDealDamage, 500);
                             break;
                         }
                         default:
@@ -564,6 +564,6 @@ void AddSC_boss_roltall()
     new Instances::Bloodmaul::boss_roltall();
     new Instances::Bloodmaul::npc_fiery_boulder();
     new Instances::Bloodmaul::spell_roltall_scorching_aura();
-    RegisterAreaTriggerAI(Instances::Bloodmaul::areatrigger_roltall_heat_wave);
-    RegisterAreaTriggerAI(Instances::Bloodmaul::areatrigger_roltall_burning_slag);
+    //RegisterAreaTriggerAI(Instances::Bloodmaul::areatrigger_roltall_heat_wave);
+    //RegisterAreaTriggerAI(Instances::Bloodmaul::areatrigger_roltall_burning_slag);
 }

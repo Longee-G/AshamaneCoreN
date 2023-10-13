@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -186,6 +186,7 @@ GUID_TRAIT_MAP_SPECIFIC(HighGuid::AILock)
 GUID_TRAIT_MAP_SPECIFIC(HighGuid::AILockTicket)
 GUID_TRAIT_MAP_SPECIFIC(HighGuid::Cast)
 
+
 // Special case
 // Global transports are loaded from `transports` table, RealmSpecific part is used for them.
 // after worldserver finishes loading, no more global transports can be created, only the ones existing within instances that never change maps
@@ -203,6 +204,7 @@ class ByteBuffer;
 
 #pragma pack(push, 1)
 
+// ObjectGuid这个类使用多少个字节存储？ 需要2个Uint64 总共16个字节...
 class TC_GAME_API ObjectGuid
 {
     friend TC_GAME_API std::ostream& operator<<(std::ostream& stream, ObjectGuid const& guid);
@@ -268,6 +270,7 @@ class TC_GAME_API ObjectGuid
         bool IsSceneObject()       const { return GetHigh() == HighGuid::SceneObject; }
         bool IsConversation()      const { return GetHigh() == HighGuid::Conversation; }
         bool IsCast()              const { return GetHigh() == HighGuid::Cast; }
+        bool IsBattlePet()         const { return GetHigh() == HighGuid::BattlePet; }
 
         static TypeID GetTypeId(HighGuid high)
         {

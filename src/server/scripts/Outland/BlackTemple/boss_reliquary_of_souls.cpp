@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -135,7 +135,7 @@ public:
     {
         boss_reliquary_of_soulsAI(Creature* creature) : BossAI(creature, DATA_RELIQUARY_OF_SOULS), _inCombat(false)
         {
-            creature->m_SightDistance = 70.0f;
+            creature->_sightDistance = 70.0f;
         }
 
         void Reset() override

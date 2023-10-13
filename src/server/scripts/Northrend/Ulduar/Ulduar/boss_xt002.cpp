@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -713,7 +713,7 @@ class npc_boombot : public CreatureScript
                     // so that can't be the issue
                     // See BoomEvent class
                     // Schedule 1s delayed
-                    me->m_Events.AddEvent(new BoomEvent(me), me->m_Events.CalculateTime(1*IN_MILLISECONDS));
+                    me->_events.AddEvent(new BoomEvent(me), me->_events.CalculateTime(1*IN_MILLISECONDS));
                 }
             }
 
@@ -1070,7 +1070,8 @@ class spell_xt002_321_boombot_aura : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellInfo*/) override
             {
-                return ValidateSpellInfo({ SPELL_ACHIEVEMENT_CREDIT_NERF_SCRAPBOTS });
+                //return ValidateSpellInfo({ SPELL_ACHIEVEMENT_CREDIT_NERF_SCRAPBOTS });
+                return true;
             }
 
             bool CheckProc(ProcEventInfo& eventInfo)
@@ -1082,11 +1083,10 @@ class spell_xt002_321_boombot_aura : public SpellScriptLoader
 
             void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
             {
-                InstanceScript* instance = eventInfo.GetActor()->GetInstanceScript();
-                if (!instance)
-                    return;
-
-                instance->DoCastSpellOnPlayers(SPELL_ACHIEVEMENT_CREDIT_NERF_SCRAPBOTS);
+                //InstanceScript* instance = eventInfo.GetActor()->GetInstanceScript();
+                //if (!instance)
+                //    return;
+                //instance->DoCastSpellOnPlayers(SPELL_ACHIEVEMENT_CREDIT_NERF_SCRAPBOTS);
             }
 
             void Register() override
@@ -1158,7 +1158,7 @@ void AddSC_boss_xt002()
     new spell_xt002_searing_light_spawn_life_spark();
     new spell_xt002_gravity_bomb_aura();
     new spell_xt002_gravity_bomb_damage();
-    new spell_xt002_heart_overload_periodic();
+    //new spell_xt002_heart_overload_periodic();
     new spell_xt002_tympanic_tantrum();
     new spell_xt002_submerged();
     new spell_xt002_321_boombot_aura();

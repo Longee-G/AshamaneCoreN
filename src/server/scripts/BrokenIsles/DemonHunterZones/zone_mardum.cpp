@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -888,11 +888,11 @@ void AddSC_zone_mardum()
     new PlayerScript_mardum_welcome_scene_trigger();
     new scene_mardum_welcome();
     new npc_kayn_sunfury_welcome();
-    new go_mardum_legion_banner_1();
+    //new go_mardum_legion_banner_1();
     new go_mardum_portal_ashtongue();
     new scene_mardum_welcome_ashtongue();
     RegisterSpellScript(spell_learn_felsaber);
-    RegisterCreatureAI(npc_mardum_allari);
+    //RegisterCreatureAI(npc_mardum_allari);
     new go_mardum_cage("go_mardum_cage_belath",     94400);
     new go_mardum_cage("go_mardum_cage_cyana",      94377);
     new go_mardum_cage("go_mardum_cage_izal",       93117);

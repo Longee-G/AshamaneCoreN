@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -1690,5 +1690,5 @@ void AddSC_boss_feng()
     new spell_nullification_barrier();      ///< 115817
     new go_inversion;                       ///< 211628
     new go_cancel;                          ///< 211626
-    RegisterAreaTriggerAI(at_nullification_barrier);         ///< 115817
+    //RegisterAreaTriggerAI(at_nullification_barrier);         ///< 115817
 }

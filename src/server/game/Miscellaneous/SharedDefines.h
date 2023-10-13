@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -1069,6 +1069,7 @@ enum TeamId
     TEAM_NEUTRAL
 };
 
+// Team Faction Defines
 enum Team
 {
     HORDE               = 67,
@@ -3991,14 +3992,14 @@ enum CreatureTypeFlags
     CREATURE_TYPE_FLAG_UNK5                              = 0x00000020, // Sound related
     CREATURE_TYPE_FLAG_SPELL_ATTACKABLE                  = 0x00000040,
     CREATURE_TYPE_FLAG_CAN_INTERACT_WHILE_DEAD           = 0x00000080, // Player can interact with the creature if its dead (not player dead)
-    CREATURE_TYPE_FLAG_HERB_SKINNING_SKILL               = 0x00000100, // Can be looted by herbalist
-    CREATURE_TYPE_FLAG_MINING_SKINNING_SKILL             = 0x00000200, // Can be looted by miner
+    CREATURE_TYPE_FLAG_HERBALIST_SKILL                   = 0x00000100, // Can be looted by herbalist
+    CREATURE_TYPE_FLAG_MINING_SKILL                      = 0x00000200, // Can be looted by miner
     CREATURE_TYPE_FLAG_DO_NOT_LOG_DEATH                  = 0x00000400, // Death event will not show up in combat log
     CREATURE_TYPE_FLAG_MOUNTED_COMBAT_ALLOWED            = 0x00000800, // Creature can remain mounted when entering combat
     CREATURE_TYPE_FLAG_CAN_ASSIST                        = 0x00001000, // ? Can aid any player in combat if in range?
     CREATURE_TYPE_FLAG_IS_PET_BAR_USED                   = 0x00002000,
     CREATURE_TYPE_FLAG_MASK_UID                          = 0x00004000,
-    CREATURE_TYPE_FLAG_ENGINEERING_SKINNING_SKILL        = 0x00008000, // Can be looted by engineer
+    CREATURE_TYPE_FLAG_ENGINEERING_SKILL                 = 0x00008000, // Can be looted by engineer
     CREATURE_TYPE_FLAG_EXOTIC_PET                        = 0x00010000, // Can be tamed by hunter as exotic pet
     CREATURE_TYPE_FLAG_USE_DEFAULT_COLLISION_BOX         = 0x00020000, // Collision related. (always using default collision box?)
     CREATURE_TYPE_FLAG_IS_SIEGE_WEAPON                   = 0x00040000,
@@ -4229,8 +4230,8 @@ enum QuestSort
     QUEST_SORT_ENCHANTING                   = 410,
     QUEST_SORT_SKINNING                     = 411,
     QUEST_SORT_WORLD_QUEST                  = 412,
-    QUEST_SORT_DEATH_KNIGHT_CAMPAIGN        = 413,
-    QUEST_SORT_DEMON_HUNTER_CAMPAIGN        = 416,
+    QUEST_SORT_DEATH_KNIGHT_CAMPAIGN        = 413,      // DK 战役
+    QUEST_SORT_DEMON_HUNTER_CAMPAIGN        = 416,      // DH 战役
     QUEST_SORT_DRUID_CAMPAIGN               = 417,
     QUEST_SORT_HUNTER_CAMPAIGN              = 418,
     QUEST_SORT_MONK_CAMPAIGN                = 419,
@@ -4251,20 +4252,50 @@ enum QuestSort
     QUEST_SORT_DEATHS_OF_CHROMIE            = 435,
 };
 
+
+
+// filter class by QuestSort
 inline uint8 ClassByQuestSort(int32 QuestSort)
 {
     switch (QuestSort)
     {
-        case QUEST_SORT_WARLOCK:        return CLASS_WARLOCK;
-        case QUEST_SORT_WARRIOR:        return CLASS_WARRIOR;
-        case QUEST_SORT_SHAMAN:         return CLASS_SHAMAN;
-        case QUEST_SORT_PALADIN:        return CLASS_PALADIN;
-        case QUEST_SORT_MAGE:           return CLASS_MAGE;
-        case QUEST_SORT_ROGUE:          return CLASS_ROGUE;
-        case QUEST_SORT_HUNTER:         return CLASS_HUNTER;
-        case QUEST_SORT_PRIEST:         return CLASS_PRIEST;
-        case QUEST_SORT_DRUID:          return CLASS_DRUID;
-        case QUEST_SORT_DEATH_KNIGHT:   return CLASS_DEATH_KNIGHT;
+        case QUEST_SORT_WARLOCK:
+        case QUEST_SORT_WARLOCK_CAMPAIGN:
+            return CLASS_WARLOCK;
+        case QUEST_SORT_WARRIOR:
+        case QUEST_SORT_WARRIOR_CAMPAIGN:
+            return CLASS_WARRIOR;
+        case QUEST_SORT_SHAMAN:
+        case QUEST_SORT_SHAMAN_CAMPAIGN:
+            return CLASS_SHAMAN;
+        case QUEST_SORT_PALADIN:
+        case QUEST_SORT_PALADIN_CAMPAIGN:
+            return CLASS_PALADIN;
+        case QUEST_SORT_MAGE:
+        case QUEST_SORT_MAGE_CAMPAIGN:
+            return CLASS_MAGE;
+        case QUEST_SORT_ROGUE:
+        case QUEST_SORT_ROGUE_CAMPAIGN:
+            return CLASS_ROGUE;
+        case QUEST_SORT_HUNTER:
+        case QUEST_SORT_HUNTER_CAMPAIGN:
+            return CLASS_HUNTER;
+        case QUEST_SORT_PRIEST:
+        case QUEST_SORT_PRIEST_CAMPAIGN:
+            return CLASS_PRIEST;
+        case QUEST_SORT_DRUID:
+        case QUEST_SORT_DRUID_CAMPAIGN:
+            return CLASS_DRUID;
+        case QUEST_SORT_DEATH_KNIGHT:
+        case QUEST_SORT_DEATH_KNIGHT_CAMPAIGN:
+            return CLASS_DEATH_KNIGHT;
+        case QUEST_SORT_MONK:
+        case QUEST_SORT_MONK_CAMPAIGN:
+            return CLASS_MONK;
+        case QUEST_SORT_DEMON_HUNTER:
+        case QUEST_SORT_DEMON_HUNTER_CAMPAIGN:
+            return CLASS_DEMON_HUNTER;
+
     }
     return 0;
 }
@@ -6330,5 +6361,11 @@ enum Maps : uint32
     MAP_TANAAN_JUNGLE           = 1464,
     MAP_DALARAN_UNDERBELLY      = 1502,
 };
+
+#ifndef GAME_BUILD
+#define GAME_BUILD  26972
+#endif // GAME_BUILD
+
+#define LEGION_735   26972
 
 #endif

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  *
@@ -956,7 +956,7 @@ public:
             return ValidateSpellInfo(
             {
                 SPELL_WARHEAD_Z_CHECK,
-                SPELL_WARHEAD_SEEKING_LUMBERSHIP,
+                //SPELL_WARHEAD_SEEKING_LUMBERSHIP,
                 SPELL_WARHEAD_FUSE
             });
         }
@@ -966,7 +966,7 @@ public:
             Unit* caster = GetCaster();
 
             caster->CastSpell(caster, SPELL_WARHEAD_Z_CHECK, true);
-            caster->CastSpell(caster, SPELL_WARHEAD_SEEKING_LUMBERSHIP, true);
+            //caster->CastSpell(caster, SPELL_WARHEAD_SEEKING_LUMBERSHIP, true);
             caster->CastSpell(caster, SPELL_WARHEAD_FUSE, true);
         }
 

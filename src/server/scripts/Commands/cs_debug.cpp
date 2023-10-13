@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -1377,7 +1377,7 @@ public:
             else
             {
                 WorldPackets::Movement::MoveUpdate moveUpdate;
-                moveUpdate.Status = &target->m_movementInfo;
+                moveUpdate.Status = &target->_movementInfo;
                 target->SendMessageToSet(moveUpdate.Write(), true);
             }
 

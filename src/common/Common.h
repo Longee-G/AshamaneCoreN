@@ -215,4 +215,7 @@ namespace Ashamane
     };
 }
 
+typedef std::string String;
+typedef std::vector<String> StringVector;
+
 #endif

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2010 - 2012 Project SkyFire <http://www.projectskyfire.org/>
  * Copyright (C) 2011 - 2012 ArkCORE <http://www.arkania.net/>
@@ -554,7 +554,7 @@ public:
 
     bool OnGossipSelect(Player* player, GameObject* /*go*/, uint32 /*sender*/, uint32 /*action*/) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        player->playerTalkClass->ClearMenus();
         CloseGossipMenuFor(player);
         return true;
     }
@@ -1167,7 +1167,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        player->playerTalkClass->ClearMenus();
         if (action == GOSSIP_ACTION_INFO_DEF + 1)
         {
             if (Creature *t = player->SummonCreature(900000, creature->GetPositionX(), creature->GetPositionY(),  creature->GetPositionZ(),
@@ -1967,7 +1967,7 @@ public:
                 {
                     int cnt = 1;
                     Player *player = who->ToPlayer();
-                    for (Unit::ControlList::iterator itr = player->m_Controlled.begin(); itr != player->m_Controlled.end(); ++itr)
+                    for (Unit::ControlList::iterator itr = player->_controlled.begin(); itr != player->_controlled.end(); ++itr)
                         if ((*itr)->GetTypeId() == TYPEID_UNIT && ((*itr)->GetEntry() == 34959 || (*itr)->GetEntry() == 34958 || (*itr)->GetEntry() == 34957))
                         {
                             cnt++;
@@ -2039,7 +2039,7 @@ public:
                                 if (Unit *unit = me->ToTempSummon()->GetSummoner()->GetVehicle()->GetBase())
                                 {
                                     SeatMap::const_iterator seat = veh->GetNextEmptySeat(0, true);
-                                    if (seat != veh->Seats.end())
+                                    if (seat != veh->_seats.end())
                                         me->CastCustomSpell(VEHICLE_SPELL_RIDE_HARDCODED, SPELLVALUE_BASE_POINT0, seat->first + 1, unit, false);
                                 }
                 delayedEnterVehicle = 3600000;

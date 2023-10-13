@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -221,6 +221,7 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Garrison::GarrisonRemoteB
     return data;
 }
 
+// 重载操作符 `<< `
 ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Garrison::GarrisonRemoteSiteInfo const& site)
 {
     data << uint32(site.GarrSiteLevelID);
@@ -235,7 +236,7 @@ WorldPacket const* WorldPackets::Garrison::GarrisonRemoteInfo::Write()
 {
     _worldPacket << uint32(Sites.size());
     for (GarrisonRemoteSiteInfo const& site : Sites)
-        _worldPacket << site;
+        _worldPacket << site;           // [Longee] 结构并没有实现 << 运算符，这个是怎么实现的？ ... 在前面的代码中实现了
 
     return &_worldPacket;
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -764,7 +764,7 @@ public:
             if (menuId == GOSSIP_SALANAR_MENU && gossipListId == GOSSIP_SALANAR_OPTION)
             {
                 player->CastSpell(player, SPELL_REALM_OF_SHADOWS, true);
-                player->PlayerTalkClass->SendCloseGossip();
+                player->playerTalkClass->SendCloseGossip();
             }
         }
 

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -1117,7 +1117,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        player->playerTalkClass->ClearMenus();
 
         if (action == GOSSIP_ACTION_INFO_DEF + 1)
         {
@@ -1491,6 +1491,7 @@ public:
     };
 };
 
+// 49481 - creature: Collapsing Icicle
 class npc_icycle_dm : public CreatureScript
 {
 public:

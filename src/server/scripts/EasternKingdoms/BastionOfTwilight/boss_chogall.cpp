@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2008-2014 Forgotten Lands <http://www.forgottenlands.eu/>
  *
@@ -857,6 +857,6 @@ void AddSC_boss_chogall()
     new npc_darkened_creation();
     new spell_debilitating_beam();
     new spell_corruption_accelerated();
-    new spell_corruption_sickness();
+    //new spell_corruption_sickness();
     new npc_spiked_tentacle();
 }

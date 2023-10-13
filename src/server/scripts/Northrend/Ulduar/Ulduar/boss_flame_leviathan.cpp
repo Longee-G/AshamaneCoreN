@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -1650,7 +1650,7 @@ class FlameLeviathanPursuedTargetSelector
 
             //! Vehicle must be in use by player
             bool playerFound = false;
-            for (SeatMap::const_iterator itr = vehicle->Seats.begin(); itr != vehicle->Seats.end() && !playerFound; ++itr)
+            for (SeatMap::const_iterator itr = vehicle->_seats.begin(); itr != vehicle->_seats.end() && !playerFound; ++itr)
                 if (itr->second.Passenger.Guid.IsPlayer())
                     playerFound = true;
 
@@ -1703,7 +1703,7 @@ class spell_pursue : public SpellScriptLoader
 
                 caster->AI()->AttackStart(GetHitUnit());    // Chase target
 
-                for (SeatMap::const_iterator itr = caster->GetVehicleKit()->Seats.begin(); itr != caster->GetVehicleKit()->Seats.end(); ++itr)
+                for (SeatMap::const_iterator itr = caster->GetVehicleKit()->_seats.begin(); itr != caster->GetVehicleKit()->_seats.end(); ++itr)
                 {
                     if (Player* passenger = ObjectAccessor::GetPlayer(*caster, itr->second.Passenger.Guid))
                     {
@@ -1740,7 +1740,7 @@ class spell_vehicle_throw_passenger : public SpellScriptLoader
             void HandleScript(SpellEffIndex effIndex)
             {
                 Spell* baseSpell = GetSpell();
-                SpellCastTargets targets = baseSpell->m_targets;
+                SpellCastTargets targets = baseSpell->_targets;
                 int32 damage = GetEffectValue();
                 if (targets.HasTraj())
                     if (Vehicle* vehicle = GetCaster()->GetVehicleKit())

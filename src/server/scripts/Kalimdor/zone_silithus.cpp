@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  *
@@ -1311,7 +1311,7 @@ class go_wind_stone : public GameObjectScript
         bool OnGossipSelect(Player* player, GameObject* go, uint32 /*sender*/, uint32 action) override
         {
             ClearGossipMenuFor(player);
-            player->PlayerTalkClass->SendCloseGossip();
+            player->playerTalkClass->SendCloseGossip();
 
             switch (action)
             {

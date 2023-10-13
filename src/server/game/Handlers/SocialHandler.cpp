@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -169,4 +169,10 @@ void WorldSession::HandleSetContactNotesOpcode(WorldPackets::Social::SetContactN
     /// @todo: handle VirtualRealmAddress
     TC_LOG_DEBUG("network", "WorldSession::HandleSetContactNotesOpcode: Contact: %s, Notes: %s", packet.Player.Guid.ToString().c_str(), packet.Notes.c_str());
     _player->GetSocial()->SetFriendNote(packet.Player.Guid, packet.Notes);
+}
+
+// 社交功能，组队快速加入设置？
+void WorldSession::HandleQuickJoinAutoAcceptRequests(WorldPackets::Social::QuickJoinAutoAcceptRequests & packet)
+{
+    // TODO:
 }

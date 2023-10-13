@@ -1,4 +1,4 @@
-/*
+﻿/*
 * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
 *
 * This program is free software; you can redistribute it and/or modify it
@@ -61,10 +61,10 @@ bool BattlefieldTB::SetupBattlefield()
     m_TimeForAcceptInvite = 20;
     m_StartGroupingTimer = 15 * MINUTE * IN_MILLISECONDS;
     m_StartGrouping = false;
-    m_isActive = false;
+    _isActive = false;
 
     KickPosition.Relocate(-605.5f, 1181.31f, 95.96f, 6.177155f);
-    KickPosition.m_mapId = m_MapId;
+    KickPosition._mapId = m_MapId;
 
     RegisterZone(m_ZoneId);
 
@@ -191,7 +191,7 @@ bool BattlefieldTB::Update(uint32 diff)
 
 void BattlefieldTB::OnPlayerEnterZone(Player* player)
 {
-    if (!m_isActive)
+    if (!_isActive)
         RemoveAurasFromPlayer(player);
 
     SendInitWorldStatesTo(player);
@@ -199,7 +199,7 @@ void BattlefieldTB::OnPlayerEnterZone(Player* player)
 
 void BattlefieldTB::OnPlayerLeaveZone(Player* player)
 {
-    if (!m_isActive)
+    if (!_isActive)
         RemoveAurasFromPlayer(player);
 }
 
@@ -796,7 +796,7 @@ void BattlefieldTB::HandleKill(Player* killer, Unit* victim)
 
 void BattlefieldTB::PromotePlayer(Player* killer)
 {
-    if (!m_isActive || killer->HasAura(SPELL_TB_VETERAN))
+    if (!_isActive || killer->HasAura(SPELL_TB_VETERAN))
         return;
 
     killer->CastSpell(killer, SPELL_TB_VETERAN, true);
@@ -806,7 +806,7 @@ TolBaradCapturePoint::TolBaradCapturePoint(BattlefieldTB* battlefield, TeamId te
 {
     m_Bf = battlefield;
     m_team = teamInControl;
-    m_value = teamInControl == TEAM_ALLIANCE ? m_maxValue : -m_maxValue;
+    _value = teamInControl == TEAM_ALLIANCE ? m_maxValue : -m_maxValue;
     m_State = teamInControl == TEAM_ALLIANCE ? BF_CAPTUREPOINT_OBJECTIVESTATE_ALLIANCE : BF_CAPTUREPOINT_OBJECTIVESTATE_HORDE;
 }
 

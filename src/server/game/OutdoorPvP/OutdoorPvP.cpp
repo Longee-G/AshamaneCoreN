@@ -54,7 +54,7 @@ class DefenseMessageBuilder
 
 OPvPCapturePoint::OPvPCapturePoint(OutdoorPvP* pvp):
     m_capturePointSpawnId(), m_capturePoint(NULL), m_maxValue(0.0f), m_minValue(0.0f), m_maxSpeed(0),
-    m_value(0), m_team(TEAM_NEUTRAL), m_OldState(OBJECTIVESTATE_NEUTRAL),
+    _value(0), m_team(TEAM_NEUTRAL), m_OldState(OBJECTIVESTATE_NEUTRAL),
     m_State(OBJECTIVESTATE_NEUTRAL), m_neutralValuePct(0), m_PvP(pvp)
 { }
 
@@ -63,7 +63,7 @@ bool OPvPCapturePoint::HandlePlayerEnter(Player* player)
     if (m_capturePoint)
     {
         player->SendUpdateWorldState(m_capturePoint->GetGOInfo()->controlZone.worldState1, 1);
-        player->SendUpdateWorldState(m_capturePoint->GetGOInfo()->controlZone.worldstate2, (uint32)ceil((m_value + m_maxValue) / (2 * m_maxValue) * 100.0f));
+        player->SendUpdateWorldState(m_capturePoint->GetGOInfo()->controlZone.worldstate2, (uint32)ceil((_value + m_maxValue) / (2 * m_maxValue) * 100.0f));
         player->SendUpdateWorldState(m_capturePoint->GetGOInfo()->controlZone.worldstate3, m_neutralValuePct);
     }
     return m_activePlayers[player->GetTeamId()].insert(player->GetGUID()).second;
@@ -84,7 +84,7 @@ void OPvPCapturePoint::SendChangePhase()
     // send this too, sometimes the slider disappears, dunno why :(
     SendUpdateWorldState(m_capturePoint->GetGOInfo()->controlZone.worldState1, 1);
     // send these updates to only the ones in this objective
-    SendUpdateWorldState(m_capturePoint->GetGOInfo()->controlZone.worldstate2, (uint32)ceil((m_value + m_maxValue) / (2 * m_maxValue) * 100.0f));
+    SendUpdateWorldState(m_capturePoint->GetGOInfo()->controlZone.worldstate2, (uint32)ceil((_value + m_maxValue) / (2 * m_maxValue) * 100.0f));
     // send this too, sometimes it resets :S
     SendUpdateWorldState(m_capturePoint->GetGOInfo()->controlZone.worldstate3, m_neutralValuePct);
 }
@@ -336,7 +336,7 @@ bool OPvPCapturePoint::Update(uint32 diff)
     if (fact_diff < 0)
     {
         // horde is in majority, but it's already horde-controlled -> no change
-        if (m_State == OBJECTIVESTATE_HORDE && m_value <= -m_maxValue)
+        if (m_State == OBJECTIVESTATE_HORDE && _value <= -m_maxValue)
             return false;
 
         if (fact_diff < -maxDiff)
@@ -347,7 +347,7 @@ bool OPvPCapturePoint::Update(uint32 diff)
     else
     {
         // ally is in majority, but it's already ally-controlled -> no change
-        if (m_State == OBJECTIVESTATE_ALLIANCE && m_value >= m_maxValue)
+        if (m_State == OBJECTIVESTATE_ALLIANCE && _value >= m_maxValue)
             return false;
 
         if (fact_diff > maxDiff)
@@ -356,28 +356,28 @@ bool OPvPCapturePoint::Update(uint32 diff)
         Challenger = ALLIANCE;
     }
 
-    float oldValue = m_value;
+    float oldValue = _value;
     TeamId oldTeam = m_team;
 
     m_OldState = m_State;
 
-    m_value += fact_diff;
+    _value += fact_diff;
 
-    if (m_value < -m_minValue) // red
+    if (_value < -m_minValue) // red
     {
-        if (m_value < -m_maxValue)
-            m_value = -m_maxValue;
+        if (_value < -m_maxValue)
+            _value = -m_maxValue;
         m_State = OBJECTIVESTATE_HORDE;
         m_team = TEAM_HORDE;
     }
-    else if (m_value > m_minValue) // blue
+    else if (_value > m_minValue) // blue
     {
-        if (m_value > m_maxValue)
-            m_value = m_maxValue;
+        if (_value > m_maxValue)
+            _value = m_maxValue;
         m_State = OBJECTIVESTATE_ALLIANCE;
         m_team = TEAM_ALLIANCE;
     }
-    else if (oldValue * m_value <= 0) // grey, go through mid point
+    else if (oldValue * _value <= 0) // grey, go through mid point
     {
         // if challenger is ally, then n->a challenge
         if (Challenger == ALLIANCE)
@@ -397,7 +397,7 @@ bool OPvPCapturePoint::Update(uint32 diff)
         m_team = TEAM_NEUTRAL;
     }
 
-    if (m_value != oldValue)
+    if (_value != oldValue)
         SendChangePhase();
 
     if (m_OldState != m_State)

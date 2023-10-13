@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -1320,18 +1320,18 @@ class spell_garalon_pungency : public SpellScriptLoader
 
 void AddSC_boss_garalon()
 {
-    new boss_garalon();                         // 62164
-    new npc_garalon_leg();                      // 63053
-    new npc_pheromone_trail();                  // 63021
-    new spell_garalon_furious_swipe();          // 122735
-    new spell_garalon_pheromones_forcecast();   // 123808
-    new spell_garalon_mend_leg();               // 123495
-    new spell_garalon_crush_trigger();          // 117709
-    new spell_garalon_pheromones_taunt();       // 123109
-    new spell_garalon_broken_leg();             // 122786
-    new spell_garalon_damaged();                // 123818
-    new spell_garalon_pheromones_summon();      // 128573 INSERT INTO spell_script_names (spell_id, ScriptName) VALUES (128573, "spell_garalon_pheromones_summon");
-    new spell_garalon_pheromones_trail_dmg();   // 123120 INSERT INTO spell_script_names (spell_id, ScriptName) VALUES (123120, "spell_garalon_pheromones_trail_dmg");
-    new spell_garalon_pheromones_switch();      // 123100 INSERT INTO spell_script_names (spell_id, ScriptName) VALUES (123100, "spell_garalon_pheromones_switch");
-    new spell_garalon_pungency();               // 123081
+    //new boss_garalon();                         // 62164
+    //new npc_garalon_leg();                      // 63053
+    //new npc_pheromone_trail();                  // 63021
+    //new spell_garalon_furious_swipe();          // 122735
+    //new spell_garalon_pheromones_forcecast();   // 123808
+    //new spell_garalon_mend_leg();               // 123495
+    //new spell_garalon_crush_trigger();          // 117709
+    //new spell_garalon_pheromones_taunt();       // 123109
+    //new spell_garalon_broken_leg();             // 122786
+    //new spell_garalon_damaged();                // 123818
+    //new spell_garalon_pheromones_summon();      // 128573 INSERT INTO spell_script_names (spell_id, ScriptName) VALUES (128573, "spell_garalon_pheromones_summon");
+    //new spell_garalon_pheromones_trail_dmg();   // 123120 INSERT INTO spell_script_names (spell_id, ScriptName) VALUES (123120, "spell_garalon_pheromones_trail_dmg");
+    //new spell_garalon_pheromones_switch();      // 123100 INSERT INTO spell_script_names (spell_id, ScriptName) VALUES (123100, "spell_garalon_pheromones_switch");
+    //new spell_garalon_pungency();               // 123081
 }

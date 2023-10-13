@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -62,7 +62,7 @@ namespace FactorySelector
                 ai_factory = sCreatureAIRegistry->GetRegistryItem("TotemAI");
             else if (creature->IsTrigger())
             {
-                if (creature->m_spells[0])
+                if (creature->_spells[0])
                     ai_factory = sCreatureAIRegistry->GetRegistryItem("TriggerAI");
                 else
                     ai_factory = sCreatureAIRegistry->GetRegistryItem("NullCreatureAI");

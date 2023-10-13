@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -1031,7 +1031,7 @@ public:
 
         if (location_str == "inn")
         {
-            player->TeleportTo(player->m_homebindMapId, player->m_homebindX, player->m_homebindY, player->m_homebindZ, player->GetOrientation());
+            player->TeleportTo(player->_homebindMapId, player->_homebindX, player->_homebindY, player->_homebindZ, player->GetOrientation());
             return true;
         }
 
@@ -1718,7 +1718,7 @@ public:
             latency           = target->GetSession()->GetLatency();
             raceid            = target->getRace();
             classid           = target->getClass();
-            muteTime          = target->GetSession()->m_muteTime;
+            muteTime          = target->GetSession()->_muteTime;
             mapId             = target->GetMapId();
             areaId            = target->GetAreaId();
             alive             = target->IsAlive() ? handler->GetTrinityString(LANG_YES) : handler->GetTrinityString(LANG_NO);
@@ -2038,7 +2038,7 @@ public:
         {
             // Target is online, mute will be in effect right away.
             int64 muteTime = time(NULL) + notSpeakTime * MINUTE;
-            target->GetSession()->m_muteTime = muteTime;
+            target->GetSession()->_muteTime = muteTime;
             stmt->setInt64(0, muteTime);
             std::string nameLink = handler->playerLink(targetName);
 
@@ -2103,7 +2103,7 @@ public:
                 return false;
             }
 
-            target->GetSession()->m_muteTime = 0;
+            target->GetSession()->_muteTime = 0;
         }
 
         PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_MUTE_TIME);

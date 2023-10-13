@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
@@ -1348,7 +1348,7 @@ public:
 
         void Register() override
         {
-            OnEffectRemove += AuraEffectRemoveFn(spell_rog_combat_readiness_AuraScript::HandleRemove, EFFECT_0, SPELL_AURA_MOD_STUN, AURA_EFFECT_HANDLE_REAL);
+            OnEffectRemove += AuraEffectRemoveFn(spell_rog_combat_readiness_AuraScript::HandleRemove, EFFECT_0, 4, AURA_EFFECT_HANDLE_REAL);
         }
     };
 
@@ -1376,7 +1376,7 @@ public:
 
         void Register() override
         {
-            DoEffectCalcAmount += AuraEffectCalcAmountFn(spell_rog_nerve_strike_aura_AuraScript::CalculateAmount, EFFECT_0, SPELL_AURA_MOD_DAMAGE_PERCENT_DONE);
+            DoEffectCalcAmount += AuraEffectCalcAmountFn(spell_rog_nerve_strike_aura_AuraScript::CalculateAmount, EFFECT_0, 4);
         }
     };
 
@@ -1386,6 +1386,7 @@ public:
     }
 };
 
+// 14062 - 
 class spell_rog_nightstalker : public SpellScriptLoader
 {
 public:
@@ -1421,8 +1422,9 @@ public:
 
         void Register() override
         {
-            OnEffectApply += AuraEffectApplyFn(spell_rog_nightstalker_AuraScript::HandleApply, EFFECT_0, SPELL_AURA_MOD_SHAPESHIFT, AURA_EFFECT_HANDLE_REAL);
-            OnEffectRemove += AuraEffectRemoveFn(spell_rog_nightstalker_AuraScript::HandleRemove, EFFECT_0, SPELL_AURA_MOD_SHAPESHIFT, AURA_EFFECT_HANDLE_REAL);
+            // 7.3.5 SPELL_AURA_MOD_SHAPESHIFT -> 107
+            OnEffectApply += AuraEffectApplyFn(spell_rog_nightstalker_AuraScript::HandleApply, EFFECT_0, SPELL_AURA_ADD_FLAT_MODIFIER, AURA_EFFECT_HANDLE_REAL);
+            OnEffectRemove += AuraEffectRemoveFn(spell_rog_nightstalker_AuraScript::HandleRemove, EFFECT_0, SPELL_AURA_ADD_FLAT_MODIFIER, AURA_EFFECT_HANDLE_REAL);
         }
     };
 
@@ -2700,7 +2702,7 @@ void AddSC_rogue_spell_scripts()
     new spell_rog_deadly_throw();
     new spell_rog_deepening_shadows();
     new spell_rog_dirty_tricks();
-    new spell_rog_enveloping_shadows();
+    //new spell_rog_enveloping_shadows();
     RegisterSpellScript(spell_rog_envenom);
     RegisterSpellScript(spell_rog_eviscerate);
     new spell_rog_fan_of_knives();

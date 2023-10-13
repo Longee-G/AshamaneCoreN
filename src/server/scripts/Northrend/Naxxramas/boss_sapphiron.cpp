@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -602,7 +602,7 @@ class spell_sapphiron_summon_blizzard : public SpellScriptLoader
                 if (Unit* target = GetHitUnit())
                     if (Creature* blizzard = GetCaster()->SummonCreature(NPC_BLIZZARD, *target, TEMPSUMMON_TIMED_DESPAWN, urandms(25, 30)))
                     {
-                        blizzard->CastSpell(nullptr, blizzard->m_spells[0], TRIGGERED_NONE);
+                        blizzard->CastSpell(nullptr, blizzard->_spells[0], TRIGGERED_NONE);
                         if (Creature* creatureCaster = GetCaster()->ToCreature())
                         {
                             if (Unit* newTarget = creatureCaster->AI()->SelectTarget(SELECT_TARGET_RANDOM, 1, 0.0f, true))

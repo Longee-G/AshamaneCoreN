@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -420,7 +420,7 @@ Transport* TransportMgr::CreateTransport(uint32 entry, ObjectGuid::LowType guid 
     // use preset map for instances (need to know which instance)
     trans->SetMap(map ? map : sMapMgr->CreateMap(mapId, NULL));
     if (map && map->IsDungeon())
-        trans->m_zoneScript = map->ToInstanceMap()->GetInstanceScript();
+        trans->_zoneScript = map->ToInstanceMap()->GetInstanceScript();
 
     // Passengers will be loaded once a player is near
     HashMapHolder<Transport>::Insert(trans);

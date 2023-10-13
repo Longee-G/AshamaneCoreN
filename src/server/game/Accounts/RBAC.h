@@ -46,6 +46,7 @@
 #include <set>
 #include <map>
 
+/* rbac -- Role Based Access Control */
 namespace rbac
 {
 

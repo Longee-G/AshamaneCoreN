@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2010-2011 Trinity <http://www.projecttrinity.org/>
  *
@@ -527,7 +527,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 Sender, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        player->playerTalkClass->ClearMenus();
 
         if (Sender != GOSSIP_SENDER_MAIN)
             return true;

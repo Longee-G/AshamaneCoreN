@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
@@ -162,10 +162,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_HUNTER_HARPOON) ||
-                !sSpellMgr->GetSpellInfo(SPELL_HUNTER_HARPOON_ROOT))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_HUNTER_HARPOON, SPELL_HUNTER_HARPOON_ROOT });
         }
 
         void CastHarpoon()
@@ -230,9 +227,8 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_HUNTER_MONGOOSE_BITE))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_HUNTER_MONGOOSE_BITE });
+
         }
 
         void HandleDummy(SpellEffIndex /*effIndex*/)
@@ -269,9 +265,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_HUNTER_RAPTOR_STRIKE))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_HUNTER_RAPTOR_STRIKE });
         }
 
         bool CheckProc(ProcEventInfo& eventInfo)
@@ -305,9 +299,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_HUNTER_MONGOOSE_BITE))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_HUNTER_MONGOOSE_BITE });
         }
 
         void ApplyBuff()
@@ -347,12 +339,12 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_HUNTER_INSANITY)
-                || !sSpellMgr->GetSpellInfo(SPELL_MAGE_TEMPORAL_DISPLACEMENT)
-                || !sSpellMgr->GetSpellInfo(SPELL_SHAMAN_EXHAUSTION)
-                || !sSpellMgr->GetSpellInfo(SPELL_SHAMAN_SATED))
-                return false;
-            return true;
+            return ValidateSpellInfo({
+                SPELL_HUNTER_INSANITY,
+                SPELL_MAGE_TEMPORAL_DISPLACEMENT,
+                SPELL_SHAMAN_EXHAUSTION,
+                SPELL_SHAMAN_SATED
+                });
         }
 
         void RemoveInvalidTargets(std::list<WorldObject*>& targets)
@@ -394,9 +386,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_HUNTER_IMPROVED_MEND_PET))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_HUNTER_IMPROVED_MEND_PET });
         }
 
         bool CheckProc(ProcEventInfo& /*eventInfo*/)
@@ -435,9 +425,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_HUNTER_INVIGORATION_TRIGGERED))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_HUNTER_INVIGORATION_TRIGGERED });
         }
 
         void HandleScriptEffect(SpellEffIndex /*effIndex*/)
@@ -548,10 +536,11 @@ public:
         }
 
         void Register() override
-        {
-            AfterEffectRemove += AuraEffectRemoveFn(spell_hun_misdirection_AuraScript::OnRemove, EFFECT_1, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+        {            
             DoCheckProc += AuraCheckProcFn(spell_hun_misdirection_AuraScript::CheckProc);
-            OnEffectProc += AuraEffectProcFn(spell_hun_misdirection_AuraScript::HandleProc, EFFECT_1, SPELL_AURA_DUMMY);
+            // 7.3.5 SPELL_AURA_DUMMY -> 61
+            OnEffectProc += AuraEffectProcFn(spell_hun_misdirection_AuraScript::HandleProc, EFFECT_1, 61);
+            AfterEffectRemove += AuraEffectRemoveFn(spell_hun_misdirection_AuraScript::OnRemove, EFFECT_1, 61, AURA_EFFECT_HANDLE_REAL);
         }
     };
 
@@ -1639,7 +1628,8 @@ public:
 
         void Register() override
         {
-            AfterEffectRemove += AuraEffectRemoveFn(spell_hun_rangers_net_AuraScript::HandleEffectRemove, EFFECT_0, SPELL_AURA_MOD_ROOT, AURA_EFFECT_HANDLE_REAL);
+            // 7.3.5 SPELL_AURA_MOD_ROOT -> 445
+            AfterEffectRemove += AuraEffectRemoveFn(spell_hun_rangers_net_AuraScript::HandleEffectRemove, EFFECT_0, 455, AURA_EFFECT_HANDLE_REAL);
         }
     };
 
@@ -2357,16 +2347,15 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_HUNTER_PET_LAST_STAND_TRIGGERED))
-                return false;
+            //return ValidateSpellInfo({ SPELL_HUNTER_PET_LAST_STAND_TRIGGERED });
             return true;
         }
 
         void HandleDummy(SpellEffIndex /*effIndex*/)
         {
-            Unit* caster = GetCaster();
-            int32 healthModSpellBasePoints0 = int32(caster->CountPctFromMaxHealth(30));
-            caster->CastCustomSpell(caster, SPELL_HUNTER_PET_LAST_STAND_TRIGGERED, &healthModSpellBasePoints0, NULL, NULL, true, NULL);
+            //Unit* caster = GetCaster();
+            //int32 healthModSpellBasePoints0 = int32(caster->CountPctFromMaxHealth(30));
+            //caster->CastCustomSpell(caster, SPELL_HUNTER_PET_LAST_STAND_TRIGGERED, &healthModSpellBasePoints0, NULL, NULL, true, NULL);
         }
 
         void Register() override
@@ -2400,9 +2389,10 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_HUNTER_PET_HEART_OF_THE_PHOENIX_TRIGGERED) || !sSpellMgr->GetSpellInfo(SPELL_HUNTER_PET_HEART_OF_THE_PHOENIX_DEBUFF))
-                return false;
-            return true;
+            return ValidateSpellInfo({
+                SPELL_HUNTER_PET_HEART_OF_THE_PHOENIX_TRIGGERED,
+                SPELL_HUNTER_PET_HEART_OF_THE_PHOENIX_DEBUFF
+                });
         }
 
         void HandleScript(SpellEffIndex /*effIndex*/)
@@ -3150,8 +3140,8 @@ void AddSC_hunter_spell_scripts()
     new spell_hun_way_of_the_moknathal();
     new spell_hun_mongoose_bite();
     new spell_hun_ancient_hysteria();
-    new spell_hun_improved_mend_pet();
-    new spell_hun_invigoration();
+    //new spell_hun_improved_mend_pet();
+    //new spell_hun_invigoration();
     new spell_hun_masters_call();
     new spell_hun_misdirection();
     new spell_hun_misdirection_proc();

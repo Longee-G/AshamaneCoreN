@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -97,6 +97,7 @@ struct ScenarioPOI
 typedef std::vector<ScenarioPOI> ScenarioPOIVector;
 typedef std::unordered_map<uint32, ScenarioPOIVector> ScenarioPOIContainer;
 
+// 这个是剧情管理器吗？
 class TC_GAME_API ScenarioMgr
 {
 private:

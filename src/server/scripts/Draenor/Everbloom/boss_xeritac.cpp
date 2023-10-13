@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -628,7 +628,8 @@ public:
 
         void Register() override
         {
-            OnEffectPeriodic += AuraEffectPeriodicFn(spell_toxic_blood_AuraScript::HandleTriggerSpell, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL);
+            // 7.3.5 SPELL_AURA_PERIODIC_TRIGGER_SPELL -> 0
+            OnEffectPeriodic += AuraEffectPeriodicFn(spell_toxic_blood_AuraScript::HandleTriggerSpell, EFFECT_0, 0);
         }
     };
 

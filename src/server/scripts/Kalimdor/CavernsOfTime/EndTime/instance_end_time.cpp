@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2008-2013 TrinityCore <http://www.trinitycore.org/>
  *
@@ -207,7 +207,7 @@ class time_deliver_device : public GameObjectScript
 
         bool OnGossipSelect(Player* player, GameObject* /*go*/, uint32 sender, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            player->playerTalkClass->ClearMenus();
             CloseGossipMenuFor(player);
             SpellInfo const* spell = sSpellMgr->GetSpellInfo(action);
             if (!spell)

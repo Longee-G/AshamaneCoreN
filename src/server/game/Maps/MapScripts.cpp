@@ -56,18 +56,18 @@ void Map::ScriptsStart(ScriptMapMap const& scripts, uint32 id, Object* source, O
         sa.ownerGUID  = ownerGUID;
 
         sa.script = &iter->second;
-        m_scriptSchedule.insert(ScriptScheduleMap::value_type(time_t(sWorld->GetGameTime() + iter->first), sa));
+        _scriptSchedule.insert(ScriptScheduleMap::value_type(time_t(sWorld->GetGameTime() + iter->first), sa));
         if (iter->first == 0)
             immedScript = true;
 
         sMapMgr->IncreaseScheduledScriptsCount();
     }
     ///- If one of the effects should be immediate, launch the script execution
-    if (/*start &&*/ immedScript && !i_scriptLock)
+    if (/*start &&*/ immedScript && !_scriptLock)
     {
-        i_scriptLock = true;
+        _scriptLock = true;
         ScriptsProcess();
-        i_scriptLock = false;
+        _scriptLock = false;
     }
 }
 
@@ -86,16 +86,16 @@ void Map::ScriptCommandStart(ScriptInfo const& script, uint32 delay, Object* sou
     sa.ownerGUID  = ownerGUID;
 
     sa.script = &script;
-    m_scriptSchedule.insert(ScriptScheduleMap::value_type(time_t(sWorld->GetGameTime() + delay), sa));
+    _scriptSchedule.insert(ScriptScheduleMap::value_type(time_t(sWorld->GetGameTime() + delay), sa));
 
     sMapMgr->IncreaseScheduledScriptsCount();
 
     ///- If effects should be immediate, launch the script execution
-    if (delay == 0 && !i_scriptLock)
+    if (delay == 0 && !_scriptLock)
     {
-        i_scriptLock = true;
+        _scriptLock = true;
         ScriptsProcess();
-        i_scriptLock = false;
+        _scriptLock = false;
     }
 }
 
@@ -294,13 +294,13 @@ inline GameObject* Map::_FindGameObject(WorldObject* searchObject, ObjectGuid::L
 /// Process queued scripts
 void Map::ScriptsProcess()
 {
-    if (m_scriptSchedule.empty())
+    if (_scriptSchedule.empty())
         return;
 
     ///- Process overdue queued scripts
-    ScriptScheduleMap::iterator iter = m_scriptSchedule.begin();
+    ScriptScheduleMap::iterator iter = _scriptSchedule.begin();
     // ok as multimap is a *sorted* associative container
-    while (!m_scriptSchedule.empty() && (iter->first <= sWorld->GetGameTime()))
+    while (!_scriptSchedule.empty() && (iter->first <= sWorld->GetGameTime()))
     {
         ScriptAction const& step = iter->second;
 
@@ -879,7 +879,7 @@ void Map::ScriptsProcess()
             case SCRIPT_COMMAND_CLOSE_GOSSIP:
                 // Source must be Player.
                 if (Player* player = _GetScriptPlayer(source, true, step.script))
-                    player->PlayerTalkClass->SendCloseGossip();
+                    player->playerTalkClass->SendCloseGossip();
                 break;
 
             case SCRIPT_COMMAND_PLAYMOVIE:
@@ -921,8 +921,8 @@ void Map::ScriptsProcess()
                 break;
         }
 
-        m_scriptSchedule.erase(iter);
-        iter = m_scriptSchedule.begin();
+        _scriptSchedule.erase(iter);
+        iter = _scriptSchedule.begin();
         sMapMgr->DecreaseScheduledScriptCount();
     }
 }

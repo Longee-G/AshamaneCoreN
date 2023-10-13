@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -166,7 +166,7 @@ class boss_brackenspore : public CreatureScript
                 m_IntroDone = false;
             }
 
-            EventMap m_Events;
+            EventMap _events;
             InstanceScript* m_Instance;
 
             EventMap m_CosmeticEvent;
@@ -178,7 +178,7 @@ class boss_brackenspore : public CreatureScript
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
 
                 _Reset();
 
@@ -348,7 +348,7 @@ class boss_brackenspore : public CreatureScript
                     }
                     case eActions::InfestingSpores:
                     {
-                        m_Events.ScheduleEvent(eEvents::EventInfestingSpores, 1);
+                        _events.ScheduleEvent(eEvents::EventInfestingSpores, 1);
                         break;
                     }
                     default:
@@ -360,18 +360,18 @@ class boss_brackenspore : public CreatureScript
             {
                 _EnterCombat();
 
-                m_Events.ScheduleEvent(eEvents::EventNecroticBreath, 30 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventBerserker, 600 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventMindFungus, 10 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventLivingMushroom, 17 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventSporeShooter, 20 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventFungalFleshEater, 32 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventRejuvenatingMushroom, 80 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventRot, 10 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventNecroticBreath, 30 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventBerserker, 600 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventMindFungus, 10 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventLivingMushroom, 17 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventSporeShooter, 20 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventFungalFleshEater, 32 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventRejuvenatingMushroom, 80 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventRot, 10 * TimeConstants::IN_MILLISECONDS);
 
                 /// Mythic Specials. Shared cd, which special he uses is random.
                 if (IsMythic())
-                    m_Events.ScheduleEvent(eEvents::EventSpecialAbility, 20 * TimeConstants::IN_MILLISECONDS);
+                    _events.ScheduleEvent(eEvents::EventSpecialAbility, 20 * TimeConstants::IN_MILLISECONDS);
 
                 if (m_Instance != nullptr)
                     m_Instance->SendEncounterUnit(EncounterFrameType::ENCOUNTER_FRAME_ENGAGE, me, 1);
@@ -526,7 +526,7 @@ class boss_brackenspore : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 /// Update moves here, avoid some movements problems after Infesting Spores
                 if (me->GetVictim() && !me->IsWithinMeleeRange(me->GetVictim()) && me->HasAura(eSpells::SpellInfestingSpores))
@@ -535,11 +535,11 @@ class boss_brackenspore : public CreatureScript
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvents::EventNecroticBreath:
                         me->CastSpell(me, eSpells::SpellNecroticBreath, false);
-                        m_Events.ScheduleEvent(eEvents::EventNecroticBreath, 32 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventNecroticBreath, 32 * TimeConstants::IN_MILLISECONDS);
                         break;
                     case eEvents::EventBerserker:
                         me->CastSpell(me, eHighmaulSpells::Berserker, true);
@@ -548,31 +548,31 @@ class boss_brackenspore : public CreatureScript
                         Talk(eTalk::WarnInfestingSpores);
                         me->RemoveAura(eSpells::EnergyRegen);
                         me->CastSpell(me, eSpells::SpellInfestingSpores, false);
-                        m_Events.ScheduleEvent(eEvents::EventScheduleEnergy, 12 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventScheduleEnergy, 12 * TimeConstants::IN_MILLISECONDS);
                         break;
                     case eEvents::EventMindFungus:
                         me->CastSpell(me, eSpells::SummonMindFungus, true);
-                        m_Events.ScheduleEvent(eEvents::EventMindFungus, 30 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventMindFungus, 30 * TimeConstants::IN_MILLISECONDS);
                         break;
                     case eEvents::EventLivingMushroom:
                         me->CastSpell(me, eSpells::SummonLivingMushroom, true);
-                        m_Events.ScheduleEvent(eEvents::EventLivingMushroom, 55 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventLivingMushroom, 55 * TimeConstants::IN_MILLISECONDS);
                         break;
                     case eEvents::EventSporeShooter:
                         me->CastSpell(me, eSpells::SporeShooterDummy, true);
-                        m_Events.ScheduleEvent(eEvents::EventSporeShooter, 57 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventSporeShooter, 57 * TimeConstants::IN_MILLISECONDS);
                         break;
                     case eEvents::EventFungalFleshEater:
                         me->CastSpell(me, eSpells::SummonFungalFleshEater, true);
-                        m_Events.ScheduleEvent(eEvents::EventFungalFleshEater, 120 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventFungalFleshEater, 120 * TimeConstants::IN_MILLISECONDS);
                         break;
                     case eEvents::EventRejuvenatingMushroom:
                         me->CastSpell(me, eSpells::RejuvenatingMushDummy, true);
-                        m_Events.ScheduleEvent(eEvents::EventRejuvenatingMushroom, 130 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventRejuvenatingMushroom, 130 * TimeConstants::IN_MILLISECONDS);
                         break;
                     case eEvents::EventSpecialAbility:
                         DoSpecialAbility();
-                        m_Events.ScheduleEvent(eEvents::EventSpecialAbility, 20 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventSpecialAbility, 20 * TimeConstants::IN_MILLISECONDS);
                         break;
                     case eEvents::EventScheduleEnergy:
                         if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
@@ -583,7 +583,7 @@ class boss_brackenspore : public CreatureScript
                     case eEvents::EventRot:
                         if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
                             me->CastSpell(target, eSpells::RotDot, true);
-                        m_Events.ScheduleEvent(eEvents::EventRot, 10 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventRot, 10 * TimeConstants::IN_MILLISECONDS);
                         break;
                     default:
                         break;
@@ -793,18 +793,18 @@ class npc_highmaul_spore_shooter : public CreatureScript
         {
             npc_highmaul_spore_shooterAI(Creature* creature) : ScriptedAI(creature) { }
 
-            EventMap m_Events;
+            EventMap _events;
 
             void Reset() override
             {
                 me->AddUnitState(UnitState::UNIT_STATE_ROOT);
 
-                m_Events.Reset();
+                _events.Reset();
             }
 
             void EnterCombat(Unit* /*attacker*/) override
             {
-                m_Events.ScheduleEvent(eEvent::EventSporeShot, urand(100, 1500));
+                _events.ScheduleEvent(eEvent::EventSporeShot, urand(100, 1500));
             }
 
             void JustDied(Unit* /*killer*/) override
@@ -817,15 +817,15 @@ class npc_highmaul_spore_shooter : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                if (m_Events.ExecuteEvent() == eEvent::EventSporeShot)
+                if (_events.ExecuteEvent() == eEvent::EventSporeShot)
                 {
                     me->CastSpell(me, eSpell::SporeShot, false);
-                    m_Events.ScheduleEvent(eEvent::EventSporeShot, 4500);
+                    _events.ScheduleEvent(eEvent::EventSporeShot, 4500);
                 }
             }
         };
@@ -873,7 +873,7 @@ class npc_highmaul_fungal_flesh_eater : public CreatureScript
             }
 
             InstanceScript* m_Instance;
-            EventMap m_Events;
+            EventMap _events;
             bool m_Scheduled;
 
             void Reset() override
@@ -903,8 +903,8 @@ class npc_highmaul_fungal_flesh_eater : public CreatureScript
                 if (!m_Scheduled)
                 {
                     m_Scheduled = true;
-                    m_Events.ScheduleEvent(eEvents::EventDecay, 5 * TimeConstants::IN_MILLISECONDS);
-                    m_Events.ScheduleEvent(eEvents::EventFleshEater, 1 * TimeConstants::IN_MILLISECONDS);
+                    _events.ScheduleEvent(eEvents::EventDecay, 5 * TimeConstants::IN_MILLISECONDS);
+                    _events.ScheduleEvent(eEvents::EventFleshEater, 1 * TimeConstants::IN_MILLISECONDS);
                 }
             }
 
@@ -926,20 +926,20 @@ class npc_highmaul_fungal_flesh_eater : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvents::EventDecay:
                         me->CastSpell(me, eSpells::Decay, false);
-                        m_Events.ScheduleEvent(eEvents::EventDecay, 10 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventDecay, 10 * TimeConstants::IN_MILLISECONDS);
                         break;
                     case eEvents::EventFleshEater:
                         me->CastSpell(me, eSpells::FleshEater, true);
-                        m_Events.ScheduleEvent(eEvents::EventFleshEater, 10 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventFleshEater, 10 * TimeConstants::IN_MILLISECONDS);
                         break;
                     default:
                         break;

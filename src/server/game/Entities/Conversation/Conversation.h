@@ -61,6 +61,7 @@ struct ConversationDynamicFieldActor
 };
 #pragma pack(pop)
 
+// talk info 
 class TC_GAME_API Conversation : public WorldObject, public GridObject<Conversation>
 {
     public:

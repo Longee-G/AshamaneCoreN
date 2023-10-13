@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -27,9 +27,9 @@
 
 Totem::Totem(SummonPropertiesEntry const* properties, Unit* owner) : Minion(properties, owner, false)
 {
-    m_unitTypeMask |= UNIT_MASK_TOTEM;
-    m_duration = 0;
-    m_type = TOTEM_PASSIVE;
+    _unitTypeMask |= UNIT_MASK_TOTEM;
+    _duration = 0;
+    _type = TOTEM_PASSIVE;
 }
 
 void Totem::Update(uint32 time)
@@ -40,13 +40,13 @@ void Totem::Update(uint32 time)
         return;
     }
 
-    if (m_duration <= time)
+    if (_duration <= time)
     {
         UnSummon();                                         // remove self
         return;
     }
     else
-        m_duration -= time;
+        _duration -= time;
 
     Creature::Update(time);
 }
@@ -56,11 +56,11 @@ void Totem::InitStats(uint32 duration)
     // client requires SMSG_TOTEM_CREATED to be sent before adding to world and before removing old totem
     if (Player* owner = GetOwner()->ToPlayer())
     {
-        if (m_Properties->Slot >= SUMMON_SLOT_TOTEM && m_Properties->Slot < MAX_TOTEM_SLOT)
+        if (_properties->Slot >= SUMMON_SLOT_TOTEM && _properties->Slot < MAX_TOTEM_SLOT)
         {
             WorldPackets::Totem::TotemCreated data;
             data.Totem = GetGUID();
-            data.Slot = m_Properties->Slot - SUMMON_SLOT_TOTEM;
+            data.Slot = _properties->Slot - SUMMON_SLOT_TOTEM;
             data.Duration = duration;
             data.SpellID = GetUInt32Value(UNIT_CREATED_BY_SPELL);
             owner->SendDirectMessage(data.Write());
@@ -76,9 +76,9 @@ void Totem::InitStats(uint32 duration)
     // Get spell cast by totem
     if (SpellInfo const* totemSpell = sSpellMgr->GetSpellInfo(GetSpell()))
         if (totemSpell->CalcCastTime(getLevel()))   // If spell has cast time -> its an active totem
-            m_type = TOTEM_ACTIVE;
+            _type = TOTEM_ACTIVE;
 
-    m_duration = duration;
+    _duration = duration;
 
     SetLevel(GetOwner()->getLevel());
 }
@@ -87,7 +87,7 @@ void Totem::InitSummon(Spell const* /*summonSpell*/ /*= nullptr*/)
 {
     SetControlled(true, UNIT_STATE_ROOT);
 
-    if (m_type == TOTEM_PASSIVE && GetSpell())
+    if (_type == TOTEM_PASSIVE && GetSpell())
         CastSpell(this, GetSpell(), true);
 
     // Some totems can have both instant effect and passive spell
@@ -99,7 +99,7 @@ void Totem::UnSummon(uint32 msTime)
 {
     if (msTime)
     {
-        m_Events.AddEvent(new ForcedUnsummonDelayEvent(*this), m_Events.CalculateTime(msTime));
+        _events.AddEvent(new ForcedUnsummonDelayEvent(*this), _events.CalculateTime(msTime));
         return;
     }
 
@@ -109,9 +109,9 @@ void Totem::UnSummon(uint32 msTime)
     // clear owner's totem slot
     for (uint8 i = SUMMON_SLOT_TOTEM; i < MAX_TOTEM_SLOT; ++i)
     {
-        if (GetOwner()->m_SummonSlot[i] == GetGUID())
+        if (GetOwner()->_summonSlots[i] == GetGUID())
         {
-            GetOwner()->m_SummonSlot[i].Clear();
+            GetOwner()->_summonSlots[i].Clear();
             break;
         }
     }

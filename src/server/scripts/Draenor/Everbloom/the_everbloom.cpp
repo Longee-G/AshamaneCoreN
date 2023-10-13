@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -826,7 +826,8 @@ public:
 
         void Register() override
         {
-            OnEffectPeriodic += AuraEffectPeriodicFn(aura_glowbulb_pollen_AuraScript::HandlePeriodic, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
+            // 7.3.5 SPELL_AURA_PERIODIC_DUMMY -> 5
+            OnEffectPeriodic += AuraEffectPeriodicFn(aura_glowbulb_pollen_AuraScript::HandlePeriodic, EFFECT_0, 5);
         }
     };
 
@@ -862,7 +863,8 @@ public:
 
         void Register() override
         {
-            OnEffectPeriodic += AuraEffectPeriodicFn(aura_barrier_AuraScript::HandlePeriodic, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL);
+            uint32 aura = (m_scriptSpellId == 170665) ? 23 : 149;
+            OnEffectPeriodic += AuraEffectPeriodicFn(aura_barrier_AuraScript::HandlePeriodic, EFFECT_0, aura);
         }
     };
 
@@ -1001,7 +1003,6 @@ void AddSC_the_everbloom()
     new spell_choking_vines();
     new spell_spore_breath();
     new spell_black_hole();
-    RegisterAreaTriggerAI(areatrigger_black_hole);
     new spell_frozen_snap();
     new aura_glowbulb_pollen();
     new aura_barrier();
@@ -1009,4 +1010,7 @@ void AddSC_the_everbloom()
     //new areatrigger_spore_cloud();
     new go_everbloom_entrance_portal();
     new go_everbloom_stormwind_portal();
+
+    // 
+    //RegisterAreaTriggerAI(areatrigger_black_hole);
 }

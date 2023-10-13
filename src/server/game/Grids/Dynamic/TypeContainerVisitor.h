@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -49,7 +49,7 @@ template<class VISITOR, class T> void VisitorHelper(VISITOR &v, ContainerMapList
 template<class VISITOR, class H, class T> void VisitorHelper(VISITOR &v, ContainerMapList<TypeList<H, T> > &c)
 {
     VisitorHelper(v, c._elements);
-    VisitorHelper(v, c._TailElements);
+    VisitorHelper(v, c._tailElements);
 }
 
 // for TypeMapContainer
@@ -72,7 +72,7 @@ template<class VISITOR, class KEY_TYPE, class H, class T>
 void VisitorHelper(VISITOR& v, ContainerUnorderedMap<TypeList<H, T>, KEY_TYPE>& c)
 {
     VisitorHelper(v, c._elements);
-    VisitorHelper(v, c._TailElements);
+    VisitorHelper(v, c._tailElements);
 }
 
 template<class VISITOR, class OBJECT_TYPES, class KEY_TYPE>
@@ -89,6 +89,7 @@ class TypeContainerVisitor
 
         void Visit(TYPE_CONTAINER &c)
         {
+            // VisitorHelper() is a global template function..
             VisitorHelper(i_visitor, c);
         }
 

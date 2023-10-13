@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -27,12 +27,12 @@
 
 SceneObject::SceneObject() : WorldObject(false), _duration(0)
 {
-    m_objectType |= TYPEMASK_SCENEOBJECT;
-    m_objectTypeId = TYPEID_SCENEOBJECT;
+    _objectType |= TYPEMASK_SCENEOBJECT;
+    _objectTypeId = TYPEID_SCENEOBJECT;
 
-    m_updateFlag = UPDATEFLAG_STATIONARY_POSITION;
+    _updateFlag = UPDATEFLAG_STATIONARY_POSITION;
 
-    m_valuesCount = SCENEOBJECT_END;
+    _valuesCount = SCENEOBJECT_END;
     _dynamicValuesCount = SCENEOBJECT_DYNAMIC_END;
 }
 
@@ -123,4 +123,10 @@ bool SceneObject::Create(ObjectGuid::LowType lowGuid, uint32 SceneId, Map* map, 
 void SceneObject::AddParticipant(ObjectGuid const& participantGuid)
 {
     _participants.insert(participantGuid);
+}
+
+uint32 SceneObject::GetScriptId() const
+{
+    // TODO: NYI
+	return 0;
 }

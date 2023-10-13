@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -277,7 +277,7 @@ class spell_eoa_lightning_strikes_damage : public SpellScript
 
 void AddSC_eye_of_azshara()
 {
-    RegisterCreatureAI(npc_hatecoil_arcanist);
+    //RegisterCreatureAI(npc_hatecoil_arcanist);
 
     RegisterSpellScript(spell_hatecoil_arcanist_aqua_spout);
     RegisterSpellScript(spell_animated_storm_water_spout);

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -513,7 +513,7 @@ public:
 
     bool OnGossipSelect(Player* pPlayer, Creature* pCreature, uint32 /*sender*/, uint32 /*action*/) override
     {
-        pPlayer->PlayerTalkClass->ClearMenus();
+        pPlayer->playerTalkClass->ClearMenus();
         CloseGossipMenuFor(pPlayer);
 
         pCreature->AI()->Talk(SAY_ILLIDAN_1_MOVE);

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2008-2014 TrinityCore <http://www.trinitycore.org/>
  *
@@ -495,7 +495,7 @@ public:
 
     bool OnGossipHello(Player* pPlayer, Creature* pCreature) override
     {
-        pPlayer->PlayerTalkClass->ClearMenus();
+        pPlayer->playerTalkClass->ClearMenus();
         CloseGossipMenuFor(pPlayer);
         pPlayer->KilledMonsterCredit(40240);
         pPlayer->GetAchievementMgr()->UpdateCriteria(CRITERIA_TYPE_BE_SPELL_TARGET, 101181, 0, 0, pCreature);
@@ -659,7 +659,7 @@ public:
 
     bool OnGossipHello(Player* pPlayer, Creature* pCreature) override
     {
-        pPlayer->PlayerTalkClass->ClearMenus();
+        pPlayer->playerTalkClass->ClearMenus();
         CloseGossipMenuFor(pPlayer);
         pPlayer->KilledMonsterCredit(52208);
         pPlayer->GetAchievementMgr()->UpdateCriteria(CRITERIA_TYPE_BE_SPELL_TARGET, 98102, 0, 0, pCreature);
@@ -1069,7 +1069,7 @@ public:
 
     bool OnGossipHello(Player* pPlayer, Creature* /*pCreature*/) override
     {
-        pPlayer->PlayerTalkClass->ClearMenus();
+        pPlayer->playerTalkClass->ClearMenus();
         CloseGossipMenuFor(pPlayer);
 
         if (pPlayer->GetQuestStatus(29122) == QUEST_STATUS_INCOMPLETE)
@@ -3144,7 +3144,7 @@ public:
 
     bool OnGossipHello(Player* pPlayer, Creature* pCreature) override
     {
-        pPlayer->PlayerTalkClass->ClearMenus();
+        pPlayer->playerTalkClass->ClearMenus();
         CloseGossipMenuFor(pPlayer);
 
         if (pPlayer->GetQuestStatus(29290) == QUEST_STATUS_INCOMPLETE)
@@ -3409,7 +3409,7 @@ public:
 
     bool OnGossipHello(Player* pPlayer, Creature* pCreature) override
     {
-        pPlayer->PlayerTalkClass->ClearMenus();
+        pPlayer->playerTalkClass->ClearMenus();
         CloseGossipMenuFor(pPlayer);
 
         if (pPlayer->GetQuestStatus(29254) == QUEST_STATUS_INCOMPLETE)
@@ -3548,7 +3548,7 @@ public:
 
     bool OnGossipHello(Player* pPlayer, Creature* pCreature) override
     {
-        pPlayer->PlayerTalkClass->ClearMenus();
+        pPlayer->playerTalkClass->ClearMenus();
         CloseGossipMenuFor(pPlayer);
 
         if (pPlayer->GetQuestStatus(29210) == QUEST_STATUS_INCOMPLETE)
@@ -3819,7 +3819,7 @@ public:
 
     bool OnGossipHello(Player* pPlayer, Creature* pCreature) override
     {
-        pPlayer->PlayerTalkClass->ClearMenus();
+        pPlayer->playerTalkClass->ClearMenus();
         CloseGossipMenuFor(pPlayer);
 
         if (pPlayer->GetQuestStatus(29189) == QUEST_STATUS_INCOMPLETE)
@@ -4036,7 +4036,7 @@ void AddSC_molten_front()
     new npc_little_lasher();
     new npc_hyjal_druid();
     new npc_flame_protection_rune();
-    new npc_flame_protection_rune1();
+    //new npc_flame_protection_rune1();
     new go_solar_core;
     new npc_druid_of_the_flame_molten_front();
     new npc_cinderweb_cocoon();

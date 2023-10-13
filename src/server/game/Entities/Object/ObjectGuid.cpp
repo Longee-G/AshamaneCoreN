@@ -87,6 +87,7 @@ namespace
         SET_GUID_NAME(CommerceObj);
         SET_GUID_NAME(ClientSession);
         SET_GUID_NAME(Cast);
+        SET_GUID_NAME(BattlePet);
 
 #undef SET_GUID_NAME
     }
@@ -223,3 +224,5 @@ GUID_TRAIT_INSTANTIATE_GUID(HighGuid::AIResource)
 GUID_TRAIT_INSTANTIATE_GUID(HighGuid::AILock)
 GUID_TRAIT_INSTANTIATE_GUID(HighGuid::AILockTicket)
 GUID_TRAIT_INSTANTIATE_GUID(HighGuid::Cast)
+// new code
+GUID_TRAIT_INSTANTIATE_GUID(HighGuid::BattlePet)

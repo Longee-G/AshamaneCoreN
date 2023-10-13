@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -35,12 +35,12 @@
 DynamicObject::DynamicObject(bool isWorldObject) : WorldObject(isWorldObject),
     _aura(NULL), _removedAura(NULL), _caster(NULL), _duration(0), _spellXSpellVisualId(0), _isViewpoint(false)
 {
-    m_objectType |= TYPEMASK_DYNAMICOBJECT;
-    m_objectTypeId = TYPEID_DYNAMICOBJECT;
+    _objectType |= TYPEMASK_DYNAMICOBJECT;
+    _objectTypeId = TYPEID_DYNAMICOBJECT;
 
-    m_updateFlag = UPDATEFLAG_STATIONARY_POSITION;
+    _updateFlag = UPDATEFLAG_STATIONARY_POSITION;
 
-    m_valuesCount = DYNAMICOBJECT_END;
+    _valuesCount = DYNAMICOBJECT_END;
     _dynamicValuesCount = DYNAMICOBJECT_DYNAMIC_END;
 }
 
@@ -117,7 +117,7 @@ bool DynamicObject::CreateDynamicObject(ObjectGuid::LowType guidlow, Unit* caste
         float x, y, z, o;
         pos.GetPosition(x, y, z, o);
         transport->CalculatePassengerOffset(x, y, z, &o);
-        m_movementInfo.transport.pos.Relocate(x, y, z, o);
+        _movementInfo.transport.pos.Relocate(x, y, z, o);
 
         // This object must be added to transport before adding to map for the client to properly display it
         transport->AddPassenger(this);

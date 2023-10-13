@@ -1,4 +1,4 @@
-/*
+ï»¿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -307,7 +307,7 @@ public:
     {
         npc_tanaan_mandragoraAI(Creature* creature) : ScriptedAI(creature) { }
 
-        EventMap m_Events;
+        EventMap _events;
 
         enum eDatas
         {
@@ -320,30 +320,30 @@ public:
 
         void Reset() override
         {
-            m_Events.Reset();
+            _events.Reset();
         }
 
         void EnterCombat(Unit* /*target*/) override
         {
-            m_Events.ScheduleEvent(eDatas::EventChomp, 3000);
-            m_Events.ScheduleEvent(eDatas::EventImpactSplit, 10000);
+            _events.ScheduleEvent(eDatas::EventChomp, 3000);
+            _events.ScheduleEvent(eDatas::EventImpactSplit, 10000);
         }
 
         void UpdateAI(uint32 diff) override
         {
-            m_Events.Update(diff);
+            _events.Update(diff);
 
-            if (m_Events.ExecuteEvent() == EventChomp)
+            if (_events.ExecuteEvent() == EventChomp)
             {
                 if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
                     me->CastSpell(target, SpellChomp, false);
-                m_Events.ScheduleEvent(EventChomp, 20000);
+                _events.ScheduleEvent(EventChomp, 20000);
             }
-            else if (m_Events.ExecuteEvent() == eDatas::EventImpactSplit)
+            else if (_events.ExecuteEvent() == eDatas::EventImpactSplit)
             {
                 if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM))
                     me->CastSpell(target, SpellImpactSplit, false);
-                m_Events.ScheduleEvent(EventImpactSplit, 20000);
+                _events.ScheduleEvent(EventImpactSplit, 20000);
             }
         }
     };
@@ -379,7 +379,7 @@ public:
 
         const uint8 MAX_INITIAL_SPAWN = 30;
 
-        EventMap m_Events;
+        EventMap _events;
 
         enum eDatas
         {
@@ -391,8 +391,8 @@ public:
 
         void Reset() override
         {
-            m_Events.Reset();
-            m_Events.ScheduleEvent(EventCleararenaFighterCountByNpc, Seconds(10));
+            _events.Reset();
+            _events.ScheduleEvent(EventCleararenaFighterCountByNpc, Seconds(10));
 
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL);
 
@@ -402,12 +402,12 @@ public:
 
         void UpdateAI(uint32 diff) override
         {
-            m_Events.Update(diff);
+            _events.Update(diff);
             UpdateOperations(diff);
 
             std::list<ObjectGuid> guidsToRemove;
 
-            if (m_Events.ExecuteEvent() == eDatas::EventCleararenaFighterCountByNpc)
+            if (_events.ExecuteEvent() == eDatas::EventCleararenaFighterCountByNpc)
             {
                 for (auto attackerGuids : arenaFighterCountByNpc)
                 {
@@ -430,7 +430,7 @@ public:
                     }
                 }
 
-                m_Events.Repeat(Seconds(10));
+                _events.Repeat(Seconds(10));
             }
         }
 
@@ -534,7 +534,7 @@ public:
                 if (kargath->AI())
                     kargath->AI()->DoAction(1);
 
-            // Si il s'est tué lui-même car il ne trouvait pas de pnjs, on ne donne pas de crédit au joueur
+            // Si il s'est tu?lui-m?e car il ne trouvait pas de pnjs, on ne donne pas de cr?it au joueur
             if (killer == me)
                 return;
 
@@ -567,7 +567,7 @@ public:
         {
             kargathGuid = summoner->GetGUID();
 
-            // Si il est déjà au sol, on ne le fait pas sauter, il passe directement à l'attaque sur un PNJ
+            // Si il est d??au sol, on ne le fait pas sauter, il passe directement ?l'attaque sur un PNJ
             if (me->GetPositionZ() < 10.0f)
             {
                 MovementInform(EFFECT_MOTION_TYPE, 1);
@@ -595,7 +595,7 @@ public:
                 }
                 else
                 {
-                    // Pas de mob à attaquer, on le fait bouger un peu
+                    // Pas de mob ?attaquer, on le fait bouger un peu
                     // pour un visuel plus joli avant de le supprimer
                     me->GetMotionMaster()->MovePoint(2, frand(4376.39f, 4428.70f), frand(-2846.56f, -2804.52f), 5.0f);
                 }
@@ -610,7 +610,7 @@ public:
     };
 };
 
-// Est aussi utilisé par les PNJS après l'arène
+// Est aussi utilis?par les PNJS apr? l'ar?e
 class npc_tanaan_arena_helper : public CreatureScript
 {
 public:
@@ -652,7 +652,7 @@ public:
     {
         npc_tanaan_napestone_riverbeastAI(Creature* creature) : ScriptedAI(creature) { }
 
-        EventMap m_Events;
+        EventMap _events;
 
         enum eDatas
         {
@@ -662,24 +662,24 @@ public:
 
         void Reset() override
         {
-            m_Events.Reset();
+            _events.Reset();
         }
 
         void EnterCombat(Unit* /*target*/) override
         {
-            m_Events.ScheduleEvent(eDatas::EventWhipSplash, Seconds(3));
+            _events.ScheduleEvent(eDatas::EventWhipSplash, Seconds(3));
         }
 
         void UpdateAI(uint32 diff) override
         {
-            m_Events.Update(diff);
+            _events.Update(diff);
 
-            if (m_Events.ExecuteEvent() == eDatas::EventWhipSplash)
+            if (_events.ExecuteEvent() == eDatas::EventWhipSplash)
             {
                 if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
                     me->CastSpell(target, eDatas::SpellWhipSplash, false);
 
-                m_Events.Repeat(Seconds(12));
+                _events.Repeat(Seconds(12));
             }
         }
     };

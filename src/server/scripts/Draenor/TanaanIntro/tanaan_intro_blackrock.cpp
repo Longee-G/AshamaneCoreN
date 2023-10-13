@@ -352,7 +352,7 @@ public:
     {
         npc_ogron_warcrusherAI(Creature* creature) : ScriptedAI(creature) { }
 
-        EventMap m_Events;
+        EventMap _events;
 
         enum eEvents
         {
@@ -361,8 +361,8 @@ public:
 
         void Reset() override
         {
-            m_Events.Reset();
-            m_Events.ScheduleEvent(EventAddaura, 3000);
+            _events.Reset();
+            _events.ScheduleEvent(EventAddaura, 3000);
         }
 
         void JustDied(Unit* killer) override
@@ -385,13 +385,13 @@ public:
             if (!UpdateVictim() || me->HasUnitState(UNIT_STATE_CASTING))
                 return;
 
-            m_Events.Update(diff);
+            _events.Update(diff);
 
-            switch (m_Events.ExecuteEvent())
+            switch (_events.ExecuteEvent())
             {
                 case eEvents::EventAddaura:
                     me->AddAura(TanaanSpells::SpellCrushingStomp, me);
-                    m_Events.ScheduleEvent(eEvents::EventAddaura, 12000);
+                    _events.ScheduleEvent(eEvents::EventAddaura, 12000);
                     break;
             }
         }
@@ -463,7 +463,7 @@ public:
     {
         npc_tanaan_overseer_gotriggAI(Creature* creature) : ScriptedAI(creature) { }
 
-        EventMap m_Events;
+        EventMap _events;
 
         enum eDatas
         {
@@ -475,31 +475,31 @@ public:
 
         void Reset() override
         {
-            m_Events.Reset();
+            _events.Reset();
         }
 
         void EnterCombat(Unit* /*target*/) override
         {
             /// TALK
 
-            m_Events.ScheduleEvent(eDatas::EventBurningBody, 3000);
-            m_Events.ScheduleEvent(eDatas::EventBurningBody, 10000);
+            _events.ScheduleEvent(eDatas::EventBurningBody, 3000);
+            _events.ScheduleEvent(eDatas::EventBurningBody, 10000);
         }
 
         void UpdateAI(uint32 diff) override
         {
-            m_Events.Update(diff);
+            _events.Update(diff);
 
-            if (m_Events.ExecuteEvent() == eDatas::EventBurningBody)
+            if (_events.ExecuteEvent() == eDatas::EventBurningBody)
             {
                 if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
                     me->AddAura(eDatas::SpellBurningBody, target);
-                m_Events.ScheduleEvent(eDatas::EventBurningBody, 20000);
+                _events.ScheduleEvent(eDatas::EventBurningBody, 20000);
             }
-            else if (m_Events.ExecuteEvent() == eDatas::EventBurningRadiance)
+            else if (_events.ExecuteEvent() == eDatas::EventBurningRadiance)
             {
                 me->AddAura(eDatas::SpellBurningRadiance, me);
-                m_Events.ScheduleEvent(eDatas::EventBurningRadiance, 20000);
+                _events.ScheduleEvent(eDatas::EventBurningRadiance, 20000);
             }
         }
     };

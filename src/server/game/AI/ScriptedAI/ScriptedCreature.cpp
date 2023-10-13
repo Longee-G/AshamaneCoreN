@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  *
@@ -240,7 +240,7 @@ SpellInfo const* ScriptedAI::SelectSpell(Unit* target, uint32 school, uint32 mec
     //Check if each spell is viable(set it to null if not)
     for (uint32 i = 0; i < MAX_CREATURE_SPELLS; i++)
     {
-        tempSpell = sSpellMgr->GetSpellInfo(me->m_spells[i]);
+        tempSpell = sSpellMgr->GetSpellInfo(me->_spells[i]);
 
         //This spell doesn't exist
         if (!tempSpell)
@@ -248,11 +248,11 @@ SpellInfo const* ScriptedAI::SelectSpell(Unit* target, uint32 school, uint32 mec
 
         // Targets and Effects checked first as most used restrictions
         //Check the spell targets if specified
-        if (targets && !(SpellSummary[me->m_spells[i]].Targets & (1 << (targets-1))))
+        if (targets && !(SpellSummary[me->_spells[i]].Targets & (1 << (targets-1))))
             continue;
 
         //Check the type of spell if we are looking for a specific spell type
-        if (effect && !(SpellSummary[me->m_spells[i]].Effects & (1 << (effect-1))))
+        if (effect && !(SpellSummary[me->_spells[i]].Effects & (1 << (effect-1))))
             continue;
 
         //Check for school if specified

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2010-2011 Project Trinity <http://www.projecttrinity.org/>
  *
@@ -382,7 +382,8 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            return false;
+            // NYI
+            return true;
         }
 
         void HandleDummy(SpellEffIndex /*effIndex*/)

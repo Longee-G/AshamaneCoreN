@@ -50,13 +50,13 @@ inline PhaseFlags GetPhaseFlags(uint32 phaseId)
 template<typename Func>
 inline void ForAllControlled(Unit* unit, Func&& func)
 {
-    for (Unit* controlled : unit->m_Controlled)
+    for (Unit* controlled : unit->_controlled)
         if (controlled->GetTypeId() != TYPEID_PLAYER)
             func(controlled);
 
     for (uint8 i = 0; i < MAX_SUMMON_SLOT; ++i)
-        if (!unit->m_SummonSlot[i].IsEmpty())
-            if (Creature* summon = unit->GetMap()->GetCreature(unit->m_SummonSlot[i]))
+        if (!unit->_summonSlots[i].IsEmpty())
+            if (Creature* summon = unit->GetMap()->GetCreature(unit->_summonSlots[i]))
                 func(summon);
 }
 }
@@ -391,12 +391,14 @@ void PhasingHandler::OnConditionChange(WorldObject* object)
     UpdateVisibilityIfNeeded(object, true, changed);
 }
 
+// 服务器构造player的相位信息并发送给player...
+
 void PhasingHandler::SendToPlayer(Player const* player, PhaseShift const& phaseShift)
 {
     WorldPackets::Misc::PhaseShiftChange phaseShiftChange;
     phaseShiftChange.Client = player->GetGUID();
     phaseShiftChange.Phaseshift.PhaseShiftFlags = phaseShift.Flags.AsUnderlyingType();
-    phaseShiftChange.Phaseshift.PersonalGUID = phaseShift.PersonalGuid;
+    phaseShiftChange.Phaseshift.PersonalGUID = phaseShift.PersonalGuid;     // 这个guid是啥呢？
     phaseShiftChange.Phaseshift.Phases.reserve(phaseShift.Phases.size());
     std::transform(phaseShift.Phases.begin(), phaseShift.Phases.end(), std::back_inserter(phaseShiftChange.Phaseshift.Phases),
         [](PhaseShift::PhaseRef const& phase) -> WorldPackets::Misc::PhaseShiftDataPhase { return { phase.Flags.AsUnderlyingType(), phase.Id }; });

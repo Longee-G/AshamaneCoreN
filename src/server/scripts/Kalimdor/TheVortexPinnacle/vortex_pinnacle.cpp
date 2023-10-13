@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2010 - 2012 ProjectSkyfire <http://www.projectskyfire.org/>
  *
@@ -36,7 +36,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 Sender, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        player->playerTalkClass->ClearMenus();
 
         if (Sender != GOSSIP_SENDER_MAIN)
             return true;
@@ -71,7 +71,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 Sender, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        player->playerTalkClass->ClearMenus();
 
         if (Sender != GOSSIP_SENDER_MAIN)
             return true;
@@ -121,7 +121,7 @@ public:
 
         void Reset() override
         {
-            m_timer = 0;
+            _timer = 0;
             radius = 14;
             own_stars.clear();
             orient = 0.0f;
@@ -190,7 +190,7 @@ public:
 
             checkForDespawn(uiDiff);
 
-            if (m_timer <= uiDiff)
+            if (_timer <= uiDiff)
             {
                 orient = fmod(orient + 0.1f, 2.0f * static_cast<float >(M_PI));
                 for (std::list<ObjectGuid>::iterator itr = own_stars.begin(); itr != own_stars.end(); itr++)
@@ -204,9 +204,9 @@ public:
                         vortex->GetMotionMaster()->MovePoint(0, x, y,  me->GetPositionZ());
                     }
                 }
-                m_timer = 200;
+                _timer = 200;
             }
-            else m_timer -= uiDiff;
+            else _timer -= uiDiff;
         }
 
     private :
@@ -214,7 +214,7 @@ public:
         SummonList Summons;
         std::list<ObjectGuid> own_stars;
 
-        uint32 m_timer;
+        uint32 _timer;
         uint32 radius;
         uint32 mui_timer_despawn;
 
@@ -243,7 +243,7 @@ public:
 
         void Reset() override
         {
-            m_timer = 0;
+            _timer = 0;
             m_timer1 = 2000;
             m_timer2 = 4000;
         }
@@ -253,12 +253,12 @@ public:
             if (!UpdateVictim() || me->HasUnitState(UNIT_STATE_CASTING))
                 return;
 
-            if (m_timer <= uiDiff)
+            if (_timer <= uiDiff)
             {
                 DoCastVictim(88032);
-                m_timer = urand(2000, 4000);
+                _timer = urand(2000, 4000);
             }
-            else m_timer -= uiDiff;
+            else _timer -= uiDiff;
 
 
             if (m_timer1 <= uiDiff)
@@ -282,7 +282,7 @@ public:
 
     private :
         InstanceScript* instance;
-        uint32 m_timer;
+        uint32 _timer;
         uint32 m_timer1;
         uint32 m_timer2;
     };

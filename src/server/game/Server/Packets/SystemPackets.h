@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -149,7 +149,7 @@ namespace WorldPackets
             int64 TokenBalanceAmount                 = 0;     // NYI
             uint32 BpayStoreProductDeliveryDelay     = 0;     // NYI
         };
-
+        // message of the day ...
         class MOTD final : public ServerPacket
         {
         public:

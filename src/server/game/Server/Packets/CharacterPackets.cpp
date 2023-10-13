@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -588,4 +588,40 @@ WorldPacket const * WorldPackets::Character::SetPlayerDeclinedNamesResult::Write
     _worldPacket << Player;
 
     return &_worldPacket;
+}
+
+void WorldPackets::Character::EngineSurvey::Read()
+{
+    _worldPacket >> TotalPhysMemory;
+    _worldPacket >> GPUVideoMemory;
+    _worldPacket >> GPUSystemMemory;
+    _worldPacket >> GPUSharedMemory;
+    _worldPacket >> GPUVendorID;
+    _worldPacket >> GPUModelID;
+    _worldPacket >> ProcessorUnkUnk;
+    _worldPacket >> ProcessorFeatures;
+    _worldPacket >> ProcessorVendor;
+    _worldPacket >> GXDisplayResWidth;
+    _worldPacket >> GXDisplayResHeight;
+    _worldPacket >> SystemOSIndex;
+    _worldPacket >> GXUnk;
+    _worldPacket >> ProcessorNumberOfProcessors;
+    _worldPacket >> ProcessorNumberOfThreads;
+    _worldPacket >> UnkDword4C;
+    _worldPacket >> UnkDword50;
+    _worldPacket >> Farclip;
+    _worldPacket >> UnkWord58;
+    _worldPacket >> UnkWord5A;
+    _worldPacket >> HasHDPlayerModels;
+    _worldPacket >> Is64BitSystem;
+    _worldPacket >> UnkByte5E;
+    _worldPacket >> UnkByte5F;
+    _worldPacket >> UnkByte60;
+    _worldPacket >> UnkByte61;
+    _worldPacket >> UnkByte62;
+    _worldPacket >> UnkByte63;
+    _worldPacket >> UnkByte64;
+    _worldPacket >> UnkByte65;
+    _worldPacket >> UnkByte66;
+    _worldPacket >> UnkByte67;
 }

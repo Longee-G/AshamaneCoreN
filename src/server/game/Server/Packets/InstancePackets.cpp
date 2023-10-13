@@ -166,3 +166,8 @@ WorldPacket const* WorldPackets::Instance::BossKillCredit::Write()
 
     return &_worldPacket;
 }
+
+void WorldPackets::Instance::QueryCountdownTimer::Read()
+{
+    uint32(Type) = _worldPacket.read<uint32>();
+}

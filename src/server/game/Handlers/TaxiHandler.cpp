@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -59,7 +59,7 @@ void WorldSession::SendTaxiStatus(ObjectGuid guid)
     if (!curloc)
         data.Status = TAXISTATUS_NONE;
     else if (unit->GetReactionTo(GetPlayer()) >= REP_NEUTRAL)
-        data.Status = GetPlayer()->m_taxi.IsTaximaskNodeKnown(curloc) ? TAXISTATUS_LEARNED : TAXISTATUS_UNLEARNED;
+        data.Status = GetPlayer()->_taxi.IsTaximaskNodeKnown(curloc) ? TAXISTATUS_LEARNED : TAXISTATUS_UNLEARNED;
     else
         data.Status = TAXISTATUS_NOT_ELIGIBLE;
 
@@ -105,7 +105,7 @@ void WorldSession::SendTaxiMenu(Creature* unit)
     data.WindowInfo->UnitGUID = unit->GetGUID();
     data.WindowInfo->CurrentNode = curloc;
 
-    GetPlayer()->m_taxi.AppendTaximaskTo(data, lastTaxiCheaterState);
+    GetPlayer()->_taxi.AppendTaximaskTo(data, lastTaxiCheaterState);
 
     SendPacket(data.Write());
 
@@ -135,7 +135,7 @@ bool WorldSession::SendLearnNewTaxiNode(Creature* unit)
     if (curloc == 0)
         return true;                                        // `true` send to avoid WorldSession::SendTaxiMenu call with one more curlock seartch with same false result.
 
-    if (GetPlayer()->m_taxi.SetTaximaskNode(curloc))
+    if (GetPlayer()->_taxi.SetTaximaskNode(curloc))
     {
         SendPacket(WorldPackets::Taxi::NewTaxiPath().Write());
 
@@ -152,7 +152,7 @@ bool WorldSession::SendLearnNewTaxiNode(Creature* unit)
 
 void WorldSession::SendDiscoverNewTaxiNode(uint32 nodeid)
 {
-    if (GetPlayer()->m_taxi.SetTaximaskNode(nodeid))
+    if (GetPlayer()->_taxi.SetTaximaskNode(nodeid))
         SendPacket(WorldPackets::Taxi::NewTaxiPath().Write());
 }
 
@@ -176,7 +176,7 @@ void WorldSession::HandleActivateTaxiOpcode(WorldPackets::Taxi::ActivateTaxi& ac
 
     if (!GetPlayer()->isTaxiCheater())
     {
-        if (!GetPlayer()->m_taxi.IsTaximaskNodeKnown(curloc) || !GetPlayer()->m_taxi.IsTaximaskNodeKnown(activateTaxi.Node))
+        if (!GetPlayer()->_taxi.IsTaximaskNodeKnown(curloc) || !GetPlayer()->_taxi.IsTaximaskNodeKnown(activateTaxi.Node))
         {
             SendActivateTaxiReply(ERR_TAXINOTVISITED);
             return;
@@ -221,7 +221,7 @@ void WorldSession::HandleTaxiRequestEarlyLanding(WorldPackets::Taxi::TaxiRequest
 {
     if (GetPlayer()->GetMotionMaster()->GetCurrentMovementGeneratorType() == FLIGHT_MOTION_TYPE)
     {
-        if (GetPlayer()->m_taxi.RequestEarlyLanding())
+        if (GetPlayer()->_taxi.RequestEarlyLanding())
         {
             FlightPathMovementGenerator* flight = static_cast<FlightPathMovementGenerator*>(GetPlayer()->GetMotionMaster()->top());
             flight->LoadPath(GetPlayer(), flight->GetPath()[flight->GetCurrentNode()]->NodeIndex);

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
@@ -32,6 +32,98 @@ EndContentData */
 #include "InstanceScript.h"
 #include "ScriptMgr.h"
 #include "shadowfang_keep.h"
+#include "ScriptedEscortAI.h"
+
+enum Yells
+{
+    SAY_FREE_AS = 0,
+    SAY_OPEN_DOOR_AS = 1,
+    SAY_POST_DOOR_AS = 2,
+    SAY_FREE_AD = 0,
+    SAY_OPEN_DOOR_AD = 1,
+    SAY_POST1_DOOR_AD = 2,
+    SAY_POST2_DOOR_AD = 3
+};
+
+enum Spells
+{
+    SPELL_UNLOCK = 6421,
+    SPELL_DARK_OFFERING = 7154
+};
+
+enum Creatures
+{
+    NPC_ASH = 3850
+};
+
+// 3849, 3850 -- 
+class npc_shadowfang_prisoner : public CreatureScript
+{
+public:
+    npc_shadowfang_prisoner() : CreatureScript("npc_shadowfang_prisoner") {}
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return GetInstanceAI<npc_shadowfang_prisonerAI>(creature, "instance_shadowfang_keep");
+    }
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
+    {
+        return true;
+    }
+    bool OnGossipHello(Player* player, Creature* creature) override
+    {
+        return true;
+    }
+    // 继承了npc护送AI
+    struct npc_shadowfang_prisonerAI : public npc_escortAI
+    {
+        npc_shadowfang_prisonerAI(Creature* creature) : npc_escortAI(creature)
+        {
+            instance = creature->GetInstanceScript();
+        }
+
+        InstanceScript* instance;
+
+        void WaypointReached(uint32 waypointId) override
+        {
+            switch (waypointId)
+            {
+            case 0:
+                if (me->GetEntry() == NPC_ASH)
+                    Talk(SAY_FREE_AS);
+                else
+                    Talk(SAY_FREE_AD);
+                break;
+            case 10:
+                if (me->GetEntry() == NPC_ASH)
+                    Talk(SAY_OPEN_DOOR_AS);
+                else
+                    Talk(SAY_OPEN_DOOR_AD);
+                break;
+            case 11:
+                if (me->GetEntry() == NPC_ASH)
+                    DoCast(me, SPELL_UNLOCK);
+                break;
+            case 12:
+                if (me->GetEntry() == NPC_ASH)
+                    Talk(SAY_POST_DOOR_AS);
+                else
+                    Talk(SAY_POST1_DOOR_AD);
+
+                instance->SetData(1, DONE);
+                break;
+            case 13:
+                if (me->GetEntry() != NPC_ASH)
+                    Talk(SAY_POST2_DOOR_AD);
+                break;
+            }
+        }
+
+        void Reset() override { }
+        void EnterCombat(Unit* /*who*/) override { }
+    };
+};
+
+
 
 class npc_haunted_stable_hand : public CreatureScript
 {
@@ -40,7 +132,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 Sender, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        player->playerTalkClass->ClearMenus();
 
         if (Sender != GOSSIP_SENDER_MAIN)
             return true;
@@ -83,5 +175,6 @@ public:
 
 void AddSC_shadowfang_keep()
 {
-   new npc_haunted_stable_hand();
+    new npc_shadowfang_prisoner();
+    new npc_haunted_stable_hand();
 }

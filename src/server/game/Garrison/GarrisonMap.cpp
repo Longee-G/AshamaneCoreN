@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -104,6 +104,8 @@ void GarrisonGridLoader::Visit(CreatureMapType& /*m*/)
 
 }
 
+// 要塞地图，90级德拉诺的要塞使用这个类
+// 110级的职业要塞不知道是否也使用这个类？？？
 GarrisonMap::GarrisonMap(uint32 id, time_t expiry, uint32 instanceId, Map* parent, ObjectGuid const& owner)
     : Map(id, expiry, instanceId, DIFFICULTY_NORMAL, parent), _owner(owner), _loadingPlayer(nullptr)
 {
@@ -132,8 +134,8 @@ Garrison* GarrisonMap::GetGarrison()
 void GarrisonMap::InitVisibilityDistance()
 {
     //init visibility distance for instances
-    m_VisibleDistance = World::GetMaxVisibleDistanceInBGArenas();
-    m_VisibilityNotifyPeriod = World::GetVisibilityNotifyPeriodInBGArenas();
+    _visibleDistance = World::GetMaxVisibleDistanceInBGArenas();
+    _visibilityNotifyPeriod = World::GetVisibilityNotifyPeriodInBGArenas();
 }
 
 bool GarrisonMap::AddPlayerToMap(Player* player, bool initPlayer /*= true*/)

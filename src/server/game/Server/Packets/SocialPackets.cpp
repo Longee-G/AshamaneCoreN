@@ -135,3 +135,41 @@ void WorldPackets::Social::DelIgnore::Read()
 {
     _worldPacket >> Player;
 }
+
+void WorldPackets::Social::QuickJoinAutoAcceptRequests::Read()
+{
+    EnableAutoAccept = _worldPacket.ReadBit();
+}
+
+void WorldPackets::Social::QuickJoinRequestInvite::Read()
+{
+    uint16 strlen1 = _worldPacket.ReadBits(8);
+    ApplyAsTank = _worldPacket.ReadBit();
+    uint16 strlen2 = _worldPacket.ReadBits(8);
+    ApplyAsHealer = _worldPacket.ReadBit();
+    ApplyAsDamage = _worldPacket.ReadBit();
+    _worldPacket >> UnkInt1;
+    _worldPacket >> GroupGUID;
+    _worldPacket >> UnkInt2;
+    UnkString1 = _worldPacket.ReadString(strlen1);
+    UnkString2 = _worldPacket.ReadString(strlen2);
+}
+
+void WorldPackets::Social::QuickJoinRespondToInvite::Read()
+{
+    _worldPacket >> GroupGUID;
+    _worldPacket >> GUID;
+    Accept = _worldPacket.ReadBit();
+}
+
+void WorldPackets::Social::QuickJoinSignalToastDisplayed::Read()
+{
+    _worldPacket >> GroupGUID;
+    _worldPacket >> Priority;
+    UnkGuids.resize(_worldPacket.read<uint32>());
+    for (auto& v : UnkGuids)
+        _worldPacket >> v;
+
+    UnkBit1 = _worldPacket.ReadBit();
+    UnkBit2 = _worldPacket.ReadBit();
+}

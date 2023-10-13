@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -28,7 +28,7 @@ class HostileReference;
 class SpellInfo;
 
 //=================================================
-
+// 敌意引用管理？
 class TC_GAME_API HostileRefManager : public RefManager<Unit, ThreatManager>
 {
     public:

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -55,8 +55,8 @@ private:
     vertex_descriptor CreateVertexFromFromNodeInfoIfNeeded(TaxiNodesEntry const* node);
     std::size_t GetVertexCount();
 
-    Graph m_graph;
-    std::vector<TaxiNodesEntry const*> m_vertices;
+    Graph _graph;
+    std::vector<TaxiNodesEntry const*> _vertices;
 
     TaxiPathGraph(TaxiPathGraph const&) = delete;
     TaxiPathGraph& operator=(TaxiPathGraph const&) = delete;

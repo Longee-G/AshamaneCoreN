@@ -1150,6 +1150,13 @@ void HotfixDatabaseConnection::DoPrepareStatements()
     // WorldSafeLocs.db2
     PrepareStatement(HOTFIX_SEL_WORLD_SAFE_LOCS, "SELECT ID, AreaName, LocX, LocY, LocZ, Facing, MapID FROM world_safe_locs ORDER BY ID DESC", CONNECTION_SYNCH);
     PREPARE_LOCALE_STMT(HOTFIX_SEL_WORLD_SAFE_LOCS, "SELECT ID, AreaName_lang FROM world_safe_locs_locale WHERE locale = ?", CONNECTION_SYNCH);
+
+    // CharacterLoadout.db2
+    PrepareStatement(HOTFIX_SEL_CHARACTER_LOADOUT, "SELECT ID, RaceMask, ChrClassID, Purpose FROM character_loadout ORDER BY ID DESC", CONNECTION_SYNCH);
+
+    // CharacterLoadoutItem.db2
+    PrepareStatement(HOTFIX_SEL_CHARACTER_LOADOUT_ITEM, "SELECT ID, ItemID, CharacterLoadoutID FROM character_loadout_item ORDER BY ID DESC", CONNECTION_SYNCH);
+
 }
 
 HotfixDatabaseConnection::HotfixDatabaseConnection(MySQLConnectionInfo& connInfo) : MySQLConnection(connInfo)

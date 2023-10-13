@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -484,6 +484,20 @@ void WorldSession::HandleRequestBattlefieldStatusOpcode(WorldPackets::Battlegrou
     }
 }
 
+//  `CMSG_REQUEST_CONQUEST_FORMULA_CONSTANTS`
+//! This is const data used for calc some field for SMSG_RATED_BATTLEFIELD_INFO 
+void WorldSession::HandlePersonalRatedInfoRequest(WorldPackets::Battleground::NullCmsg & packet)
+{
+    WorldPackets::Battleground::ConquestFormulaConstants constants;
+    constants.PvpMinCPPerWeek = 1500;
+    constants.PvpMaxCPPerWeek = 3000;
+    constants.PvpCPBaseCoefficient = 1511.26f;
+    constants.PvpCPExpCoefficient = 1639.28f;           // 系数从哪获得的？ TODO:
+    constants.PvpCPNumerator = 0.00412f;
+    SendPacket(constants.Write());
+}
+
+
 void WorldSession::HandleBattlemasterJoinArena(WorldPackets::Battleground::BattlemasterJoinArena& packet)
 {
     // ignore if we already in BG or BG queue
@@ -816,5 +830,5 @@ void WorldSession::HandleHearthAndResurrect(WorldPackets::Battleground::HearthAn
 
     _player->BuildPlayerRepop();
     _player->ResurrectPlayer(1.0f);
-    _player->TeleportTo(_player->m_homebindMapId, _player->m_homebindX, _player->m_homebindY, _player->m_homebindZ, _player->GetOrientation());
+    _player->TeleportTo(_player->_homebindMapId, _player->_homebindX, _player->_homebindY, _player->_homebindZ, _player->GetOrientation());
 }

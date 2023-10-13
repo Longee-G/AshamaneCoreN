@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -28,14 +28,14 @@
 #include "UpdateData.h"
 #include "World.h"
 
-Corpse::Corpse(CorpseType type) : WorldObject(type != CORPSE_BONES), m_type(type)
+Corpse::Corpse(CorpseType type) : WorldObject(type != CORPSE_BONES), _type(type)
 {
-    m_objectType |= TYPEMASK_CORPSE;
-    m_objectTypeId = TYPEID_CORPSE;
+    _objectType |= TYPEMASK_CORPSE;
+    _objectTypeId = TYPEID_CORPSE;
 
-    m_updateFlag = UPDATEFLAG_STATIONARY_POSITION;
+    _updateFlag = UPDATEFLAG_STATIONARY_POSITION;
 
-    m_valuesCount = CORPSE_END;
+    _valuesCount = CORPSE_END;
     _dynamicValuesCount = CORPSE_DYNAMIC_END;
 
     m_time = time(NULL);
@@ -198,7 +198,7 @@ bool Corpse::IsExpired(time_t t) const
     if (!sWorld->GetCharacterInfo(GetOwnerGUID()))
         return true;
 
-    if (m_type == CORPSE_BONES)
+    if (_type == CORPSE_BONES)
         return m_time < t - 60 * MINUTE;
     else
         return m_time < t - 3 * DAY;

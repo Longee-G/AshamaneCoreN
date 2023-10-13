@@ -333,7 +333,7 @@ public:
         {
             DoCast(summon, SPELL_SUMMON_VOID_SENTINEL_SUMMONER_VISUAL, true);
 
-            summon->m_Events.AddEvent(new VoidSpawnSummon(summon), summon->m_Events.CalculateTime(1500));
+            summon->_events.AddEvent(new VoidSpawnSummon(summon), summon->_events.CalculateTime(1500));
         }
 
         void SpellHit(Unit* /*caster*/, SpellInfo const* spell) override

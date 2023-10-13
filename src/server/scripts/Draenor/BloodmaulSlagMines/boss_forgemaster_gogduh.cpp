@@ -1,4 +1,4 @@
-/*
+ï»¿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -775,11 +775,17 @@ namespace Instances { namespace Bloodmaul
 
                 void Register() override
                 {
+                    m_deprecated = true;
                     OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_rough_smash_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_CONE_ENEMY_104);
                     OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_rough_smash_SpellScript::FilterTargets, EFFECT_1, TARGET_UNIT_CONE_ENEMY_104);
                     OnPrepare += SpellOnPrepareFn(spell_rough_smash_SpellScript::HandleOnPrepare);
                 }
             };
+
+            SpellScript* GetSpellScript() const override
+            {
+                return new spell_rough_smash_SpellScript();
+            }
     };
 
     /// Shatter Earth - 150324
@@ -1054,17 +1060,13 @@ namespace Instances { namespace Bloodmaul
                 switch ((Spells)at->GetSpellId())
                 {
                     case Spells::ShatterEarthNW:
-                        orientation = float(M_PI) / 4.f; // 45°
-                        break;
+                        orientation = float(M_PI) / 4.f; // 45?                        break;
                     case Spells::ShatterEarthSW:
-                        orientation = float(M_PI) / 4.f * 3.f; // 135°
-                        break;
+                        orientation = float(M_PI) / 4.f * 3.f; // 135?                        break;
                     case  Spells::ShatterEarthSE:
-                        orientation = float(M_PI) / 4.f * 5.f; // 225°
-                        break;
+                        orientation = float(M_PI) / 4.f * 5.f; // 225?                        break;
                     case Spells::ShatterEarthNE:
-                        orientation = float(M_PI) / 4.f * 7.f; // 315°
-                        break;
+                        orientation = float(M_PI) / 4.f * 7.f; // 315?                        break;
                     default:
                         orientation = 0.f;
                 }
@@ -1127,17 +1129,13 @@ namespace Instances { namespace Bloodmaul
                 switch ((Spells)at->GetSpellId())
                 {
                     case Spells::VolcanicTrantrumNW:
-                        orientation = float(M_PI) / 4.f; // 45°
-                        break;
+                        orientation = float(M_PI) / 4.f; // 45?                        break;
                     case Spells::VolcanicTrantrumSW:
-                        orientation = float(M_PI) / 4.f * 3.f; // 135°
-                        break;
+                        orientation = float(M_PI) / 4.f * 3.f; // 135?                        break;
                     case Spells::VolcanicTrantrumSE:
-                        orientation = float(M_PI) / 4.f * 5.f; // 225°
-                        break;
+                        orientation = float(M_PI) / 4.f * 5.f; // 225?                        break;
                     case Spells::VolcanicTrantrumNE:
-                        orientation = float(M_PI) / 4.f * 7.f; // 315°
-                        break;
+                        orientation = float(M_PI) / 4.f * 7.f; // 315?                        break;
                     default:
                         orientation = 0.f;
                 }
@@ -1229,7 +1227,7 @@ void AddSC_boss_forgemaster_gogduh()
     new Instances::Bloodmaul::spell_magma_barrage_trigger();
 
     /// AreaTriggers
-    RegisterAreaTriggerAI(Instances::Bloodmaul::areatrigger_shatter_earth);
-    RegisterAreaTriggerAI(Instances::Bloodmaul::areatrigger_volcanic_trantum);
-    RegisterAreaTriggerAI(Instances::Bloodmaul::areatrigger_magma_barrage);
+    //RegisterAreaTriggerAI(Instances::Bloodmaul::areatrigger_shatter_earth);
+    //RegisterAreaTriggerAI(Instances::Bloodmaul::areatrigger_volcanic_trantum);
+    //RegisterAreaTriggerAI(Instances::Bloodmaul::areatrigger_magma_barrage);
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -1399,7 +1399,7 @@ class spell_putricide_mutation_init : public SpellScriptLoader
                 SpellCastResult result = CheckRequirementInternal(extension);
                 if (result != SPELL_CAST_OK)
                 {
-                    Spell::SendCastResult(GetExplTargetUnit()->ToPlayer(), GetSpellInfo(), GetSpell()->m_SpellVisual, GetSpell()->m_castId, result, extension);
+                    Spell::SendCastResult(GetExplTargetUnit()->ToPlayer(), GetSpellInfo(), GetSpell()->_spellVisual, GetSpell()->_castId, result, extension);
                     return result;
                 }
 
@@ -1496,7 +1496,7 @@ class spell_putricide_mutated_transformation : public SpellScriptLoader
                 if (putricide->AI()->GetData(DATA_ABOMINATION))
                 {
                     if (Player* player = caster->ToPlayer())
-                        Spell::SendCastResult(player, GetSpellInfo(), GetSpell()->m_SpellVisual, GetSpell()->m_castId, SPELL_FAILED_CUSTOM_ERROR, SPELL_CUSTOM_ERROR_TOO_MANY_ABOMINATIONS);
+                        Spell::SendCastResult(player, GetSpellInfo(), GetSpell()->_spellVisual, GetSpell()->_castId, SPELL_FAILED_CUSTOM_ERROR, SPELL_CUSTOM_ERROR_TOO_MANY_ABOMINATIONS);
                     return;
                 }
 
@@ -1652,7 +1652,7 @@ void AddSC_boss_professor_putricide()
     new spell_putricide_gaseous_bloat();
     new spell_putricide_ooze_channel();
     new spell_putricide_slime_puddle();
-    new spell_putricide_slime_puddle_aura();
+    //new spell_putricide_slime_puddle_aura();
     new spell_putricide_unstable_experiment();
     new spell_putricide_ooze_eruption_searcher();
     new spell_putricide_ooze_tank_protection();

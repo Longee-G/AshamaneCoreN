@@ -406,3 +406,18 @@ WorldPacket const* WorldPackets::LFG::LFGTeleportDenied::Write()
 
     return &_worldPacket;
 }
+
+WorldPacket const * WorldPackets::LFG::DFListUpdateBlacklist::Write()
+{
+    std::sort(Blacklist.begin(), Blacklist.end(), [](LFGListBlacklist const& a, LFGListBlacklist const& b) -> bool
+    {
+        return a.ActivityID < b.ActivityID;
+    });
+
+    _worldPacket << static_cast<uint32>(Blacklist.size());
+    // TODO:
+    //for (auto const& map : Blacklist)
+    //    _worldPacket << map;
+
+    return &_worldPacket;
+}

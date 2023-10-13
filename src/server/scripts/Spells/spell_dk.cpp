@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
@@ -31,6 +31,9 @@
 #include "SpellHistory.h"
 #include "Containers.h"
 
+//
+// Scripts for `Death Knight` (DK)
+//
 enum DeathKnightSpells
 {
     SPELL_DK_ARMY_FLESH_BEAST_TRANSFORM         = 127533,
@@ -208,9 +211,7 @@ class spell_dk_anti_magic_shell : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellInfo*/) override
             {
-                if (!sSpellMgr->GetSpellInfo(SPELL_DK_RUNIC_POWER_ENERGIZE))
-                    return false;
-                return true;
+                return ValidateSpellInfo({ SPELL_DK_RUNIC_POWER_ENERGIZE });
             }
 
             bool Load() override
@@ -404,9 +405,7 @@ class spell_dk_blood_boil : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellInfo*/) override
             {
-                if (!sSpellMgr->GetSpellInfo(SPELL_DK_BLOOD_PLAGUE))
-                    return false;
-                return true;
+                return ValidateSpellInfo({ SPELL_DK_BLOOD_PLAGUE });
             }
 
             void HandleOnHit(SpellEffIndex /*effIndex*/)
@@ -650,11 +649,11 @@ class spell_dk_death_strike : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellInfo*/) override
             {
-                if (!sSpellMgr->GetSpellInfo(SPELL_DK_DEATH_STRIKE_HEAL) ||
-                    !sSpellMgr->GetSpellInfo(SPELL_DK_BLOOD_SHIELD_MASTERY) ||
-                    !sSpellMgr->GetSpellInfo(SPELL_DK_BLOOD_SHIELD_ABSORB))
-                    return false;
-                return true;
+                return ValidateSpellInfo({
+                    SPELL_DK_DEATH_STRIKE_HEAL,
+                    SPELL_DK_BLOOD_SHIELD_MASTERY,
+                    SPELL_DK_BLOOD_SHIELD_ABSORB
+                    });
             }
 
             void HandleHeal(SpellEffIndex /*effIndex*/)
@@ -696,9 +695,7 @@ class spell_dk_festering_strike : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellInfo*/) override
             {
-                if (!sSpellMgr->GetSpellInfo(SPELL_DK_FESTERING_WOUND))
-                    return false;
-                return true;
+                return ValidateSpellInfo({ SPELL_DK_FESTERING_WOUND });
             }
 
             void HandleFesteringWounds(SpellEffIndex effIndex)
@@ -715,7 +712,8 @@ class spell_dk_festering_strike : public SpellScriptLoader
 
             void Register() override
             {
-                OnEffectHitTarget += SpellEffectFn(spell_dk_festering_strike_SpellScript::HandleFesteringWounds, EFFECT_3, SPELL_EFFECT_DUMMY);
+                // 7.3.5 deprecated
+                //OnEffectHitTarget += SpellEffectFn(spell_dk_festering_strike_SpellScript::HandleFesteringWounds, EFFECT_3, SPELL_EFFECT_DUMMY);
             }
         };
 
@@ -737,9 +735,7 @@ class spell_dk_ghoul_explode : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellInfo*/) override
             {
-                if (!sSpellMgr->GetSpellInfo(SPELL_DK_CORPSE_EXPLOSION_TRIGGERED))
-                    return false;
-                return true;
+                return ValidateSpellInfo({ SPELL_DK_CORPSE_EXPLOSION_TRIGGERED });
             }
 
             void HandleDamage(SpellEffIndex /*effIndex*/)
@@ -811,9 +807,7 @@ class spell_dk_glyph_of_runic_power : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellInfo*/) override
             {
-                if (!sSpellMgr->GetSpellInfo(SPELL_DK_GLYPH_OF_RUNIC_POWER_TRIGGERED))
-                    return false;
-                return true;
+                return ValidateSpellInfo({ SPELL_DK_GLYPH_OF_RUNIC_POWER_TRIGGERED });
             }
 
             bool Load() override
@@ -959,12 +953,12 @@ class spell_dk_raise_dead : public SpellScriptLoader
         private:
             bool Validate(SpellInfo const* /*spellInfo*/) override
             {
-                if (!sSpellMgr->GetSpellInfo(SPELL_DK_RAISE_DEAD)||
-                    !sSpellMgr->GetSpellInfo(SPELL_DK_SLUDGE_BELCHER_ABOMINATION)||
-                    !sSpellMgr->GetSpellInfo(SPELL_DK_SLUDGE_BELCHER_AURA)||
-                    !sSpellMgr->GetSpellInfo(SPELL_DK_RAISE_DEAD_GHOUL))
-                    return false;
-                return true;
+                return ValidateSpellInfo({
+                    SPELL_DK_RAISE_DEAD,
+                    SPELL_DK_SLUDGE_BELCHER_ABOMINATION,
+                    SPELL_DK_SLUDGE_BELCHER_AURA,
+                    SPELL_DK_RAISE_DEAD_GHOUL
+                    });
             }
 
             bool Load() override
@@ -1042,8 +1036,8 @@ class spell_dk_soul_reaper: public SpellScriptLoader
 
             void Register() override
             {
-                OnEffectPeriodic += AuraEffectPeriodicFn(spell_dk_soul_reaper_AuraScript::HandlePeriodicDummy, EFFECT_1, SPELL_AURA_PERIODIC_DUMMY);
-                AfterEffectRemove += AuraEffectApplyFn(spell_dk_soul_reaper_AuraScript::HandleRemove, EFFECT_1, SPELL_AURA_PERIODIC_DUMMY, AURA_EFFECT_HANDLE_REAL);
+                OnEffectPeriodic += AuraEffectPeriodicFn(spell_dk_soul_reaper_AuraScript::HandlePeriodicDummy, EFFECT_1, 4);
+                AfterEffectRemove += AuraEffectApplyFn(spell_dk_soul_reaper_AuraScript::HandleRemove, EFFECT_1, 4, AURA_EFFECT_HANDLE_REAL);
             }
         };
 
@@ -1273,7 +1267,7 @@ class spell_dk_howling_blast : public SpellScript
     }
 };
 
-// Howling Blast AOE - 237680
+// 237680 - Howling Blast AOE - 
 class spell_dk_howling_blast_aoe : public SpellScript
 {
     PrepareSpellScript(spell_dk_howling_blast_aoe);
@@ -1296,11 +1290,55 @@ class spell_dk_howling_blast_aoe : public SpellScript
     void Register() override
     {
         BeforeCast += SpellCastFn(spell_dk_howling_blast_aoe::HandleBeforeCast);
-        OnEffectHit += SpellEffectFn(spell_dk_howling_blast_aoe::HandleOnHit, EFFECT_1, SPELL_EFFECT_SCHOOL_DAMAGE);
+        // 7.3.5 <deprecated>
+        // OnEffectHit += SpellEffectFn(spell_dk_howling_blast_aoe::HandleOnHit, EFFECT_1, SPELL_EFFECT_SCHOOL_DAMAGE);
     }
 };
 
-// Remorseless Winter - 196771
+// 196771 - Remorseless Winter
+class spell_dk_remorseless_winter : public SpellScriptLoader
+{
+public:
+    spell_dk_remorseless_winter() : SpellScriptLoader("spell_dk_remorseless_winter") {}
+
+    class spell_dk_remorseless_winter_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_dk_remorseless_winter_SpellScript);
+        void HandleAfterHit()
+        {
+            // 51271    冰霜之柱
+            // 207170   凛冬将至
+            // 207171   凛冬将至 aura
+            // 211794   凛冬将至 天赋 ... 5层昏迷...
+            if (Unit* caster = GetCaster())
+            {
+                if (Unit* target = GetHitUnit())
+                {
+                    if (caster->HasAura(207170) && caster->HasAura(51271)) // Winter is Coming
+                    {
+                        if (Aura* aur = target->GetAura(211794, caster->GetGUID()))
+                            if (aur->GetStackAmount() == 4)
+                                caster->CastSpell(target, 207171, true);
+
+                        caster->CastSpell(target, 211794, true);
+                    }
+                }
+            }
+        }
+
+        void Register() override
+        {
+            AfterHit += SpellHitFn(spell_dk_remorseless_winter_SpellScript::HandleAfterHit);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_dk_remorseless_winter_SpellScript();
+    }
+};
+
+// 
 class spell_dk_remorseless_winter_damage : public SpellScript
 {
     PrepareSpellScript(spell_dk_remorseless_winter_damage);
@@ -1341,8 +1379,8 @@ public:
 
         void Register() override
         {
-            OnEffectApply += AuraEffectApplyFn(spell_dk_pillar_of_frost_AuraScript::OnApply, EFFECT_2, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
-            OnEffectRemove += AuraEffectRemoveFn(spell_dk_pillar_of_frost_AuraScript::OnRemove, EFFECT_2, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+            OnEffectApply += AuraEffectApplyFn(spell_dk_pillar_of_frost_AuraScript::OnApply, EFFECT_2, 79, AURA_EFFECT_HANDLE_REAL);
+            OnEffectRemove += AuraEffectRemoveFn(spell_dk_pillar_of_frost_AuraScript::OnRemove, EFFECT_2, 79, AURA_EFFECT_HANDLE_REAL);
         }
     };
 
@@ -1366,7 +1404,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            return sSpellMgr->GetSpellInfo(SPELL_DK_BOOD_TAP) && sSpellMgr->GetSpellInfo(SPELL_DK_BLOOD_CHARGE);
+            return ValidateSpellInfo({ SPELL_DK_BOOD_TAP, SPELL_DK_BLOOD_CHARGE });
         }
 
         void HandleOnHit()
@@ -1717,9 +1755,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_DK_BLOOD_GORGED_HEAL))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_DK_BLOOD_GORGED_HEAL });
         }
 
         bool Load() override
@@ -1770,15 +1806,14 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_DK_FROST_PRESENCE)
-                || !sSpellMgr->GetSpellInfo(SPELL_DK_UNHOLY_PRESENCE)
-                || !sSpellMgr->GetSpellInfo(SPELL_DK_IMPROVED_FROST_PRESENCE)
-                || !sSpellMgr->GetSpellInfo(SPELL_DK_IMPROVED_UNHOLY_PRESENCE)
-                || !sSpellMgr->GetSpellInfo(SPELL_DK_IMPROVED_UNHOLY_PRESENCE_TRIGGERED)
-                || !sSpellMgr->GetSpellInfo(SPELL_DK_IMPROVED_FROST_PRESENCE_TRIGGERED))
-                return false;
-
-            return true;
+            return ValidateSpellInfo({
+                //SPELL_DK_FROST_PRESENCE,
+                SPELL_DK_UNHOLY_PRESENCE,
+                //SPELL_DK_IMPROVED_FROST_PRESENCE,
+                //SPELL_DK_IMPROVED_UNHOLY_PRESENCE,
+                SPELL_DK_IMPROVED_UNHOLY_PRESENCE_TRIGGERED,
+                //SPELL_DK_IMPROVED_FROST_PRESENCE_TRIGGERED
+                });
         }
 
         void HandleImprovedFrostPresence(AuraEffect const* /* aurEff */, AuraEffectHandleModes /*mode*/)
@@ -1826,9 +1861,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_DK_SCOURGE_STRIKE_TRIGGERED))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_DK_SCOURGE_STRIKE_TRIGGERED });
         }
 
         void HandleAfterHit()
@@ -1917,7 +1950,8 @@ public:
 
         void Register() override
         {
-            OnEffectHitTarget += SpellEffectFn(spell_dk_icy_touch_SpellScript::HandleDummy, EFFECT_1, SPELL_EFFECT_DUMMY);
+            // 7.3.5 deprecated
+            //OnEffectHitTarget += SpellEffectFn(spell_dk_icy_touch_SpellScript::HandleDummy, EFFECT_1, SPELL_EFFECT_DUMMY);
         }
     };
 
@@ -1977,9 +2011,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_DK_ANTI_MAGIC_BARRIER))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_DK_ANTI_MAGIC_BARRIER });
         }
 
         void CalcAmount(AuraEffect const* aurEff, int32& amount, bool& /*canBeRecalculated*/)
@@ -2078,7 +2110,7 @@ public:
     }
 };
 
-// Runic Empowerment - 81229
+// 81229 - Runic Empowerment - 
 class spell_dk_runic_empowerment : public PlayerScript
 {
 public:
@@ -2491,8 +2523,8 @@ void AddSC_deathknight_spell_scripts()
     new spell_dk_army_periodic_taunt();
     new spell_dk_army_transform();
     new spell_dk_blood_boil();
-    new spell_dk_blood_charges();
-    new spell_dk_blood_gorged();
+    //new spell_dk_blood_charges();
+    //new spell_dk_blood_gorged();
     new spell_dk_blood_mirror();
     new spell_dk_breath_of_sindragosa();
     new spell_dk_bonestorm();
@@ -2505,15 +2537,15 @@ void AddSC_deathknight_spell_scripts()
     new spell_dk_death_gate();
     RegisterSpellScript(spell_dk_death_grip_initial);
     new spell_dk_death_pact();
-    new spell_dk_death_siphon();
+    //new spell_dk_death_siphon();
     new spell_dk_death_strike();
     new spell_dk_desecrated_ground();
     new spell_dk_empower_rune_weapon();
     new spell_dk_festering_strike();
     new spell_dk_frozen_pulse();
     new spell_dk_ghoul_explode();
-    new spell_dk_glyph_of_deaths_embrace();
-    new spell_dk_glyph_of_runic_power();
+    //new spell_dk_glyph_of_deaths_embrace();
+    //new spell_dk_glyph_of_runic_power();
     new spell_dk_gorefiends_grasp();
     RegisterSpellScript(spell_dk_howling_blast);
     RegisterSpellScript(spell_dk_howling_blast_aoe);
@@ -2525,7 +2557,7 @@ void AddSC_deathknight_spell_scripts()
     new spell_dk_pet_skeleton_transform();
     new spell_dk_pillar_of_frost();
     new spell_dk_plague_leech();
-    new spell_dk_plague_strike();
+    //new spell_dk_plague_strike();
     new spell_dk_presence();
     new spell_dk_purgatory();
     new spell_dk_purgatory_absorb();
@@ -2538,4 +2570,5 @@ void AddSC_deathknight_spell_scripts()
     RegisterAuraScript(spell_dk_will_of_the_necropolis);
     RegisterSpellScript(spell_dk_glacial_advance);
     RegisterSpellScript(spell_dk_obliterate);
+    new spell_dk_remorseless_winter();
 }

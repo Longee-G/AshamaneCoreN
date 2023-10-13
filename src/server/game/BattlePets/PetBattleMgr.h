@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -63,6 +63,8 @@ struct PetBattleRequest
     ObjectGuid opponentGUID;
     WorldPackets::PetBattle::PetBattleLocation Location;
 };
+
+// 宠物对战系统管理器
 
 class PetBattleMgr
 {

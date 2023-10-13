@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -60,6 +60,7 @@ enum CUFBoolOptions
 };
 
 /// Represents a CompactUnitFrame profile
+
 struct CUFProfile
 {
     CUFProfile() : ProfileName(), BoolOptions() // might want to change default value for options

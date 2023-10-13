@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
  *
@@ -92,6 +92,7 @@ struct ClientWardenModule
 
 class WorldSession;
 
+// 应该是一个防外挂的代码...
 class TC_GAME_API Warden
 {
     friend class WardenWin;

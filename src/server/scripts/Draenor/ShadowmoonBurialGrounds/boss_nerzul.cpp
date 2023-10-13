@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -569,8 +569,8 @@ void AddSC_nerzul()
     new boss_nerzul();
 
     new shadowmoon_burial_grounds_nerzul_prop();
-    new shadowmoon_burial_grounds_initial_teleport();
+    //new shadowmoon_burial_grounds_initial_teleport();
     new shadowmoon_burial_grounds_omen_of_death();
     new shadowmoon_burial_grounds_ritual_of_bones();
-    new shadowmoon_burial_grounds_ritual_of_bones_darkness_trigger();
+    //new shadowmoon_burial_grounds_ritual_of_bones_darkness_trigger();
 }

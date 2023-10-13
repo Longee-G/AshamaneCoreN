@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -361,7 +361,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        player->playerTalkClass->ClearMenus();
         if (action == 1000)
         {
             CAST_AI(npc_neptulon::npc_neptulonAI, creature->AI())->InProgress = true;
@@ -369,7 +369,7 @@ public:
             CAST_AI(npc_neptulon::npc_neptulonAI, creature->AI())->Talk(1);
             creature->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
         }
-        player->PlayerTalkClass->SendCloseGossip();
+        player->playerTalkClass->SendCloseGossip();
         return true;
     }
 
@@ -381,7 +381,7 @@ public:
             if (instance->GetData(DATA_LADY_NAZJAR_EVENT) == DONE && instance->GetData(DATA_COMMANDER_ULTHOK_EVENT) == DONE && instance->GetData(DATA_ERUNAK_STONESPEAKER_EVENT) == DONE)
             {
                 AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_READY, GOSSIP_SENDER_MAIN, 1000);
-                player->PlayerTalkClass->SendGossipMenu(player->GetGossipTextId(creature), creature->GetGUID());
+                player->playerTalkClass->SendGossipMenu(player->GetGossipTextId(creature), creature->GetGUID());
             }
         }
         return true;

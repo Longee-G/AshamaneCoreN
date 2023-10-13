@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2014-2018 RoG_WoW Source <http://wow.rog.snet>
  *
@@ -1343,7 +1343,7 @@ void AddSC_boss_ultraxion()
     new spell_ultraxion_twilight_burst();
     new spell_ultraxion_hour_of_twilight_dmg();
     new spell_ultraxion_fading_light();
-    new spell_ultraxion_last_defender_of_azeroth();
+    //new spell_ultraxion_last_defender_of_azeroth();
     new spell_ultraxion_last_defender_of_azeroth_dummy();
     new spell_ultraxion_cosmetic_lightning();
     new spell_ultraxion_cosmetic_intro();

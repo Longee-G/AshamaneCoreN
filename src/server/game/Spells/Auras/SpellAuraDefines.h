@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -127,7 +127,7 @@ enum AuraType : uint32
     SPELL_AURA_48                                           = 48,   // One periodic spell
     SPELL_AURA_MOD_DODGE_PERCENT                            = 49,
     SPELL_AURA_MOD_CRITICAL_HEALING_AMOUNT                  = 50,
-    SPELL_AURA_MOD_BLOCK_PERCENT                            = 51,
+    SPELL_AURA_MOD_BLOCK_PERCENT                            = 51,   // Modify block percent
     SPELL_AURA_MOD_WEAPON_CRIT_PERCENT                      = 52,
     SPELL_AURA_PERIODIC_LEECH                               = 53,
     SPELL_AURA_MOD_HIT_CHANCE                               = 54,
@@ -184,7 +184,7 @@ enum AuraType : uint32
     SPELL_AURA_FEATHER_FALL                                 = 105,
     SPELL_AURA_HOVER                                        = 106,
     SPELL_AURA_ADD_FLAT_MODIFIER                            = 107,
-    SPELL_AURA_ADD_PCT_MODIFIER                             = 108,
+    SPELL_AURA_ADD_PCT_MODIFIER                             = 108,  // modifier: add damage percent
     SPELL_AURA_ADD_TARGET_TRIGGER                           = 109,
     SPELL_AURA_MOD_POWER_REGEN_PERCENT                      = 110,
     SPELL_AURA_INTERCEPT_MELEE_RANGED_ATTACKS               = 111,

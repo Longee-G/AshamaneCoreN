@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -262,23 +262,23 @@ class TC_GAME_API WorldLocation : public Position
 {
 public:
     explicit WorldLocation(uint32 mapId = MAPID_INVALID, float x = 0.f, float y = 0.f, float z = 0.f, float o = 0.f)
-        : Position(x, y, z, o), m_mapId(mapId) { }
+        : Position(x, y, z, o), _mapId(mapId) { }
 
     WorldLocation(uint32 mapId, Position const& position)
-        : Position(position), m_mapId(mapId) { }
+        : Position(position), _mapId(mapId) { }
 
     WorldLocation(WorldLocation const& loc)
-        : Position(loc), m_mapId(loc.GetMapId()) { }
+        : Position(loc), _mapId(loc.GetMapId()) { }
 
     void WorldRelocate(WorldLocation const& loc)
     {
-        m_mapId = loc.GetMapId();
+        _mapId = loc.GetMapId();
         Relocate(loc);
     }
 
     void WorldRelocate(uint32 mapId = MAPID_INVALID, float x = 0.f, float y = 0.f, float z = 0.f, float o = 0.f)
     {
-        m_mapId = mapId;
+        _mapId = mapId;
         Relocate(x, y, z, o);
     }
 
@@ -287,9 +287,9 @@ public:
         return *this;
     }
 
-    uint32 GetMapId() const { return m_mapId; }
+    uint32 GetMapId() const { return _mapId; }
 
-    uint32 m_mapId;
+    uint32 _mapId;
 };
 
 TC_GAME_API ByteBuffer& operator<<(ByteBuffer& buf, Position::ConstStreamer<Position::XY> const& streamer);

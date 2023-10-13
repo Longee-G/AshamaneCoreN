@@ -95,6 +95,41 @@ namespace WorldPackets
 
             bool Enable = false;
         };
+
+        class SaveClientVariables final : public ClientPacket
+        {
+        public:
+            SaveClientVariables(WorldPacket&& packet) : ClientPacket(CMSG_REPORT_CLIENT_VARIABLES, std::move(packet)) { }
+
+            void Read() override;
+
+            struct VarablesStruct
+            {
+                std::string VariableName;
+                std::string Value;
+            };
+
+            std::list<VarablesStruct> Varables;
+        };
+
+        class GetRemainingGameTime  final : public ClientPacket
+        {
+        public:
+            GetRemainingGameTime(WorldPacket&& packet) : ClientPacket(CMSG_GET_REMAINING_GAME_TIME, std::move(packet)) { }
+
+            void Read() override;
+
+            uint32 Time = 0;
+        };
+        class UpdateClientSettings final : public ClientPacket
+        {
+        public:
+            UpdateClientSettings(WorldPacket&& packet) : ClientPacket(CMSG_UPDATE_CLIENT_SETTINGS, std::move(packet)) { }
+
+            void Read() override;
+
+            float FarClip = 0.0f;
+        };
     }
 }
 

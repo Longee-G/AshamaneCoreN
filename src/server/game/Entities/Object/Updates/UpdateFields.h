@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -113,7 +113,7 @@ enum UnitFields
     UNIT_FIELD_SCALING_LEVEL_DELTA                         = OBJECT_END + 0x04D, // Size: 1, Flags: PUBLIC
     UNIT_FIELD_FACTIONTEMPLATE                             = OBJECT_END + 0x04E, // Size: 1, Flags: PUBLIC
     UNIT_VIRTUAL_ITEM_SLOT_ID                              = OBJECT_END + 0x04F, // Size: 6, Flags: PUBLIC
-    UNIT_FIELD_FLAGS                                       = OBJECT_END + 0x055, // Size: 1, Flags: PUBLIC, URGENT
+    UNIT_FIELD_FLAGS                                       = OBJECT_END + 0x055, // Size: 1, Flags: PUBLIC, URGENT  ?? 这个字段是不是也会下发是否可以剥皮？
     UNIT_FIELD_FLAGS_2                                     = OBJECT_END + 0x056, // Size: 1, Flags: PUBLIC, URGENT
     UNIT_FIELD_FLAGS_3                                     = OBJECT_END + 0x057, // Size: 1, Flags: PUBLIC, URGENT
     UNIT_FIELD_AURASTATE                                   = OBJECT_END + 0x058, // Size: 1, Flags: PUBLIC
@@ -376,7 +376,7 @@ enum CorpseFields
     CORPSE_FIELD_ITEM                                      = OBJECT_END + 0x009, // Size: 19, Flags: PUBLIC
     CORPSE_FIELD_BYTES_1                                   = OBJECT_END + 0x01C, // Size: 1, Flags: PUBLIC
     CORPSE_FIELD_BYTES_2                                   = OBJECT_END + 0x01D, // Size: 1, Flags: PUBLIC
-    CORPSE_FIELD_FLAGS                                     = OBJECT_END + 0x01E, // Size: 1, Flags: PUBLIC
+    CORPSE_FIELD_FLAGS                                     = OBJECT_END + 0x01E, // Size: 1, Flags: PUBLIC      是否可以剥皮会通过这个字段传给客户端
     CORPSE_FIELD_DYNAMIC_FLAGS                             = OBJECT_END + 0x01F, // Size: 1, Flags: DYNAMIC
     CORPSE_FIELD_FACTIONTEMPLATE                           = OBJECT_END + 0x020, // Size: 1, Flags: PUBLIC
     CORPSE_FIELD_CUSTOM_DISPLAY_OPTION                     = OBJECT_END + 0x021, // Size: 1, Flags: PUBLIC

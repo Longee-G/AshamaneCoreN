@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -202,14 +202,14 @@ float tabAlcoves[26][4] =
 
 // Qin-Xi - 60399
 // Jan-Xi - 60400
-class boss_jin_qin_xi : public CreatureScript
+class boss_will_of_emperor : public CreatureScript
 {
     public:
-        boss_jin_qin_xi() : CreatureScript("boss_jin_qin_xi") {}
+        boss_will_of_emperor() : CreatureScript("boss_will_of_emperor") {}
 
-        struct boss_jin_qin_xiAI : public BossAI
+        struct boss_will_of_emperorAI : public BossAI
         {
-            boss_jin_qin_xiAI(Creature* creature) : BossAI(creature, DATA_WILL_OF_EMPEROR), summons(creature)
+            boss_will_of_emperorAI(Creature* creature) : BossAI(creature, DATA_WILL_OF_EMPEROR), summons(creature)
             {
                 pInstance = creature->GetInstanceScript();
                 me->SetDisplayId(DISPLAY_BOSS_INVISIBLE);
@@ -872,7 +872,7 @@ class boss_jin_qin_xi : public CreatureScript
 
         CreatureAI* GetAI(Creature* creature) const override
         {
-            return new boss_jin_qin_xiAI(creature);
+            return new boss_will_of_emperorAI(creature);
         }
 };
 
@@ -1779,7 +1779,7 @@ class spell_titan_gas : public SpellScriptLoader
 
             void Register() override
             {
-                OnEffectApply += AuraEffectApplyFn(spell_titan_gas_AuraScript::Apply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+                OnEffectApply += AuraEffectApplyFn(spell_titan_gas_AuraScript::Apply, EFFECT_0, 23, AURA_EFFECT_HANDLE_REAL);
             }
         };
 
@@ -1988,10 +1988,10 @@ class achievement_show_me_you_moves : public AchievementCriteriaScript
 
 void AddSC_boss_will_of_emperor()
 {
-    new boss_jin_qin_xi();
-    new mob_woe_add_generic();
+    new boss_will_of_emperor();
+    //new mob_woe_add_generic();
     new mob_woe_titan_spark();
-    new mob_general_purpose_bunnyJMF();
+    //new mob_general_purpose_bunnyJMF();
     new mob_ancient_mogu_machine();
     new spell_cosmetic_lightning();
     new spell_terracota_spawn();
@@ -2006,5 +2006,6 @@ void AddSC_boss_will_of_emperor()
     new spell_energizing_visual();
     new spell_energized();
     new go_ancien_control_console();
-    new achievement_show_me_you_moves();
+    // script NOT assigned in database.
+    // new achievement_show_me_you_moves();
 }

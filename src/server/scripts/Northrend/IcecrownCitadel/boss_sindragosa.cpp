@@ -328,7 +328,7 @@ class boss_sindragosa : public CreatureScript
                     me->SetSpeedRate(MOVE_FLIGHT, 4.0f);
                     me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                     float moveTime = me->GetExactDist(&SindragosaFlyPos) / (me->GetSpeed(MOVE_FLIGHT) * 0.001f);
-                    me->m_Events.AddEvent(new FrostwyrmLandEvent(*me, SindragosaLandPos), me->m_Events.CalculateTime(uint64(moveTime) + 250));
+                    me->_events.AddEvent(new FrostwyrmLandEvent(*me, SindragosaLandPos), me->_events.CalculateTime(uint64(moveTime) + 250));
                     me->GetMotionMaster()->MovePoint(POINT_FROSTWYRM_FLY_IN, SindragosaFlyPos);
                     DoCast(me, SPELL_SINDRAGOSA_S_FURY);
                 }
@@ -418,7 +418,7 @@ class boss_sindragosa : public CreatureScript
                 {
                     summon->CastSpell(summon, SPELL_FROST_BOMB_VISUAL, true);
                     summon->CastSpell(summon, SPELL_BIRTH_NO_VISUAL, true);
-                    summon->m_Events.AddEvent(new FrostBombExplosion(summon, me->GetGUID()), summon->m_Events.CalculateTime(5500));
+                    summon->_events.AddEvent(new FrostBombExplosion(summon, me->GetGUID()), summon->_events.CalculateTime(5500));
                 }
             }
 
@@ -713,7 +713,7 @@ class npc_spinestalker : public CreatureScript
                     me->SetSpeedRate(MOVE_FLIGHT, 2.0f);
                     me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                     float moveTime = me->GetExactDist(&SpinestalkerFlyPos) / (me->GetSpeed(MOVE_FLIGHT) * 0.001f);
-                    me->m_Events.AddEvent(new FrostwyrmLandEvent(*me, SpinestalkerLandPos), me->m_Events.CalculateTime(uint64(moveTime) + 250));
+                    me->_events.AddEvent(new FrostwyrmLandEvent(*me, SpinestalkerLandPos), me->_events.CalculateTime(uint64(moveTime) + 250));
                     me->SetDefaultMovementType(IDLE_MOTION_TYPE);
                     me->GetMotionMaster()->MoveIdle();
                     me->StopMoving();
@@ -850,7 +850,7 @@ class npc_rimefang : public CreatureScript
                     me->SetSpeedRate(MOVE_FLIGHT, 2.0f);
                     me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
                     float moveTime = me->GetExactDist(&RimefangFlyPos) / (me->GetSpeed(MOVE_FLIGHT) * 0.001f);
-                    me->m_Events.AddEvent(new FrostwyrmLandEvent(*me, RimefangLandPos), me->m_Events.CalculateTime(uint64(moveTime) + 250));
+                    me->_events.AddEvent(new FrostwyrmLandEvent(*me, RimefangLandPos), me->_events.CalculateTime(uint64(moveTime) + 250));
                     me->SetDefaultMovementType(IDLE_MOTION_TYPE);
                     me->GetMotionMaster()->MoveIdle();
                     me->StopMoving();
@@ -1115,7 +1115,7 @@ class spell_sindragosa_s_fury : public SpellScriptLoader
 
                 uint32 damage = (uint32(GetEffectValue() / _targetCount) * randomResist) / 10;
 
-                SpellNonMeleeDamage damageInfo(GetCaster(), GetHitUnit(), GetSpellInfo()->Id, GetSpell()->m_SpellVisual, GetSpellInfo()->SchoolMask);
+                SpellNonMeleeDamage damageInfo(GetCaster(), GetHitUnit(), GetSpellInfo()->Id, GetSpell()->_spellVisual, GetSpellInfo()->SchoolMask);
                 damageInfo.damage = damage;
                 GetCaster()->DealSpellDamage(&damageInfo, false);
                 GetCaster()->SendSpellNonMeleeDamageLog(&damageInfo);

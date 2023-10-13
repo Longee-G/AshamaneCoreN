@@ -1,4 +1,4 @@
-#include "ScriptMgr.h"
+﻿#include "ScriptMgr.h"
 #include "blackwing_descent.h"
 #include "Vehicle.h"
 #include "Unit.h"
@@ -968,7 +968,7 @@ class spell_atramedes_sonic_breath : public SpellScriptLoader
             void Register() override
             {
                 OnEffectHitTarget += SpellEffectFn(spell_atramedes_sonic_breath_SpellScript::CalculateDamage, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
-                OnEffectHitTarget += SpellEffectFn(spell_atramedes_sonic_breath_SpellScript::CalculateDamage, EFFECT_1, SPELL_EFFECT_ENERGIZE);
+                //OnEffectHitTarget += SpellEffectFn(spell_atramedes_sonic_breath_SpellScript::CalculateDamage, EFFECT_1, 6);
             }
         };
 

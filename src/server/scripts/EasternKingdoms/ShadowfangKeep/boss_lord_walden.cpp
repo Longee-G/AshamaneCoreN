@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -201,9 +201,9 @@ public:
 
         void Register() override
         {
-            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_toxic_coagulant_red_SpellScript::FilterTargetsInitial, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
-            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_toxic_coagulant_red_SpellScript::FilterTargetsSubsequential, EFFECT_1, TARGET_UNIT_SRC_AREA_ENEMY);
-            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_toxic_coagulant_red_SpellScript::FilterTargetsSubsequential, EFFECT_2, TARGET_UNIT_SRC_AREA_ENEMY);
+            //OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_toxic_coagulant_red_SpellScript::FilterTargetsInitial, EFFECT_0, 1);
+            //OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_toxic_coagulant_red_SpellScript::FilterTargetsSubsequential, EFFECT_1, 1);
+            //OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_toxic_coagulant_red_SpellScript::FilterTargetsSubsequential, EFFECT_2, TARGET_UNIT_SRC_AREA_ENEMY);
         }
         std::list<WorldObject*> targetList;
     };
@@ -239,7 +239,7 @@ public:
 
         void Register() override
         {
-            OnEffectPeriodic += AuraEffectPeriodicFn(spell_toxic_coagulant_green_AuraScript::HandleEffectPeriodic, EFFECT_1, SPELL_AURA_PERIODIC_DAMAGE);
+            OnEffectPeriodic += AuraEffectPeriodicFn(spell_toxic_coagulant_green_AuraScript::HandleEffectPeriodic, EFFECT_1, 0);
         }
     };
 

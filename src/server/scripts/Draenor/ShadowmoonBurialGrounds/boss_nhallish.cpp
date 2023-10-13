@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -920,6 +920,80 @@ public:
     }
 };
 
+enum Spells
+{
+    //intro
+    SPELL_SHACKLED_SOUL = 154025,   //summon npc 76269
+    SPELL_VOID_CHAINS = 153624,     //hit npc 76269
+
+    SPELL_VOID_BLAST = 152792,
+    SPELL_PLANAR_SHIFT = 153623,
+    SPELL_VOID_VORTEX = 152801,
+    SPELL_SOUL_STEAL = 152962,
+    SPELL_TEMPORAL_DISTORTION = 158382,
+    SPELL_TEMPORAL_DISTORTION_STUN = 158372,
+    SPELL_SOUL_STEAL_CHANNEL = 156755,
+    SPELL_TEMPORAL_DISPELL = 158379,
+    SPELL_VOID_DEVASTATION = 153067,
+    SPELL_TEMPORAL_DISTORTION_CHECK = 158432,
+
+    //Possessed Soul
+    SPELL_UNORTHODOX_EXISTENCE = 152976,
+    SPELL_SOUL_SHRED = 152979,
+    SPELL_RETURNED_SOUL = 153033,
+    SPELL_MIRROR_IMAGE = 153493,
+    SPELL_RECLAIMING_SOUL_KILL = 153486,
+    SPELL_RECLAIMING_SOUL = 154921,
+    SPELL_RECLAIMING_SOUL_REMOVE = 154925, //spellclick
+    SPELL_SOULLESS_SCREAN = 154947,
+    SPELL_FEIGN_DEATH = 114371,
+
+    SPELL_PHASE_SHIFT_1 = 155005,
+    SPELL_PHASE_SHIFT_2 = 155006,
+    SPELL_PHASE_SHIFT_3 = 155007,
+    SPELL_PHASE_SHIFT_4 = 155009,
+    SPELL_PHASE_SHIFT_5 = 155010,
+
+    SPELL_DEFIILED_BURIAL_SITE = 153238
+};
+
+uint32 phaseSpell[5] =
+{
+    SPELL_PHASE_SHIFT_1,
+    SPELL_PHASE_SHIFT_2,
+    SPELL_PHASE_SHIFT_3,
+    SPELL_PHASE_SHIFT_4,
+    SPELL_PHASE_SHIFT_5
+};
+// 152962 - 这个是从LEGION移植的，需要和spell_shadowmoon_burial_grounds_soul_steal对比看哪个合适...
+class spell_nhallish_soul_summon : public SpellScript
+{
+    PrepareSpellScript(spell_nhallish_soul_summon);
+
+    uint8 soulCount;
+
+    bool Load()
+    {
+        soulCount = 0;
+        return true;
+    }
+
+    void HandleScript(SpellMissInfo /*missInfo*/)
+    {
+        Player* caster = GetHitUnit()->ToPlayer();
+        if (!caster)
+            return;
+
+        caster->CastSpell(caster, phaseSpell[soulCount], true);
+        soulCount++;
+    }
+
+    void Register() override
+    {
+        BeforeHit += BeforeSpellHitFn(spell_nhallish_soul_summon::HandleScript);
+    }
+};
+
 void AddSC_nhalish()
 {
     new boss_nhalish();
@@ -927,8 +1001,10 @@ void AddSC_nhalish()
     new shadowmoon_burial_grounds_soul();
     new spell_shadowmoon_burial_grounds_void_devestation_trigger();
     new spell_shadowmoon_burial_grounds_planar_shift();
-    new spell_shadowmoon_burial_grounds_soul_steal();
+    
     new spell_shadowmoon_burial_grounds_void_blast();
     new spell_shadowmoon_burial_grounds_void_vortex();
-    RegisterAreaTriggerAI(areatrigger_void_devestation);
+    //RegisterAreaTriggerAI(areatrigger_void_devestation);
+    new spell_shadowmoon_burial_grounds_soul_steal();
+    //RegisterSpellScript(spell_nhallish_soul_summon);
 }

@@ -70,3 +70,27 @@ void WorldPackets::ClientConfig::SetAdvancedCombatLogging::Read()
 {
     Enable = _worldPacket.ReadBit();
 }
+
+void WorldPackets::ClientConfig::SaveClientVariables::Read()
+{
+    Varables.resize(_worldPacket.read<uint32>());
+    for (auto &v : Varables)
+    {
+        uint32 len1 = _worldPacket.ReadBits(6);
+        uint32 len2 = _worldPacket.ReadBits(10);
+        v.VariableName = _worldPacket.ReadString(len1);
+        v.Value = _worldPacket.ReadString(len2);
+    }
+}
+
+// game time ?
+void WorldPackets::ClientConfig::GetRemainingGameTime::Read()
+{
+    _worldPacket >> Time;
+
+}
+
+void WorldPackets::ClientConfig::UpdateClientSettings::Read()
+{
+    _worldPacket >> FarClip;    // TODO: what is this?
+}

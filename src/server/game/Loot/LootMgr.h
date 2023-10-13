@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -40,12 +40,12 @@ struct TC_GAME_API LootStoreItem
     uint8   type;                                           // 0 = item, 1 = currency
     uint32  reference;                                      // referenced TemplateleId
     float   chance;                                         // chance to drop for both quest and non-quest items, chance to be used for refs
-    uint16  lootmode;
+    uint16  lootmode;                                       // where's loot mode defines?? enum LootModes ??
     bool    needs_quest;                                    // quest drop (quest is required for item to drop)
     uint8   groupid;
     uint32  mincount;                                       // mincount for drop items
     uint32  maxcount;                                       // max drop count for the item mincount or Ref multiplicator
-    ConditionContainer conditions;                               // additional loot condition
+    ConditionContainer conditions;                          // additional loot condition
 
     // Constructor
     // displayid is filled in IsValid() which must be called after
@@ -67,7 +67,7 @@ class TC_GAME_API LootStore
 {
     public:
         explicit LootStore(char const* name, char const* entryName, bool ratesAllowed)
-            : m_name(name), m_entryName(entryName), m_ratesAllowed(ratesAllowed) { }
+            : _name(name), _entryName(entryName), _ratesAllowed(ratesAllowed) { }
 
         virtual ~LootStore() { Clear(); }
 
@@ -79,7 +79,7 @@ class TC_GAME_API LootStore
         void ReportNonExistingId(uint32 lootId) const;
         void ReportNonExistingId(uint32 lootId, const char* ownerType, uint32 ownerId) const;
 
-        bool HaveLootFor(uint32 loot_id) const { return m_LootTemplates.find(loot_id) != m_LootTemplates.end(); }
+        bool HaveLootFor(uint32 loot_id) const { return _lootTemplates.find(loot_id) != _lootTemplates.end(); }
         bool HaveQuestLootFor(uint32 loot_id) const;
         bool HaveQuestLootForPlayer(uint32 loot_id, Player* player) const;
 
@@ -87,17 +87,17 @@ class TC_GAME_API LootStore
         void ResetConditions();
         LootTemplate* GetLootForConditionFill(uint32 loot_id);
 
-        char const* GetName() const { return m_name; }
-        char const* GetEntryName() const { return m_entryName; }
-        bool IsRatesAllowed() const { return m_ratesAllowed; }
+        char const* GetName() const { return _name; }
+        char const* GetEntryName() const { return _entryName; }
+        bool IsRatesAllowed() const { return _ratesAllowed; }
     protected:
         uint32 LoadLootTable();
         void Clear();
     private:
-        LootTemplateMap m_LootTemplates;
-        char const* m_name;
-        char const* m_entryName;
-        bool m_ratesAllowed;
+        LootTemplateMap _lootTemplates;
+        char const* _name;
+        char const* _entryName;
+        bool _ratesAllowed;
 };
 
 class TC_GAME_API LootTemplate

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -41,7 +41,7 @@ _lastShootPos(), _passengersSpawnedByAI(false), _canBeCastedByPassengers(false)
         if (uint32 seatId = _vehicleInfo->SeatID[i])
             if (VehicleSeatEntry const* veSeat = sVehicleSeatStore.LookupEntry(seatId))
             {
-                Seats.insert(std::make_pair(i, VehicleSeat(veSeat)));
+                _seats.insert(std::make_pair(i, VehicleSeat(veSeat)));
                 if (veSeat->CanEnterOrExit())
                     ++UsableSeatNum;
             }
@@ -60,7 +60,7 @@ Vehicle::~Vehicle()
 {
     /// @Uninstall must be called before this.
     ASSERT(_status == STATUS_UNINSTALLING);
-    for (SeatMap::const_iterator itr = Seats.begin(); itr != Seats.end(); ++itr)
+    for (SeatMap::const_iterator itr = _seats.begin(); itr != _seats.end(); ++itr)
         ASSERT(itr->second.IsEmpty());
 }
 
@@ -272,8 +272,8 @@ void Vehicle::RemoveAllPassengers()
 
 bool Vehicle::HasEmptySeat(int8 seatId) const
 {
-    SeatMap::const_iterator seat = Seats.find(seatId);
-    if (seat == Seats.end())
+    SeatMap::const_iterator seat = _seats.find(seatId);
+    if (seat == _seats.end())
         return false;
     return seat->second.IsEmpty();
 }
@@ -293,8 +293,8 @@ bool Vehicle::HasEmptySeat(int8 seatId) const
 
 Unit* Vehicle::GetPassenger(int8 seatId) const
 {
-    SeatMap::const_iterator seat = Seats.find(seatId);
-    if (seat == Seats.end())
+    SeatMap::const_iterator seat = _seats.find(seatId);
+    if (seat == _seats.end())
         return NULL;
 
     return ObjectAccessor::GetUnit(*GetBase(), seat->second.Passenger.Guid);
@@ -316,27 +316,27 @@ Unit* Vehicle::GetPassenger(int8 seatId) const
 
 SeatMap::const_iterator Vehicle::GetNextEmptySeat(int8 seatId, bool next) const
 {
-    SeatMap::const_iterator seat = Seats.find(seatId);
-    if (seat == Seats.end())
+    SeatMap::const_iterator seat = _seats.find(seatId);
+    if (seat == _seats.end())
         return seat;
 
     while (!seat->second.IsEmpty() || (!seat->second.SeatInfo->CanEnterOrExit() && !seat->second.SeatInfo->IsUsableByOverride()))
     {
         if (next)
         {
-            if (++seat == Seats.end())
-                seat = Seats.begin();
+            if (++seat == _seats.end())
+                seat = _seats.begin();
         }
         else
         {
-            if (seat == Seats.begin())
-                seat = Seats.end();
+            if (seat == _seats.begin())
+                seat = _seats.end();
             --seat;
         }
 
         // Make sure we don't loop indefinetly
         if (seat->first == seatId)
-            return Seats.end();
+            return _seats.end();
     }
 
     return seat;
@@ -427,15 +427,15 @@ bool Vehicle::AddPassenger(Unit* unit, int8 seatId)
     // asynchronously, so it can be cancelled easily in case the vehicle is uninstalled meanwhile.
     SeatMap::iterator seat;
     VehicleJoinEvent* e = new VehicleJoinEvent(this->GetBase(), unit);
-    unit->m_Events.AddEvent(e, unit->m_Events.CalculateTime(0));
+    unit->_events.AddEvent(e, unit->_events.CalculateTime(0));
 
     if (seatId < 0) // no specific seat requirement
     {
-        for (seat = Seats.begin(); seat != Seats.end(); ++seat)
+        for (seat = _seats.begin(); seat != _seats.end(); ++seat)
             if (seat->second.IsEmpty() && (seat->second.SeatInfo->CanEnterOrExit() || seat->second.SeatInfo->IsUsableByOverride()))
                 break;
 
-        if (seat == Seats.end()) // no available seat
+        if (seat == _seats.end()) // no available seat
         {
             e->ScheduleAbort();
             return false;
@@ -446,8 +446,8 @@ bool Vehicle::AddPassenger(Unit* unit, int8 seatId)
     }
     else
     {
-        seat = Seats.find(seatId);
-        if (seat == Seats.end())
+        seat = _seats.find(seatId);
+        if (seat == _seats.end())
         {
             e->ScheduleAbort();
             return false;
@@ -468,6 +468,11 @@ bool Vehicle::AddPassenger(Unit* unit, int8 seatId)
     return true;
 }
 
+ void Vehicle::EjectPassenger(Unit * passenger, Unit * controller)
+ {
+     // TODO: NYI
+ }
+
 /**
  * @fn void Vehicle::RemovePassenger(Unit* unit)
  *
@@ -485,7 +490,7 @@ Vehicle* Vehicle::RemovePassenger(Unit* unit)
         return NULL;
 
     SeatMap::iterator seat = GetSeatIteratorForPassenger(unit);
-    ASSERT(seat != Seats.end());
+    ASSERT(seat != _seats.end());
 
     TC_LOG_DEBUG("entities.vehicle", "Unit %s exit vehicle entry %u id %u %s seat %d",
         unit->GetName().c_str(), _me->GetEntry(), _vehicleInfo->ID, _me->GetGUID().ToString().c_str(), (int32)seat->first);
@@ -505,9 +510,9 @@ Vehicle* Vehicle::RemovePassenger(Unit* unit)
     if (_me->IsInWorld())
     {
         if (!_me->GetTransport())
-            unit->m_movementInfo.ResetTransport();
+            unit->_movementInfo.ResetTransport();
         else
-            unit->m_movementInfo.transport = _me->m_movementInfo.transport;
+            unit->_movementInfo.transport = _me->_movementInfo.transport;
     }
 
     // only for flyable vehicles
@@ -527,7 +532,7 @@ Vehicle* Vehicle::RemovePassenger(Unit* unit)
 /**
  * @fn void Vehicle::RelocatePassengers()
  *
- * @brief Relocate passengers. Must be called after m_base::Relocate
+ * @brief Relocate passengers. Must be called after _base::Relocate
  *
  * @author Machiavelli
  * @date 17-2-2013
@@ -538,17 +543,17 @@ void Vehicle::RelocatePassengers()
     ASSERT(_me->GetMap());
 
     std::vector<std::pair<Unit*, Position>> seatRelocation;
-    seatRelocation.reserve(Seats.size());
+    seatRelocation.reserve(_seats.size());
 
     // not sure that absolute position calculation is correct, it must depend on vehicle pitch angle
-    for (SeatMap::const_iterator itr = Seats.begin(); itr != Seats.end(); ++itr)
+    for (SeatMap::const_iterator itr = _seats.begin(); itr != _seats.end(); ++itr)
     {
         if (Unit* passenger = ObjectAccessor::GetUnit(*GetBase(), itr->second.Passenger.Guid))
         {
             ASSERT(passenger->IsInWorld());
 
             float px, py, pz, po;
-            passenger->m_movementInfo.transport.pos.GetPosition(px, py, pz, po);
+            passenger->_movementInfo.transport.pos.GetPosition(px, py, pz, po);
             CalculatePassengerPosition(px, py, pz, &po);
 
             seatRelocation.emplace_back(passenger, Position(px, py, pz, po));
@@ -572,7 +577,7 @@ void Vehicle::RelocatePassengers()
 
 bool Vehicle::IsVehicleInUse() const
 {
-    for (SeatMap::const_iterator itr = Seats.begin(); itr != Seats.end(); ++itr)
+    for (SeatMap::const_iterator itr = _seats.begin(); itr != _seats.end(); ++itr)
         if (!itr->second.IsEmpty())
             return true;
 
@@ -619,7 +624,7 @@ void Vehicle::InitMovementInfoForBase()
 
 VehicleSeatEntry const* Vehicle::GetSeatForPassenger(Unit const* passenger) const
 {
-    for (SeatMap::const_iterator itr = Seats.begin(); itr != Seats.end(); ++itr)
+    for (SeatMap::const_iterator itr = _seats.begin(); itr != _seats.end(); ++itr)
         if (itr->second.Passenger.Guid == passenger->GetGUID())
             return itr->second.SeatInfo;
 
@@ -642,11 +647,11 @@ VehicleSeatEntry const* Vehicle::GetSeatForPassenger(Unit const* passenger) cons
 SeatMap::iterator Vehicle::GetSeatIteratorForPassenger(Unit* passenger)
 {
     SeatMap::iterator itr;
-    for (itr = Seats.begin(); itr != Seats.end(); ++itr)
+    for (itr = _seats.begin(); itr != _seats.end(); ++itr)
         if (itr->second.Passenger.Guid == passenger->GetGUID())
             return itr;
 
-    return Seats.end();
+    return _seats.end();
 }
 
 /**
@@ -664,7 +669,7 @@ uint8 Vehicle::GetAvailableSeatCount() const
 {
     uint8 ret = 0;
     SeatMap::const_iterator itr;
-    for (itr = Seats.begin(); itr != Seats.end(); ++itr)
+    for (itr = _seats.begin(); itr != _seats.end(); ++itr)
         if (itr->second.IsEmpty() && (itr->second.SeatInfo->CanEnterOrExit() || itr->second.SeatInfo->IsUsableByOverride()))
             ++ret;
 
@@ -810,11 +815,11 @@ bool VehicleJoinEvent::Execute(uint64, uint32)
     if (Seat->second.SeatInfo->Flags & VEHICLE_SEAT_FLAG_PASSENGER_NOT_SELECTABLE)
         Passenger->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 
-    Passenger->m_movementInfo.transport.pos.Relocate(veSeat->AttachmentOffset.X, veSeat->AttachmentOffset.Y, veSeat->AttachmentOffset.Z);
-    Passenger->m_movementInfo.transport.time = 0;
-    Passenger->m_movementInfo.transport.seat = Seat->first;
-    Passenger->m_movementInfo.transport.guid = Target->GetBase()->GetGUID();
-    Passenger->m_movementInfo.transport.vehicleId = Target->GetVehicleInfo()->ID;
+    Passenger->_movementInfo.transport.pos.Relocate(veSeat->AttachmentOffset.X, veSeat->AttachmentOffset.Y, veSeat->AttachmentOffset.Z);
+    Passenger->_movementInfo.transport.time = 0;
+    Passenger->_movementInfo.transport.seat = Seat->first;
+    Passenger->_movementInfo.transport.guid = Target->GetBase()->GetGUID();
+    Passenger->_movementInfo.transport.vehicleId = Target->GetVehicleInfo()->ID;
 
     if (Target->GetBase()->GetTypeId() == TYPEID_UNIT && Passenger->GetTypeId() == TYPEID_PLAYER &&
         Seat->second.SeatInfo->Flags & VEHICLE_SEAT_FLAG_CAN_CONTROL)

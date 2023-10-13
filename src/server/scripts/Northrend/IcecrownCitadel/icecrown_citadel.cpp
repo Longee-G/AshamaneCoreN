@@ -769,7 +769,7 @@ class boss_sister_svalna : public CreatureScript
                     {
                         if (crusader->IsAlive() && crusader->GetEntry() == crusader->GetCreatureData()->id)
                         {
-                            crusader->m_Events.AddEvent(new CaptainSurviveTalk(*crusader), crusader->m_Events.CalculateTime(delay));
+                            crusader->_events.AddEvent(new CaptainSurviveTalk(*crusader), crusader->_events.CalculateTime(delay));
                             delay += 6000;
                         }
                     }

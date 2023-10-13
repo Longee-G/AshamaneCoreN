@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2010 - 2012 ProjectSkyfire <http://www.projectskyfire.org/>
  *
@@ -119,7 +119,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 /*action*/) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        player->playerTalkClass->ClearMenus();
         npc_thrall_hotAI* ai = CAST_AI(npc_thrall_hot::npc_thrall_hotAI, creature->AI());
 
         if (!ai)
@@ -550,7 +550,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 /*action*/) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        player->playerTalkClass->ClearMenus();
         npc_thrall_second_hotAI* ai = CAST_AI(npc_thrall_second_hot::npc_thrall_second_hotAI, creature->AI());
 
         if (!ai)
@@ -1200,7 +1200,19 @@ public:
 
         void Register() override
         {
-            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_rising_fire_totem_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENTRY);
+            // 63 or 91
+            switch (m_scriptSpellId)
+            {
+            case 103819:
+                //OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_rising_fire_totem_SpellScript::FilterTargets, EFFECT_0, 22);
+                break;
+            case 108374:
+                //OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_rising_fire_totem_SpellScript::FilterTargets, EFFECT_0, 91);
+                break;
+            default:
+                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_rising_fire_totem_SpellScript::FilterTargets, EFFECT_0, 63);
+                break;
+            }
         }
     };
 
@@ -1217,7 +1229,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        player->playerTalkClass->ClearMenus();
         npc_thrall_final_hotAI* ai = CAST_AI(npc_thrall_final_hot::npc_thrall_final_hotAI, creature->AI());
 
         if (!ai)

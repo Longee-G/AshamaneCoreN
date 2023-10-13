@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -47,6 +47,8 @@ class Unit;
 class Warden;
 class WorldSession;
 class WorldSocket;
+class BattlepayManager;
+
 struct AuctionEntry;
 struct BlackMarketTemplate;
 struct DeclinedName;
@@ -143,6 +145,7 @@ namespace WorldPackets
         class ReportPvPPlayerAFK;
         class RequestPVPRewards;
         class RequestRatedBattlefieldInfo;
+        class NullCmsg;
     }
 
     namespace Battlenet
@@ -232,6 +235,8 @@ namespace WorldPackets
         class SetPlayerDeclinedNames;
 
         enum class LoginFailureReason : uint8;
+
+        class EngineSurvey;
     }
 
     namespace ClientConfig
@@ -239,6 +244,9 @@ namespace WorldPackets
         class RequestAccountData;
         class UserClientUpdateAccountData;
         class SetAdvancedCombatLogging;
+        class UpdateClientSettings;
+        class SaveClientVariables;
+        class GetRemainingGameTime;
     }
 
     namespace Channel
@@ -321,6 +329,7 @@ namespace WorldPackets
         class GarrisonCompleteMissionResult;
         class GarrisonMissionBonusRoll;
         class GarrisonMissionBonusRollResult;
+        class GarrisonRequestLandingPageShipmentInfo;
     }
 
     namespace Guild
@@ -404,6 +413,7 @@ namespace WorldPackets
         class InstanceInfo;
         class InstanceLockResponse;
         class ResetInstances;
+        class QueryCountdownTimer;     // QueryCountdownTimer
     }
 
     namespace Item
@@ -444,6 +454,8 @@ namespace WorldPackets
         class DFTeleport;
         class DFGetSystemInfo;
         class DFGetJoinStatus;
+        class DFListGetStatus;
+        class DFRequestListBlacklist;
     }
 
     namespace Loot
@@ -510,6 +522,7 @@ namespace WorldPackets
         class StartTimer;
         class StartElapsedTimer;
         class OpenAlliedRaceDetailsGiver;
+        class RequestConsumptionConversionInfo;
     }
 
     namespace Movement
@@ -688,6 +701,10 @@ namespace WorldPackets
         class DelIgnore;
         class SendContactList;
         class SetContactNotes;
+        class QuickJoinAutoAcceptRequests;
+        class QuickJoinRequestInvite;
+        class QuickJoinRespondToInvite;
+        class QuickJoinSignalToastDisplayed;
     }
 
     namespace Spells
@@ -711,6 +728,7 @@ namespace WorldPackets
         class SpellClick;
         class MissileTrajectoryCollision;
         class UpdateMissileTrajectory;
+        class UpdateSpellVisual;
     }
 
     namespace Talent
@@ -804,6 +822,22 @@ namespace WorldPackets
     {
         class WhoIsRequest;
         class WhoRequestPkt;
+    }
+
+    namespace BattlePay
+    {
+        class DistributionAssignToTarget;
+        class StartPurchase;
+        class PurchaseProduct;
+        class ConfirmPurchaseResponse;
+        class GetProductList;
+        class GetPurchaseListQuery;
+        class UpdateVasPurchaseStates;
+        class BattlePayAckFailedResponse;
+        class BattlePayQueryClassTrialResult;
+        class BattlePayTrialBoostCharacter;
+        class BattlePayPurchaseDetailsResponse;
+        class BattlePayPurchaseUnkResponse;
     }
 
     class Null final : public ClientPacket
@@ -947,16 +981,16 @@ class TC_GAME_API WorldSession
             std::string os, LocaleConstant locale, uint32 recruiter, bool isARecruiter, std::string&& battlenetAccountName);
         ~WorldSession();
 
-        bool PlayerLoading() const { return !m_playerLoading.IsEmpty(); }
-        bool PlayerLogout() const { return m_playerLogout; }
-        bool PlayerLogoutWithSave() const { return m_playerLogout && m_playerSave; }
-        bool PlayerRecentlyLoggedOut() const { return m_playerRecentlyLogout; }
+        bool PlayerLoading() const { return !_playerLoading.IsEmpty(); }
+        bool PlayerLogout() const { return _isPlayerLogout; }
+        bool PlayerLogoutWithSave() const { return _isPlayerLogout && _isPlayerSave; }
+        bool PlayerRecentlyLoggedOut() const { return _playerRecentlyLogout; }
         bool PlayerDisconnected() const;
 
         bool IsAddonRegistered(const std::string& prefix) const;
 
         void SendPacket(WorldPacket const* packet, bool forced = false);
-        void AddInstanceConnection(std::shared_ptr<WorldSocket> sock) { m_Socket[CONNECTION_TYPE_INSTANCE] = sock; }
+        void AddInstanceConnection(std::shared_ptr<WorldSocket> sock) { _socket[CONNECTION_TYPE_INSTANCE] = sock; }
 
         void SendNotification(char const* format, ...) ATTR_PRINTF(2, 3);
         void SendNotification(uint32 stringId, ...);
@@ -989,19 +1023,19 @@ class TC_GAME_API WorldSession
         std::string GetPlayerInfo() const;
 
         void SetSecurity(AccountTypes security) { _security = security; }
-        std::string const& GetRemoteAddress() const { return m_Address; }
+        std::string const& GetRemoteAddress() const { return _address; }
         void SetPlayer(Player* player);
-        uint8 GetAccountExpansion() const { return m_accountExpansion; }
-        uint8 GetExpansion() const { return m_expansion; }
+        uint8 GetAccountExpansion() const { return _accountExpansion; }
+        uint8 GetExpansion() const { return _expansion; }
         std::string const& GetOS() const { return _os; }
 
         void InitWarden(BigNumber* k);
 
         /// Session in auth.queue currently
-        void SetInQueue(bool state) { m_inQueue = state; }
+        void SetInQueue(bool state) { _inQueue = state; }
 
         /// Is the user engaged in a log out process?
-        bool isLogingOut() const { return _logoutTime || m_playerLogout; }
+        bool isLogingOut() const { return _logoutTime || _isPlayerLogout; }
 
         /// Engage the logout process for the user
         void SetLogoutStartTime(time_t requestTime)
@@ -1120,39 +1154,40 @@ class TC_GAME_API WorldSession
         void DoLootReleaseAll();
 
         // Account mute time
-        time_t m_muteTime;
+        time_t _muteTime;
 
         // Locales
-        LocaleConstant GetSessionDbcLocale() const { return m_sessionDbcLocale; }
-        LocaleConstant GetSessionDbLocaleIndex() const { return m_sessionDbLocaleIndex; }
+        LocaleConstant GetSessionDbcLocale() const { return _sessionDbcLocale; }
+        LocaleConstant GetSessionDbLocaleIndex() const { return _sessionDbLocaleIndex; }
         char const* GetTrinityString(uint32 entry) const;
 
-        uint32 GetLatency() const { return m_latency; }
-        void SetLatency(uint32 latency) { m_latency = latency; }
-        void ResetClientTimeDelay() { m_clientTimeDelay = 0; }
+        uint32 GetLatency() const { return _latency; }
+        void SetLatency(uint32 latency) { _latency = latency; }
+        void ResetClientTimeDelay() { _clientTimeDelay = 0; }
 
-        std::atomic<int32> m_timeOutTime;
+        std::atomic<int32> _timeOutTime;
 
         void UpdateTimeOutTime(uint32 diff)
         {
-            m_timeOutTime -= int32(diff);
+            _timeOutTime -= int32(diff);
         }
 
         void ResetTimeOutTime();
 
         bool IsConnectionIdle() const
         {
-            return m_timeOutTime <= 0 && !m_inQueue;
+            return _timeOutTime <= 0 && !_inQueue;
         }
 
         // Recruit-A-Friend Handling
-        uint32 GetRecruiterId() const { return recruiterId; }
-        bool IsARecruiter() const { return isRecruiter; }
+        uint32 GetRecruiterId() const { return _recruiterId; }
+        bool IsARecruiter() const { return _isRecruiter; }
 
         // Battle Pets
         BattlePetMgr* GetBattlePetMgr() const { return _battlePetMgr.get(); }
-
         CollectionMgr* GetCollectionMgr() const { return _collectionMgr.get(); }
+        BattlepayManager* GetBattlepayMgr() const { return _battlepayMgr.get(); }
+
 
     public:                                                 // opcodes handlers
 
@@ -1259,6 +1294,8 @@ class TC_GAME_API WorldSession
         void HandleAddIgnoreOpcodeCallBack(PreparedQueryResult result);
         void HandleDelIgnoreOpcode(WorldPackets::Social::DelIgnore& packet);
         void HandleSetContactNotesOpcode(WorldPackets::Social::SetContactNotes& packet);
+        void HandleQuickJoinAutoAcceptRequests(WorldPackets::Social::QuickJoinAutoAcceptRequests& packet);
+
 
         void HandleAreaTriggerOpcode(WorldPackets::AreaTrigger::AreaTrigger& packet);
 
@@ -1272,7 +1309,9 @@ class TC_GAME_API WorldSession
         void HandleUpdateAccountData(WorldPackets::ClientConfig::UserClientUpdateAccountData& packet);
         void HandleRequestAccountData(WorldPackets::ClientConfig::RequestAccountData& request);
         void HandleSetAdvancedCombatLogging(WorldPackets::ClientConfig::SetAdvancedCombatLogging& setAdvancedCombatLogging);
-        void HandleSetActionButtonOpcode(WorldPackets::Spells::SetActionButton& packet);
+        void HandleUpdateClientSettings(WorldPackets::ClientConfig::UpdateClientSettings& packet);
+        void HandleGetRemainingGameTime(WorldPackets::ClientConfig::GetRemainingGameTime& packet);
+        void HandleSaveClientVariables(WorldPackets::ClientConfig::SaveClientVariables& packet);
 
         void HandleGameObjectUseOpcode(WorldPackets::GameObject::GameObjUse& packet);
         void HandleGameobjectReportUse(WorldPackets::GameObject::GameObjReportUse& packet);
@@ -1453,7 +1492,7 @@ class TC_GAME_API WorldSession
         void HandleItemTextQuery(WorldPackets::Query::ItemTextQuery& itemTextQuery);
         void HandleMailCreateTextItem(WorldPackets::Mail::MailCreateTextItem& packet);
         void HandleQueryNextMailTime(WorldPackets::Mail::MailQueryNextMailTime& packet);
-        void HandleCancelChanneling(WorldPackets::Spells::CancelChannelling& cancelChanneling);
+        
 
         void HandleSplitItemOpcode(WorldPackets::Item::SplitItem& splitItem);
         void HandleSwapInvItemOpcode(WorldPackets::Item::SwapInvItem& swapInvItem);
@@ -1485,11 +1524,16 @@ class TC_GAME_API WorldSession
         void HandleCancelAutoRepeatSpellOpcode(WorldPackets::Spells::CancelAutoRepeatSpell& cancelAutoRepeatSpell);
         void HandleMissileTrajectoryCollision(WorldPackets::Spells::MissileTrajectoryCollision& packet);
         void HandleUpdateMissileTrajectory(WorldPackets::Spells::UpdateMissileTrajectory& packet);
+        void HandleUpdateSpellVisualOpcode(WorldPackets::Spells::UpdateSpellVisual& packet);
+        void HandleSetActionButtonOpcode(WorldPackets::Spells::SetActionButton& packet);
+        void HandleUnlearnSkillOpcode(WorldPackets::Spells::UnlearnSkill& packet);
+        void HandleCancelChanneling(WorldPackets::Spells::CancelChannelling& cancelChanneling);
+
 
         void HandleLearnPvpTalentsOpcode(WorldPackets::Talent::LearnPvpTalents& packet);
         void HandleLearnTalentsOpcode(WorldPackets::Talent::LearnTalents& packet);
         void HandleConfirmRespecWipeOpcode(WorldPackets::Talent::ConfirmRespecWipe& confirmRespecWipe);
-        void HandleUnlearnSkillOpcode(WorldPackets::Spells::UnlearnSkill& packet);
+        
 
         void HandleQuestgiverStatusQueryOpcode(WorldPackets::Quest::QuestGiverStatusQuery& packet);
         void HandleQuestgiverStatusMultipleQuery(WorldPackets::Quest::QuestGiverStatusMultipleQuery& packet);
@@ -1582,6 +1626,8 @@ class TC_GAME_API WorldSession
         void HandleAreaSpiritHealerQueueOpcode(WorldPackets::Battleground::AreaSpiritHealerQueue& areaSpiritHealerQueue);
         void HandleHearthAndResurrect(WorldPackets::Battleground::HearthAndResurrect& hearthAndResurrect);
         void HandleRequestBattlefieldStatusOpcode(WorldPackets::Battleground::RequestBattlefieldStatus& requestBattlefieldStatus);
+        void HandlePersonalRatedInfoRequest(WorldPackets::Battleground::NullCmsg& packet);
+
 
         // Battlefield
         void SendBfInvitePlayerToWar(uint64 queueId, uint32 zoneId, uint32 acceptTime);
@@ -1616,6 +1662,9 @@ class TC_GAME_API WorldSession
         void HandleLfgTeleportOpcode(WorldPackets::LFG::DFTeleport& dfTeleport);
         void HandleDFGetSystemInfo(WorldPackets::LFG::DFGetSystemInfo& dfGetSystemInfo);
         void HandleDFGetJoinStatus(WorldPackets::LFG::DFGetJoinStatus& dfGetJoinStatus);
+        void HandleLfgListGetStatus(WorldPackets::LFG::DFListGetStatus& packet);
+        void HandleRequestLfgListBlackList(WorldPackets::LFG::DFRequestListBlacklist& packet);
+
 
         void SendLfgUpdateStatus(lfg::LfgUpdateData const& updateData, bool party);
         void SendLfgRoleChosen(ObjectGuid guid, uint8 roles);
@@ -1730,7 +1779,9 @@ class TC_GAME_API WorldSession
         void HandleCloseInteraction(WorldPackets::Misc::CloseInteraction& closeInteraction);
         void HandleAdventureJournalOpenQuest(WorldPackets::Misc::AdventureJournalOpenQuest& packet);
         void HandleSelectFactionOpcode(WorldPackets::Misc::FactionSelect& selectFaction);
+        void HandleEngineSurvey(WorldPackets::Character::EngineSurvey & packet);
         void HandleAdventureJournalStartQuest(WorldPackets::Misc::AdventureJournalStartQuest& packet);
+        void HandleQueryCountdownTimer(WorldPackets::Instance::QueryCountdownTimer& packet);
 
         // Toys
         void HandleAddToy(WorldPackets::Toy::AddToy& packet);
@@ -1768,6 +1819,8 @@ class TC_GAME_API WorldSession
         void HandleGarrisonStartMission(WorldPackets::Garrison::GarrisonStartMission& startMission);
         void HandleGarrisonCompleteMission(WorldPackets::Garrison::GarrisonCompleteMission& completeMission);
         void HandleGarrisonMissionBonusRoll(WorldPackets::Garrison::GarrisonMissionBonusRoll& missionBonusRoll);
+        void HandleGarrisonRequestLandingPageShipmentInfo(WorldPackets::Garrison::GarrisonRequestLandingPageShipmentInfo& packet);
+
 
         // Battle Pets
         void HandleBattlePetRequestJournal(WorldPackets::BattlePet::BattlePetRequestJournal& battlePetRequestJournal);
@@ -1813,6 +1866,24 @@ class TC_GAME_API WorldSession
 
         // Challenge Modes
         void HandleChallengeModeStart(WorldPackets::ChallengeMode::StartRequest& /*start*/);
+
+        // TODO:  
+        void HandleRequestConsumptionConversionInfo(WorldPackets::Misc::RequestConsumptionConversionInfo& packet);
+
+        // battlepay...
+        void HandleGetPurchaseListQuery(WorldPackets::BattlePay::GetPurchaseListQuery& packet);
+        void HandleBattlePayQueryClassTrialResult(WorldPackets::BattlePay::BattlePayQueryClassTrialResult& packet);
+        void HandleBattlePayTrialBoostCharacter(WorldPackets::BattlePay::BattlePayTrialBoostCharacter& packet);
+        void HandleBattlePayPurchaseUnkResponse(WorldPackets::BattlePay::BattlePayPurchaseUnkResponse& packet);
+        void HandleBattlePayPurchaseDetailsResponse(WorldPackets::BattlePay::BattlePayPurchaseDetailsResponse& packet);
+        void HandleUpdateVasPurchaseStates(WorldPackets::BattlePay::UpdateVasPurchaseStates& packet);
+        void HandleGetProductList(WorldPackets::BattlePay::GetProductList& packet);
+        void HandleBattlePayDistributionAssign(WorldPackets::BattlePay::DistributionAssignToTarget& packet);
+        void HandleBattlePayStartPurchase(WorldPackets::BattlePay::StartPurchase& packet);
+        void HandleBattlePayPurchaseProduct(WorldPackets::BattlePay::PurchaseProduct& packet);
+        void HandleBattlePayConfirmPurchase(WorldPackets::BattlePay::ConfirmPurchaseResponse& packet);
+        void HandleBattlePayAckFailedResponse(WorldPackets::BattlePay::BattlePayAckFailedResponse& packet);
+        void SendDisplayPromo(int32 promotionID = 0);
 
         union ConnectToKey
         {
@@ -1886,20 +1957,22 @@ class TC_GAME_API WorldSession
         // this stores the GUIDs of the characters who can login
         // characters who failed on Player::BuildEnumData shouldn't login
         GuidSet _legitCharacters;
-
-        ObjectGuid::LowType m_GUIDLow;                      // set logined or recently logout player (while m_playerRecentlyLogout set)
+        // set logined or recently logout player (while _playerRecentlyLogout set)
+        ObjectGuid::LowType _lowGUID;                      
         Player* _player;
-        std::shared_ptr<WorldSocket> m_Socket[MAX_CONNECTION_TYPES];
-        std::string m_Address;                              // Current Remote Address
-     // std::string m_LAddress;                             // Last Attempted Remote Adress - we can not set attempted ip for a non-existing session!
+        std::shared_ptr<WorldSocket> _socket[MAX_CONNECTION_TYPES];
+        // Current Remote Address
+        std::string _address;
+        // Last Attempted Remote Adress - we can not set attempted ip for a non-existing session!
+        // std::string m_LAddress;          
 
         AccountTypes _security;
         uint32 _accountId;
         std::string _accountName;
         uint32 _battlenetAccountId;
         std::string _battlenetAccountName;
-        uint8 m_accountExpansion;
-        uint8 m_expansion;
+        uint8 _accountExpansion;
+        uint8 _expansion;
         std::string _os;
 
         std::array<uint8, 32> _realmListSecret;
@@ -1908,34 +1981,46 @@ class TC_GAME_API WorldSession
         uint32 _battlenetRequestToken;
 
         // Warden
-        Warden* _warden;                                    // Remains NULL if Warden system is not enabled by config
+        // Remains NULL if Warden system is not enabled by config
+        Warden* _warden;                                    
 
         time_t _logoutTime;
-        bool m_inQueue;                                     // session wait in auth.queue
-        ObjectGuid m_playerLoading;                         // code processed in LoginPlayer
-        bool m_playerLogout;                                // code processed in LogoutPlayer
-        bool m_playerRecentlyLogout;
-        bool m_playerSave;
-        LocaleConstant m_sessionDbcLocale;
-        LocaleConstant m_sessionDbLocaleIndex;
-        std::atomic<uint32> m_latency;
-        std::atomic<uint32> m_clientTimeDelay;
+        // session wait in auth.queue
+        bool _inQueue;
+        // code processed in LoginPlayer
+        // keep loading player's guid
+        ObjectGuid _playerLoading;
+        // code processed in LogoutPlayer
+        bool _isPlayerLogout;                                
+        bool _playerRecentlyLogout;
+        // is player saved while logout
+        bool _isPlayerSave;
+        LocaleConstant _sessionDbcLocale;
+        LocaleConstant _sessionDbLocaleIndex;
+        // 保存延迟值有什么用呢？这个延迟值是客户端报给服务器的..延迟值保存到db了...
+        std::atomic<uint32> _latency;
+        std::atomic<uint32> _clientTimeDelay;
         AccountData _accountData[NUM_ACCOUNT_DATA_TYPES];
         uint32 _tutorials[MAX_ACCOUNT_TUTORIAL_VALUES];
         bool   _tutorialsChanged;
         std::vector<std::string> _registeredAddonPrefixes;
         bool _filterAddonMessages;
-        uint32 recruiterId;
-        bool isRecruiter;
+        uint32 _recruiterId;
+        bool _isRecruiter;
         LockedQueue<WorldPacket*> _recvQueue;
         rbac::RBACData* _RBACData;
-        uint32 expireTime;
-        bool forceExit;
-        ObjectGuid m_currentBankerGUID;
+
+        // socket expired time (ms)
+        uint32 _expireTime;
+        bool _isForceExit;
+        ObjectGuid _currentBankerGUID;
 
         std::unique_ptr<BattlePetMgr> _battlePetMgr;
 
-        std::unique_ptr<CollectionMgr> _collectionMgr;
+        std::unique_ptr<CollectionMgr> _collectionMgr;          // [Longee] 这个管理器是保存在WorldSession还是Player更好？
+
+        std::unique_ptr<BattlepayManager> _battlepayMgr;
+
 
         ConnectToKey _instanceConnectKey;
 

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -63,7 +63,7 @@ Loot* Roll::getLoot()
     return getTarget();
 }
 
-Group::Group() : m_leaderGuid(), m_leaderName(""), m_groupFlags(GROUP_FLAG_NONE), m_groupCategory(GROUP_CATEGORY_HOME),
+Group::Group() : _leaderGuid(), m_leaderName(""), m_groupFlags(GROUP_FLAG_NONE), m_groupCategory(GROUP_CATEGORY_HOME),
 m_dungeonDifficulty(DIFFICULTY_NORMAL), m_raidDifficulty(DIFFICULTY_NORMAL_RAID), m_legacyRaidDifficulty(DIFFICULTY_10_N),
 m_bgGroup(nullptr), m_bfGroup(nullptr), m_lootMethod(FREE_FOR_ALL), m_lootThreshold(ITEM_QUALITY_UNCOMMON), m_looterGuid(),
 m_masterLooterGuid(), m_subGroupsCounts(nullptr), m_guid(), m_maxEnchantingLevel(0), m_dbStoreId(0),
@@ -111,7 +111,7 @@ bool Group::Create(Player* leader)
     ObjectGuid leaderGuid = leader->GetGUID();
 
     m_guid = ObjectGuid::Create<HighGuid::Party>(sGroupMgr->GenerateGroupId());
-    m_leaderGuid = leaderGuid;
+    _leaderGuid = leaderGuid;
     m_leaderName = leader->GetName();
     leader->SetFlag(PLAYER_FLAGS, PLAYER_FLAGS_GROUP_LEADER);
 
@@ -151,7 +151,7 @@ bool Group::Create(Player* leader)
         uint8 index = 0;
 
         stmt->setUInt32(index++, m_dbStoreId);
-        stmt->setUInt64(index++, m_leaderGuid.GetCounter());
+        stmt->setUInt64(index++, _leaderGuid.GetCounter());
         stmt->setUInt8(index++, uint8(m_lootMethod));
         stmt->setUInt64(index++, m_looterGuid.GetCounter());
         stmt->setUInt8(index++, uint8(m_lootThreshold));
@@ -185,10 +185,10 @@ void Group::LoadGroupFromDB(Field* fields)
 {
     m_dbStoreId = fields[17].GetUInt32();
     m_guid = ObjectGuid::Create<HighGuid::Party>(sGroupMgr->GenerateGroupId());
-    m_leaderGuid = ObjectGuid::Create<HighGuid::Player>(fields[0].GetUInt64());
+    _leaderGuid = ObjectGuid::Create<HighGuid::Player>(fields[0].GetUInt64());
 
     // group leader not exist
-    if (!ObjectMgr::GetPlayerNameByGUID(m_leaderGuid, m_leaderName))
+    if (!ObjectMgr::GetPlayerNameByGUID(_leaderGuid, m_leaderName))
         return;
 
     m_lootMethod = LootMethod(fields[1].GetUInt8());
@@ -337,7 +337,7 @@ bool Group::AddLeaderInvite(Player* player)
     if (!AddInvite(player))
         return false;
 
-    m_leaderGuid = player->GetGUID();
+    _leaderGuid = player->GetGUID();
     m_leaderName = player->GetName();
     return true;
 }
@@ -427,7 +427,7 @@ bool Group::AddMember(Player* player)
     player->ResetGroupUpdateSequenceIfNeeded(this);
 
     // if the same group invites the player back, cancel the homebind timer
-    player->m_InstanceValid = player->CheckInstanceValidity(false);
+    player->_instanceValid = player->CheckInstanceValidity(false);
 
     if (!isRaidGroup())                                      // reset targetIcons for non-raid-groups
     {
@@ -646,7 +646,7 @@ bool Group::RemoveMember(ObjectGuid guid, const RemoveMethod& method /*= GROUP_R
         }
 
         // Pick new leader if necessary
-        if (m_leaderGuid == guid)
+        if (_leaderGuid == guid)
         {
             for (member_witerator itr = m_memberSlots.begin(); itr != m_memberSlots.end(); ++itr)
             {
@@ -702,7 +702,7 @@ void Group::ChangeLeader(ObjectGuid newLeaderGuid, int8 partyIndex)
     if (!newLeader)
         return;
 
-    sScriptMgr->OnGroupChangeLeader(this, newLeaderGuid, m_leaderGuid);
+    sScriptMgr->OnGroupChangeLeader(this, newLeaderGuid, _leaderGuid);
 
     if (!isBGGroup() && !isBFGroup())
     {
@@ -744,11 +744,11 @@ void Group::ChangeLeader(ObjectGuid newLeaderGuid, int8 partyIndex)
         CharacterDatabase.CommitTransaction(trans);
     }
 
-    if (Player* oldLeader = ObjectAccessor::FindConnectedPlayer(m_leaderGuid))
+    if (Player* oldLeader = ObjectAccessor::FindConnectedPlayer(_leaderGuid))
         oldLeader->RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_GROUP_LEADER);
 
     newLeader->SetFlag(PLAYER_FLAGS, PLAYER_FLAGS_GROUP_LEADER);
-    m_leaderGuid = newLeader->GetGUID();
+    _leaderGuid = newLeader->GetGUID();
     m_leaderName = newLeader->GetName();
     ToggleGroupMemberFlag(slot, MEMBER_FLAG_ASSISTANT, false);
 
@@ -1216,12 +1216,12 @@ void Group::GroupLoot(Loot* loot, WorldObject* lootedObject)
 
                 if (Creature* creature = lootedObject->ToCreature())
                 {
-                    creature->m_groupLootTimer = 60000;
+                    creature->_groupLootTimer = 60000;
                     creature->lootingGroupLowGUID = GetGUID();
                 }
                 else if (GameObject* go = lootedObject->ToGameObject())
                 {
-                    go->m_groupLootTimer = 60000;
+                    go->_groupLootTimer = 60000;
                     go->lootingGroupLowGUID = GetGUID();
                 }
             }
@@ -1278,12 +1278,12 @@ void Group::GroupLoot(Loot* loot, WorldObject* lootedObject)
 
             if (Creature* creature = lootedObject->ToCreature())
             {
-                creature->m_groupLootTimer = 60000;
+                creature->_groupLootTimer = 60000;
                 creature->lootingGroupLowGUID = GetGUID();
             }
             else if (GameObject* go = lootedObject->ToGameObject())
             {
-                go->m_groupLootTimer = 60000;
+                go->_groupLootTimer = 60000;
                 go->lootingGroupLowGUID = GetGUID();
             }
         }
@@ -1621,7 +1621,7 @@ void Group::SendUpdateToPlayer(ObjectGuid playerGUID, MemberSlot* slot)
     partyUpdate.PartyType = IsCreated() ? GROUP_TYPE_NORMAL : GROUP_TYPE_NONE;
 
     partyUpdate.PartyGUID = m_guid;
-    partyUpdate.LeaderGUID = m_leaderGuid;
+    partyUpdate.LeaderGUID = _leaderGuid;
 
     partyUpdate.SequenceNum = player->NextGroupUpdateSequenceNumber(m_groupCategory);
 
@@ -1833,7 +1833,7 @@ void Group::ChangeMembersGroup(ObjectGuid guid, uint8 group)
             player->GetGroupRef().setSubGroup(group);
         else
         {
-            // If player is in BG raid, it is possible that he is also in normal raid - and that normal raid is stored in m_originalGroup reference
+            // If player is in BG raid, it is possible that he is also in normal raid - and that normal raid is stored in _originalGroup reference
             player->GetOriginalGroupRef().setSubGroup(group);
         }
     }
@@ -2350,7 +2350,7 @@ void Group::UnbindInstance(uint32 mapid, uint8 difficulty, bool unload)
 void Group::_homebindIfInstance(Player* player)
 {
     if (player && !player->IsGameMaster() && sMapStore.LookupEntry(player->GetMapId())->IsDungeon())
-        player->m_InstanceValid = false;
+        player->_instanceValid = false;
 }
 
 void Group::BroadcastGroupUpdate(void)
@@ -2601,7 +2601,7 @@ bool Group::IsCreated() const
 
 ObjectGuid Group::GetLeaderGUID() const
 {
-    return m_leaderGuid;
+    return _leaderGuid;
 }
 
 ObjectGuid Group::GetGUID() const

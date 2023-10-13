@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -103,12 +103,23 @@ uint32 _SpellScript::EffectHook::GetAffectedEffectsMask(SpellInfo const* spellEn
     }
     else
     {
+        // CheckEffect 到底是怎么进行检查，会使用自己携带的东西吗？
+
         if (CheckEffect(spellEntry, effIndex))
             mask |= 1 << effIndex;
     }
     return mask;
 }
 
+// 修复script绑定的effect(idx, id)数据
+bool _SpellScript::EffectHook::FixedEffect(SpellInfo const * spellInfo)
+{
+
+
+    return true;
+}
+
+// 检查effect是否生效？这个effect到底是什么
 bool _SpellScript::EffectHook::IsEffectAffected(SpellInfo const* spellEntry, uint8 effIndexToCheck) const
 {
     return (GetAffectedEffectsMask(spellEntry) & 1 << effIndexToCheck) != 0;
@@ -137,11 +148,14 @@ bool _SpellScript::EffectNameCheck::Check(SpellInfo const* spellEntry, uint8 eff
     SpellEffectInfo const* effect = spellEntry->GetEffect(effIndex);
     if (!effect)
         return false;
-    if (!effect->Effect && !effName)
-        return true;
     if (!effect->Effect)
         return false;
-    return (effName == SPELL_EFFECT_ANY) || (effect->Effect == effName);
+
+    if (!effect->Effect && !effName)
+        return true;
+    // fixed by longee.
+    //return (effName == SPELL_EFFECT_ANY) || (effect->Effect == effName);
+    return true;
 }
 
 std::string _SpellScript::EffectNameCheck::ToString() const
@@ -162,10 +176,14 @@ bool _SpellScript::EffectAuraNameCheck::Check(SpellInfo const* spellEntry, uint8
     SpellEffectInfo const* effect = spellEntry->GetEffect(effIndex);
     if (!effect)
         return false;
+
+    // 这个判断有问题...
+    //if (!effect->ApplyAuraName)
+    //    return false;
+
     if (!effect->ApplyAuraName && !effAurName)
         return true;
-    if (!effect->ApplyAuraName)
-        return false;
+
     return (effAurName == SPELL_AURA_ANY) || (effect->ApplyAuraName == effAurName);
 }
 
@@ -495,34 +513,34 @@ SpellInfo const* SpellScript::GetSpellInfo() const
 
 WorldLocation const* SpellScript::GetExplTargetDest() const
 {
-    if (m_spell->m_targets.HasDst())
-        return m_spell->m_targets.GetDstPos();
+    if (m_spell->_targets.HasDst())
+        return m_spell->_targets.GetDstPos();
     return nullptr;
 }
 
 void SpellScript::SetExplTargetDest(WorldLocation& loc)
 {
-    m_spell->m_targets.SetDst(loc);
+    m_spell->_targets.SetDst(loc);
 }
 
 WorldObject* SpellScript::GetExplTargetWorldObject() const
 {
-    return m_spell->m_targets.GetObjectTarget();
+    return m_spell->_targets.GetObjectTarget();
 }
 
 Unit* SpellScript::GetExplTargetUnit() const
 {
-    return m_spell->m_targets.GetUnitTarget();
+    return m_spell->_targets.GetUnitTarget();
 }
 
 GameObject* SpellScript::GetExplTargetGObj() const
 {
-    return m_spell->m_targets.GetGOTarget();
+    return m_spell->_targets.GetGOTarget();
 }
 
 Item* SpellScript::GetExplTargetItem() const
 {
-    return m_spell->m_targets.GetItemTarget();
+    return m_spell->_targets.GetItemTarget();
 }
 
 Unit* SpellScript::GetHitUnit() const
@@ -596,7 +614,7 @@ int32 SpellScript::GetHitDamage() const
         TC_LOG_ERROR("scripts", "Script: `%s` Spell: `%u`: function SpellScript::GetHitDamage was called, but function has no effect in current hook!", m_scriptName->c_str(), m_scriptSpellId);
         return 0;
     }
-    return m_spell->m_damage;
+    return m_spell->_damage;
 }
 
 void SpellScript::SetHitDamage(int32 damage)
@@ -606,7 +624,7 @@ void SpellScript::SetHitDamage(int32 damage)
         TC_LOG_ERROR("scripts", "Script: `%s` Spell: `%u`: function SpellScript::SetHitDamage was called, but function has no effect in current hook!", m_scriptName->c_str(), m_scriptSpellId);
         return;
     }
-    m_spell->m_damage = damage;
+    m_spell->_damage = damage;
 }
 
 int32 SpellScript::GetHitHeal() const
@@ -616,7 +634,7 @@ int32 SpellScript::GetHitHeal() const
         TC_LOG_ERROR("scripts", "Script: `%s` Spell: `%u`: function SpellScript::GetHitHeal was called, but function has no effect in current hook!", m_scriptName->c_str(), m_scriptSpellId);
         return 0;
     }
-    return m_spell->m_healing;
+    return m_spell->_healing;
 }
 
 void SpellScript::SetHitHeal(int32 heal)
@@ -626,7 +644,7 @@ void SpellScript::SetHitHeal(int32 heal)
         TC_LOG_ERROR("scripts", "Script: `%s` Spell: `%u`: function SpellScript::SetHitHeal was called, but function has no effect in current hook!", m_scriptName->c_str(), m_scriptSpellId);
         return;
     }
-    m_spell->m_healing = heal;
+    m_spell->_healing = heal;
 }
 
 Aura* SpellScript::GetHitAura() const
@@ -636,11 +654,11 @@ Aura* SpellScript::GetHitAura() const
         TC_LOG_ERROR("scripts", "Script: `%s` Spell: `%u`: function SpellScript::GetHitAura was called, but function has no effect in current hook!", m_scriptName->c_str(), m_scriptSpellId);
         return nullptr;
     }
-    if (!m_spell->m_spellAura)
+    if (!m_spell->_spellAura)
         return nullptr;
-    if (m_spell->m_spellAura->IsRemoved())
+    if (m_spell->_spellAura->IsRemoved())
         return nullptr;
-    return m_spell->m_spellAura;
+    return m_spell->_spellAura;
 }
 
 void SpellScript::PreventHitAura()
@@ -650,8 +668,8 @@ void SpellScript::PreventHitAura()
         TC_LOG_ERROR("scripts", "Script: `%s` Spell: `%u`: function SpellScript::PreventHitAura was called, but function has no effect in current hook!", m_scriptName->c_str(), m_scriptSpellId);
         return;
     }
-    if (m_spell->m_spellAura)
-        m_spell->m_spellAura->Remove();
+    if (m_spell->_spellAura)
+        m_spell->_spellAura->Remove();
 }
 
 void SpellScript::PreventHitEffect(SpellEffIndex effIndex)
@@ -706,7 +724,7 @@ void SpellScript::SetEffectValue(int32 value)
 
 Item* SpellScript::GetCastItem() const
 {
-    return m_spell->m_CastItem;
+    return m_spell->_castItem;
 }
 
 void SpellScript::CreateItem(uint32 effIndex, uint32 itemId)
@@ -716,7 +734,7 @@ void SpellScript::CreateItem(uint32 effIndex, uint32 itemId)
 
 SpellInfo const* SpellScript::GetTriggeringSpell() const
 {
-    return m_spell->m_triggeredByAuraSpell;
+    return m_spell->_triggeredByAuraSpell;
 }
 
 void SpellScript::FinishCast(SpellCastResult result, uint32* param1 /*= nullptr*/, uint32* param2 /*= nullptr*/)
@@ -733,12 +751,12 @@ void SpellScript::SetCustomCastResultMessage(SpellCustomErrors result)
         return;
     }
 
-    m_spell->m_customError = result;
+    m_spell->_customError = result;
 }
 
 SpellValue const* SpellScript::GetSpellValue() const
 {
-    return m_spell->m_spellValue;
+    return m_spell->_spellValue;
 }
 
 SpellEffectInfo const* SpellScript::GetEffectInfo(SpellEffIndex effIndex) const
@@ -848,6 +866,7 @@ bool AuraScript::_Validate(SpellInfo const* entry)
         if (!itr->GetAffectedEffectsMask(entry))
             TC_LOG_ERROR("scripts", "Spell `%u` Effect `%s` of script `%s` did not match dbc effect data - handler bound to hook `AfterEffectProc` of AuraScript won't be executed", entry->Id, itr->ToString().c_str(), m_scriptName->c_str());
 
+    // return之后会抛弃这个spell吗？这个校验和前面的一样吗？
     return _SpellScript::_Validate(entry);
 }
 
@@ -871,11 +890,15 @@ void AuraScript::AuraDispelHandler::Call(AuraScript* auraScript, DispelInfo* _di
     (auraScript->*pHandlerScript)(_dispelInfo);
 }
 
+// EffectBase 继承了两个内嵌类 `EffectAuraNameCheck` `EffectHook`
 AuraScript::EffectBase::EffectBase(uint8 _effIndex, uint16 _effName)
-    : _SpellScript::EffectAuraNameCheck(_effName), _SpellScript::EffectHook(_effIndex) { }
+    : _SpellScript::EffectAuraNameCheck(_effName), _SpellScript::EffectHook(_effIndex)
+{
+}
 
 bool AuraScript::EffectBase::CheckEffect(SpellInfo const* spellEntry, uint8 effIndexToCheck) const
 {
+    // 这个是调用了父类的接口... 不是静态调用
     return _SpellScript::EffectAuraNameCheck::Check(spellEntry, effIndexToCheck);
 }
 

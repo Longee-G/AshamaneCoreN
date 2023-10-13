@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -599,7 +599,7 @@ void WorldPackets::Party::PartyMemberState::Initialize(Player const* player)
 
     // Vehicle
     if (player->GetVehicle() && player->GetVehicle()->GetVehicleInfo())
-        MemberStats.VehicleSeat = player->GetVehicle()->GetVehicleInfo()->SeatID[player->m_movementInfo.transport.seat];
+        MemberStats.VehicleSeat = player->GetVehicle()->GetVehicleInfo()->SeatID[player->_movementInfo.transport.seat];
 
     // Auras
     for (AuraApplication const* aurApp : player->GetVisibleAuras())

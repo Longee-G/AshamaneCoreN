@@ -169,7 +169,7 @@ class TC_GAME_API OPvPCapturePoint
         float m_maxSpeed;
 
         // the status of the objective
-        float m_value;
+        float _value;
 
         TeamId m_team;
 

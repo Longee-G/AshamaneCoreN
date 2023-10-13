@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2010 - 2012 ProjectSkyfire <http://www.projectskyfire.org/>
  *
@@ -603,8 +603,9 @@ private:
 
         void Register() override
         {
-            OnEffectHitTarget += SpellEffectFn(spell_wave_of_virtue_SpellScript::LeapBack, EFFECT_1, SPELL_EFFECT_LEAP_BACK);
-            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_wave_of_virtue_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_DEST_AREA_ENEMY);
+            // [Longee] 修改成只指定 effect index, 因为在数据库中可以找到对应的effectId，不需要在这里指定吧...
+            OnEffectHitTarget += SpellEffectFn(spell_wave_of_virtue_SpellScript::LeapBack, EFFECT_1, /*SPELL_EFFECT_LEAP_BACK*/3);
+            //OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_wave_of_virtue_SpellScript::FilterTargets, EFFECT_0, 1);
         }
     };
 
@@ -784,8 +785,8 @@ public:
 
         void Register() override
         {
-            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_seaping_light_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
-            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_seaping_light_SpellScript::FilterTargets, EFFECT_1, TARGET_UNIT_SRC_AREA_ENEMY);
+            //OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_seaping_light_SpellScript::FilterTargets, EFFECT_0, 1);
+            //OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_seaping_light_SpellScript::FilterTargets, EFFECT_1, TARGET_UNIT_SRC_AREA_ENEMY);
         }
 
     private:

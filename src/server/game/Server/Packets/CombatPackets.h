@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -111,9 +111,9 @@ namespace WorldPackets
 
             WorldPacket const* Write() override;
 
-            ObjectGuid UnitGUID;
-            std::vector<ThreatInfo> ThreatList;
-            ObjectGuid HighestThreatGUID;
+            ObjectGuid UnitGUID;                    // 这个guid是什么？player的guid还是任意一个npc？
+            std::vector<ThreatInfo> ThreatList;     // 仇恨列表
+            ObjectGuid HighestThreatGUID;           // UnitGUID的最高仇恨者的guid吗？
         };
 
         class ThreatRemove final : public ServerPacket

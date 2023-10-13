@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2008-2017 TrinityCore <http://www.trinitycore.org/>
  *
@@ -174,6 +174,11 @@ void AddSC_boss_sasszine();
 void AddSC_boss_sisters_of_moon();
 void AddSC_tomb_of_sargeras();
 void AddSC_instance_tomb_of_sargeras();
+
+void AddBattlePayScripts()
+{
+    // TODO: NYI
+}
 
 // The name of this function should match:
 // void Add${NameOfDirectory}Scripts()

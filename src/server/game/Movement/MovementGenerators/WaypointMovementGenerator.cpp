@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -342,8 +342,8 @@ void FlightPathMovementGenerator::LoadPath(Player* player, uint32 startNode /*= 
     i_path.clear();
     i_currentNode = startNode;
     _pointsForPathSwitch.clear();
-    std::deque<uint32> const& taxi = player->m_taxi.GetPath();
-    float discount = player->GetReputationPriceDiscount(player->m_taxi.GetFlightMasterFactionTemplate());
+    std::deque<uint32> const& taxi = player->_taxi.GetPath();
+    float discount = player->GetReputationPriceDiscount(player->_taxi.GetFlightMasterFactionTemplate());
     for (uint32 src = 0, dst = 1; dst < taxi.size(); src = dst++)
     {
         uint32 path, cost;
@@ -394,7 +394,7 @@ void FlightPathMovementGenerator::DoFinalize(Player* player)
     player->Dismount();
     player->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_TAXI_FLIGHT);
 
-    if (player->m_taxi.empty())
+    if (player->_taxi.empty())
     {
         player->getHostileRefManager().setOnlineOfflineState(true);
         // update z position to ground and orientation for landing point
@@ -447,7 +447,7 @@ bool FlightPathMovementGenerator::DoUpdate(Player* player, uint32 /*diff*/)
             while (!_pointsForPathSwitch.empty() && _pointsForPathSwitch.front().PathIndex <= i_currentNode)
             {
                 _pointsForPathSwitch.pop_front();
-                player->m_taxi.NextTaxiDestination();
+                player->_taxi.NextTaxiDestination();
                 if (!_pointsForPathSwitch.empty())
                 {
                     player->UpdateCriteria(CRITERIA_TYPE_GOLD_SPENT_FOR_TRAVELLING, _pointsForPathSwitch.front().Cost);

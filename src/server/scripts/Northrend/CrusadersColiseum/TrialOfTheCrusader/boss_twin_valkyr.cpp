@@ -222,7 +222,7 @@ struct boss_twin_baseAI : public BossAI
                 instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_POWERING_UP);
                 break;
             case NPC_BULLET_CONTROLLER:
-                me->m_Events.AddEvent(new OrbsDespawner(me), me->m_Events.CalculateTime(100));
+                me->_events.AddEvent(new OrbsDespawner(me), me->_events.CalculateTime(100));
                 break;
             default:
                 break;

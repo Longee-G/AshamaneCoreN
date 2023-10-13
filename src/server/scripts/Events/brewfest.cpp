@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2011 TrinityCore <http://www.trinitycore.org/>
  * Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  *
@@ -828,7 +828,8 @@ class spell_hol_belier_base : public SpellScriptLoader
 
             void Register() override
             {
-                OnEffectPeriodic += AuraEffectPeriodicFn(spell_hol_belier_base_AuraScript::OnPeriodic, EFFECT_1, SPELL_AURA_PERIODIC_DUMMY);
+                // 7.3.5 deprecated
+                //OnEffectPeriodic += AuraEffectPeriodicFn(spell_hol_belier_base_AuraScript::OnPeriodic, EFFECT_1, SPELL_AURA_PERIODIC_DUMMY);
             }
         };
 
@@ -888,7 +889,7 @@ class spell_hol_belier_renes : public SpellScriptLoader
 
             void Register() override
             {
-                OnEffectPeriodic += AuraEffectPeriodicFn(spell_hol_belier_renes_AuraScript::OnPeriodic, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
+                OnEffectPeriodic += AuraEffectPeriodicFn(spell_hol_belier_renes_AuraScript::OnPeriodic, EFFECT_0, 4);
             }
         };
 
@@ -941,7 +942,8 @@ class spell_hol_belier_renes : public SpellScriptLoader
             void Register() override
             {
                 OnCheckCast += SpellCheckCastFn(spell_hol_belier_renes_SpellScript::CheckCast);
-                OnEffectHit += SpellEffectFn(spell_hol_belier_renes_SpellScript::HandleScript, EFFECT_1, SPELL_EFFECT_SCRIPT_EFFECT);
+                // 7.3.5 <deprecated>
+                //OnEffectHit += SpellEffectFn(spell_hol_belier_renes_SpellScript::HandleScript, EFFECT_1, SPELL_EFFECT_SCRIPT_EFFECT);
             }
         };
 
@@ -1006,8 +1008,9 @@ class spell_hol_belier_all_speeds : public SpellScriptLoader
 
             void Register() override
             {
-                OnEffectApply += AuraEffectApplyFn(spell_hol_belier_all_speeds_AuraScript::HandleEffectApply, EFFECT_1, SPELL_AURA_PERIODIC_DUMMY, AURA_EFFECT_HANDLE_REAL_OR_REAPPLY_MASK);
-                OnEffectPeriodic += AuraEffectPeriodicFn(spell_hol_belier_all_speeds_AuraScript::OnPeriodic, EFFECT_1, SPELL_AURA_PERIODIC_DUMMY);
+                // deprecated 7.3.5
+                //OnEffectApply += AuraEffectApplyFn(spell_hol_belier_all_speeds_AuraScript::HandleEffectApply, EFFECT_1, SPELL_AURA_PERIODIC_DUMMY, AURA_EFFECT_HANDLE_REAL_OR_REAPPLY_MASK);
+                //OnEffectPeriodic += AuraEffectPeriodicFn(spell_hol_belier_all_speeds_AuraScript::OnPeriodic, EFFECT_1, SPELL_AURA_PERIODIC_DUMMY);
             }
 
             uint32 timeCounter;
@@ -1052,7 +1055,8 @@ class spell_hol_beliers : public SpellScriptLoader
 
             void Register() override
             {
-                AfterEffectRemove += AuraEffectRemoveFn(spell_hol_beliers_AuraScript::OnRemove, EFFECT_0, SPELL_AURA_MOUNTED, AURA_EFFECT_HANDLE_REAL);
+                // aura: 78 ==> 0 
+                AfterEffectRemove += AuraEffectRemoveFn(spell_hol_beliers_AuraScript::OnRemove, EFFECT_0, /*SPELL_AURA_MOUNTED*/0, AURA_EFFECT_HANDLE_REAL);
             }
         };
 

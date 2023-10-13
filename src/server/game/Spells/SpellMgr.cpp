@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -538,6 +538,16 @@ SpellThreatEntry const* SpellMgr::GetSpellThreatEntry(uint32 spellID) const
 SkillLineAbilityMapBounds SpellMgr::GetSkillLineAbilityMapBounds(uint32 spell_id) const
 {
     return mSkillLineAbilityMap.equal_range(spell_id);
+}
+
+// skill 会关联一组 spell 吗？ 
+std::list<SkillLineAbilityEntry const*> const & SpellMgr::GetTradeSpellFromSkill(uint32 skillid)
+{
+	// TODO: 在此处插入 return 语句
+    if (mSkillTradeSpells.find(skillid) == mSkillTradeSpells.end())
+        mSkillTradeSpells[skillid] = {};
+
+    return mSkillTradeSpells[skillid];
 }
 
 PetAura const* SpellMgr::GetPetAura(uint32 spell_id, uint8 eff) const
@@ -3801,6 +3811,29 @@ void SpellMgr::LoadSpellTotemModel()
 
 }
 
+void SpellMgr::LoadSkillTradeSpells()
+{
+    // TODO:
+    uint32 ts = getMSTime();
+    uint32 count = 0;
+    // search trade spells and add it to map for use .
+    for (SpellInfo const* entry : mSpellInfoMap)
+    {
+        if (!entry) continue;
+        if (entry->HasAttribute(SPELL_ATTR0_TRADESPELL))
+        {
+            auto bounds = GetSkillLineAbilityMapBounds(entry->Id);
+            for (auto itr = bounds.first; itr != bounds.second; ++itr)
+            {
+                mSkillTradeSpells[itr->second->SkillLine].push_back(itr->second);
+                ++count;
+            }                
+        }
+    }
+
+    TC_LOG_INFO("server.loading", ">> Loaded %u Trade Spells in %u ms", count, GetMSTimeDiffToNow(ts));
+}
+
 uint32 SpellMgr::GetModelForTotem(uint32 spellId, uint8 race) const
 {
     auto itr = mSpellTotemModel.find(std::make_pair(spellId, race));
@@ -3810,3 +3843,4 @@ uint32 SpellMgr::GetModelForTotem(uint32 spellId, uint8 race) const
     TC_LOG_ERROR("spells", "Spell %u with RaceID (%u) have no totem model data defined, set to default model.", spellId, race);
     return 0;
 }
+

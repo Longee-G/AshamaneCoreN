@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
@@ -326,7 +326,7 @@ class spell_extinguish_fire : public SpellScript
 
     void Register() override
     {
-        OnObjectTargetSelect += SpellObjectTargetSelectFn(spell_extinguish_fire::SelectTarget, EFFECT_0, TARGET_UNIT_NEARBY_ENTRY);
+        //OnObjectTargetSelect += SpellObjectTargetSelectFn(spell_extinguish_fire::SelectTarget, EFFECT_0, 60);
         OnEffectHitTarget += SpellEffectFn(spell_extinguish_fire::HandleScript, EFFECT_0, SPELL_EFFECT_DUMMY);
     }
 };

@@ -1850,12 +1850,14 @@ class spell_mage_time_warp : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellInfo*/) override
             {
-                for (uint32 spell : spellIds)
-                {
-                    if (!sSpellMgr->GetSpellInfo(spell))
-                        return false;
-                }
-                return true;
+                // FIXME:
+                return ValidateSpellInfo({
+                    SPELL_MAGE_TEMPORAL_DISPLACEMENT,
+                    SPELL_HUNTER_INSANITY,
+                    SPELL_SHAMAN_EXHAUSTION,
+                    SPELL_SHAMAN_SATED,
+                    SPELL_PET_NETHERWINDS_FATIGUED
+                    });
             }
 
             SpellCastResult CheckCast()
@@ -1933,10 +1935,10 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_MAGE_FIRE_MAGE_PASSIVE) ||
-                !sSpellMgr->GetSpellInfo(SPELL_MAGE_FIRE_BLAST))
-                return false;
-            return true;
+            return ValidateSpellInfo({
+                SPELL_MAGE_FIRE_MAGE_PASSIVE,
+                SPELL_MAGE_FIRE_BLAST
+                });
         }
 
     public:
@@ -2017,10 +2019,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_MAGE_FIRE_ON) ||
-                !sSpellMgr->GetSpellInfo(SPELL_MAGE_FIRE_BLAST))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_MAGE_FIRE_ON, SPELL_MAGE_FIRE_BLAST });
         }
 
         void HandleDummy(SpellEffIndex /*effIndex*/)

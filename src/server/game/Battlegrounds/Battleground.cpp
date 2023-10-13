@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -64,13 +64,13 @@ Battleground::Battleground()
     m_InvitedAlliance   = 0;
     m_InvitedHorde      = 0;
     m_ArenaType         = 0;
-    m_IsArena           = false;
+    m_IsArena           = false;            // 竞技场...
     _winnerTeamId       = BG_TEAM_NEUTRAL;
     m_StartTime         = 0;
     m_CountdownTimer    = 0;
     m_ResetStatTimer    = 0;
     m_ValidStartPositionTimer = 0;
-    m_Events            = 0;
+    _events            = 0;
     m_StartDelayTime    = 0;
     m_IsRated           = false;
     m_BuffChange        = false;
@@ -426,9 +426,9 @@ inline void Battleground::_ProcessJoin(uint32 diff)
         m_CountdownTimer = 0;
     }
 
-    if (!(m_Events & BG_STARTING_EVENT_1))
+    if (!(_events & BG_STARTING_EVENT_1))
     {
-        m_Events |= BG_STARTING_EVENT_1;
+        _events |= BG_STARTING_EVENT_1;
 
         if (!FindBgMap())
         {
@@ -451,23 +451,23 @@ inline void Battleground::_ProcessJoin(uint32 diff)
             SendBroadcastText(StartMessageIds[BG_STARTING_EVENT_FIRST], CHAT_MSG_BG_SYSTEM_NEUTRAL);
     }
     // After 1 minute or 30 seconds, warning is signaled
-    else if (GetStartDelayTime() <= StartDelayTimes[BG_STARTING_EVENT_SECOND] && !(m_Events & BG_STARTING_EVENT_2))
+    else if (GetStartDelayTime() <= StartDelayTimes[BG_STARTING_EVENT_SECOND] && !(_events & BG_STARTING_EVENT_2))
     {
-        m_Events |= BG_STARTING_EVENT_2;
+        _events |= BG_STARTING_EVENT_2;
         if (StartMessageIds[BG_STARTING_EVENT_SECOND])
             SendBroadcastText(StartMessageIds[BG_STARTING_EVENT_SECOND], CHAT_MSG_BG_SYSTEM_NEUTRAL);
     }
     // After 30 or 15 seconds, warning is signaled
-    else if (GetStartDelayTime() <= StartDelayTimes[BG_STARTING_EVENT_THIRD] && !(m_Events & BG_STARTING_EVENT_3))
+    else if (GetStartDelayTime() <= StartDelayTimes[BG_STARTING_EVENT_THIRD] && !(_events & BG_STARTING_EVENT_3))
     {
-        m_Events |= BG_STARTING_EVENT_3;
+        _events |= BG_STARTING_EVENT_3;
         if (StartMessageIds[BG_STARTING_EVENT_THIRD])
             SendBroadcastText(StartMessageIds[BG_STARTING_EVENT_THIRD], CHAT_MSG_BG_SYSTEM_NEUTRAL);
     }
     // Delay expired (after 2 or 1 minute)
-    else if (GetStartDelayTime() <= 0 && !(m_Events & BG_STARTING_EVENT_4))
+    else if (GetStartDelayTime() <= 0 && !(_events & BG_STARTING_EVENT_4))
     {
-        m_Events |= BG_STARTING_EVENT_4;
+        _events |= BG_STARTING_EVENT_4;
 
         StartingEventOpenDoors();
 
@@ -1000,7 +1000,7 @@ void Battleground::Reset()
     SetElapsedTime(0);
     SetRemainingTime(0);
     SetLastResurrectTime(0);
-    m_Events = 0;
+    _events = 0;
 
     if (m_InvitedAlliance > 0 || m_InvitedHorde > 0)
         TC_LOG_ERROR("bg.battleground", "Battleground::Reset: one of the counters is not 0 (alliance: %u, horde: %u) for BG (map: %u, instance id: %u)!",
@@ -1881,4 +1881,20 @@ bool Battleground::CheckAchievementCriteriaMeet(uint32 criteriaId, Player const*
 uint8 Battleground::GetUniqueBracketId() const
 {
     return uint8(GetMinLevel() / 5) - 1; // 10 - 1, 15 - 2, 20 - 3, etc.
+}
+
+// timerType 0: pvp 1: challence 2: proving ground
+void Battleground::QueryCountdownTimer(Player* player, uint32 timerType)
+{
+    if (timerType != 0/*pvp*/ || !player)
+        return;
+
+    // 判断是竞技场(Arena)还是普通战场，然后获取战场的倒计时数据发给player...
+    int32 countdownMaxForBGType = isArena() ? ARENA_COUNTDOWN_MAX : BATTLEGROUND_COUNTDOWN_MAX;
+
+    WorldPackets::Misc::StartTimer startTimer;
+    startTimer.Type = 0;
+    startTimer.TimeLeft = countdownMaxForBGType - (GetElapsedTime() / 1000);
+    startTimer.TotalTime = countdownMaxForBGType;
+    player->SendDirectMessage(startTimer.Write());
 }

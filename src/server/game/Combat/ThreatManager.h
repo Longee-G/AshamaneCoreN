@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -200,7 +200,8 @@ class TC_GAME_API ThreatContainer
 };
 
 //=================================================
-
+// 威胁管理... 游戏中是叫威胁吗？游戏中好像称为“仇恨”系统...
+// 仇恨管理...
 class TC_GAME_API ThreatManager
 {
     public:
@@ -285,13 +286,13 @@ namespace Trinity
     class ThreatOrderPred
     {
         public:
-            ThreatOrderPred(bool ascending = false) : m_ascending(ascending) { }
+            ThreatOrderPred(bool ascending = false) : _ascending(ascending) { }
             bool operator() (HostileReference const* a, HostileReference const* b) const
             {
-                return m_ascending ? a->getThreat() < b->getThreat() : a->getThreat() > b->getThreat();
+                return _ascending ? a->getThreat() < b->getThreat() : a->getThreat() > b->getThreat();
             }
         private:
-            const bool m_ascending;
+            const bool _ascending;
     };
 }
 #endif

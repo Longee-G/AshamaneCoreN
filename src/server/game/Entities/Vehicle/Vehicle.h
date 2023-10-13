@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -67,7 +67,9 @@ class TC_GAME_API Vehicle : public TransportBase
         Position const& GetLastShootPos() const { return _lastShootPos; }
 
         SeatMap::iterator GetSeatIteratorForPassenger(Unit* passenger);
-        SeatMap Seats;                                      ///< The collection of all seats on the vehicle. Including vacant ones.
+
+        // The collection of all seats on the vehicle. Including vacant ones.
+        SeatMap _seats;                                      
 
         VehicleSeatEntry const* GetSeatForPassenger(Unit const* passenger) const;
 
@@ -81,7 +83,8 @@ class TC_GAME_API Vehicle : public TransportBase
 
     protected:
         friend class VehicleJoinEvent;
-        uint32 UsableSeatNum;                               ///< Number of seats that match VehicleSeatEntry::UsableByPlayer, used for proper display flags
+        ///< Number of seats that match VehicleSeatEntry::UsableByPlayer, used for proper display flags
+        uint32 UsableSeatNum;                               
 
     private:
         enum Status
@@ -132,7 +135,8 @@ class TC_GAME_API VehicleJoinEvent : public BasicEvent
 {
     friend class Vehicle;
     protected:
-        VehicleJoinEvent(Unit* v, Unit* u) : VehicleTargetBase(v), Passenger(u), Seat(VehicleTargetBase->GetVehicleKit()->Seats.end()) { ASSERT(VehicleTargetBase->GetVehicleKit()); }
+        VehicleJoinEvent(Unit* v, Unit* u) : VehicleTargetBase(v), Passenger(u),
+            Seat(VehicleTargetBase->GetVehicleKit()->_seats.end()) { ASSERT(VehicleTargetBase->GetVehicleKit()); }
         bool Execute(uint64, uint32) override;
         void Abort(uint64) override;
 

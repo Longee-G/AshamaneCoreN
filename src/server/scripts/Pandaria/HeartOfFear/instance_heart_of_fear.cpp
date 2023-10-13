@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -353,5 +353,5 @@ class instance_heart_of_fear : public InstanceMapScript
 
 void AddSC_instance_heart_of_fear()
 {
-    new instance_heart_of_fear();
+    //new instance_heart_of_fear();
 }

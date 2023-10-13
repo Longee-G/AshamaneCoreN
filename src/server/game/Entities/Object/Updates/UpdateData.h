@@ -28,7 +28,7 @@ class WorldPacket;
 
 enum OBJECT_UPDATE_TYPE
 {
-    UPDATETYPE_VALUES               = 0,
+    UPDATETYPE_VALUES               = 0,            //
     UPDATETYPE_CREATE_OBJECT        = 1,
     UPDATETYPE_CREATE_OBJECT2       = 2,
     UPDATETYPE_OUT_OF_RANGE_OBJECTS = 3,
@@ -59,30 +59,30 @@ enum OBJECT_UPDATE_FLAGS
 
 class UpdateData
 {
-    public:
-        UpdateData(uint32 map);
-        UpdateData(UpdateData&& right) : m_map(right.m_map), m_blockCount(right.m_blockCount),
-            m_outOfRangeGUIDs(std::move(right.m_outOfRangeGUIDs)),
-            m_data(std::move(right.m_data))
-        {
-        }
+public:
+    UpdateData(uint32 map);
+    UpdateData(UpdateData&& right) : _map(right._map), _blockCount(right._blockCount),
+        _outOfRangeGUIDs(std::move(right._outOfRangeGUIDs)),
+        _data(std::move(right._data))
+    {
+    }
 
-        void AddOutOfRangeGUID(GuidSet& guids);
-        void AddOutOfRangeGUID(ObjectGuid guid);
-        void AddUpdateBlock(const ByteBuffer &block);
-        bool BuildPacket(WorldPacket* packet);
-        bool HasData() const { return m_blockCount > 0 || !m_outOfRangeGUIDs.empty(); }
-        void Clear();
+    void AddOutOfRangeGUID(GuidSet& guids);
+    void AddOutOfRangeGUID(ObjectGuid guid);
+    void AddUpdateBlock(const ByteBuffer &block);
+    bool BuildPacket(WorldPacket* packet);
+    bool HasData() const { return _blockCount > 0 || !_outOfRangeGUIDs.empty(); }
+    void Clear();
 
-        GuidSet const& GetOutOfRangeGUIDs() const { return m_outOfRangeGUIDs; }
+    GuidSet const& GetOutOfRangeGUIDs() const { return _outOfRangeGUIDs; }
 
-    protected:
-        uint32 m_map;
-        uint32 m_blockCount;
-        GuidSet m_outOfRangeGUIDs;
-        ByteBuffer m_data;
+protected:
+    uint32 _map;                   // object's current map id
+    uint32 _blockCount;
+    GuidSet _outOfRangeGUIDs;
+    ByteBuffer _data;
 
-        UpdateData(UpdateData const& right) = delete;
-        UpdateData& operator=(UpdateData const& right) = delete;
+    UpdateData(UpdateData const& right) = delete;
+    UpdateData& operator=(UpdateData const& right) = delete;
 };
 #endif

@@ -781,6 +781,12 @@ void Garrison::RewardMission(Mission* mission, bool withOvermaxReward)
     }
 }
 
+// 
+void Garrison::SendGarrisonShipmentLandingPage()
+{
+    // TODO: 
+}
+
 Map* Garrison::FindMap() const
 {
     return sMapMgr->FindMap(_siteLevel->MapID, _owner->GetGUID().GetCounter());

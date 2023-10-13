@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -66,7 +66,7 @@ private:
 
     ObjectGuid m_player1;
     ObjectGuid m_player2;
-    ObjectGuid m_wildBattlePet;
+    ObjectGuid _wildBattlePet;
 
     PetBattleTrapStatus trapStatus[2];
 };

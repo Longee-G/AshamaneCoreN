@@ -474,11 +474,11 @@ enum CriteriaTypes : uint8
     CRITERIA_TYPE_REACH_AREATRIGGER_WITH_ACTIONSET      = 153,
     // 154 - unused (Legion - 23420)
     CRITERIA_TYPE_OWN_BATTLE_PET                        = 155,
-    CRITERIA_TYPE_OWN_BATTLE_PET_COUNT                  = 156,
+    CRITERIA_TYPE_OWN_BATTLE_PET_COUNT                  = 156,  // battle pet count change
     CRITERIA_TYPE_CAPTURE_BATTLE_PET                    = 157,
     CRITERIA_TYPE_WIN_PET_BATTLE                        = 158,
     // 159 - 2 criterias (22312,22314), unused (Legion - 23420)
-    CRITERIA_TYPE_LEVEL_BATTLE_PET                      = 160,
+    CRITERIA_TYPE_LEVEL_BATTLE_PET                      = 160, // pet levelup ?
     CRITERIA_TYPE_CAPTURE_BATTLE_PET_CREDIT             = 161, // triggers a quest credit
     CRITERIA_TYPE_LEVEL_BATTLE_PET_CREDIT               = 162, // triggers a quest credit
     CRITERIA_TYPE_ENTER_AREA                            = 163, // triggers a quest credit

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -511,6 +511,9 @@ class TC_GAME_API Battleground
         // because BattleGrounds with different types and same level range has different m_BracketId
         uint8 GetUniqueBracketId() const;
 
+        // query countdown timer from Battleground
+        void QueryCountdownTimer(Player* player, uint32 timerType);
+
     protected:
         // this method is called, when BG cannot spawn its own spirit guide, or something is wrong, It correctly ends Battleground
         void EndNow();
@@ -571,7 +574,7 @@ class TC_GAME_API Battleground
         std::map<ObjectGuid, GuidVector> m_ReviveQueue;
 
         // these are important variables used for starting messages
-        uint8 m_Events;
+        uint8 _events;
         BattlegroundStartTimeIntervals  StartDelayTimes[BG_STARTING_EVENT_COUNT];
         // this must be filled in constructors!
         uint32 StartMessageIds[BG_STARTING_EVENT_COUNT];

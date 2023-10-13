@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  *
@@ -134,9 +134,9 @@ bool GrandChampionsOutVehicle(Creature* me)
 
     if (pGrandChampion1 && pGrandChampion2 && pGrandChampion3)
     {
-        if (!pGrandChampion1->m_movementInfo.transport.guid &&
-            !pGrandChampion2->m_movementInfo.transport.guid &&
-            !pGrandChampion3->m_movementInfo.transport.guid)
+        if (!pGrandChampion1->_movementInfo.transport.guid &&
+            !pGrandChampion2->_movementInfo.transport.guid &&
+            !pGrandChampion3->_movementInfo.transport.guid)
             return true;
     }
 
@@ -396,7 +396,7 @@ public:
                 }
             }else uiPhaseTimer -= uiDiff;
 
-            if (!UpdateVictim() || !me->m_movementInfo.transport.guid.IsEmpty())
+            if (!UpdateVictim() || !me->_movementInfo.transport.guid.IsEmpty())
                 return;
 
             if (uiInterceptTimer <= uiDiff)
@@ -544,7 +544,7 @@ public:
                 uiFireBallTimer = 5000;
             } else uiFireBallTimer -= uiDiff;
 
-            if (!UpdateVictim() || !me->m_movementInfo.transport.guid.IsEmpty())
+            if (!UpdateVictim() || !me->_movementInfo.transport.guid.IsEmpty())
                 return;
 
             if (uiFireBallTimer <= uiDiff)
@@ -686,7 +686,7 @@ public:
                 }
             }else uiPhaseTimer -= uiDiff;
 
-            if (!UpdateVictim() || !me->m_movementInfo.transport.guid.IsEmpty())
+            if (!UpdateVictim() || !me->_movementInfo.transport.guid.IsEmpty())
                 return;
 
             if (uiChainLightningTimer <= uiDiff)
@@ -836,7 +836,7 @@ public:
                 }
             }else uiPhaseTimer -= uiDiff;
 
-            if (!UpdateVictim() || !me->m_movementInfo.transport.guid.IsEmpty())
+            if (!UpdateVictim() || !me->_movementInfo.transport.guid.IsEmpty())
                 return;
 
             if (uiLightningArrowsTimer <= uiDiff)
@@ -988,7 +988,7 @@ public:
                 }
             } else uiPhaseTimer -= uiDiff;
 
-            if (!UpdateVictim() || !me->m_movementInfo.transport.guid.IsEmpty())
+            if (!UpdateVictim() || !me->_movementInfo.transport.guid.IsEmpty())
                 return;
 
             if (uiEviscerateTimer <= uiDiff)

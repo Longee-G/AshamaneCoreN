@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -225,6 +225,7 @@ public:
     }
 };
 
+// 153268, 153276
 class spell_exhume_the_crypts : public SpellScriptLoader
 {
 public:
@@ -236,12 +237,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_EXHUME_THE_CRYPTS_1))
-                return false;
-
-            if (!sSpellMgr->GetSpellInfo(SPELL_EXHUME_THE_CRYPTS_2))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_EXHUME_THE_CRYPTS_1 , SPELL_EXHUME_THE_CRYPTS_2 });
         }
 
         void SelectTarget(std::list<WorldObject*>& targets)
@@ -256,7 +252,8 @@ public:
 
         void Register() override
         {
-            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_exhume_the_crypts_SpellScript::SelectTarget, EFFECT_0, TARGET_UNIT_SRC_AREA_ENTRY);
+
+            //OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_exhume_the_crypts_SpellScript::SelectTarget, EFFECT_0, 22);
             OnEffectHitTarget += SpellEffectFn(spell_exhume_the_crypts_SpellScript::HandleScriptEffect, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
         }
 
@@ -388,7 +385,7 @@ class spell_water_burst_targeting : public SpellScriptLoader
 
             void Register() override
             {
-                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_water_burst_targeting_SpellScript::SelectTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENTRY);
+                //OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_water_burst_targeting_SpellScript::SelectTargets, EFFECT_0, 22);
                 OnEffectHitTarget += SpellEffectFn(spell_water_burst_targeting_SpellScript::HandleForceCast, EFFECT_0, SPELL_EFFECT_FORCE_CAST);
             }
         };

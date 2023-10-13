@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -68,8 +68,8 @@ void WorldSession::HandleMoveWorldportAck()
     InstanceTemplate const* mInstance = sObjectMgr->GetInstanceTemplate(loc.GetMapId());
 
     // reset instance validity, except if going to an instance inside an instance
-    if (GetPlayer()->m_InstanceValid == false && !mInstance)
-        GetPlayer()->m_InstanceValid = true;
+    if (GetPlayer()->_instanceValid == false && !mInstance)
+        GetPlayer()->_instanceValid = true;
 
     Map* oldMap = GetPlayer()->GetMap();
     Map* newMap = sMapMgr->CreateMap(loc.GetMapId(), GetPlayer());
@@ -86,7 +86,7 @@ void WorldSession::HandleMoveWorldportAck()
     if (!newMap || newMap->CannotEnter(GetPlayer()))
     {
         TC_LOG_ERROR("network", "Map %d (%s) could not be created for %s (%s), porting player to homebind", loc.GetMapId(), newMap ? newMap->GetMapName() : "Unknown", GetPlayer()->GetGUID().ToString().c_str(), GetPlayer()->GetName().c_str());
-        GetPlayer()->TeleportTo(GetPlayer()->m_homebindMapId, GetPlayer()->m_homebindX, GetPlayer()->m_homebindY, GetPlayer()->m_homebindZ, GetPlayer()->GetOrientation());
+        GetPlayer()->TeleportTo(GetPlayer()->_homebindMapId, GetPlayer()->_homebindX, GetPlayer()->_homebindY, GetPlayer()->_homebindZ, GetPlayer()->GetOrientation());
         return;
     }
 
@@ -100,7 +100,7 @@ void WorldSession::HandleMoveWorldportAck()
     GetPlayer()->SetMap(newMap);
 
     WorldPackets::Movement::ResumeToken resumeToken;
-    resumeToken.SequenceIndex = _player->m_movementCounter;
+    resumeToken.SequenceIndex = _player->_movementCounter;
     resumeToken.Reason = seamlessTeleport ? 2 : 1;
     SendPacket(resumeToken.Write());
 
@@ -113,7 +113,7 @@ void WorldSession::HandleMoveWorldportAck()
             GetPlayer()->GetName().c_str(), GetPlayer()->GetGUID().ToString().c_str(), loc.GetMapId(), newMap ? newMap->GetMapName() : "Unknown");
         GetPlayer()->ResetMap();
         GetPlayer()->SetMap(oldMap);
-        GetPlayer()->TeleportTo(GetPlayer()->m_homebindMapId, GetPlayer()->m_homebindX, GetPlayer()->m_homebindY, GetPlayer()->m_homebindZ, GetPlayer()->GetOrientation());
+        GetPlayer()->TeleportTo(GetPlayer()->_homebindMapId, GetPlayer()->_homebindX, GetPlayer()->_homebindY, GetPlayer()->_homebindZ, GetPlayer()->GetOrientation());
         return;
     }
 
@@ -192,7 +192,7 @@ void WorldSession::HandleMoveWorldportAck()
 
         // check if instance is valid
         if (!GetPlayer()->CheckInstanceValidity(false))
-            GetPlayer()->m_InstanceValid = false;
+            GetPlayer()->_instanceValid = false;
 
         // instance mounting is handled in InstanceTemplate
         allowMount = mInstance->AllowMount;
@@ -257,7 +257,7 @@ void WorldSession::HandleMoveTeleportAck(WorldPackets::Movement::MoveTeleportAck
 {
     TC_LOG_DEBUG("network", "CMSG_MOVE_TELEPORT_ACK: Guid: %s, Sequence: %u, Time: %u", packet.MoverGUID.ToString().c_str(), packet.AckIndex, packet.MoveTime);
 
-    Player* plMover = _player->m_unitMovedByMe->ToPlayer();
+    Player* plMover = _player->_unitMovedByMe->ToPlayer();
 
     if (!plMover || !plMover->IsBeingTeleportedNear())
         return;
@@ -303,7 +303,7 @@ void WorldSession::HandleMovementOpcodes(WorldPackets::Movement::ClientPlayerMov
 
 void WorldSession::HandleMovementOpcode(OpcodeClient opcode, MovementInfo& movementInfo)
 {
-    Unit* mover = _player->m_unitMovedByMe;
+    Unit* mover = _player->_unitMovedByMe;
 
     ASSERT(mover != nullptr);                      // there must always be a mover
 
@@ -374,7 +374,7 @@ void WorldSession::HandleMovementOpcode(OpcodeClient opcode, MovementInfo& movem
         }
     }
     else if (plrMover && plrMover->GetTransport())                // if we were on a transport, leave
-        plrMover->m_transport->RemovePassenger(plrMover);
+        plrMover->_transport->RemovePassenger(plrMover);
 
     // fall damage generation (ignore in flight case that can be triggered also at lags in moment teleportation to another map).
     if (opcode == CMSG_MOVE_FALL_LAND && plrMover && !plrMover->IsInFlight())
@@ -388,14 +388,14 @@ void WorldSession::HandleMovementOpcode(OpcodeClient opcode, MovementInfo& movem
 
     uint32 mstime = getMSTime();
     /*----------------------*/
-    if (m_clientTimeDelay == 0)
-        m_clientTimeDelay = mstime - movementInfo.time;
+    if (_clientTimeDelay == 0)
+        _clientTimeDelay = mstime - movementInfo.time;
 
     /* process position-change */
-    movementInfo.time = movementInfo.time + m_clientTimeDelay + MOVEMENT_PACKET_TIME_DELAY;
+    movementInfo.time = movementInfo.time + _clientTimeDelay + MOVEMENT_PACKET_TIME_DELAY;
 
     movementInfo.guid = mover->GetGUID();
-    mover->m_movementInfo = movementInfo;
+    mover->_movementInfo = movementInfo;
 
     // Some vehicles allow the passenger to turn by himself
     if (Vehicle* vehicle = mover->GetVehicle())
@@ -417,7 +417,7 @@ void WorldSession::HandleMovementOpcode(OpcodeClient opcode, MovementInfo& movem
     mover->UpdatePosition(movementInfo.pos);
 
     WorldPackets::Movement::MoveUpdate moveUpdate;
-    moveUpdate.Status = &mover->m_movementInfo;
+    moveUpdate.Status = &mover->_movementInfo;
     mover->SendMessageToSet(moveUpdate.Write(), _player);
 
     if (plrMover)                                            // nothing is charmed, or player charmed
@@ -543,21 +543,21 @@ void WorldSession::HandleForceSpeedChangeAck(WorldPackets::Movement::MovementSpe
 void WorldSession::HandleSetActiveMoverOpcode(WorldPackets::Movement::SetActiveMover& packet)
 {
     if (GetPlayer()->IsInWorld())
-        if (_player->m_unitMovedByMe->GetGUID() != packet.ActiveMover)
-            TC_LOG_DEBUG("network", "HandleSetActiveMoverOpcode: incorrect mover guid: mover is %s and should be %s" , packet.ActiveMover.ToString().c_str(), _player->m_unitMovedByMe->GetGUID().ToString().c_str());
+        if (_player->_unitMovedByMe->GetGUID() != packet.ActiveMover)
+            TC_LOG_DEBUG("network", "HandleSetActiveMoverOpcode: incorrect mover guid: mover is %s and should be %s" , packet.ActiveMover.ToString().c_str(), _player->_unitMovedByMe->GetGUID().ToString().c_str());
 }
 
 void WorldSession::HandleMoveKnockBackAck(WorldPackets::Movement::MoveKnockBackAck& movementAck)
 {
     GetPlayer()->ValidateMovementInfo(&movementAck.Ack.Status);
 
-    if (_player->m_unitMovedByMe->GetGUID() != movementAck.Ack.Status.guid)
+    if (_player->_unitMovedByMe->GetGUID() != movementAck.Ack.Status.guid)
         return;
 
-    _player->m_movementInfo = movementAck.Ack.Status;
+    _player->_movementInfo = movementAck.Ack.Status;
 
     WorldPackets::Movement::MoveUpdateKnockBack updateKnockBack;
-    updateKnockBack.Status = &_player->m_movementInfo;
+    updateKnockBack.Status = &_player->_movementInfo;
     _player->SendMessageToSet(updateKnockBack.Write(), false);
 }
 
@@ -593,7 +593,7 @@ void WorldSession::HandleMoveSplineDoneOpcode(WorldPackets::Movement::MoveSpline
     // 2) switch from one map to other in case multim-map taxi path
     // we need process only (1)
 
-    uint32 curDest = GetPlayer()->m_taxi.GetTaxiDestination();
+    uint32 curDest = GetPlayer()->_taxi.GetTaxiDestination();
     if (curDest)
     {
         TaxiNodesEntry const* curDestNode = sTaxiNodesStore.LookupEntry(curDest);
@@ -618,7 +618,7 @@ void WorldSession::HandleMoveSplineDoneOpcode(WorldPackets::Movement::MoveSpline
     }
 
     // at this point only 1 node is expected (final destination)
-    if (GetPlayer()->m_taxi.GetPath().size() != 1)
+    if (GetPlayer()->_taxi.GetPath().size() != 1)
         return;
 
     GetPlayer()->CleanupAfterTaxiFlight();

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -375,12 +375,12 @@ class npc_sinclari_vh : public CreatureScript
                     me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
                     _instance->SetData(DATA_MAIN_EVENT_STATE, SPECIAL);
                     ScheduleIntro();
-                    player->PlayerTalkClass->SendCloseGossip();
+                    player->playerTalkClass->SendCloseGossip();
                 }
                 else if (menuId == GOSSIP_MENU_SEND_ME_IN && gossipListId == 0)
                 {
                     me->CastSpell(player, SPELL_TELEPORT_PLAYER, true);
-                    player->PlayerTalkClass->SendCloseGossip();
+                    player->playerTalkClass->SendCloseGossip();
                 }
             }
 

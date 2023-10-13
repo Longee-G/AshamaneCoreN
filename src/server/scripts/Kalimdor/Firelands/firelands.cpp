@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -2604,7 +2604,7 @@ class npc_egg_pile : public CreatureScript
                                 Creature* egg = Trinity::Containers::SelectRandomContainerElement(eggs);
                                 egg->CastSpell(egg, SPELL_SUMMON_SMOULDERING_HATCHLING, TRIGGERED_FULL_MASK);
                                 egg->SetDisplayId(MODEL_INVISIBLE_STALKER);
-                                egg->m_Events.AddEvent(new RespawnEggEvent(egg), egg->m_Events.CalculateTime(5000));
+                                egg->_events.AddEvent(new RespawnEggEvent(egg), egg->_events.CalculateTime(5000));
                             }
                             if (_callHatchlingSpell)
                                 DoCastAOE(_callHatchlingSpell, true);
@@ -2697,7 +2697,7 @@ class go_firelands_circle_of_thorns_portal : public GameObjectScript
             return true;
         }
 };
-//volcanus est un pnj de l'encounter de la zone speciale debloqu�e par la quete legendaire
+//volcanus est un pnj de l'encounter de la zone speciale debloqu閑 par la quete legendaire
 class npc_firelands_volcanus : public CreatureScript
 {
     public:
@@ -2827,17 +2827,13 @@ class spell_alysrazor_turn_monstrosity : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellInfo*/) override
             {
-                if (!sSpellMgr->GetSpellInfo(SPELL_GENERIC_DUMMY_CAST))
-                    return false;
-                if (!sSpellMgr->GetSpellInfo(SPELL_KNOCKBACK_RIGHT))
-                    return false;
-                if (!sSpellMgr->GetSpellInfo(SPELL_KNOCKBACK_LEFT))
-                    return false;
-                if (!sSpellMgr->GetSpellInfo(SPELL_KNOCKBACK_FORWARD))
-                    return false;
-                if (!sSpellMgr->GetSpellInfo(SPELL_KNOCKBACK_BACK))
-                    return false;
-                return true;
+                return ValidateSpellInfo({
+                    SPELL_GENERIC_DUMMY_CAST,
+                    SPELL_KNOCKBACK_RIGHT,
+                    SPELL_KNOCKBACK_LEFT,
+                    SPELL_KNOCKBACK_FORWARD,
+                    SPELL_KNOCKBACK_BACK
+                    });
             }
 
             void KnockBarrage(SpellEffIndex effIndex)

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  *
@@ -575,5 +575,5 @@ void AddSC_boss_archimonde()
     new npc_doomfire();
     new npc_doomfire_targetting();
     new npc_ancient_wisp();
-    new spell_archimonde_drain_world_tree_dummy();
+    //new spell_archimonde_drain_world_tree_dummy();
 }

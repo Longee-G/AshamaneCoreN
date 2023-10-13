@@ -439,18 +439,18 @@ class npc_highmaul_gorian_guardsman : public CreatureScript
         {
             npc_highmaul_gorian_guardsmanAI(Creature* creature) : ScriptedAI(creature) { }
 
-            EventMap m_Events;
+            EventMap _events;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
             }
 
             void EnterCombat(Unit* /*attacker*/) override
             {
-                m_Events.ScheduleEvent(eEvents::EventBloodyCleave, urand(4000, 7000));
-                m_Events.ScheduleEvent(eEvents::EventChainGrip, urand(3000, 8000));
-                m_Events.ScheduleEvent(eEvents::EventStaggeringBlow, urand(6000, 10000));
+                _events.ScheduleEvent(eEvents::EventBloodyCleave, urand(4000, 7000));
+                _events.ScheduleEvent(eEvents::EventChainGrip, urand(3000, 8000));
+                _events.ScheduleEvent(eEvents::EventStaggeringBlow, urand(6000, 10000));
             }
 
             void SpellHitTarget(Unit* target, SpellInfo const* spellInfo) override
@@ -485,26 +485,26 @@ class npc_highmaul_gorian_guardsman : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvents::EventBloodyCleave:
                         if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
                             me->CastSpell(target, eSpells::SpellBloodyCleave, true);
-                        m_Events.ScheduleEvent(eEvents::EventBloodyCleave, urand(10000, 15000));
+                        _events.ScheduleEvent(eEvents::EventBloodyCleave, urand(10000, 15000));
                         break;
                     case eEvents::EventChainGrip:
                         me->CastSpell(me, eSpells::ChainGripSearcher, true);
-                        m_Events.ScheduleEvent(eEvents::EventChainGrip, urand(8000, 12000));
+                        _events.ScheduleEvent(eEvents::EventChainGrip, urand(8000, 12000));
                         break;
                     case eEvents::EventStaggeringBlow:
                         if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
                             me->CastSpell(target, eSpells::SpellStaggeringBlow, true);
-                        m_Events.ScheduleEvent(eEvents::EventStaggeringBlow, urand(15000, 20000));
+                        _events.ScheduleEvent(eEvents::EventStaggeringBlow, urand(15000, 20000));
                         break;
                     default:
                         break;
@@ -544,11 +544,11 @@ class npc_highmaul_night_twisted_devout : public CreatureScript
         {
             npc_highmaul_night_twisted_devoutAI(Creature* creature) : ScriptedAI(creature) { }
 
-            EventMap m_Events;
+            EventMap _events;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
 
                 if (me->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC) ||
                     me->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE))
@@ -563,8 +563,8 @@ class npc_highmaul_night_twisted_devout : public CreatureScript
                     return;
                 }
 
-                m_Events.ScheduleEvent(eEvents::EventTaintedClaws, urand(6000, 9000));
-                m_Events.ScheduleEvent(eEvents::EventDevour, urand(8000, 10000));
+                _events.ScheduleEvent(eEvents::EventTaintedClaws, urand(6000, 9000));
+                _events.ScheduleEvent(eEvents::EventDevour, urand(8000, 10000));
 
                 if (Creature* l_IronGrunt = me->FindNearestCreature(eHighmaulCreatures::IronGrunt, 3.0f))
                 {
@@ -582,18 +582,18 @@ class npc_highmaul_night_twisted_devout : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvents::EventTaintedClaws:
                     {
                         if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
                             me->CastSpell(target, eSpells::SpellTaintedClaws, true);
-                        m_Events.ScheduleEvent(eEvents::EventTaintedClaws, urand(8000, 11000));
+                        _events.ScheduleEvent(eEvents::EventTaintedClaws, urand(8000, 11000));
                         break;
                     }
                     case eEvents::EventDevour:
@@ -610,7 +610,7 @@ class npc_highmaul_night_twisted_devout : public CreatureScript
                             });
                         }
 
-                        m_Events.ScheduleEvent(eEvents::EventDevour, urand(8000, 11000));
+                        _events.ScheduleEvent(eEvents::EventDevour, urand(8000, 11000));
                         break;
                     }
                     default:
@@ -653,20 +653,20 @@ class npc_highmaul_gorian_runemaster : public CreatureScript
         {
             npc_highmaul_gorian_runemasterAI(Creature* creature) : ScriptedAI(creature) { }
 
-            EventMap m_Events;
+            EventMap _events;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
 
                 me->RemoveAllAreaTriggers();
             }
 
             void EnterCombat(Unit* /*attacker*/) override
             {
-                m_Events.ScheduleEvent(eEvents::EventRuneOfDestruction, urand(6000, 9000));
-                m_Events.ScheduleEvent(eEvents::EventRuneOfDisintegration, urand(9000, 12000));
-                m_Events.ScheduleEvent(eEvents::EventRuneOfUnmaking, urand(4000, 6000));
+                _events.ScheduleEvent(eEvents::EventRuneOfDestruction, urand(6000, 9000));
+                _events.ScheduleEvent(eEvents::EventRuneOfDisintegration, urand(9000, 12000));
+                _events.ScheduleEvent(eEvents::EventRuneOfUnmaking, urand(4000, 6000));
             }
 
             void UpdateAI(uint32 const diff) override
@@ -674,26 +674,26 @@ class npc_highmaul_gorian_runemaster : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvents::EventRuneOfDestruction:
                         me->CastSpell(me, eSpells::SpellRuneOfDestruction, false);
-                        m_Events.ScheduleEvent(eEvents::EventRuneOfDestruction, urand(9000, 12000));
+                        _events.ScheduleEvent(eEvents::EventRuneOfDestruction, urand(9000, 12000));
                         break;
                     case eEvents::EventRuneOfDisintegration:
                         if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_RANDOM))
                             me->CastSpell(target, eSpells::SpellRuneOfDisintegration, false);
-                        m_Events.ScheduleEvent(eEvents::EventRuneOfDisintegration, urand(12000, 15000));
+                        _events.ScheduleEvent(eEvents::EventRuneOfDisintegration, urand(12000, 15000));
                         break;
                     case eEvents::EventRuneOfUnmaking:
                         if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
                             me->CastSpell(target, eSpells::SpellRuneOfUnmaking, false);
-                        m_Events.ScheduleEvent(eEvents::EventRuneOfUnmaking, urand(6000, 9000));
+                        _events.ScheduleEvent(eEvents::EventRuneOfUnmaking, urand(6000, 9000));
                         break;
                     default:
                         break;
@@ -730,16 +730,16 @@ class npc_highmaul_gorian_enforcer : public CreatureScript
         {
             npc_highmaul_gorian_enforcerAI(Creature* creature) : ScriptedAI(creature) { }
 
-            EventMap m_Events;
+            EventMap _events;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
             }
 
             void EnterCombat(Unit* /*attacker*/) override
             {
-                m_Events.ScheduleEvent(eEvent::EventMeatGrinder, urand(6000, 8000));
+                _events.ScheduleEvent(eEvent::EventMeatGrinder, urand(6000, 8000));
             }
 
             void UpdateAI(uint32 const diff) override
@@ -747,16 +747,16 @@ class npc_highmaul_gorian_enforcer : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvent::EventMeatGrinder:
                         me->CastSpell(me, eSpell::SpellMeatGrinder, false);
-                        m_Events.ScheduleEvent(eEvent::EventMeatGrinder, urand(12000, 15000));
+                        _events.ScheduleEvent(eEvent::EventMeatGrinder, urand(12000, 15000));
                         break;
                     default:
                         break;
@@ -793,11 +793,11 @@ class npc_highmaul_underbelly_vagrant : public CreatureScript
         {
             npc_highmaul_underbelly_vagrantAI(Creature* creature) : ScriptedAI(creature) { }
 
-            EventMap m_Events;
+            EventMap _events;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
 
                 AddTimedDelayedOperation(1 * TimeConstants::IN_MILLISECONDS, [this]() -> void { me->CastSpell(me, eSpells::SpellLooting, false); });
             }
@@ -809,7 +809,7 @@ class npc_highmaul_underbelly_vagrant : public CreatureScript
 
             void EnterCombat(Unit* /*attacker*/) override
             {
-                m_Events.ScheduleEvent(eEvent::EventPilfer, urand(2000, 4000));
+                _events.ScheduleEvent(eEvent::EventPilfer, urand(2000, 4000));
 
                 m_TimedDelayedOperations.clear();
             }
@@ -821,17 +821,17 @@ class npc_highmaul_underbelly_vagrant : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvent::EventPilfer:
                         if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_RANDOM))
                             me->CastSpell(target, eSpells::SpellPilfer, false);
-                        m_Events.ScheduleEvent(eEvent::EventPilfer, urand(2000, 4000));
+                        _events.ScheduleEvent(eEvent::EventPilfer, urand(2000, 4000));
                         break;
                     default:
                         break;
@@ -870,17 +870,17 @@ class npc_highmaul_gorian_sorcerer : public CreatureScript
         {
             npc_highmaul_gorian_sorcererAI(Creature* creature) : ScriptedAI(creature) { }
 
-            EventMap m_Events;
+            EventMap _events;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
             }
 
             void EnterCombat(Unit* /*attacker*/) override
             {
-                m_Events.ScheduleEvent(eEvents::EventArcaneForce, urand(6000, 8000));
-                m_Events.ScheduleEvent(eEvents::EventArcaneBolt, urand(7000, 10000));
+                _events.ScheduleEvent(eEvents::EventArcaneForce, urand(6000, 8000));
+                _events.ScheduleEvent(eEvents::EventArcaneBolt, urand(7000, 10000));
             }
 
             void UpdateAI(uint32 const diff) override
@@ -888,21 +888,21 @@ class npc_highmaul_gorian_sorcerer : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvents::EventArcaneForce:
                         me->CastSpell(me, eSpells::SpellArcaneForce, false);
-                        m_Events.ScheduleEvent(eEvents::EventArcaneForce, urand(20000, 25000));
+                        _events.ScheduleEvent(eEvents::EventArcaneForce, urand(20000, 25000));
                         break;
                     case eEvents::EventArcaneBolt:
                         if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
                             me->CastSpell(target, eSpells::SpellArcaneBolt, false);
-                        m_Events.ScheduleEvent(eEvents::EventArcaneBolt, urand(7000, 10000));
+                        _events.ScheduleEvent(eEvents::EventArcaneBolt, urand(7000, 10000));
                         break;
                     default:
                         break;
@@ -938,16 +938,16 @@ class npc_highmaul_night_twisted_brute : public CreatureScript
         {
             npc_highmaul_night_twisted_bruteAI(Creature* creature) : ScriptedAI(creature) { }
 
-            EventMap m_Events;
+            EventMap _events;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
             }
 
             void EnterCombat(Unit* attacker) override
             {
-                m_Events.ScheduleEvent(eEvent::EventSurgeOfDarkness, urand(8000, 12000));
+                _events.ScheduleEvent(eEvent::EventSurgeOfDarkness, urand(8000, 12000));
 
                 std::list<Creature*> l_IronGrunts;
                 me->GetCreatureListWithEntryInGrid(l_IronGrunts, eHighmaulCreatures::IronGrunt, 35.0f);
@@ -978,16 +978,16 @@ class npc_highmaul_night_twisted_brute : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvent::EventSurgeOfDarkness:
                         me->CastSpell(me, eSpell::SpellSurgeOfDarkness, false);
-                        m_Events.ScheduleEvent(eEvent::EventSurgeOfDarkness, urand(8000, 11000));
+                        _events.ScheduleEvent(eEvent::EventSurgeOfDarkness, urand(8000, 11000));
                         break;
                     default:
                         break;
@@ -1026,17 +1026,17 @@ class npc_highmaul_night_twisted_soothsayer : public CreatureScript
         {
             npc_highmaul_night_twisted_soothsayerAI(Creature* creature) : ScriptedAI(creature) { }
 
-            EventMap m_Events;
+            EventMap _events;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
             }
 
             void EnterCombat(Unit* /*attacker*/) override
             {
-                m_Events.ScheduleEvent(eEvents::EventVoidStorm, urand(6000, 9000));
-                m_Events.ScheduleEvent(eEvents::EventVoidBolt, urand(4000, 7000));
+                _events.ScheduleEvent(eEvents::EventVoidStorm, urand(6000, 9000));
+                _events.ScheduleEvent(eEvents::EventVoidBolt, urand(4000, 7000));
             }
 
             void UpdateAI(uint32 const diff) override
@@ -1044,22 +1044,22 @@ class npc_highmaul_night_twisted_soothsayer : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvents::EventVoidStorm:
                         if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_RANDOM))
                             me->CastSpell(target, eSpells::SpellVoidStorm, false);
-                        m_Events.ScheduleEvent(eEvents::EventVoidStorm, urand(9000, 12000));
+                        _events.ScheduleEvent(eEvents::EventVoidStorm, urand(9000, 12000));
                         break;
                     case eEvents::EventVoidBolt:
                         if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
                             me->CastSpell(target, eSpells::SpellVoidBolt, false);
-                        m_Events.ScheduleEvent(eEvents::EventVoidBolt, urand(8000, 11000));
+                        _events.ScheduleEvent(eEvents::EventVoidBolt, urand(8000, 11000));
                         break;
                     default:
                         break;
@@ -1095,16 +1095,16 @@ class npc_highmaul_void_aberration : public CreatureScript
         {
             npc_highmaul_void_aberrationAI(Creature* creature) : ScriptedAI(creature) { }
 
-            EventMap m_Events;
+            EventMap _events;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
             }
 
             void EnterCombat(Unit* /*attacker*/) override
             {
-                m_Events.ScheduleEvent(eEvent::EventVoidSoul, urand(8000, 12000));
+                _events.ScheduleEvent(eEvent::EventVoidSoul, urand(8000, 12000));
             }
 
             void UpdateAI(uint32 const diff) override
@@ -1112,17 +1112,17 @@ class npc_highmaul_void_aberration : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvent::EventVoidSoul:
                         if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_RANDOM))
                             me->CastSpell(target, eSpell::SpellVoidSoul, true);
-                        m_Events.ScheduleEvent(eEvent::EventVoidSoul, urand(8000, 11000));
+                        _events.ScheduleEvent(eEvent::EventVoidSoul, urand(8000, 11000));
                         break;
                     default:
                         break;
@@ -1167,16 +1167,16 @@ class npc_highmaul_krush : public CreatureScript
                     creature->DisappearAndDie();
             }
 
-            EventMap m_Events;
+            EventMap _events;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
             }
 
             void EnterCombat(Unit* /*attacker*/) override
             {
-                m_Events.ScheduleEvent(eEvent::EventBoarsRush, 5000);
+                _events.ScheduleEvent(eEvent::EventBoarsRush, 5000);
             }
 
             void SpellHitTarget(Unit* target, SpellInfo const* spellInfo) override
@@ -1205,17 +1205,17 @@ class npc_highmaul_krush : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvent::EventBoarsRush:
                         me->CastSpell(me, eSpells::SpellBoarsRushSearcher, true);
                         me->AddUnitState(UnitState::UNIT_STATE_ROOT);
-                        m_Events.ScheduleEvent(eEvent::EventBoarsRush, 25000);
+                        _events.ScheduleEvent(eEvent::EventBoarsRush, 25000);
                         break;
                     default:
                         break;
@@ -1271,7 +1271,7 @@ class npc_highmaul_iron_flame_technician : public CreatureScript
                 m_IsCosmetic = false;
             }
 
-            EventMap m_Events;
+            EventMap _events;
             EventMap m_CosmeticEvent;
 
             ObjectGuid m_ChargeTarget;
@@ -1281,7 +1281,7 @@ class npc_highmaul_iron_flame_technician : public CreatureScript
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
 
                 m_ChargeTarget = ObjectGuid::Empty;
 
@@ -1300,16 +1300,16 @@ class npc_highmaul_iron_flame_technician : public CreatureScript
                 if (m_IsCosmetic)
                     return;
 
-                m_Events.ScheduleEvent(eEvents::EventCorruptedBlood, urand(6000, 9000));
-                m_Events.ScheduleEvent(eEvents::EventFlamethrower, urand(4000, 7000));
-                m_Events.ScheduleEvent(eEvents::EventUnstoppableCharge, urand(9000, 12000));
+                _events.ScheduleEvent(eEvents::EventCorruptedBlood, urand(6000, 9000));
+                _events.ScheduleEvent(eEvents::EventFlamethrower, urand(4000, 7000));
+                _events.ScheduleEvent(eEvents::EventUnstoppableCharge, urand(9000, 12000));
             }
 
             void DoAction(int32 const action) override
             {
                 if (action == eAction::DoIntro)
                 {
-                    m_Events.Reset();
+                    _events.Reset();
                     m_CosmeticEvent.Reset();
                 }
             }
@@ -1371,24 +1371,24 @@ class npc_highmaul_iron_flame_technician : public CreatureScript
                 if (!UpdateVictim() || m_IsCosmetic)
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvents::EventCorruptedBlood:
                         me->CastSpell(me, eSpells::SpellCorruptedBlood, false);
-                        m_Events.ScheduleEvent(eEvents::EventCorruptedBlood, urand(13000, 16000));
+                        _events.ScheduleEvent(eEvents::EventCorruptedBlood, urand(13000, 16000));
                         break;
                     case eEvents::EventFlamethrower:
                         me->CastSpell(me, eSpells::SpellFlamethrower, false);
-                        m_Events.ScheduleEvent(eEvents::EventFlamethrower, urand(14000, 17000));
+                        _events.ScheduleEvent(eEvents::EventFlamethrower, urand(14000, 17000));
                         break;
                     case eEvents::EventUnstoppableCharge:
                         me->CastSpell(me, eSpells::SpellUnstoppableChargeSearcher, false);
-                        m_Events.ScheduleEvent(eEvents::EventUnstoppableCharge, urand(19000, 22000));
+                        _events.ScheduleEvent(eEvents::EventUnstoppableCharge, urand(19000, 22000));
                         break;
                     default:
                         break;
@@ -1441,7 +1441,7 @@ class npc_highmaul_iron_warmaster : public CreatureScript
                 m_IntroDone = false;
             }
 
-            EventMap m_Events;
+            EventMap _events;
 
             /// For Brackenspore event
             bool m_IsCosmetic;
@@ -1449,7 +1449,7 @@ class npc_highmaul_iron_warmaster : public CreatureScript
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
 
                 AddTimedDelayedOperation(2 * TimeConstants::IN_MILLISECONDS, [this]() -> void
                 {
@@ -1463,8 +1463,8 @@ class npc_highmaul_iron_warmaster : public CreatureScript
                 if (m_IsCosmetic)
                     return;
 
-                m_Events.ScheduleEvent(eEvents::EventIronBattleRage, urand(6000, 9000));
-                m_Events.ScheduleEvent(eEvents::EventCorruptedBlood, urand(6000, 9000));
+                _events.ScheduleEvent(eEvents::EventIronBattleRage, urand(6000, 9000));
+                _events.ScheduleEvent(eEvents::EventCorruptedBlood, urand(6000, 9000));
             }
 
             void DoAction(int32 const action) override
@@ -1502,20 +1502,20 @@ class npc_highmaul_iron_warmaster : public CreatureScript
                 if (!UpdateVictim() || m_IsCosmetic)
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvents::EventIronBattleRage:
                         me->CastSpell(me, eSpells::SpellIronBattleRage, true);
-                        m_Events.ScheduleEvent(eEvents::EventIronBattleRage, urand(12000, 15000));
+                        _events.ScheduleEvent(eEvents::EventIronBattleRage, urand(12000, 15000));
                         break;
                     case eEvents::EventCorruptedBlood:
                         me->CastSpell(me, eSpells::SpellCorruptedBlood, false);
-                        m_Events.ScheduleEvent(eEvents::EventCorruptedBlood, urand(13000, 16000));
+                        _events.ScheduleEvent(eEvents::EventCorruptedBlood, urand(13000, 16000));
                         break;
                     default:
                         break;
@@ -1571,11 +1571,11 @@ class npc_highmaul_iron_blood_mage : public CreatureScript
             }
 
             InstanceScript* m_Instance;
-            EventMap m_Events;
+            EventMap _events;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
 
                 AddTimedDelayedOperation(2 * TimeConstants::IN_MILLISECONDS, [this]() -> void
                 {
@@ -1612,9 +1612,9 @@ class npc_highmaul_iron_blood_mage : public CreatureScript
 
             void EnterCombat(Unit* /*attacker*/) override
             {
-                m_Events.ScheduleEvent(eEvents::EventCorruptedBlood, urand(6000, 9000));
-                m_Events.ScheduleEvent(eEvents::EventBloodBolt, urand(4000, 7000));
-                m_Events.ScheduleEvent(eEvents::EventCorruptedBloodShield, urand(8000, 11000));
+                _events.ScheduleEvent(eEvents::EventCorruptedBlood, urand(6000, 9000));
+                _events.ScheduleEvent(eEvents::EventBloodBolt, urand(4000, 7000));
+                _events.ScheduleEvent(eEvents::EventCorruptedBloodShield, urand(8000, 11000));
             }
 
             void UpdateAI(uint32 const diff) override
@@ -1624,25 +1624,25 @@ class npc_highmaul_iron_blood_mage : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvents::EventCorruptedBlood:
                         me->CastSpell(me, eSpells::SpellCorruptedBlood, false);
-                        m_Events.ScheduleEvent(eEvents::EventCorruptedBlood, urand(13000, 16000));
+                        _events.ScheduleEvent(eEvents::EventCorruptedBlood, urand(13000, 16000));
                         break;
                     case eEvents::EventBloodBolt:
                         me->CastSpell(me, eSpells::SpellBloodBolt, false);
-                        m_Events.ScheduleEvent(eEvents::EventBloodBolt, urand(8000, 11000));
+                        _events.ScheduleEvent(eEvents::EventBloodBolt, urand(8000, 11000));
                         break;
                     case eEvents::EventCorruptedBloodShield:
                         if (Unit* target = me->SelectNearbyTarget(me, 15.0f))
                             me->CastSpell(target, eSpells::SpellCorruptedBloodShield, false);
-                        m_Events.ScheduleEvent(eEvents::EventCorruptedBloodShield, urand(15000, 18000));
+                        _events.ScheduleEvent(eEvents::EventCorruptedBloodShield, urand(15000, 18000));
                         break;
                     default:
                         break;
@@ -1693,13 +1693,13 @@ class npc_highmaul_night_twisted_ritualist : public CreatureScript
             }
 
             InstanceScript* m_Instance;
-            EventMap m_Events;
+            EventMap _events;
 
             ObjectGuid m_Aberration;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
 
                 AddTimedDelayedOperation(2 * TimeConstants::IN_MILLISECONDS, [this]() -> void
                 {
@@ -1714,7 +1714,7 @@ class npc_highmaul_night_twisted_ritualist : public CreatureScript
             {
                 me->RemoveAura(eSpells::VoidChannel);
 
-                m_Events.ScheduleEvent(eEvent::EventVoidTouch, urand(3000, 6000));
+                _events.ScheduleEvent(eEvent::EventVoidTouch, urand(3000, 6000));
             }
 
             void JustDied(Unit* /*killer*/) override
@@ -1730,16 +1730,16 @@ class npc_highmaul_night_twisted_ritualist : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvent::EventVoidTouch:
                         me->CastSpell(me, eSpells::VoidTouch, false);
-                        m_Events.ScheduleEvent(eEvent::EventVoidTouch, urand(6000, 9000));
+                        _events.ScheduleEvent(eEvent::EventVoidTouch, urand(6000, 9000));
                         break;
                     default:
                         break;
@@ -1791,13 +1791,13 @@ class npc_highmaul_greater_void_aberration : public CreatureScript
             }
 
             InstanceScript* m_Instance;
-            EventMap m_Events;
+            EventMap _events;
 
             uint32 m_Ritualists;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
 
                 AddTimedDelayedOperation(2 * TimeConstants::IN_MILLISECONDS, [this]() -> void
                 {
@@ -1812,7 +1812,7 @@ class npc_highmaul_greater_void_aberration : public CreatureScript
 
             void EnterCombat(Unit* /*attacker*/) override
             {
-                m_Events.ScheduleEvent(eEvent::EventCallOfTheVoid, urand(6000, 9000));
+                _events.ScheduleEvent(eEvent::EventCallOfTheVoid, urand(6000, 9000));
             }
 
             void DoAction(int32 const action) override
@@ -1833,16 +1833,16 @@ class npc_highmaul_greater_void_aberration : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvent::EventCallOfTheVoid:
                         me->CastSpell(me, eSpells::CallOfTheVoid, false);
-                        m_Events.ScheduleEvent(eEvent::EventCallOfTheVoid, urand(9000, 12000));
+                        _events.ScheduleEvent(eEvent::EventCallOfTheVoid, urand(9000, 12000));
                         break;
                     default:
                         break;
@@ -1887,13 +1887,13 @@ class npc_highmaul_highmaul_conscript : public CreatureScript
             }
 
             InstanceScript* m_Instance;
-            EventMap m_Events;
+            EventMap _events;
 
             ObjectGuid m_ChargeTarget;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
 
                 m_ChargeTarget = ObjectGuid::Empty;
 
@@ -1903,8 +1903,8 @@ class npc_highmaul_highmaul_conscript : public CreatureScript
 
             void EnterCombat(Unit* /*attacker*/) override
             {
-                m_Events.ScheduleEvent(eEvents::EventRendingSlash, 5 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventShieldBlocking, 13 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventRendingSlash, 5 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventShieldBlocking, 13 * TimeConstants::IN_MILLISECONDS);
 
                 me->RemoveAura(eSpells::AtArms);
             }
@@ -1941,17 +1941,17 @@ class npc_highmaul_highmaul_conscript : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvents::EventRendingSlash:
                     {
                         me->CastSpell(me, eSpells::RendingSlash, false);
-                        m_Events.ScheduleEvent(eEvents::EventRendingSlash, 20 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventRendingSlash, 20 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     case eEvents::EventShieldBlocking:
@@ -1970,8 +1970,8 @@ class npc_highmaul_highmaul_conscript : public CreatureScript
                             me->CastSpell(me, eSpells::AtArms, true);
                         });
 
-                        m_Events.ScheduleEvent(eEvents::EventShieldCharge, 6 * TimeConstants::IN_MILLISECONDS);
-                        m_Events.ScheduleEvent(eEvents::EventShieldBlocking, 60 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventShieldCharge, 6 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventShieldBlocking, 60 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     case eEvents::EventShieldCharge:
@@ -2038,14 +2038,14 @@ class npc_highmaul_ogron_earthshaker : public CreatureScript
             }
 
             InstanceScript* m_Instance;
-            EventMap m_Events;
+            EventMap _events;
 
             float m_orientation;
             uint8 m_SlamCount;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
 
                 m_orientation = 0.0f;
                 m_SlamCount = 0;
@@ -2053,8 +2053,8 @@ class npc_highmaul_ogron_earthshaker : public CreatureScript
 
             void EnterCombat(Unit* /*attacker*/) override
             {
-                m_Events.ScheduleEvent(eEvents::EventIntimidatingRoar, 6 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventEarthdevastatingSlam, 17 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventIntimidatingRoar, 6 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventEarthdevastatingSlam, 17 * TimeConstants::IN_MILLISECONDS);
             }
 
             void DoAction(int32 const action) override
@@ -2099,17 +2099,17 @@ class npc_highmaul_ogron_earthshaker : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvents::EventIntimidatingRoar:
                     {
                         me->CastSpell(me, eSpells::IntimidatingRoarJump, true);
-                        m_Events.ScheduleEvent(eEvents::EventIntimidatingRoar, 25 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventIntimidatingRoar, 25 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     case eEvents::EventEarthdevastatingSlam:
@@ -2123,7 +2123,7 @@ class npc_highmaul_ogron_earthshaker : public CreatureScript
                             me->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_DISABLE_TURN);
                         }
 
-                        m_Events.ScheduleEvent(eEvents::EventEarthdevastatingSlam, 60 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventEarthdevastatingSlam, 60 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     default:
@@ -2179,11 +2179,11 @@ class npc_highmaul_gorian_arcanist : public CreatureScript
             }
 
             InstanceScript* m_Instance;
-            EventMap m_Events;
+            EventMap _events;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
 
                 if (Creature* l_Stalker = me->FindNearestCreature(eCreature::InvisibleStalker, 20.0f))
                     me->CastSpell(l_Stalker, eSpells::ArcaneForceCosmetic, true);
@@ -2193,9 +2193,9 @@ class npc_highmaul_gorian_arcanist : public CreatureScript
 
             void EnterCombat(Unit* /*attacker*/) override
             {
-                m_Events.ScheduleEvent(eEvents::EventArcaneBolt, 6 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventArcaneVolatility, 10 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventArcaneBarrage, 8 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventArcaneBolt, 6 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventArcaneVolatility, 10 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventArcaneBarrage, 8 * TimeConstants::IN_MILLISECONDS);
             }
 
             void SpellHitTarget(Unit* target, SpellInfo const* spellInfo) override
@@ -2243,25 +2243,25 @@ class npc_highmaul_gorian_arcanist : public CreatureScript
                     return;
                 }
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvents::EventArcaneBolt:
                         me->CastSpell(me, eSpells::ArcaneBolt, false);
-                        m_Events.ScheduleEvent(eEvents::EventArcaneBolt, 28 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventArcaneBolt, 28 * TimeConstants::IN_MILLISECONDS);
                         break;
                     case eEvents::EventArcaneVolatility:
                         if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_RANDOM))
                             me->CastSpell(target, eSpells::ArcaneVolatility, false);
-                        m_Events.ScheduleEvent(eEvents::EventArcaneVolatility, 35 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventArcaneVolatility, 35 * TimeConstants::IN_MILLISECONDS);
                         break;
                     case eEvents::EventArcaneBarrage:
                         me->CastSpell(me, eSpells::ArcaneBarrage, false);
-                        m_Events.ScheduleEvent(eEvents::EventArcaneBarrage, 30 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventArcaneBarrage, 30 * TimeConstants::IN_MILLISECONDS);
                         break;
                     default:
                         break;
@@ -2301,16 +2301,16 @@ class npc_highmaul_ogron_brute : public CreatureScript
             }
 
             InstanceScript* m_Instance;
-            EventMap m_Events;
+            EventMap _events;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
             }
 
             void EnterCombat(Unit* /*attacker*/) override
             {
-                m_Events.ScheduleEvent(eEvent::EventDecimate, 6 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvent::EventDecimate, 6 * TimeConstants::IN_MILLISECONDS);
             }
 
             void JustDied(Unit* /*killer*/) override
@@ -2333,17 +2333,17 @@ class npc_highmaul_ogron_brute : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvent::EventDecimate:
                         if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_RANDOM))
                             me->CastSpell(target, eSpell::Decimate, false);
-                        m_Events.ScheduleEvent(eEvent::EventDecimate, 15 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvent::EventDecimate, 15 * TimeConstants::IN_MILLISECONDS);
                         break;
                     default:
                         break;
@@ -2637,11 +2637,11 @@ class npc_highmaul_warden_thultok : public CreatureScript
                     me->SummonGameObject(eHighmaulGameobjects::Teleporter, g_TeleporterSpawnPos, QuaternionData(), 0);
             }
 
-            EventMap m_Events;
+            EventMap _events;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
 
                 me->RemoveAllAreaTriggers();
             }
@@ -2655,8 +2655,8 @@ class npc_highmaul_warden_thultok : public CreatureScript
 
             void EnterCombat(Unit* /*attacker*/) override
             {
-                m_Events.ScheduleEvent(eEvents::EventDestructiveForce, 5 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventArcaneResidue, 10 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventDestructiveForce, 5 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventArcaneResidue, 10 * TimeConstants::IN_MILLISECONDS);
             }
 
             void UpdateAI(uint32 const diff) override
@@ -2664,21 +2664,21 @@ class npc_highmaul_warden_thultok : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvents::EventDestructiveForce:
                         me->CastSpell(me, eSpells::DestructiveForce, false);
-                        m_Events.ScheduleEvent(eEvents::EventDestructiveForce, 10 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventDestructiveForce, 10 * TimeConstants::IN_MILLISECONDS);
                         break;
                     case eEvents::EventArcaneResidue:
                         if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_RANDOM))
                             me->CastSpell(target, eSpells::ArcaneResidue, true);
-                        m_Events.ScheduleEvent(eEvents::EventArcaneResidue, 10 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventArcaneResidue, 10 * TimeConstants::IN_MILLISECONDS);
                         break;
                     default:
                         break;
@@ -2720,18 +2720,18 @@ class npc_highmaul_gorian_royal_guardsman : public CreatureScript
         {
             npc_highmaul_gorian_royal_guardsmanAI(Creature* creature) : ScriptedAI(creature) { }
 
-            EventMap m_Events;
+            EventMap _events;
 
             void Reset() override
             {
                 me->CastSpell(me, eSpells::PulverizeAura, true);
 
-                m_Events.Reset();
+                _events.Reset();
             }
 
             void EnterCombat(Unit* /*attacker*/) override
             {
-                m_Events.ScheduleEvent(eEvent::EventRampage, 10 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvent::EventRampage, 10 * TimeConstants::IN_MILLISECONDS);
             }
 
             void SpellHitTarget(Unit* target, SpellInfo const* spellInfo) override
@@ -2786,16 +2786,16 @@ class npc_highmaul_gorian_royal_guardsman : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvent::EventRampage:
                         me->CastSpell(me, eSpells::RampageSearcher, false);
-                        m_Events.ScheduleEvent(eEvent::EventRampage, 20 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvent::EventRampage, 20 * TimeConstants::IN_MILLISECONDS);
                         break;
                     default:
                         break;
@@ -2839,18 +2839,18 @@ class npc_highmaul_gorian_high_sorcerer : public CreatureScript
         {
             npc_highmaul_gorian_high_sorcererAI(Creature* creature) : ScriptedAI(creature) { }
 
-            EventMap m_Events;
+            EventMap _events;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
             }
 
             void EnterCombat(Unit* /*attacker*/) override
             {
-                m_Events.ScheduleEvent(eEvents::EventArcaneBlast, 5 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventNetherFont, 10 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventCelerity, 15 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventArcaneBlast, 5 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventNetherFont, 10 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventCelerity, 15 * TimeConstants::IN_MILLISECONDS);
             }
 
             void SpellHitTarget(Unit* target, SpellInfo const* spellInfo) override
@@ -2873,26 +2873,26 @@ class npc_highmaul_gorian_high_sorcerer : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvents::EventArcaneBlast:
                         if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_RANDOM))
                             me->CastSpell(target, eSpells::ArcaneBlast, false);
-                        m_Events.ScheduleEvent(eEvents::EventArcaneBlast, 15 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventArcaneBlast, 15 * TimeConstants::IN_MILLISECONDS);
                         break;
                     case eEvents::EventNetherFont:
                         me->CastSpell(me, eSpells::NetherFontSearcher, false);
-                        m_Events.ScheduleEvent(eEvents::EventNetherFont, 15 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventNetherFont, 15 * TimeConstants::IN_MILLISECONDS);
                         break;
                     case eEvents::EventCelerity:
                         if (Unit* target = me->SelectNearbyTarget(me, 50.0f))
                             me->CastSpell(target, eSpells::Celerity, false);
-                        m_Events.ScheduleEvent(eEvents::EventCelerity, 20 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventCelerity, 20 * TimeConstants::IN_MILLISECONDS);
                         break;
                     default:
                         break;
@@ -2928,16 +2928,16 @@ class npc_highmaul_ogron_mauler : public CreatureScript
         {
             npc_highmaul_ogron_maulerAI(Creature* creature) : ScriptedAI(creature) { }
 
-            EventMap m_Events;
+            EventMap _events;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
             }
 
             void EnterCombat(Unit* /*attacker*/) override
             {
-                m_Events.ScheduleEvent(eEvent::EventDeafeningRoar, 5 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvent::EventDeafeningRoar, 5 * TimeConstants::IN_MILLISECONDS);
             }
 
             void UpdateAI(uint32 const diff) override
@@ -2945,16 +2945,16 @@ class npc_highmaul_ogron_mauler : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvent::EventDeafeningRoar:
                         me->CastSpell(me, eSpell::DeafeningRoar, false);
-                        m_Events.ScheduleEvent(eEvent::EventDeafeningRoar, 15 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvent::EventDeafeningRoar, 15 * TimeConstants::IN_MILLISECONDS);
                         break;
                     default:
                         break;
@@ -3005,14 +3005,14 @@ class npc_highmaul_guard_captain_thag : public CreatureScript
                 m_Instance = creature->GetInstanceScript();
             }
 
-            EventMap m_Events;
+            EventMap _events;
             ObjectGuid m_DoorGuid;
 
             InstanceScript* m_Instance;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
 
                 AddTimedDelayedOperation(1 * TimeConstants::IN_MILLISECONDS, [this]() -> void
                 {
@@ -3029,9 +3029,9 @@ class npc_highmaul_guard_captain_thag : public CreatureScript
 
             void EnterCombat(Unit* /*attacker*/) override
             {
-                m_Events.ScheduleEvent(eEvents::EventBrutalCleave, 5 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventGroundStomp, 7 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventRendingThrow, 10 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventBrutalCleave, 5 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventGroundStomp, 7 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventRendingThrow, 10 * TimeConstants::IN_MILLISECONDS);
             }
 
             void JustDied(Unit* /*killer*/) override
@@ -3059,25 +3059,25 @@ class npc_highmaul_guard_captain_thag : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvents::EventBrutalCleave:
                         if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
                             me->CastSpell(target, eSpells::BrutalCleave, false);
-                        m_Events.ScheduleEvent(eEvents::EventBrutalCleave, 7 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventBrutalCleave, 7 * TimeConstants::IN_MILLISECONDS);
                         break;
                     case eEvents::EventGroundStomp:
                         me->CastSpell(me, eSpells::GroundStomp, true);
-                        m_Events.ScheduleEvent(eEvents::EventGroundStomp, 6 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventGroundStomp, 6 * TimeConstants::IN_MILLISECONDS);
                         break;
                     case eEvents::EventRendingThrow:
                         me->CastSpell(me, eSpells::RendingThrow, true);
-                        m_Events.ScheduleEvent(eEvents::EventRendingThrow, 6 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventRendingThrow, 6 * TimeConstants::IN_MILLISECONDS);
                         break;
                     default:
                         break;
@@ -3117,18 +3117,18 @@ class npc_highmaul_councilor_daglat : public CreatureScript
         {
             npc_highmaul_councilor_daglatAI(Creature* creature) : ScriptedAI(creature) { }
 
-            EventMap m_Events;
+            EventMap _events;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
 
                 me->CastSpell(me, eSpells::KneelCosmeticForced, true);
             }
 
             void EnterCombat(Unit* /*attacker*/) override
             {
-                m_Events.ScheduleEvent(eEvent::EventArcaneDestruction, 1 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvent::EventArcaneDestruction, 1 * TimeConstants::IN_MILLISECONDS);
             }
 
             void SpellHitTarget(Unit* target, SpellInfo const* spellInfo) override
@@ -3161,16 +3161,16 @@ class npc_highmaul_councilor_daglat : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvent::EventArcaneDestruction:
                         me->CastSpell(me, eSpells::TeleportSearcher, true);
-                        m_Events.ScheduleEvent(eEvent::EventArcaneDestruction, 6 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvent::EventArcaneDestruction, 6 * TimeConstants::IN_MILLISECONDS);
                         break;
                     default:
                         break;
@@ -3209,12 +3209,12 @@ class npc_highmaul_councilor_magknor : public CreatureScript
         {
             npc_highmaul_councilor_magknorAI(Creature* creature) : ScriptedAI(creature), m_Summons(creature) { }
 
-            EventMap m_Events;
+            EventMap _events;
             SummonList m_Summons;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
 
                 me->CastSpell(me, eSpells::KneelCosmeticForced, true);
 
@@ -3225,7 +3225,7 @@ class npc_highmaul_councilor_magknor : public CreatureScript
             {
                 me->CastSpell(me, eSpells::ArcaneTorrentSummon, true);
 
-                m_Events.ScheduleEvent(eEvent::EventArcaneTorrent, 1 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvent::EventArcaneTorrent, 1 * TimeConstants::IN_MILLISECONDS);
             }
 
             void JustSummoned(Creature* p_Summon) override
@@ -3245,16 +3245,16 @@ class npc_highmaul_councilor_magknor : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvent::EventArcaneTorrent:
                         me->CastSpell(me, eSpells::ArcaneTorrentAura, false);
-                        m_Events.ScheduleEvent(eEvent::EventArcaneTorrent, 60 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvent::EventArcaneTorrent, 60 * TimeConstants::IN_MILLISECONDS);
                         break;
                     default:
                         break;
@@ -3342,18 +3342,18 @@ class npc_highmaul_councilor_gorluk : public CreatureScript
         {
             npc_highmaul_councilor_gorlukAI(Creature* creature) : ScriptedAI(creature) { }
 
-            EventMap m_Events;
+            EventMap _events;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
 
                 me->CastSpell(me, eSpells::KneelCosmeticForced, true);
             }
 
             void EnterCombat(Unit* /*attacker*/) override
             {
-                m_Events.ScheduleEvent(eEvent::EventPhantasmalWeapon, 7 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvent::EventPhantasmalWeapon, 7 * TimeConstants::IN_MILLISECONDS);
             }
 
             void UpdateAI(uint32 const diff) override
@@ -3363,16 +3363,16 @@ class npc_highmaul_councilor_gorluk : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvent::EventPhantasmalWeapon:
                         me->CastSpell(me, eSpells::ConjurePhantasmalWeapon, false);
-                        m_Events.ScheduleEvent(eEvent::EventPhantasmalWeapon, 7 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvent::EventPhantasmalWeapon, 7 * TimeConstants::IN_MILLISECONDS);
                         break;
                     default:
                         break;
@@ -3456,11 +3456,11 @@ class npc_highmaul_councilor_nouk : public CreatureScript
         {
             npc_highmaul_councilor_noukAI(Creature* creature) : ScriptedAI(creature) { }
 
-            EventMap m_Events;
+            EventMap _events;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
 
                 me->CastSpell(me, eSpells::KneelCosmeticForced, true);
             }
@@ -3469,7 +3469,7 @@ class npc_highmaul_councilor_nouk : public CreatureScript
             {
                 me->CastSpell(me, eSpells::TimeStop, false);
 
-                m_Events.ScheduleEvent(eEvent::EventTimeStop, 4 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvent::EventTimeStop, 4 * TimeConstants::IN_MILLISECONDS);
             }
 
             void UpdateAI(uint32 const diff) override
@@ -3479,16 +3479,16 @@ class npc_highmaul_councilor_nouk : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvent::EventTimeStop:
                         me->CastSpell(me, eSpells::TimeStop, false);
-                        m_Events.ScheduleEvent(eEvent::EventTimeStop, 4 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvent::EventTimeStop, 4 * TimeConstants::IN_MILLISECONDS);
                         break;
                     default:
                         break;
@@ -3540,18 +3540,18 @@ class npc_highmaul_high_councilor_malgris : public CreatureScript
                 m_Instance = creature->GetInstanceScript();
             }
 
-            EventMap m_Events;
+            EventMap _events;
 
             InstanceScript* m_Instance;
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
             }
 
             void EnterCombat(Unit* /*attacker*/) override
             {
-                m_Events.ScheduleEvent(eEvent::EventUnstableTempest, 50);
+                _events.ScheduleEvent(eEvent::EventUnstableTempest, 50);
             }
 
             void DoAction(int32 const action) override
@@ -3593,12 +3593,12 @@ class npc_highmaul_high_councilor_malgris : public CreatureScript
                 if (!UpdateVictim())
                     return;
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvent::EventUnstableTempest:
                     {
@@ -3609,7 +3609,7 @@ class npc_highmaul_high_councilor_malgris : public CreatureScript
                             l_Values.AddSpellMod(SpellValueMod::SPELLVALUE_MAX_TARGETS, 1);
 
                         me->CastCustomSpell(eSpells::UnstableTempest, l_Values, me, TRIGGERED_NONE);
-                        m_Events.ScheduleEvent(eEvent::EventUnstableTempest, 50);
+                        _events.ScheduleEvent(eEvent::EventUnstableTempest, 50);
                         break;
                     }
                     default:

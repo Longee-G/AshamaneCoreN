@@ -1,4 +1,4 @@
-/*
+﻿/*
 * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
 *
 * This program is free software; you can redistribute it and/or modify it
@@ -238,5 +238,5 @@ public:
 void AddSC_boss_commander_springvale()
 {
     new boss_commander_springvale();
-    new spell_springvale_forsaken_ability();
+    //new spell_springvale_forsaken_ability();
 }

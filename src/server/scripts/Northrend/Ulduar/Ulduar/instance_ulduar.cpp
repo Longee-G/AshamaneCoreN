@@ -1271,7 +1271,7 @@ class spell_ulduar_teleporter : public SpellScriptLoader
 
                 if (GetExplTargetUnit()->IsInCombat())
                 {
-                    Spell::SendCastResult(GetExplTargetUnit()->ToPlayer(), GetSpellInfo(), GetSpell()->m_SpellVisual, GetSpell()->m_castId, SPELL_FAILED_AFFECTING_COMBAT);
+                    Spell::SendCastResult(GetExplTargetUnit()->ToPlayer(), GetSpellInfo(), GetSpell()->_spellVisual, GetSpell()->_castId, SPELL_FAILED_AFFECTING_COMBAT);
                     return SPELL_FAILED_AFFECTING_COMBAT;
                 }
 

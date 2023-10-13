@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -112,16 +112,16 @@ class LootTemplate::LootGroup                               // A set of loot def
 //Remove all data and free all memory
 void LootStore::Clear()
 {
-    for (LootTemplateMap::const_iterator itr=m_LootTemplates.begin(); itr != m_LootTemplates.end(); ++itr)
+    for (LootTemplateMap::const_iterator itr=_lootTemplates.begin(); itr != _lootTemplates.end(); ++itr)
         delete itr->second;
-    m_LootTemplates.clear();
+    _lootTemplates.clear();
 }
 
 // Checks validity of the loot store
 // Actual checks are done within LootTemplate::Verify() which is called for every template
 void LootStore::Verify() const
 {
-    for (LootTemplateMap::const_iterator i = m_LootTemplates.begin(); i != m_LootTemplates.end(); ++i)
+    for (LootTemplateMap::const_iterator i = _lootTemplates.begin(); i != _lootTemplates.end(); ++i)
         i->second->Verify(*this, i->first);
 }
 
@@ -145,7 +145,7 @@ uint32 LootStore::LoadLootTable()
     do
     {
         Field* fields = result->Fetch();
-
+        
         uint32 entry               = fields[0].GetUInt32();
         int32  item                = fields[1].GetInt32();
         uint8  type                = item >= 0 ? LOOT_ITEM_TYPE_ITEM : LOOT_ITEM_TYPE_CURRENCY;
@@ -173,13 +173,13 @@ uint32 LootStore::LoadLootTable()
 
         // Looking for the template of the entry
                                                          // often entries are put together
-        if (m_LootTemplates.empty() || tab->first != entry)
+        if (_lootTemplates.empty() || tab->first != entry)
         {
             // Searching the template (in case template Id changed)
-            tab = m_LootTemplates.find(entry);
-            if (tab == m_LootTemplates.end())
+            tab = _lootTemplates.find(entry);
+            if (tab == _lootTemplates.end())
             {
-                std::pair< LootTemplateMap::iterator, bool > pr = m_LootTemplates.insert(LootTemplateMap::value_type(entry, new LootTemplate()));
+                std::pair< LootTemplateMap::iterator, bool > pr = _lootTemplates.insert(LootTemplateMap::value_type(entry, new LootTemplate()));
                 tab = pr.first;
             }
         }
@@ -199,19 +199,19 @@ uint32 LootStore::LoadLootTable()
 
 bool LootStore::HaveQuestLootFor(uint32 loot_id) const
 {
-    LootTemplateMap::const_iterator itr = m_LootTemplates.find(loot_id);
-    if (itr == m_LootTemplates.end())
+    LootTemplateMap::const_iterator itr = _lootTemplates.find(loot_id);
+    if (itr == _lootTemplates.end())
         return false;
 
     // scan loot for quest items
-    return itr->second->HasQuestDrop(m_LootTemplates);
+    return itr->second->HasQuestDrop(_lootTemplates);
 }
 
 bool LootStore::HaveQuestLootForPlayer(uint32 loot_id, Player* player) const
 {
-    LootTemplateMap::const_iterator tab = m_LootTemplates.find(loot_id);
-    if (tab != m_LootTemplates.end())
-        if (tab->second->HasQuestDropForPlayer(m_LootTemplates, player))
+    LootTemplateMap::const_iterator tab = _lootTemplates.find(loot_id);
+    if (tab != _lootTemplates.end())
+        if (tab->second->HasQuestDropForPlayer(_lootTemplates, player))
             return true;
 
     return false;
@@ -219,7 +219,7 @@ bool LootStore::HaveQuestLootForPlayer(uint32 loot_id, Player* player) const
 
 void LootStore::ResetConditions()
 {
-    for (LootTemplateMap::iterator itr = m_LootTemplates.begin(); itr != m_LootTemplates.end(); ++itr)
+    for (LootTemplateMap::iterator itr = _lootTemplates.begin(); itr != _lootTemplates.end(); ++itr)
     {
         ConditionContainer empty;
         itr->second->CopyConditions(empty);
@@ -228,9 +228,9 @@ void LootStore::ResetConditions()
 
 LootTemplate const* LootStore::GetLootFor(uint32 loot_id) const
 {
-    LootTemplateMap::const_iterator tab = m_LootTemplates.find(loot_id);
+    LootTemplateMap::const_iterator tab = _lootTemplates.find(loot_id);
 
-    if (tab == m_LootTemplates.end())
+    if (tab == _lootTemplates.end())
         return NULL;
 
     return tab->second;
@@ -238,9 +238,9 @@ LootTemplate const* LootStore::GetLootFor(uint32 loot_id) const
 
 LootTemplate* LootStore::GetLootForConditionFill(uint32 loot_id)
 {
-    LootTemplateMap::iterator tab = m_LootTemplates.find(loot_id);
+    LootTemplateMap::iterator tab = _lootTemplates.find(loot_id);
 
-    if (tab == m_LootTemplates.end())
+    if (tab == _lootTemplates.end())
         return NULL;
 
     return tab->second;
@@ -250,16 +250,16 @@ uint32 LootStore::LoadAndCollectLootIds(LootIdSet& lootIdSet)
 {
     uint32 count = LoadLootTable();
 
-    for (LootTemplateMap::const_iterator tab = m_LootTemplates.begin(); tab != m_LootTemplates.end(); ++tab)
-        lootIdSet.insert(tab->first);
+    for (LootTemplateMap::const_iterator tab = _lootTemplates.begin(); tab != _lootTemplates.end(); ++tab)
+        lootIdSet.insert(tab->first); 
 
     return count;
 }
 
 void LootStore::CheckLootRefs(LootIdSet* ref_set) const
 {
-    for (LootTemplateMap::const_iterator ltItr = m_LootTemplates.begin(); ltItr != m_LootTemplates.end(); ++ltItr)
-        ltItr->second->CheckLootRefs(m_LootTemplates, ref_set);
+    for (LootTemplateMap::const_iterator ltItr = _lootTemplates.begin(); ltItr != _lootTemplates.end(); ++ltItr)
+        ltItr->second->CheckLootRefs(_lootTemplates, ref_set);
 }
 
 void LootStore::ReportUnusedIds(LootIdSet const& lootIdSet) const
@@ -1108,6 +1108,7 @@ void LoadLootTemplates_Spell()
     uint32 oldMSTime = getMSTime();
 
     LootIdSet lootIdSet;
+    
     uint32 count = LootTemplates_Spell.LoadAndCollectLootIds(lootIdSet);
 
     // remove real entries and check existence loot
@@ -1120,7 +1121,7 @@ void LoadLootTemplates_Spell()
         // possible cases
         if (!spellInfo->IsLootCrafting())
             continue;
-
+        // in LootTemplates_Spell lootId = spell_id
         if (lootIdSet.find(spell_id) == lootIdSet.end())
         {
             // not report about not trainable spells (optionally supported by DB)

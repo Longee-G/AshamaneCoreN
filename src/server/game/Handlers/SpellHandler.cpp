@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -43,7 +43,7 @@ void WorldSession::HandleUseItemOpcode(WorldPackets::Spells::UseItem& packet)
     Player* user = _player;
 
     // ignore for remote control state
-    if (user->m_unitMovedByMe != user)
+    if (user->_unitMovedByMe != user)
         return;
 
     Item* item = user->GetUseableItemByPos(packet.PackSlot, packet.Slot);
@@ -135,7 +135,7 @@ void WorldSession::HandleOpenItemOpcode(WorldPackets::Spells::OpenItem& packet)
     Player* player = _player;
 
     // ignore for remote control state
-    if (player->m_unitMovedByMe != player)
+    if (player->_unitMovedByMe != player)
         return;
     TC_LOG_INFO("network", "bagIndex: %u, slot: %u", packet.Slot, packet.PackSlot);
 
@@ -224,8 +224,8 @@ void WorldSession::HandleGameObjectUseOpcode(WorldPackets::GameObject::GameObjUs
     if (GameObject* obj = GetPlayer()->GetGameObjectIfCanInteractWith(packet.Guid))
     {
         // ignore for remote control state
-        if (GetPlayer()->m_unitMovedByMe != GetPlayer())
-            if (!(GetPlayer()->IsOnVehicle(GetPlayer()->m_unitMovedByMe) || GetPlayer()->IsMounted()) && !obj->GetGOInfo()->IsUsableMounted())
+        if (GetPlayer()->_unitMovedByMe != GetPlayer())
+            if (!(GetPlayer()->IsOnVehicle(GetPlayer()->_unitMovedByMe) || GetPlayer()->IsMounted()) && !obj->GetGOInfo()->IsUsableMounted())
                 return;
 
         obj->Use(GetPlayer());
@@ -235,7 +235,7 @@ void WorldSession::HandleGameObjectUseOpcode(WorldPackets::GameObject::GameObjUs
 void WorldSession::HandleGameobjectReportUse(WorldPackets::GameObject::GameObjReportUse& packet)
 {
     // ignore for remote control state
-    if (_player->m_unitMovedByMe != _player)
+    if (_player->_unitMovedByMe != _player)
         return;
 
     if (GameObject* go = GetPlayer()->GetGameObjectIfCanInteractWith(packet.Guid))
@@ -250,7 +250,7 @@ void WorldSession::HandleGameobjectReportUse(WorldPackets::GameObject::GameObjRe
 void WorldSession::HandleCastSpellOpcode(WorldPackets::Spells::CastSpell& cast)
 {
     // ignore for remote control state (for player case)
-    Unit* mover = _player->m_unitMovedByMe;
+    Unit* mover = _player->_unitMovedByMe;
     if (mover != _player && mover->GetTypeId() == TYPEID_PLAYER)
         return;
 
@@ -285,7 +285,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPackets::Spells::CastSpell& cast)
     // Client is resending autoshot cast opcode when other spell is cast during shoot rotation
     // Skip it to prevent "interrupt" message
     if (spellInfo->IsAutoRepeatRangedSpell() && caster->GetCurrentSpell(CURRENT_AUTOREPEAT_SPELL)
-        && caster->GetCurrentSpell(CURRENT_AUTOREPEAT_SPELL)->m_spellInfo == spellInfo)
+        && caster->GetCurrentSpell(CURRENT_AUTOREPEAT_SPELL)->_spellInfo == spellInfo)
         return;
 
     // can't use our own spells when we're in possession of another unit,
@@ -312,12 +312,12 @@ void WorldSession::HandleCastSpellOpcode(WorldPackets::Spells::CastSpell& cast)
 
     WorldPackets::Spells::SpellPrepare spellPrepare;
     spellPrepare.ClientCastID = cast.Cast.CastID;
-    spellPrepare.ServerCastID = spell->m_castId;
+    spellPrepare.ServerCastID = spell->_castId;
     SendPacket(spellPrepare.Write());
 
-    spell->m_fromClient = true;
-    spell->m_misc.Raw.Data[0] = cast.Cast.Misc[0];
-    spell->m_misc.Raw.Data[1] = cast.Cast.Misc[1];
+    spell->_isFromClient = true;
+    spell->_misc.Raw.Data[0] = cast.Cast.Misc[0];
+    spell->_misc.Raw.Data[1] = cast.Cast.Misc[1];
     spell->prepare(&targets);
 }
 
@@ -434,7 +434,7 @@ void WorldSession::HandleCancelAutoRepeatSpellOpcode(WorldPackets::Spells::Cance
 void WorldSession::HandleCancelChanneling(WorldPackets::Spells::CancelChannelling& /*cancelChanneling*/)
 {
     // ignore for remote control state (for player case)
-    Unit* mover = _player->m_unitMovedByMe;
+    Unit* mover = _player->_unitMovedByMe;
     if (mover != _player && mover->GetTypeId() == TYPEID_PLAYER)
         return;
 
@@ -444,7 +444,7 @@ void WorldSession::HandleCancelChanneling(WorldPackets::Spells::CancelChannellin
 void WorldSession::HandleTotemDestroyed(WorldPackets::Totem::TotemDestroyed& totemDestroyed)
 {
     // ignore for remote control state
-    if (_player->m_unitMovedByMe != _player)
+    if (_player->_unitMovedByMe != _player)
         return;
 
     uint8 slotId = totemDestroyed.Slot;
@@ -453,10 +453,10 @@ void WorldSession::HandleTotemDestroyed(WorldPackets::Totem::TotemDestroyed& tot
     if (slotId >= MAX_TOTEM_SLOT)
         return;
 
-    if (!_player->m_SummonSlot[slotId])
+    if (!_player->_summonSlots[slotId])
         return;
 
-    Creature* totem = ObjectAccessor::GetCreature(*GetPlayer(), _player->m_SummonSlot[slotId]);
+    Creature* totem = ObjectAccessor::GetCreature(*GetPlayer(), _player->_summonSlots[slotId]);
     if (totem && totem->IsTotem() && totem->GetGUID() == totemDestroyed.TotemGUID)
         totem->ToTotem()->UnSummon();
 }
@@ -578,12 +578,12 @@ void WorldSession::HandleMissileTrajectoryCollision(WorldPackets::Spells::Missil
         return;
 
     Spell* spell = caster->FindCurrentSpellBySpellId(packet.SpellID);
-    if (!spell || !spell->m_targets.HasDst())
+    if (!spell || !spell->_targets.HasDst())
         return;
 
-    Position pos = *spell->m_targets.GetDstPos();
+    Position pos = *spell->_targets.GetDstPos();
     pos.Relocate(packet.CollisionPos);
-    spell->m_targets.ModDst(pos);
+    spell->_targets.ModDst(pos);
 
     WorldPackets::Spells::NotifyMissileTrajectoryCollision notify;
     notify.Caster = packet.Target;
@@ -596,16 +596,26 @@ void WorldSession::HandleUpdateMissileTrajectory(WorldPackets::Spells::UpdateMis
 {
     Unit* caster = ObjectAccessor::GetUnit(*_player, packet.Guid);
     Spell* spell = caster ? caster->GetCurrentSpell(CURRENT_GENERIC_SPELL) : NULL;
-    if (!spell || spell->m_spellInfo->Id != uint32(packet.SpellID) || !spell->m_targets.HasDst() || !spell->m_targets.HasSrc())
+    if (!spell || spell->_spellInfo->Id != uint32(packet.SpellID) || !spell->_targets.HasDst() || !spell->_targets.HasSrc())
         return;
 
-    spell->m_targets.ModSrc(packet.FirePos);
-    spell->m_targets.ModDst(packet.ImpactPos);
-    spell->m_targets.SetPitch(packet.Pitch);
-    spell->m_targets.SetSpeed(packet.Speed);
+    spell->_targets.ModSrc(packet.FirePos);
+    spell->_targets.ModDst(packet.ImpactPos);
+    spell->_targets.SetPitch(packet.Pitch);
+    spell->_targets.SetSpeed(packet.Speed);
 
     if (packet.Status)
         HandleMovementOpcode(CMSG_MOVE_STOP, *packet.Status);
+}
+
+// 
+void WorldSession::HandleUpdateSpellVisualOpcode(WorldPackets::Spells::UpdateSpellVisual & packet)
+{
+    if (Aura* pAura = GetPlayer()->GetAura(packet.SpellID))
+    {
+        pAura->SetSpellXSpellVisualId(packet.SpellXSpellVisualId);
+        pAura->SetNeedClientUpdateForTargets();
+    }
 }
 
 void WorldSession::HandleRequestCategoryCooldowns(WorldPackets::Spells::RequestCategoryCooldowns& /*requestCategoryCooldowns*/)

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
@@ -170,7 +170,8 @@ class spell_pal_beacon_of_virtue : public SpellScript
 
     void Register() override
     {
-        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_pal_beacon_of_virtue::FilterTargets, EFFECT_0, TARGET_UNIT_DEST_AREA_ALLY);
+        // 7.3.5 TARGET_UNIT_DEST_AREA_ALLY -> 21
+        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_pal_beacon_of_virtue::FilterTargets, EFFECT_0, 21);
         OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_pal_beacon_of_virtue::FilterTargets, EFFECT_1, TARGET_UNIT_DEST_AREA_ALLY);
         OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_pal_beacon_of_virtue::FilterTargets, EFFECT_2, TARGET_UNIT_DEST_AREA_ALLY);
     }
@@ -1622,9 +1623,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_PALADIN_LIGHT_OF_THE_MARTYR_DAMAGE))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_PALADIN_LIGHT_OF_THE_MARTYR_DAMAGE });
         }
 
         void HandleOnHit(SpellEffIndex /*effIndex*/)
@@ -1691,9 +1690,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_PALADIN_LIGHT_OF_DAWN_TRIGGER))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_PALADIN_LIGHT_OF_DAWN_TRIGGER });
         }
 
         void HandleOnHit()
@@ -1842,9 +1839,7 @@ public:
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_PALADIN_DIVINE_INTERVENTION_HEAL))
-                return false;
-            return true;
+            return ValidateSpellInfo({ SPELL_PALADIN_DIVINE_INTERVENTION_HEAL });
         }
 
         bool Load() override

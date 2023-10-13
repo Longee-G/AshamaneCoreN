@@ -238,7 +238,13 @@ bool MoveSplineInitArgs::Validate(Unit* unit) const
     CHECK(path.size() > 1);
     CHECK(velocity > 0.01f);
     CHECK(time_perc >= 0.f && time_perc <= 1.f);
-    CHECK(_checkPathLengths());
+    //[Longee]
+    //CHECK(_checkPathLengths()); 
+    if (!_checkPathLengths())
+    {
+        return false;
+    }
+
     if (spellEffectExtra)
     {
         CHECK(!spellEffectExtra->ProgressCurveId || sCurveStore.LookupEntry(spellEffectExtra->ProgressCurveId));

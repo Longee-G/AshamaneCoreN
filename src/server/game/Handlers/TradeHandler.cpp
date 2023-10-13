@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -242,13 +242,13 @@ static void clearAcceptTradeMode(Item* *myItems, Item* *hisItems)
 
 void WorldSession::HandleAcceptTradeOpcode(WorldPackets::Trade::AcceptTrade& acceptTrade)
 {
-    TradeData* my_trade = _player->m_trade;
+    TradeData* my_trade = _player->_trade;
     if (!my_trade)
         return;
 
     Player* trader = my_trade->GetTrader();
 
-    TradeData* his_trade = trader->m_trade;
+    TradeData* his_trade = trader->_trade;
     if (!his_trade)
         return;
 
@@ -378,9 +378,9 @@ void WorldSession::HandleAcceptTradeOpcode(WorldPackets::Trade::AcceptTrade& acc
             }
 
             my_spell = new Spell(_player, spellEntry, TRIGGERED_FULL_MASK);
-            my_spell->m_CastItem = castItem;
+            my_spell->_castItem = castItem;
             my_targets.SetTradeItemTarget(_player);
-            my_spell->m_targets = my_targets;
+            my_spell->_targets = my_targets;
 
             SpellCastResult res = my_spell->CheckCast(true);
             if (res != SPELL_CAST_OK)
@@ -413,9 +413,9 @@ void WorldSession::HandleAcceptTradeOpcode(WorldPackets::Trade::AcceptTrade& acc
             }
 
             his_spell = new Spell(trader, spellEntry, TRIGGERED_FULL_MASK);
-            his_spell->m_CastItem = castItem;
+            his_spell->_castItem = castItem;
             his_targets.SetTradeItemTarget(trader);
-            his_spell->m_targets = his_targets;
+            his_spell->_targets = his_targets;
 
             SpellCastResult res = his_spell->CheckCast(true);
             if (res != SPELL_CAST_OK)
@@ -536,10 +536,10 @@ void WorldSession::HandleAcceptTradeOpcode(WorldPackets::Trade::AcceptTrade& acc
 
         // cleanup
         clearAcceptTradeMode(my_trade, his_trade);
-        delete _player->m_trade;
-        _player->m_trade = NULL;
-        delete trader->m_trade;
-        trader->m_trade = NULL;
+        delete _player->_trade;
+        _player->_trade = NULL;
+        delete trader->_trade;
+        trader->_trade = NULL;
 
         // desynchronized with the other saves here (SaveInventoryAndGoldToDB() not have own transaction guards)
         SQLTransaction trans = CharacterDatabase.BeginTransaction();
@@ -569,7 +569,7 @@ void WorldSession::HandleUnacceptTradeOpcode(WorldPackets::Trade::UnacceptTrade&
 
 void WorldSession::HandleBeginTradeOpcode(WorldPackets::Trade::BeginTrade& /*beginTrade*/)
 {
-    TradeData* my_trade = _player->m_trade;
+    TradeData* my_trade = _player->_trade;
     if (!my_trade)
         return;
 
@@ -598,7 +598,7 @@ void WorldSession::HandleCancelTradeOpcode(WorldPackets::Trade::CancelTrade& /*c
 
 void WorldSession::HandleInitiateTradeOpcode(WorldPackets::Trade::InitiateTrade& initiateTrade)
 {
-    if (GetPlayer()->m_trade)
+    if (GetPlayer()->_trade)
         return;
 
     WorldPackets::Trade::TradeStatus info;
@@ -644,7 +644,7 @@ void WorldSession::HandleInitiateTradeOpcode(WorldPackets::Trade::InitiateTrade&
         return;
     }
 
-    if (pOther == GetPlayer() || pOther->m_trade)
+    if (pOther == GetPlayer() || pOther->_trade)
     {
         info.Status = TRADE_STATUS_PLAYER_BUSY;
         SendTradeStatus(info);
@@ -711,8 +711,8 @@ void WorldSession::HandleInitiateTradeOpcode(WorldPackets::Trade::InitiateTrade&
     }
 
     // OK start trade
-    _player->m_trade = new TradeData(_player, pOther);
-    pOther->m_trade = new TradeData(pOther, _player);
+    _player->_trade = new TradeData(_player, pOther);
+    pOther->_trade = new TradeData(pOther, _player);
 
     info.Status = TRADE_STATUS_PROPOSED;
     info.Partner = _player->GetGUID();
@@ -779,7 +779,7 @@ void WorldSession::HandleSetTradeItemOpcode(WorldPackets::Trade::SetTradeItem& s
 
 void WorldSession::HandleClearTradeItemOpcode(WorldPackets::Trade::ClearTradeItem& clearTradeItem)
 {
-    TradeData* my_trade = _player->m_trade;
+    TradeData* my_trade = _player->_trade;
     if (!my_trade)
         return;
 

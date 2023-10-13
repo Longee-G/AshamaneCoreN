@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -66,7 +66,7 @@ namespace Trinity
     bool Insert(ContainerUnorderedMap<TypeList<H, T>, KEY_TYPE>& elements, KEY_TYPE const& handle, SPECIFIC_TYPE* obj)
     {
         bool ret = Insert(elements._elements, handle, obj);
-        return ret ? ret : Insert(elements._TailElements, handle, obj);
+        return ret ? ret : Insert(elements._tailElements, handle, obj);
     }
 
     // Find helpers
@@ -96,7 +96,7 @@ namespace Trinity
     SPECIFIC_TYPE* Find(ContainerUnorderedMap<TypeList<H, T>, KEY_TYPE> const& elements, KEY_TYPE const& handle, SPECIFIC_TYPE* /*obj*/)
     {
         SPECIFIC_TYPE* ret = Find(elements._elements, handle, (SPECIFIC_TYPE*)nullptr);
-        return ret ? ret : Find(elements._TailElements, handle, (SPECIFIC_TYPE*)nullptr);
+        return ret ? ret : Find(elements._tailElements, handle, (SPECIFIC_TYPE*)nullptr);
     }
 
     // Erase helpers
@@ -123,7 +123,7 @@ namespace Trinity
     bool Remove(ContainerUnorderedMap<TypeList<H, T>, KEY_TYPE>& elements, KEY_TYPE const& handle, SPECIFIC_TYPE* /*obj*/)
     {
         bool ret = Remove(elements._elements, handle, (SPECIFIC_TYPE*)nullptr);
-        return ret ? ret : Remove(elements._TailElements, handle, (SPECIFIC_TYPE*)nullptr);
+        return ret ? ret : Remove(elements._tailElements, handle, (SPECIFIC_TYPE*)nullptr);
     }
 
     /* ContainerMapList Helpers */
@@ -155,7 +155,7 @@ namespace Trinity
     template<class SPECIFIC_TYPE, class H, class T>
     size_t Count(ContainerMapList<TypeList<H, T>> const& elements, SPECIFIC_TYPE* fake)
     {
-        return Count(elements._TailElements, fake);
+        return Count(elements._tailElements, fake);
     }
 
     // non-const insert functions
@@ -185,7 +185,7 @@ namespace Trinity
     SPECIFIC_TYPE* Insert(ContainerMapList<TypeList<H, T>>& elements, SPECIFIC_TYPE* obj)
     {
         SPECIFIC_TYPE* t = Insert(elements._elements, obj);
-        return (t != nullptr ? t : Insert(elements._TailElements, obj));
+        return (t != nullptr ? t : Insert(elements._tailElements, obj));
     }
 
     //// non-const remove method
@@ -210,7 +210,7 @@ namespace Trinity
     //{
     //    // The head element is bad
     //    SPECIFIC_TYPE* t = Remove(elements._elements, obj);
-    //    return (t != nullptr ? t : Remove(elements._TailElements, obj));
+    //    return (t != nullptr ? t : Remove(elements._tailElements, obj));
     //}
 }
 #endif

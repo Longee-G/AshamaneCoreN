@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -544,7 +544,9 @@ public:
 
         void Register() override
         {
-            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_perotharn_punishing_flames_dmg_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
+            // 22 和 7
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_perotharn_punishing_flames_dmg_SpellScript::FilterTargets, EFFECT_0, 7);
+            //OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_perotharn_punishing_flames_dmg_SpellScript::FilterTargets, EFFECT_0, 22);
         }
 
     private:

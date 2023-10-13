@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -1139,7 +1139,7 @@ class mob_lun_chi : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            player->playerTalkClass->ClearMenus();
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -1300,7 +1300,7 @@ class mob_brewmaster_chani : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            player->playerTalkClass->ClearMenus();
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -1455,7 +1455,7 @@ class mob_kang_bramblestaff : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            player->playerTalkClass->ClearMenus();
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -1616,7 +1616,7 @@ class mob_clever_ashyo : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            player->playerTalkClass->ClearMenus();
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -1792,7 +1792,7 @@ class mob_ken_ken : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            player->playerTalkClass->ClearMenus();
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -1968,7 +1968,7 @@ class mob_the_wrestler : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            player->playerTalkClass->ClearMenus();
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -2129,7 +2129,7 @@ class mob_master_boom_boom : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            player->playerTalkClass->ClearMenus();
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -2284,7 +2284,7 @@ class mob_master_windfur : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            player->playerTalkClass->ClearMenus();
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -2439,7 +2439,7 @@ class mob_tankiss : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            player->playerTalkClass->ClearMenus();
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -2633,7 +2633,7 @@ class mob_healiss : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            player->playerTalkClass->ClearMenus();
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -2827,7 +2827,7 @@ class mob_hackiss : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            player->playerTalkClass->ClearMenus();
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {

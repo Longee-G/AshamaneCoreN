@@ -143,6 +143,60 @@ namespace WorldPackets
 
             QualifiedGUID Player;
         };
+
+        // <WIP>
+        class QuickJoinAutoAcceptRequests final : public ClientPacket
+        {
+        public:
+            QuickJoinAutoAcceptRequests(WorldPacket&& packet) : ClientPacket(CMSG_QUICK_JOIN_AUTO_ACCEPT_REQUESTS, std::move(packet)) { }
+
+            void Read() override;
+
+            bool EnableAutoAccept = false;
+        };
+
+        class QuickJoinRequestInvite final : public ClientPacket
+        {
+        public:
+            QuickJoinRequestInvite(WorldPacket&& packet) : ClientPacket(CMSG_QUICK_JOIN_REQUEST_INVITE, std::move(packet)) { }
+
+            void Read() override;
+
+            ObjectGuid GroupGUID;
+            uint32 UnkInt1 = 0;
+            uint32 UnkInt2 = 0;
+            std::string UnkString1;
+            std::string UnkString2;
+            bool ApplyAsTank = false;
+            bool ApplyAsHealer = false;
+            bool ApplyAsDamage = false;
+        };
+
+        class QuickJoinRespondToInvite final : public ClientPacket
+        {
+        public:
+            QuickJoinRespondToInvite(WorldPacket&& packet) : ClientPacket(CMSG_QUICK_JOIN_RESPOND_TO_INVITE, std::move(packet)) { }
+
+            void Read() override;
+
+            ObjectGuid GroupGUID;
+            ObjectGuid GUID;
+            bool Accept = false;
+        };
+
+        class QuickJoinSignalToastDisplayed final : public ClientPacket
+        {
+        public:
+            QuickJoinSignalToastDisplayed(WorldPacket&& packet) : ClientPacket(CMSG_QUICK_JOIN_SIGNAL_TOAST_DISPLAYED, std::move(packet)) { }
+
+            void Read() override;
+
+            std::vector<ObjectGuid> UnkGuids;
+            ObjectGuid GroupGUID;
+            uint32 Priority = 0;
+            bool UnkBit1 = false;
+            bool UnkBit2 = false;
+        };
     }
 }
 

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -37,20 +37,22 @@ enum class PhaseShiftFlags : uint32
     Inverse         = 0x02, // By default having at least one shared phase for two objects means they can see each other
                             // this flag makes objects see each other if they have at least one non-shared phase
     InverseUnphased = 0x04,
-    Unphased        = 0x08,
+    Unphased        = 0x08, // 
     NoCosmetic      = 0x10  // This flag ignores shared cosmetic phases (two players that both have shared cosmetic phase but no other phase cannot see each other)
 };
 
 enum class PhaseFlags : uint16
 {
     None        = 0x0,
-    Cosmetic    = 0x1,
+    Cosmetic    = 0x1,          // 美容的？化妆的？WTF
     Personal    = 0x2
 };
 
+// 相位移动--管理player在不同位面..
 class TC_GAME_API PhaseShift
 {
 public:
+    // 相位信息...
     struct PhaseRef
     {
         PhaseRef(uint32 id, PhaseFlags flags, std::vector<Condition*> const* conditions)
@@ -58,7 +60,7 @@ public:
 
         uint16 Id;
         EnumClassFlag<PhaseFlags> Flags;
-        int32 References;
+        int32 References;           // 引用次数吗？
         std::vector<Condition*> const* AreaConditions;
         bool operator<(PhaseRef const& right) const { return Id < right.Id; }
         bool operator==(PhaseRef const& right) const { return Id == right.Id; }
@@ -78,6 +80,7 @@ public:
         typename Container::iterator Iterator;
         bool Erased;
     };
+    // flat_set 和std::set 有什么不一样？
     typedef boost::container::flat_set<PhaseRef> PhaseContainer;
     typedef std::map<uint32, VisibleMapIdRef> VisibleMapIdContainer;
     typedef std::map<uint32, UiWorldMapAreaIdSwapRef> UiWorldMapAreaIdSwapContainer;

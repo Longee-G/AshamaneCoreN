@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -152,7 +152,7 @@ void Player::ApplySpellPowerBonus(int32 amount, bool apply)
     if (HasAuraType(SPELL_AURA_OVERRIDE_SPELL_POWER_BY_AP_PCT))
         return;
 
-    apply = _ModifyUInt32(apply, m_baseSpellPower, amount);
+    apply = _ModifyUInt32(apply, _baseSpellPower, amount);
 
     // For speed just update for client
     ApplyModUInt32Value(PLAYER_FIELD_MOD_HEALING_DONE_POS, amount, apply);
@@ -240,7 +240,7 @@ bool Player::UpdateAllStats()
 void Player::ApplySpellPenetrationBonus(int32 amount, bool apply)
 {
     ApplyModInt32Value(PLAYER_FIELD_MOD_TARGET_RESISTANCE, -amount, apply);
-    m_spellPenetrationItemMod += apply ? amount : -amount;
+    _spellPenetrationItemMod += apply ? amount : -amount;
 }
 
 void Player::UpdateResistances(uint32 school)
@@ -743,20 +743,20 @@ void Player::UpdateArmorPenetration(int32 amount)
 
 void Player::UpdateMeleeHitChances()
 {
-    m_modMeleeHitChance = 7.5f + (float)GetTotalAuraModifier(SPELL_AURA_MOD_HIT_CHANCE);
-    m_modMeleeHitChance += GetRatingBonusValue(CR_HIT_MELEE);
+    _modMeleeHitChance = 7.5f + (float)GetTotalAuraModifier(SPELL_AURA_MOD_HIT_CHANCE);
+    _modMeleeHitChance += GetRatingBonusValue(CR_HIT_MELEE);
 }
 
 void Player::UpdateRangedHitChances()
 {
-    m_modRangedHitChance = 7.5f + (float)GetTotalAuraModifier(SPELL_AURA_MOD_HIT_CHANCE);
-    m_modRangedHitChance += GetRatingBonusValue(CR_HIT_RANGED);
+    _modRangedHitChance = 7.5f + (float)GetTotalAuraModifier(SPELL_AURA_MOD_HIT_CHANCE);
+    _modRangedHitChance += GetRatingBonusValue(CR_HIT_RANGED);
 }
 
 void Player::UpdateSpellHitChances()
 {
-    m_modSpellHitChance = 15.0f + (float)GetTotalAuraModifier(SPELL_AURA_MOD_SPELL_HIT_CHANCE);
-    m_modSpellHitChance += GetRatingBonusValue(CR_HIT_SPELL);
+    _modSpellHitChance = 15.0f + (float)GetTotalAuraModifier(SPELL_AURA_MOD_SPELL_HIT_CHANCE);
+    _modSpellHitChance += GetRatingBonusValue(CR_HIT_SPELL);
 }
 
 void Player::UpdateExpertise(WeaponAttackType attack)
@@ -790,13 +790,13 @@ void Player::UpdateExpertise(WeaponAttackType attack)
 
 void Player::ApplyManaRegenBonus(int32 amount, bool apply)
 {
-    _ModifyUInt32(apply, m_baseManaRegen, amount);
+    _ModifyUInt32(apply, _baseManaRegen, amount);
     UpdateManaRegen();
 }
 
 void Player::ApplyHealthRegenBonus(int32 amount, bool apply)
 {
-    _ModifyUInt32(apply, m_baseHealthRegen, amount);
+    _ModifyUInt32(apply, _baseHealthRegen, amount);
 }
 
 void Player::UpdateManaRegen()
@@ -1046,7 +1046,7 @@ void Guardian::UpdateResistances(uint32 school)
 
         // hunter and warlock pets gain 40% of owner's resistance
         if (IsPet())
-            value += float(CalculatePct(m_owner->GetResistance(SpellSchools(school)), 40));
+            value += float(CalculatePct(_owner->GetResistance(SpellSchools(school)), 40));
 
         SetResistance(SpellSchools(school), int32(value));
     }
@@ -1099,7 +1099,7 @@ void Guardian::UpdateArmor()
     }
 
     if (pctFromOwnerArmor)
-        armor = CalculatePct(m_owner->GetArmor(), pctFromOwnerArmor);
+        armor = CalculatePct(_owner->GetArmor(), pctFromOwnerArmor);
     else
         TC_LOG_ERROR("entities.pet", "Pet (%s, entry %d) has no pctFromOwnerArmor defined. Armor set to 1.",
             GetGUID().ToString().c_str(), GetEntry());
@@ -1176,7 +1176,7 @@ void Guardian::UpdateMaxHealth()
     }
 
     if (pctFromOwnerHealth)
-        health = CalculatePct(m_owner->GetMaxHealth(), pctFromOwnerHealth);
+        health = CalculatePct(_owner->GetMaxHealth(), pctFromOwnerHealth);
 
     // Pets do not have static base values
     if (!(GetModifierValue(unitMod, BASE_VALUE) == health))
@@ -1230,33 +1230,33 @@ void Guardian::UpdateAttackPowerAndDamage(bool ranged)
             switch (GetEntry())
             {
                 case ENTRY_XUEN:
-                    value = CalculatePct(m_owner->GetTotalAttackPowerValue(BASE_ATTACK), 600.f);
+                    value = CalculatePct(_owner->GetTotalAttackPowerValue(BASE_ATTACK), 600.f);
                     // Bluetracker says 600% (needs ingame data)
                     break;
                 case ENTRY_NIUZAO:
-                    value = CalculatePct(m_owner->GetTotalAttackPowerValue(BASE_ATTACK), 100.f);
+                    value = CalculatePct(_owner->GetTotalAttackPowerValue(BASE_ATTACK), 100.f);
                     // Bluetracker says 100% (needs ingame data)
                     break;
                 case ENTRY_IMP:
-                    value = CalculatePct(m_owner->SpellBaseDamageBonusDone(SPELL_SCHOOL_MASK_MAGIC), 100.f);
+                    value = CalculatePct(_owner->SpellBaseDamageBonusDone(SPELL_SCHOOL_MASK_MAGIC), 100.f);
                     break;
                 case ENTRY_VOIDWALKER:
-                    value = CalculatePct(m_owner->SpellBaseDamageBonusDone(SPELL_SCHOOL_MASK_MAGIC), 120.f);
+                    value = CalculatePct(_owner->SpellBaseDamageBonusDone(SPELL_SCHOOL_MASK_MAGIC), 120.f);
                     break;
                 case ENTRY_GHOUL:
                 case ENTRY_ABOMINATION:
-                    value = CalculatePct(m_owner->GetTotalAttackPowerValue(BASE_ATTACK), 50.f);
+                    value = CalculatePct(_owner->GetTotalAttackPowerValue(BASE_ATTACK), 50.f);
                     break;
                 default:
-                    value = CalculatePct(m_owner->SpellBaseDamageBonusDone(SPELL_SCHOOL_MASK_MAGIC), 100.f);
+                    value = CalculatePct(_owner->SpellBaseDamageBonusDone(SPELL_SCHOOL_MASK_MAGIC), 100.f);
                     if (!value)
-                        value = CalculatePct(m_owner->GetTotalAttackPowerValue(BASE_ATTACK), 100.f);
+                        value = CalculatePct(_owner->GetTotalAttackPowerValue(BASE_ATTACK), 100.f);
                     break;
             }
             break;
         }
         case HUNTER_PET:
-            value = CalculatePct(m_owner->GetTotalAttackPowerValue(ranged ? RANGED_ATTACK : BASE_ATTACK), 60.f);
+            value = CalculatePct(_owner->GetTotalAttackPowerValue(ranged ? RANGED_ATTACK : BASE_ATTACK), 60.f);
             break;
         default:
             break;
@@ -1283,19 +1283,19 @@ void Guardian::UpdateAttackPowerAndDamage(bool ranged)
 void Guardian::UpdateDamagePhysical(WeaponAttackType attType)
 {
     float bonusDamage = 0.0f;
-    if (m_owner->IsPlayer())
+    if (_owner->IsPlayer())
     {
         //force of nature
         if (GetEntry() == ENTRY_TREANT)
         {
-            int32 spellDmg = m_owner->GetInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS + SPELL_SCHOOL_NATURE) - m_owner->GetInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_NEG + SPELL_SCHOOL_NATURE);
+            int32 spellDmg = _owner->GetInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS + SPELL_SCHOOL_NATURE) - _owner->GetInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_NEG + SPELL_SCHOOL_NATURE);
             if (spellDmg > 0)
                 bonusDamage = spellDmg * 0.09f;
         }
         //greater fire elemental
         else if (GetEntry() == ENTRY_FIRE_ELEMENTAL)
         {
-            int32 spellDmg = m_owner->GetInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS + SPELL_SCHOOL_FIRE) - m_owner->GetInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_NEG + SPELL_SCHOOL_FIRE);
+            int32 spellDmg = _owner->GetInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS + SPELL_SCHOOL_FIRE) - _owner->GetInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_NEG + SPELL_SCHOOL_FIRE);
             if (spellDmg > 0)
                 bonusDamage = spellDmg * 0.4f;
         }
@@ -1342,12 +1342,12 @@ void Guardian::UpdateDamagePhysical(WeaponAttackType attType)
 void Guardian::UpdateSpellPower()
 {
     if (HasSameSpellPowerAsOwner())
-        SetBonusDamage(m_owner->SpellBaseDamageBonusDone(SPELL_SCHOOL_MASK_MAGIC));
+        SetBonusDamage(_owner->SpellBaseDamageBonusDone(SPELL_SCHOOL_MASK_MAGIC));
 }
 
 void Guardian::SetBonusDamage(int32 damage)
 {
-    m_bonusSpellDamage = damage;
+    _bonusSpellDamage = damage;
     if (GetOwner()->IsPlayer())
         GetOwner()->SetUInt32Value(PLAYER_PET_SPELL_POWER, damage);
 }

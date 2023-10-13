@@ -191,7 +191,7 @@ class boss_the_butcher : public CreatureScript
                 m_IntroDone = false;
             }
 
-            EventMap m_Events;
+            EventMap _events;
             InstanceScript* m_Instance;
 
             bool m_IntroDone;
@@ -206,7 +206,7 @@ class boss_the_butcher : public CreatureScript
 
             void Reset() override
             {
-                m_Events.Reset();
+                _events.Reset();
 
                 _Reset();
 
@@ -248,23 +248,23 @@ class boss_the_butcher : public CreatureScript
 
                 Talk(eTalks::Aggro);
 
-                m_Events.ScheduleEvent(eEvents::EventTenderizer, 6 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventCleave, 10 * TimeConstants::IN_MILLISECONDS);
-                m_Events.ScheduleEvent(eEvents::EventCleaver, 12 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventTenderizer, 6 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventCleave, 10 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventCleaver, 12 * TimeConstants::IN_MILLISECONDS);
 
                 if (!IsLFR())
-                    m_Events.ScheduleEvent(eEvents::EventBerserk, IsMythic() ? 240 * TimeConstants::IN_MILLISECONDS : 300 * TimeConstants::IN_MILLISECONDS);
+                    _events.ScheduleEvent(eEvents::EventBerserk, IsMythic() ? 240 * TimeConstants::IN_MILLISECONDS : 300 * TimeConstants::IN_MILLISECONDS);
 
                 /// Meat Hook is an ability that The Butcher uses to pull his tank to him.
                 /// We assume that this ability exists to prevent The Butcher from being kited,
                 /// but it is not otherwise in use during the fight.
-                m_Events.ScheduleEvent(eEvents::EventMeatHook, 5 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(eEvents::EventMeatHook, 5 * TimeConstants::IN_MILLISECONDS);
 
                 /// Mythic mode only
                 if (IsMythic())
                 {
                     m_AddCount = 0;
-                    m_Events.ScheduleEvent(eEvents::EventCadaver, 18 * TimeConstants::IN_MILLISECONDS);
+                    _events.ScheduleEvent(eEvents::EventCadaver, 18 * TimeConstants::IN_MILLISECONDS);
                 }
 
                 if (!IsLFR())
@@ -436,18 +436,18 @@ class boss_the_butcher : public CreatureScript
 
                 ScheduleEnergy(diff);
 
-                m_Events.Update(diff);
+                _events.Update(diff);
 
                 if (me->HasUnitState(UnitState::UNIT_STATE_CASTING))
                     return;
 
-                switch (m_Events.ExecuteEvent())
+                switch (_events.ExecuteEvent())
                 {
                     case eEvents::EventTenderizer:
                     {
                         if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
                             me->CastSpell(target, eSpells::TheTenderizer, true);
-                        m_Events.ScheduleEvent(eEvents::EventTenderizer, 16 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventTenderizer, 16 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     case eEvents::EventCleave:
@@ -480,14 +480,14 @@ class boss_the_butcher : public CreatureScript
                             }
                         });
 
-                        m_Events.ScheduleEvent(eEvents::EventCleave, 5 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventCleave, 5 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     case eEvents::EventCleaver:
                     {
                         if (Unit* target = SelectTarget(SelectAggroTarget::SELECT_TARGET_TOPAGGRO))
                             me->CastSpell(target, eSpells::TheCleaverDmg, true);
-                        m_Events.ScheduleEvent(eEvents::EventCleaver, 8 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventCleaver, 8 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     case eEvents::EventBerserk:
@@ -502,7 +502,7 @@ class boss_the_butcher : public CreatureScript
                         me->CastSpell(me, eSpells::BoundingCleaveKnock, true);
                         /// Charge on players after 8s
                         me->CastSpell(me, eSpells::BoundingCleaveDummy, false);
-                        m_Events.DelayEvent(eEvents::EventMeatHook, 20 * TimeConstants::IN_MILLISECONDS);
+                        _events.DelayEvent(eEvents::EventMeatHook, 20 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     case eEvents::EventMeatHook:
@@ -511,7 +511,7 @@ class boss_the_butcher : public CreatureScript
                             if (!target->IsWithinMeleeRange(me))
                                 me->CastSpell(target, eSpells::MeatHook, true);
 
-                        m_Events.ScheduleEvent(eEvents::EventMeatHook, 5 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventMeatHook, 5 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     case eEvents::EventCadaver:
@@ -534,7 +534,7 @@ class boss_the_butcher : public CreatureScript
                             me->SummonCreature(eCreatures::NightTwistedCadaver, l_X, l_Y, posZ);
                         }
 
-                        m_Events.ScheduleEvent(eEvents::EventCadaver, 14 * TimeConstants::IN_MILLISECONDS);
+                        _events.ScheduleEvent(eEvents::EventCadaver, 14 * TimeConstants::IN_MILLISECONDS);
                         break;
                     }
                     default:
@@ -550,7 +550,7 @@ class boss_the_butcher : public CreatureScript
                 /// Bounding Cleave Icon Bounding Cleave is an ability that The Butcher uses when he reaches 100 Energy
                 /// (this happens exactly every 60 seconds before The Butcher reaches 30% health, and every 30 seconds after that).
                 if (me->GetPower(Powers::POWER_ENERGY) >= 100)
-                    m_Events.ScheduleEvent(eEvents::EventBoundingCleave, 50);
+                    _events.ScheduleEvent(eEvents::EventBoundingCleave, 50);
             }
         };
 

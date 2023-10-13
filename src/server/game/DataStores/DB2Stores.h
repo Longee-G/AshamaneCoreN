@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -230,6 +230,9 @@ TC_GAME_API extern DB2Storage<WorldEffectEntry>                     sWorldEffect
 TC_GAME_API extern DB2Storage<WorldMapAreaEntry>                    sWorldMapAreaStore;
 TC_GAME_API extern DB2Storage<WorldMapOverlayEntry>                 sWorldMapOverlayStore;
 TC_GAME_API extern DB2Storage<WorldSafeLocsEntry>                   sWorldSafeLocsStore;
+// new code begin ... TODO:
+TC_GAME_API extern DB2Storage<CharacterLoadoutEntry>                sCharacterLoadoutStore;
+TC_GAME_API extern DB2Storage<CharacterLoadoutItemEntry>            sCharacterLoadoutItemStore;
 
 struct TaxiPathBySourceAndDestination
 {
@@ -266,6 +269,7 @@ public:
     DEFINE_DB2_SET_COMPARATOR(MountTypeXCapabilityEntry)
 
     typedef std::vector<ItemBonusEntry const*> ItemBonusList;
+    // <map_id, <difficulty_id, entry>>...
     typedef std::unordered_map<uint32, std::unordered_map<uint32, MapDifficultyEntry const*>> MapDifficultyContainer;
     typedef std::set<MountTypeXCapabilityEntry const*, MountTypeXCapabilityEntryComparator> MountTypeXCapabilitySet;
     typedef std::vector<MountXDisplayEntry const*> MountXDisplayContainer;
@@ -358,6 +362,8 @@ public:
     void Zone2MapCoordinates(uint32 areaId, float& x, float& y) const;
     void Map2ZoneCoordinates(uint32 areaId, float& x, float& y) const;
     static void DeterminaAlternateMapPosition(uint32 mapId, float x, float y, float z, uint32* newMapId = nullptr, DBCPosition2D* newPos = nullptr);
+    // new code begin...
+
 
 private:
     friend class DB2HotfixGeneratorBase;

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -87,7 +87,7 @@ class TC_GAME_API Weather
         uint32 m_zone;
         WeatherType m_type;
         float m_grade;
-        IntervalTimer m_timer;
+        IntervalTimer _timer;
         WeatherData const* m_weatherChances;
 };
 #endif

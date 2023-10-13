@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -424,7 +424,7 @@ public:
         if (player->HasAura(SPELL_NIGHTMARE_ELIXIR))
             return false;
 
-        player->PlayerTalkClass->ClearMenus();
+        player->playerTalkClass->ClearMenus();
         CloseGossipMenuFor(player);
         switch (action)
         {

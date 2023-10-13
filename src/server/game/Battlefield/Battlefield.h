@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -91,6 +91,11 @@ namespace WorldPackets
 typedef std::vector<BfGraveyard*> GraveyardVect;
 typedef std::map<ObjectGuid, time_t> PlayerTimerMap;
 
+
+// Battlefield 和 Battleground好像都是战场，到底是怎么使用的？
+// Battlefield -- 战役？游戏后期版本的
+// Battleground才是最初的战场... 战歌，阿拉希
+
 class TC_GAME_API BfCapturePoint
 {
     public:
@@ -139,7 +144,7 @@ class TC_GAME_API BfCapturePoint
         float m_maxSpeed;
 
         // The status of the objective
-        float m_value;
+        float _value;
         TeamId m_team;
 
         // Objective states
@@ -252,9 +257,9 @@ class TC_GAME_API Battlefield : public ZoneScript
         void TeamApplyBuff(TeamId team, uint32 spellId, uint32 spellId2 = 0);
 
         /// Return true if battle is start, false if battle is not started
-        bool IsWarTime() const { return m_isActive; }
+        bool IsWarTime() const { return _isActive; }
 
-        int8 GetState() const { return m_isActive ? BATTLEFIELD_IN_PROGRESS : (m_Timer <= m_StartGroupingTimer ? BATTLEFIELD_WARMUP : BATTLEFIELD_INACTIVE); }
+        int8 GetState() const { return _isActive ? BATTLEFIELD_IN_PROGRESS : (m_Timer <= m_StartGroupingTimer ? BATTLEFIELD_WARMUP : BATTLEFIELD_INACTIVE); }
 
         /// Enable or Disable battlefield
         void ToggleBattlefield(bool enable) { m_IsEnabled = enable; }
@@ -346,7 +351,7 @@ class TC_GAME_API Battlefield : public ZoneScript
         virtual void FillInitialWorldStates(WorldPackets::WorldState::InitWorldStates& /*packet*/) = 0;
 
         /// Return if we can use mount in battlefield
-        bool CanFlyIn() { return !m_isActive; }
+        bool CanFlyIn() { return !_isActive; }
 
         void SendAreaSpiritHealerQueryOpcode(Player* player, ObjectGuid const& guid);
 
@@ -372,7 +377,7 @@ class TC_GAME_API Battlefield : public ZoneScript
         ObjectGuid StalkerGuid;
         uint32 m_Timer;                                         // Global timer for event
         bool m_IsEnabled;
-        bool m_isActive;
+        bool _isActive;
         TeamId m_DefenderTeam;
 
         // Map of the objectives belonging to this OutdoorPvP

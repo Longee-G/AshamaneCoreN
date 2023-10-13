@@ -118,6 +118,10 @@ public:
     ClassHall* ToClassHall() { if (IsClassHall()) return reinterpret_cast<ClassHall*>(this); else return nullptr; }
     ClassHall const* ToClassHall() const { if (IsClassHall()) return reinterpret_cast<ClassHall const*>(this); else return nullptr; }
 
+    // Shipment TODO:
+    void SendGarrisonShipmentLandingPage();
+
+
 protected:
     GarrisonType _garrisonType;
 

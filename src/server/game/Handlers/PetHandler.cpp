@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -98,13 +98,13 @@ void WorldSession::HandlePetAction(WorldPackets::Pet::PetAction& packet)
     if (pet->GetTypeId() == TYPEID_PLAYER && !(flag == ACT_COMMAND && spellid == COMMAND_ATTACK))
         return;
 
-    if (GetPlayer()->m_Controlled.size() == 1)
+    if (GetPlayer()->_controlled.size() == 1)
         HandlePetActionHelper(pet, guid1, spellid, flag, guid2, packet.ActionPosition);
     else
     {
-        //If a pet is dismissed, m_Controlled will change
+        //If a pet is dismissed, _controlled will change
         std::vector<Unit*> controlled;
-        for (Unit::ControlList::iterator itr = GetPlayer()->m_Controlled.begin(); itr != GetPlayer()->m_Controlled.end(); ++itr)
+        for (Unit::ControlList::iterator itr = GetPlayer()->_controlled.begin(); itr != GetPlayer()->_controlled.end(); ++itr)
             if ((*itr)->GetEntry() == pet->GetEntry() && (*itr)->IsAlive())
                 controlled.push_back(*itr);
         for (std::vector<Unit*>::iterator itr = controlled.begin(); itr != controlled.end(); ++itr)
@@ -340,7 +340,7 @@ void WorldSession::HandlePetActionHelper(Unit* pet, ObjectGuid guid1, uint32 spe
                     if (Player* player = unit_target->ToPlayer())
                         pet->SendUpdateToPlayer(player);
                 }
-                else if (Unit* unit_target2 = spell->m_targets.GetUnitTarget())
+                else if (Unit* unit_target2 = spell->_targets.GetUnitTarget())
                 {
                     pet->SetInFront(unit_target2);
                     if (Player* player = unit_target2->ToPlayer())
@@ -356,7 +356,7 @@ void WorldSession::HandlePetActionHelper(Unit* pet, ObjectGuid guid1, uint32 spe
 
             if (result == SPELL_CAST_OK)
             {
-                unit_target = spell->m_targets.GetUnitTarget();
+                unit_target = spell->_targets.GetUnitTarget();
 
                 //10% chance to play special pet attack talk, else growl
                 //actually this only seems to happen on special spells, fire shield for imp, torment for voidwalker, but it's stupid to check every spell
@@ -380,12 +380,12 @@ void WorldSession::HandlePetActionHelper(Unit* pet, ObjectGuid guid1, uint32 spe
                     }
                 }
 
-                spell->prepare(&(spell->m_targets));
+                spell->prepare(&(spell->_targets));
             }
             else
             {
                 if (pet->isPossessed() || pet->IsVehicle()) /// @todo: confirm this check
-                    Spell::SendCastResult(GetPlayer(), spellInfo, spell->m_SpellVisual, spell->m_castId, result);
+                    Spell::SendCastResult(GetPlayer(), spellInfo, spell->_spellVisual, spell->_castId, result);
                 else
                     spell->SendPetCastResult(result);
 
@@ -497,7 +497,7 @@ void WorldSession::HandlePetSetAction(WorldPackets::Pet::PetSetAction& packet)
                 if (pet->GetTypeId() == TYPEID_UNIT && pet->IsPet())
                     ((Pet*)pet)->ToggleAutocast(spellInfo, true);
                 else
-                    for (Unit::ControlList::iterator itr = GetPlayer()->m_Controlled.begin(); itr != GetPlayer()->m_Controlled.end(); ++itr)
+                    for (Unit::ControlList::iterator itr = GetPlayer()->_controlled.begin(); itr != GetPlayer()->_controlled.end(); ++itr)
                         if ((*itr)->GetEntry() == pet->GetEntry())
                             (*itr)->GetCharmInfo()->ToggleCreatureAutocast(spellInfo, true);
             }
@@ -507,7 +507,7 @@ void WorldSession::HandlePetSetAction(WorldPackets::Pet::PetSetAction& packet)
                 if (pet->GetTypeId() == TYPEID_UNIT && pet->IsPet())
                     ((Pet*)pet)->ToggleAutocast(spellInfo, false);
                 else
-                    for (Unit::ControlList::iterator itr = GetPlayer()->m_Controlled.begin(); itr != GetPlayer()->m_Controlled.end(); ++itr)
+                    for (Unit::ControlList::iterator itr = GetPlayer()->_controlled.begin(); itr != GetPlayer()->_controlled.end(); ++itr)
                         if ((*itr)->GetEntry() == pet->GetEntry())
                             (*itr)->GetCharmInfo()->ToggleCreatureAutocast(spellInfo, false);
             }
@@ -681,10 +681,10 @@ void WorldSession::HandlePetCastSpellOpcode(WorldPackets::Spells::PetCastSpell& 
     caster->ClearUnitState(UNIT_STATE_FOLLOW);
 
     Spell* spell = new Spell(caster, spellInfo, TRIGGERED_NONE);
-    spell->m_fromClient = true;
-    spell->m_misc.Raw.Data[0] = petCastSpell.Cast.Misc[0];
-    spell->m_misc.Raw.Data[1] = petCastSpell.Cast.Misc[1];
-    spell->m_targets = targets;
+    spell->_isFromClient = true;
+    spell->_misc.Raw.Data[0] = petCastSpell.Cast.Misc[0];
+    spell->_misc.Raw.Data[1] = petCastSpell.Cast.Misc[1];
+    spell->_targets = targets;
 
     SpellCastResult result = spell->CheckPetCast(NULL);
     if (result == SPELL_CAST_OK)
@@ -704,7 +704,7 @@ void WorldSession::HandlePetCastSpellOpcode(WorldPackets::Spells::PetCastSpell& 
 
         WorldPackets::Spells::SpellPrepare spellPrepare;
         spellPrepare.ClientCastID = petCastSpell.Cast.CastID;
-        spellPrepare.ServerCastID = spell->m_castId;
+        spellPrepare.ServerCastID = spell->_castId;
         SendPacket(spellPrepare.Write());
 
         spell->prepare(&targets);

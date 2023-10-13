@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -166,7 +166,8 @@ class spell_gen_adaptive_warding : public SpellScriptLoader
             void Register() override
             {
                 DoCheckProc += AuraCheckProcFn(spell_gen_adaptive_warding_AuraScript::CheckProc);
-                OnEffectProc += AuraEffectProcFn(spell_gen_adaptive_warding_AuraScript::HandleProc, EFFECT_0, SPELL_AURA_DUMMY);
+                // 7.3.5 SPELL_AURA_DUMMY -> 29
+                OnEffectProc += AuraEffectProcFn(spell_gen_adaptive_warding_AuraScript::HandleProc, EFFECT_0, 29);
             }
         };
 
@@ -826,9 +827,10 @@ class spell_gen_clone : public SpellScriptLoader
                     OnEffectHitTarget += SpellEffectFn(spell_gen_clone_SpellScript::HandleScriptEffect, EFFECT_2, SPELL_EFFECT_DUMMY);
                 }
                 else
-                {
-                    OnEffectHitTarget += SpellEffectFn(spell_gen_clone_SpellScript::HandleScriptEffect, EFFECT_1, SPELL_EFFECT_SCRIPT_EFFECT);
-                    OnEffectHitTarget += SpellEffectFn(spell_gen_clone_SpellScript::HandleScriptEffect, EFFECT_2, SPELL_EFFECT_SCRIPT_EFFECT);
+                {                   
+                    OnEffectHitTarget += SpellEffectFn(spell_gen_clone_SpellScript::HandleScriptEffect, EFFECT_1, 0);
+                    // 7.3.5 deprecated
+                    //OnEffectHitTarget += SpellEffectFn(spell_gen_clone_SpellScript::HandleScriptEffect, EFFECT_2, SPELL_EFFECT_SCRIPT_EFFECT);
                 }
             }
         };
@@ -2008,10 +2010,13 @@ class spell_gen_netherbloom : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellInfo*/) override
             {
-                for (uint8 i = 0; i < 5; ++i)
-                    if (!ValidateSpellInfo({ SPELL_NETHERBLOOM_POLLEN_1 + i }))
-                        return false;
-                return true;
+                return ValidateSpellInfo({
+                    SPELL_NETHERBLOOM_POLLEN_1 + 0,
+                    SPELL_NETHERBLOOM_POLLEN_1 + 1,
+                    SPELL_NETHERBLOOM_POLLEN_1 + 2,
+                    SPELL_NETHERBLOOM_POLLEN_1 + 3,
+                    SPELL_NETHERBLOOM_POLLEN_1 + 4,
+                    });
             }
 
             void HandleScript(SpellEffIndex effIndex)
@@ -3095,7 +3100,8 @@ class spell_gen_seaforium_blast : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellInfo*/) override
             {
-                return ValidateSpellInfo({ SPELL_PLANT_CHARGES_CREDIT_ACHIEVEMENT });
+                //return ValidateSpellInfo({ SPELL_PLANT_CHARGES_CREDIT_ACHIEVEMENT });
+                return true;
             }
 
             bool Load() override
@@ -3431,6 +3437,7 @@ class spell_gen_trigger_exclude_caster_aura_spell : public SpellScriptLoader
 
             void Register() override
             {
+                m_deprecated = true;    // LEGION mark as deprecated script.
                 AfterCast += SpellCastFn(spell_gen_trigger_exclude_caster_aura_spell_SpellScript::HandleTrigger);
             }
         };
@@ -3441,24 +3448,39 @@ class spell_gen_trigger_exclude_caster_aura_spell : public SpellScriptLoader
         }
 };
 
+// 这个脚本到底是什么意思，没有看明白
 class spell_gen_trigger_exclude_target_aura_spell : public SpellScriptLoader
 {
     public:
         spell_gen_trigger_exclude_target_aura_spell() : SpellScriptLoader("spell_gen_trigger_exclude_target_aura_spell") { }
 
+
         class spell_gen_trigger_exclude_target_aura_spell_SpellScript : public SpellScript
         {
             PrepareSpellScript(spell_gen_trigger_exclude_target_aura_spell_SpellScript);
 
+
+            bool IsDeprecated(uint32 spellId) const
+            {
+                // FIXME: ... deprecated spell in 7.3.5
+                return (65219 == spellId || 157605 == spellId || 86315 == spellId);
+            }
+
             bool Validate(SpellInfo const* spellInfo) override
             {
+                if (IsDeprecated(spellInfo->ExcludeTargetAuraSpell))
+                    return true;
+
                 return ValidateSpellInfo({ spellInfo->ExcludeTargetAuraSpell });
             }
 
             void HandleTrigger()
             {
-                if (Unit* target = GetHitUnit())
-                    // Blizz seems to just apply aura without bothering to cast
+                if (IsDeprecated(GetSpellInfo()->ExcludeTargetAuraSpell))
+                    return;
+
+                // Blizz seems to just apply aura without bothering to cast
+                if (Unit* target = GetHitUnit())                    
                     GetCaster()->AddAura(GetSpellInfo()->ExcludeTargetAuraSpell, target);
             }
 
@@ -4814,7 +4836,7 @@ void AddSC_generic_spell_scripts()
     new spell_gen_aura_of_anger();
     new spell_gen_aura_service_uniform();
     new spell_gen_av_drekthar_presence();
-    new spell_gen_bandage();
+    //new spell_gen_bandage();
     new spell_gen_blood_reserve();
     new spell_gen_bonked();
     new spell_gen_break_shield("spell_gen_break_shield");
@@ -4835,18 +4857,18 @@ void AddSC_generic_spell_scripts()
     new spell_gen_defend();
     new spell_gen_despawn_self();
     new spell_gen_divine_storm_cd_reset();
-    new spell_gen_ds_flush_knockback();
+    //new spell_gen_ds_flush_knockback();
     new spell_gen_dungeon_credit();
     new spell_gen_elune_candle();
     new spell_gen_fishing();
     new spell_gen_gadgetzan_transporter_backfire();
     new spell_gen_gift_of_naaru();
     new spell_gen_gnomish_transporter();
-    new spell_gen_increase_stats_buff("spell_pal_blessing_of_kings");
-    new spell_gen_increase_stats_buff("spell_pal_blessing_of_might");
-    new spell_gen_increase_stats_buff("spell_dru_mark_of_the_wild");
-    new spell_gen_increase_stats_buff("spell_pri_power_word_fortitude");
-    new spell_gen_increase_stats_buff("spell_pri_shadow_protection");
+    //new spell_gen_increase_stats_buff("spell_pal_blessing_of_kings");
+    //new spell_gen_increase_stats_buff("spell_pal_blessing_of_might");
+    //new spell_gen_increase_stats_buff("spell_dru_mark_of_the_wild");
+    //new spell_gen_increase_stats_buff("spell_pri_power_word_fortitude");
+    //new spell_gen_increase_stats_buff("spell_pri_shadow_protection");
     new spell_gen_interrupt();
     new spell_gen_lifebloom("spell_hexlord_lifebloom", SPELL_HEXLORD_MALACRASS_LIFEBLOOM_FINAL_HEAL);
     new spell_gen_lifebloom("spell_tur_ragepaw_lifebloom", SPELL_TUR_RAGEPAW_LIFEBLOOM_FINAL_HEAL);
@@ -4886,7 +4908,7 @@ void AddSC_generic_spell_scripts()
     new spell_gen_throw_shield();
     new spell_gen_tournament_duel();
     new spell_gen_tournament_pennant();
-    new spell_gen_trigger_exclude_caster_aura_spell();
+    //new spell_gen_trigger_exclude_caster_aura_spell();
     new spell_gen_trigger_exclude_target_aura_spell();
     new spell_pvp_trinket_wotf_shared_cd<SPELL_WILL_OF_THE_FORSAKEN_COOLDOWN_TRIGGER>("spell_pvp_trinket_shared_cd");
     new spell_pvp_trinket_wotf_shared_cd<SPELL_WILL_OF_THE_FORSAKEN_COOLDOWN_TRIGGER_WOTF>("spell_wotf_shared_cd");
