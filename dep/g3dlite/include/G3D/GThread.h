@@ -1,4 +1,4 @@
-/** 
+﻿/** 
   @file GThread.h
  
   @created 2005-09-22
