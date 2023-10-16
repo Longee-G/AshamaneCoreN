@@ -20,6 +20,7 @@
 #define __TRINITY_BATTLEPAYMGR_H
 
 #include "Packets/BattlePayPackets.h"
+#include "Common.h"
 
 class LoginQueryHolder;
 class WorldSession;

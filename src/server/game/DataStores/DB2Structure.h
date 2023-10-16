@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -1968,6 +1968,23 @@ struct LockEntry
     uint16 Skill[MAX_LOCK_CASE];
     uint8 Type[MAX_LOCK_CASE];
     uint8 Action[MAX_LOCK_CASE];
+
+    bool HasMining() const
+    {
+        for (uint8 n : Type)
+            if (n == LOCKTYPE_MINING)
+                return true;
+
+        return false;
+    }
+
+    bool HasHerbalism() const
+    {
+        for (uint8 n : Type)
+            if (n == LOCKTYPE_HERBALISM)
+                return true;
+        return false;
+    }
 };
 
 struct MailTemplateEntry
