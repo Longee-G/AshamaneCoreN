@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -135,7 +135,7 @@ enum AreaFlags
     AREA_FLAG_OUTSIDE               = 0x04000000,                // used for determinating spell related inside/outside questions in Map::IsOutdoors
     AREA_FLAG_CAN_HEARTH_AND_RESURRECT = 0x08000000,             // Can Hearth And Resurrect From Area
     AREA_FLAG_NO_FLY_ZONE           = 0x20000000,                // Marks zones where you cannot fly
-    AREA_FLAG_UNK9                  = 0x40000000
+    AREA_FLAG_SUB_ZONE              = 0x40000000                 // Use for all the sub-zones (mostly when parent != 0)
 };
 
 enum AreaFlags2
@@ -848,6 +848,20 @@ enum ItemContext : uint8
 
     Event           = 9,
     TimeWalker      = 22,
+};
+
+enum JournalEncounterFlags : uint8
+{
+    JOURNAL_ENCOUNTER_FLAG_UNK2     = 0x02,
+    JOURNAL_ENCOUNTER_FLAG_ALLIANCE = 0x04, // This encounter can be see by alliance only
+    JOURNAL_ENCOUNTER_FLAG_HORDE    = 0x08,
+    JOURNAL_ENCOUNTER_FLAG_LEGION_WB= 0x16,
+};
+
+enum LfgDungeons : uint32
+{
+    LFG_DUNGEON_TIME_WALKING_BLACK_TEMPLE   = 1533,
+    LFG_DUNGEON_TIME_WALKING_ULDUAR         = 1677
 };
 
 enum MapDifficultyFlags : uint8

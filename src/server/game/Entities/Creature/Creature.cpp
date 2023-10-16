@@ -190,7 +190,7 @@ bool ForcedDespawnDelayEvent::Execute(uint64 /*e_time*/, uint32 /*p_time*/)
     return true;
 }
 
-Creature::Creature(bool isWorldObject): Unit(isWorldObject), MapObject(),
+Creature::Creature(bool isWorldObject) : Unit(isWorldObject), MapObject(),
 _groupLootTimer(0), _playerDamageReq(0),
 _pickpocketLootRestore(0), _corpseRemoveTime(0), _respawnTime(0),
 _respawnDelay(300), _corpseDelay(60), _respawnRadius(0.0f), _boundaryCheckTime(2500), _combatPulseTime(0),
@@ -454,6 +454,8 @@ bool Creature::UpdateEntry(uint32 entry, CreatureData const* data /*= nullptr*/,
     SetUInt32Value(OBJECT_DYNAMIC_FLAGS, dynamicFlags);
 
     RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IN_COMBAT);
+    // SKINNABLE flag remove
+    RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
 
     SetBaseAttackTime(BASE_ATTACK,   cInfo->BaseAttackTime);
     SetBaseAttackTime(OFF_ATTACK,    cInfo->BaseAttackTime);
@@ -1838,7 +1840,7 @@ void Creature::setDeathState(DeathState s)
 
         Unit::setDeathState(CORPSE);
     }
-    else if (s == JUST_RESPAWNED)
+    else if (s == JUST_RESPAWNED) // 当被设置成这个状态的时候，不会进行Update？原因是这个状态是临时状态，当被设置后马上就会被修改成其他状态
     {
         if (IsPet())
             SetFullHealth();
@@ -1852,6 +1854,8 @@ void Creature::setDeathState(DeathState s)
         UpdateMovementFlags();
 
         ClearUnitState(uint32(UNIT_STATE_ALL_STATE & ~UNIT_STATE_IGNORE_PATHFINDING));
+
+
 
         if (!IsPet())
         {
@@ -1873,6 +1877,10 @@ void Creature::setDeathState(DeathState s)
             SetUInt32Value(OBJECT_DYNAMIC_FLAGS, dynamicFlags);
 
             RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IN_COMBAT);
+            // 在这里需要将skinnable的标记清除，避免creature在没有被击杀的时候显示“可剥皮”
+            // remove UNIT_FLAG_SKINNABLE
+            RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
+
 
             SetMeleeDamageSchool(SpellSchools(cInfo->dmgschool));
         }
@@ -1883,13 +1891,14 @@ void Creature::setDeathState(DeathState s)
     }
 }
 
+// respawn the creature 
 void Creature::Respawn(bool force)
 {
     DestroyForNearbyPlayers();
 
     if (force)
     {
-        if (IsAlive())
+        if (IsAlive())  // deathState==ALIVE
             setDeathState(JUST_DIED);
         else if (getDeathState() != CORPSE)
             setDeathState(CORPSE);

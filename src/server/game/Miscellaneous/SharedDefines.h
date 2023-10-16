@@ -3844,10 +3844,11 @@ enum LockKeyType
 };
 
 // LockType.dbc (6.0.2.18988)
+// Upgrade to (7.3.5.26972) 
 enum LockType
 {
     LOCKTYPE_PICKLOCK              = 1,
-    LOCKTYPE_HERBALISM             = 2,
+    LOCKTYPE_HERBALISM             = 2,     // Gather
     LOCKTYPE_MINING                = 3,
     LOCKTYPE_DISARM_TRAP           = 4,
     LOCKTYPE_OPEN                  = 5,
@@ -3869,7 +3870,10 @@ enum LockType
     LOCKTYPE_OPEN_FROM_VEHICLE     = 21,
     LOCKTYPE_ARCHAELOGY            = 22,
     LOCKTYPE_PVP_OPEN_FAST         = 23,
-    LOCKTYPE_LUMBER_MILL           = 28
+    LOCKTYPE_LUMBER_MILL           = 28,
+    LOCKTYPE_SKINNING              = 29,    
+    LOCKTYPE_ANCIENT_MANA          = 30,
+    LOCKTYPE_WARBOARD              = 31,
 };
 
 // this is important type for npcs!

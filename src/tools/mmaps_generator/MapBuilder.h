@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2011 MaNGOS <http://getmangos.com/>
  *
@@ -39,17 +39,17 @@ namespace MMAP
 {
     struct MapTiles
     {
-        MapTiles() : _mapId(uint32(-1)), m_tiles(NULL) {}
+        MapTiles() : m_mapId(uint32(-1)), m_tiles(NULL) {}
 
-        MapTiles(uint32 id, std::set<uint32>* tiles) : _mapId(id), m_tiles(tiles) {}
+        MapTiles(uint32 id, std::set<uint32>* tiles) : m_mapId(id), m_tiles(tiles) {}
         ~MapTiles() {}
 
-        uint32 _mapId;
+        uint32 m_mapId;
         std::set<uint32>* m_tiles;
 
         bool operator==(uint32 id)
         {
-            return _mapId == id;
+            return m_mapId == id;
         }
     };
 
