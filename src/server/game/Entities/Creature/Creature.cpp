@@ -1151,10 +1151,13 @@ void Creature::SaveToDB()
     }
 
     uint32 mapId = GetTransport() ? GetTransport()->GetGOInfo()->moTransport.SpawnMap : GetMapId();
-    SaveToDB(mapId, data->spawnMask);
+    //SaveToDB(mapId, data->spawnMask);
+    SaveToDB(mapId, data->spawnDifficulties);
 }
 
-void Creature::SaveToDB(uint32 mapid, uint64 spawnMask)
+// `spawnMask` is Modified to `spawnDifficulties`
+
+void Creature::SaveToDB(uint32 mapid, /*uint64 spawnMask*/DifficultyVector const& spawnDifficulties)
 {
     // update in loaded data
     if (!_spawnId)
@@ -1222,7 +1225,8 @@ void Creature::SaveToDB(uint32 mapid, uint64 spawnMask)
     // prevent add data integrity problems
     data.movementType = !_respawnRadius && GetDefaultMovementType() == RANDOM_MOTION_TYPE
         ? IDLE_MOTION_TYPE : GetDefaultMovementType();
-    data.spawnMask = spawnMask;
+    //data.spawnMask = spawnMask;
+    data.spawnDifficulties = spawnDifficulties;
     data.npcflag = npcflag;
     data.unit_flags = unitFlags;
     data.unit_flags2 = unitFlags2;
@@ -1245,7 +1249,8 @@ void Creature::SaveToDB(uint32 mapid, uint64 spawnMask)
     stmt->setUInt64(index++, _spawnId);
     stmt->setUInt32(index++, GetEntry());
     stmt->setUInt16(index++, uint16(mapid));
-    stmt->setUInt64(index++, spawnMask);
+    //stmt->setUInt64(index++, spawnMask);
+    stmt->setString(index++, StringJoin(data.spawnDifficulties, ","));
     stmt->setUInt32(index++, data.phaseId);
     stmt->setUInt32(index++, data.phaseGroup);
     stmt->setUInt32(index++, displayId);

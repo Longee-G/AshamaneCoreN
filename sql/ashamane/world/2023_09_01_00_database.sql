@@ -1,4 +1,4 @@
--- add miss record to `gameobject_template`
+﻿-- add miss record to `gameobject_template`
 DELETE FROM gameobject_template WHERE entry in (280650, 235794);
 INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, `unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, `Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, `Data21`, `Data22`, `Data23`, `Data24`, `Data25`, `Data26`, `Data27`, `Data28`, `Data29`, `Data30`, `Data31`, `Data32`, `RequiredLevel`, `AIName`, `ScriptName`, `VerifiedBuild`) VALUES 
 (235794, 45, 20508, 'Order for engineering workshop', '', '', '', 1, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', 26972),
@@ -15,4 +15,4 @@ UPDATE `creature_template_addon` SET `auras`='80855 16245' WHERE entry=43279;
 -- fixed creature spawndist
 UPDATE `creature` SET spawndist=0 WHERE `guid` IN (183746, 183806);
 -- fixed gameobject spawnMask
-UPDATE `gameobject` SET spawnMask=1 WHERE `guid`=20000097;
+-- UPDATE `gameobject` SET spawnMask=1 WHERE `guid`=20000097;

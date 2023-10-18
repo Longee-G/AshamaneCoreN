@@ -180,7 +180,7 @@ class TC_GAME_API Pet : public Guardian
 
     private:
         // override of Creature::SaveToDB     - must not be called
-        void SaveToDB(uint32, uint64) override              
+        void SaveToDB(uint32, DifficultyVector const&) override              
         {
             ABORT();
         }

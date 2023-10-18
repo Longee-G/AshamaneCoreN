@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2012 TrinityCore <http://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -144,6 +144,7 @@ namespace ArenaHelper
         return g_PvpCPNumerator / (expf(p_Rating * g_PvpCPExpCoefficient * -1.f) * g_PvpCPBaseCoefficient + 1.0f);
     }
 
+    // TODO: fixme
     inline uint32 GetConquestCapFromRating(int p_Rating)
     {
         float v2;

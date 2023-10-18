@@ -6822,6 +6822,7 @@ void Player::_LoadCurrency(PreparedQueryResult result)
         cur.WeeklyQuantity = fields[2].GetUInt32();
         cur.TrackedQuantity = fields[3].GetUInt32();
         cur.Flags = fields[4].GetUInt8();
+        cur.WeekCap = fields[5].GetUInt32();
 
         _currencyStorage.insert(PlayerCurrenciesMap::value_type(currencyID, cur));
 
@@ -6847,6 +6848,7 @@ void Player::_SaveCurrency(SQLTransaction& trans)
             stmt->setUInt32(3, itr->second.WeeklyQuantity);
             stmt->setUInt32(4, itr->second.TrackedQuantity);
             stmt->setUInt8(5, itr->second.Flags);
+            stmt->setUInt32(6, itr->second.WeekCap);
             trans->Append(stmt);
             break;
         case PLAYERCURRENCY_CHANGED:
@@ -6855,8 +6857,9 @@ void Player::_SaveCurrency(SQLTransaction& trans)
             stmt->setUInt32(1, itr->second.WeeklyQuantity);
             stmt->setUInt32(2, itr->second.TrackedQuantity);
             stmt->setUInt8(3, itr->second.Flags);
-            stmt->setUInt64(4, GetGUID().GetCounter());
-            stmt->setUInt16(5, itr->first);
+            stmt->setUInt32(4, itr->second.WeekCap);
+            stmt->setUInt64(5, GetGUID().GetCounter());
+            stmt->setUInt16(6, itr->first);
             trans->Append(stmt);
             break;
         default:
@@ -6985,6 +6988,8 @@ void Player::ModifyCurrency(uint32 id, int32 count, bool printLog/* = true*/, bo
         cur.WeeklyQuantity = 0;
         cur.TrackedQuantity = 0;
         cur.Flags = 0;
+        cur.WeekCap = CalculateCurrencyWeekCap(id);
+
         _currencyStorage[id] = cur;
         itr = _currencyStorage.find(id);
     }
@@ -7106,15 +7111,45 @@ void Player::ResetCurrencyWeekCap()
     {
         itr->second.WeeklyQuantity = 0;
         itr->second.state = PLAYERCURRENCY_CHANGED;
+        itr->second.WeekCap = CalculateCurrencyWeekCap(itr->first);
     }
 
     WorldPacket data(SMSG_RESET_WEEKLY_CURRENCY, 0);
     SendDirectMessage(&data);
 }
 
+// 
+uint32 Player::CalculateCurrencyWeekCap(uint32 id) const
+{
+    CurrencyTypesEntry const* entry = sCurrencyTypesStore.LookupEntry(id);
+    if (!entry) return 0;
+    uint32 cap = entry->MaxEarnablePerWeek;
+    switch (entry->ID)
+    {
+        case CurrencyTypes::CURRENCY_TYPE_CONQUEST_POINTS:
+        case CurrencyTypes::CURRENCY_TYPE_CONQUEST_META_ARENA_BG:   // 竞技场的点数需要重新计算
+        {
+            uint32 maxRating = 0;
+            for (int slot = 0; slot < MAX_ARENA_SLOT; ++slot)
+                if (GetPrevWeekGames(slot))
+                    maxRating = std::max(maxRating, GetArenaPersonalRating(slot));
+            cap = ArenaHelper::GetConquestCapFromRating(maxRating);
+            break;
+        }
+    }
+    return cap;
+
+}
+
 uint32 Player::GetCurrencyWeekCap(CurrencyTypesEntry const* currency) const
 {
+    PlayerCurrenciesMap::const_iterator itr = _currencyStorage.find(currency->ID);
+    if (itr == _currencyStorage.end())
+        return CalculateCurrencyWeekCap(currency->ID);
+
     return currency->MaxEarnablePerWeek;
+
+
 }
 
 uint32 Player::GetCurrencyTotalCap(CurrencyTypesEntry const* currency) const

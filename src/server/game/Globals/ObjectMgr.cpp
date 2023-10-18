@@ -61,6 +61,13 @@ ScriptMapMap sSpellScripts;
 ScriptMapMap sEventScripts;
 ScriptMapMap sWaypointScripts;
 
+// check whether two difficulty vector has insersect..
+static bool CheckSpawnMask(DifficultyVector const& aa, DifficultyVector const& bb)
+{
+    return Trinity::Containers::Intersects(aa.begin(), aa.end(), bb.begin(), bb.end());
+}
+
+
 std::string GetScriptsTableNameByType(ScriptsType type)
 {
     std::string res = "";
@@ -1675,7 +1682,11 @@ void ObjectMgr::LoadLinkedRespawn()
                     break;
                 }
 
-                if (!(master->spawnMask & slave->spawnMask))  // they must have a possibility to meet (normal/heroic difficulty)
+
+                // they must have a possibility to meet (normal/heroic difficulty)
+                //if (!(master->spawnMask & slave->spawnMask))
+                // see issue#8
+                if(!CheckSpawnMask( master->spawnDifficulties, slave->spawnDifficulties ))
                 {
                     TC_LOG_ERROR("sql.sql", "LinkedRespawn: Creature '" UI64FMTD "' linking to Creature '" UI64FMTD "' with not corresponding spawnMask", guidLow, linkedGuidLow);
                     error = true;
@@ -1711,8 +1722,9 @@ void ObjectMgr::LoadLinkedRespawn()
                     error = true;
                     break;
                 }
-
-                if (!(master->spawnMask & slave->spawnMask))  // they must have a possibility to meet (normal/heroic difficulty)
+                // they must have a possibility to meet (normal/heroic difficulty)
+                //if (!(master->spawnMask & slave->spawnMask))
+                if(!CheckSpawnMask(master->spawnDifficulties, slave->spawnDifficulties))
                 {
                     TC_LOG_ERROR("sql.sql", "LinkedRespawn: Creature '" UI64FMTD "' linking to Gameobject '" UI64FMTD "' with not corresponding spawnMask", guidLow, linkedGuidLow);
                     error = true;
@@ -1749,7 +1761,8 @@ void ObjectMgr::LoadLinkedRespawn()
                     break;
                 }
 
-                if (!(master->spawnMask & slave->spawnMask))  // they must have a possibility to meet (normal/heroic difficulty)
+                //if (!(master->spawnMask & slave->spawnMask))  // they must have a possibility to meet (normal/heroic difficulty)
+                if (!CheckSpawnMask(master->spawnDifficulties, slave->spawnDifficulties))
                 {
                     TC_LOG_ERROR("sql.sql", "LinkedRespawn: Gameobject '" UI64FMTD "' linking to Gameobject '" UI64FMTD "' with not corresponding spawnMask", guidLow, linkedGuidLow);
                     error = true;
@@ -1786,7 +1799,8 @@ void ObjectMgr::LoadLinkedRespawn()
                     break;
                 }
 
-                if (!(master->spawnMask & slave->spawnMask))  // they must have a possibility to meet (normal/heroic difficulty)
+                //if (!(master->spawnMask & slave->spawnMask))  // they must have a possibility to meet (normal/heroic difficulty)
+                if(!CheckSpawnMask(master->spawnDifficulties, slave->spawnDifficulties))
                 {
                     TC_LOG_ERROR("sql.sql", "LinkedRespawn: Gameobject '" UI64FMTD "' linking to Creature '" UI64FMTD "' with not corresponding spawnMask", guidLow, linkedGuidLow);
                     error = true;
@@ -1839,7 +1853,9 @@ bool ObjectMgr::SetCreatureLinkedRespawn(ObjectGuid::LowType guidLow, ObjectGuid
         return false;
     }
 
-    if (!(master->spawnMask & slave->spawnMask))  // they must have a possibility to meet (normal/heroic difficulty)
+    // keep old code ... 
+    //if (!(master->spawnMask & slave->spawnMask))  // they must have a possibility to meet (normal/heroic difficulty)
+    if(!CheckSpawnMask(master->spawnDifficulties, slave->spawnDifficulties))
     {
         TC_LOG_ERROR("sql.sql", "LinkedRespawn: Creature '" UI64FMTD "' linking to '" UI64FMTD "' with not corresponding spawnMask", guidLow, linkedGuidLow);
         return false;
@@ -1943,14 +1959,50 @@ void ObjectMgr::LoadTempSummons()
     TC_LOG_INFO("server.loading", ">> Loaded %u temp summons in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
 
+// 在数据库中存储以字符串的方式存储虽然看起来更加直观，但是效率是比不上按位进行运算的效率的...
+// 先改代码调试通过之后，再尝试进行优化...
+
+// Parse string like `1,3,5` into DifficultyVector
+inline DifficultyVector ParseSpawnDifficulties(std::string const& difficultyString, std::string const& table,
+    ObjectGuid::LowType spawnId, uint32 mapId, std::set<Difficulty> const& mapDifficulties )
+{
+    Tokenizer tokens(difficultyString, ',', 0, false);
+    DifficultyVector difficulties;
+    
+    bool isTransportMap = sObjectMgr->IsTransportMap(mapId);
+    for (char const* token : tokens)
+    {
+        Difficulty difficulty = Difficulty(strtoul(token, nullptr, 10));
+        if (difficulty && !sDifficultyStore.LookupEntry(difficulty))
+        {
+            TC_LOG_ERROR("sql.sql", "Table `%s` has %s (GUID: " UI64FMTD ") with non invalid difficulty id %u, skipped.",
+                table.c_str(), table.c_str(), spawnId, difficulty);
+
+            continue;
+        }
+
+        if (!isTransportMap && mapDifficulties.find(difficulty) == mapDifficulties.end())
+        {
+            TC_LOG_ERROR("sql.sql", "Table `%s` has %s (GUID: " UI64FMTD ") has unsupported difficulty %u for map (Id: %u).",
+                table.c_str(), table.c_str(), spawnId, difficulty, mapId);
+            continue;
+        }
+        difficulties.push_back(difficulty);
+    }
+    std::sort(difficulties.begin(), difficulties.end());
+    return difficulties;
+}
+
+
+
 void ObjectMgr::LoadCreatures()
 {
     uint32 oldMSTime = getMSTime();
 
     //                                               0              1   2    3        4             5           6           7           8            9              10
     QueryResult result = WorldDatabase.Query("SELECT creature.guid, id, map, modelid, equipment_id, position_x, position_y, position_z, orientation, spawntimesecs, spawndist, "
-    //   11               12         13       14            15         16          17          18                19                   20                    21
-        "currentwaypoint, curhealth, curmana, MovementType, spawnMask, eventEntry, pool_entry, creature.npcflag, creature.unit_flags, creature.unit_flags2, creature.unit_flags3, "
+    //   11               12         13       14            15                 16          17          18                19                   20                    21
+        "currentwaypoint, curhealth, curmana, MovementType, spawnDifficulties, eventEntry, pool_entry, creature.npcflag, creature.unit_flags, creature.unit_flags2, creature.unit_flags3, "
     //   22                     23                      24                25                   26                       27
         "creature.dynamicflags, creature.phaseUseFlags, creature.phaseid, creature.phasegroup, creature.terrainSwapMap, creature.ScriptName "
         "FROM creature "
@@ -1964,10 +2016,13 @@ void ObjectMgr::LoadCreatures()
     }
 
     // Build single time for check spawnmask
-    std::map<uint32, uint64> spawnMasks;
+    //std::map<uint32, uint64> spawnMasks;
+    std::unordered_map<uint32, std::set<Difficulty>> spawnMasks;
     for (auto& mapDifficultyPair : sDB2Manager.GetMapDifficulties())
         for (auto& difficultyPair : mapDifficultyPair.second)
-            spawnMasks[mapDifficultyPair.first] |= UI64LIT(1) << difficultyPair.first;
+            //spawnMasks[mapDifficultyPair.first] |= UI64LIT(1) << difficultyPair.first;
+            spawnMasks[mapDifficultyPair.first].insert(Difficulty(difficultyPair.first));
+
 
     PhaseShift phaseShift;
 
@@ -2002,7 +2057,8 @@ void ObjectMgr::LoadCreatures()
         data.curhealth      = fields[12].GetUInt32();
         data.curmana        = fields[13].GetUInt32();
         data.movementType   = fields[14].GetUInt8();
-        data.spawnMask      = fields[15].GetUInt64();
+        //data.spawnMask      = fields[15].GetUInt64();
+        data.spawnDifficulties = ParseSpawnDifficulties(fields[15].GetString(), "creature", guid, data.mapid, spawnMasks[data.mapid]);
         int16 gameEvent     = fields[16].GetInt8();
         uint32 PoolId       = fields[17].GetUInt32();
         data.npcflag        = fields[18].GetUInt64();
@@ -2040,8 +2096,15 @@ void ObjectMgr::LoadCreatures()
             }
 
         // Skip spawnMask check for transport maps
-        if (!IsTransportMap(data.mapid) && data.spawnMask & ~spawnMasks[data.mapid])
-            TC_LOG_ERROR("sql.sql", "Table `creature` has creature (GUID: " UI64FMTD ") that have wrong spawn mask " UI64FMTD " including unsupported difficulty modes for map (Id: %u).", guid, data.spawnMask, data.mapid);
+        //if (!IsTransportMap(data.mapid) && data.spawnMask & ~spawnMasks[data.mapid])
+        //    TC_LOG_ERROR("sql.sql", "Table `creature` has creature (GUID: " UI64FMTD ") that have wrong spawn mask " UI64FMTD " including unsupported difficulty modes for map (Id: %u).", guid, data.spawnMask, data.mapid);
+        if (data.spawnDifficulties.empty())
+        {
+            TC_LOG_ERROR("sql.sql", "Table `creature` has creature (GUID: " UI64FMTD ") that is not spawned in any difficulty, skipped.", guid);
+            continue;
+        }
+
+
 
         bool ok = true;
         for (uint32 diff = 0; diff < MAX_CREATURE_DIFFICULTIES && ok; ++diff)
@@ -2178,8 +2241,11 @@ void ObjectMgr::LoadCreatures()
     TC_LOG_INFO("server.loading", ">> Loaded " SZFMTD " creatures in %u ms", _creatureDataStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
+// 将一个Creature添加到地图中的一个网格（Grid）中...
 void ObjectMgr::AddCreatureToGrid(ObjectGuid::LowType guid, CreatureData const* data)
 {
+    // 使用bit来运算的代码更加优美... 
+    /*
     uint64 mask = data->spawnMask;
     for (uint8 i = 0; mask != 0; i++, mask >>= 1)
     {
@@ -2190,10 +2256,18 @@ void ObjectMgr::AddCreatureToGrid(ObjectGuid::LowType guid, CreatureData const* 
             cell_guids.creatures.insert(guid);
         }
     }
+    */
+    for (Difficulty difficulty : data->spawnDifficulties)
+    {
+        CellCoord cell = Trinity::ComputeCellCoord(data->posX, data->posY);
+        CellObjectGuids& guids = _mapObjectGuidsStore[MAKE_PAIR32(data->mapid, difficulty)][cell.GetId()];
+        guids.creatures.insert(guid);
+   }
 }
 
 void ObjectMgr::RemoveCreatureFromGrid(ObjectGuid::LowType guid, CreatureData const* data)
 {
+    /*
     uint64 mask = data->spawnMask;
     for (uint8 i = 0; mask != 0; i++, mask >>= 1)
     {
@@ -2204,9 +2278,18 @@ void ObjectMgr::RemoveCreatureFromGrid(ObjectGuid::LowType guid, CreatureData co
             cell_guids.creatures.erase(guid);
         }
     }
+    */
+
+    for (Difficulty difficulty : data->spawnDifficulties)
+    {
+        CellCoord cell = Trinity::ComputeCellCoord(data->posX, data->posY);
+        CellObjectGuids& guids = _mapObjectGuidsStore[MAKE_PAIR32(data->mapid, difficulty)][cell.GetId()];
+        guids.creatures.erase(guid);
+    }
 }
 
-ObjectGuid::LowType ObjectMgr::AddGOData(uint32 entry, uint32 mapId, float x, float y, float z, float o, uint32 spawntimedelay, float rotation0, float rotation1, float rotation2, float rotation3)
+ObjectGuid::LowType ObjectMgr::AddGOData(uint32 entry, uint32 mapId, float x, float y, float z, float o, uint32 spawntimedelay,
+    float rotation0, float rotation1, float rotation2, float rotation3)
 {
     GameObjectTemplate const* goinfo = GetGameObjectTemplate(entry);
     if (!goinfo)
@@ -2230,7 +2313,9 @@ ObjectGuid::LowType ObjectMgr::AddGOData(uint32 entry, uint32 mapId, float x, fl
     data.rotation.w     = rotation3;
     data.spawntimesecs  = spawntimedelay;
     data.animprogress   = 100;
-    data.spawnMask      = SPAWNMASK_CONTINENT;
+    //data.spawnMask      = SPAWNMASK_CONTINENT;
+    data.spawnDifficulties.push_back(DIFFICULTY_NONE);
+
     data.go_state       = GO_STATE_READY;
     data.artKit         = goinfo->type == GAMEOBJECT_TYPE_CONTROL_ZONE ? 21 : 0;
     data.dbData = false;
@@ -2282,7 +2367,8 @@ ObjectGuid::LowType ObjectMgr::AddCreatureData(uint32 entry, uint32 mapId, float
     data.curhealth = stats->GenerateHealth(cInfo);
     data.curmana = stats->GenerateMana(cInfo);
     data.movementType = cInfo->MovementType;
-    data.spawnMask = SPAWNMASK_CONTINENT;
+    //data.spawnMask = SPAWNMASK_CONTINENT;
+    data.spawnDifficulties.push_back(DIFFICULTY_NONE);
     data.dbData = false;
     data.npcflag = cInfo->npcflag;
     data.unit_flags = cInfo->unit_flags;
@@ -2310,8 +2396,8 @@ void ObjectMgr::LoadGameobjects()
 
     //                                                0                1   2    3           4           5           6
     QueryResult result = WorldDatabase.Query("SELECT gameobject.guid, id, map, position_x, position_y, position_z, orientation, "
-    //   7          8          9          10         11             12            13     14         15          16
-        "rotation0, rotation1, rotation2, rotation3, spawntimesecs, animprogress, state, spawnMask, eventEntry, pool_entry, "
+    //   7          8          9          10         11             12            13     14                 15          16
+        "rotation0, rotation1, rotation2, rotation3, spawntimesecs, animprogress, state, spawnDifficulties, eventEntry, pool_entry, "
     //   17             18       19          20              20        21
         "phaseUseFlags, phaseid, phasegroup, terrainSwapMap, isActive, ScriptName "
         "FROM gameobject LEFT OUTER JOIN game_event_gameobject ON gameobject.guid = game_event_gameobject.guid "
@@ -2324,10 +2410,13 @@ void ObjectMgr::LoadGameobjects()
     }
 
     // build single time for check spawnmask
-    std::map<uint32, uint64> spawnMasks;
+    //std::map<uint32, uint64> spawnMasks;
+    std::map<uint32, std::set<Difficulty>> spawnMasks;
+
     for (auto& mapDifficultyPair : sDB2Manager.GetMapDifficulties())
         for (auto& difficultyPair : mapDifficultyPair.second)
-            spawnMasks[mapDifficultyPair.first] |= UI64LIT(1) << difficultyPair.first;
+            //spawnMasks[mapDifficultyPair.first] |= UI64LIT(1) << difficultyPair.first;
+            spawnMasks[mapDifficultyPair.first].insert(Difficulty(difficultyPair.first));
 
     PhaseShift phaseShift;
 
@@ -2422,8 +2511,9 @@ void ObjectMgr::LoadGameobjects()
         }
         data.go_state       = GOState(go_state);
 
-        data.spawnMask      = fields[14].GetUInt64();
+        /*
 
+        data.spawnMask      = fields[14].GetUInt64();
         // 感觉好像这个判断有问题，如果gameObject有0，1两种难度，而map只有0一种难度应该是没有问题的
         // 旧的判断却认为有问题。
         // 原因：可以在难度n的map中不创建难度n的gameObject，但是如果有难度n的gameObject，却找不到难度为n的map就会出现错误。
@@ -2433,7 +2523,17 @@ void ObjectMgr::LoadGameobjects()
             data.spawnMask = spawnMasks[data.mapid];
             TC_LOG_ERROR("sql.sql", "Table `gameobject` has gameobject (GUID: " UI64FMTD " Entry: %u) that has wrong spawn mask " UI64FMTD " including unsupported difficulty modes for map (Id: %u), skip", guid, data.id, data.spawnMask, data.mapid);
         }
-            
+        */
+
+        data.spawnDifficulties = ParseSpawnDifficulties(fields[14].GetString(), "gameobject", guid, data.mapid, spawnMasks[data.mapid]);
+        if (data.spawnDifficulties.empty())
+        {
+            TC_LOG_ERROR("sql.sql", "Table `creature` has creature (GUID: " UI64FMTD ") that is not spawned in any difficulty, skipped.", guid);
+            continue;
+        }
+
+
+
 
         int16 gameEvent     = fields[15].GetInt8();
         uint32 PoolId       = fields[16].GetUInt32();
@@ -2560,8 +2660,10 @@ void ObjectMgr::LoadGameobjects()
     TC_LOG_INFO("server.loading", ">> Loaded " SZFMTD " gameobjects in %u ms", _gameObjectDataStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
+// add a gameobject to the grid in the map
 void ObjectMgr::AddGameobjectToGrid(ObjectGuid::LowType guid, GameObjectData const* data)
 {
+/*
     uint64 mask = data->spawnMask;
     for (uint8 i = 0; mask != 0; i++, mask >>= 1)
     {
@@ -2572,10 +2674,18 @@ void ObjectMgr::AddGameobjectToGrid(ObjectGuid::LowType guid, GameObjectData con
             cell_guids.gameobjects.insert(guid);
         }
     }
+*/
+    for (Difficulty difficulty : data->spawnDifficulties)
+    {
+        CellCoord cell = Trinity::ComputeCellCoord(data->posX, data->posY);
+        CellObjectGuids& guids = _mapObjectGuidsStore[MAKE_PAIR32(data->mapid, difficulty)][cell.GetId()];
+        guids.gameobjects.insert(guid);
+    }
 }
 
 void ObjectMgr::RemoveGameobjectFromGrid(ObjectGuid::LowType guid, GameObjectData const* data)
 {
+    /*
     uint64 mask = data->spawnMask;
     for (uint8 i = 0; mask != 0; i++, mask >>= 1)
     {
@@ -2586,7 +2696,15 @@ void ObjectMgr::RemoveGameobjectFromGrid(ObjectGuid::LowType guid, GameObjectDat
             cell_guids.gameobjects.erase(guid);
         }
     }
+    */
+    for (Difficulty difficulty : data->spawnDifficulties)
+    {
+        CellCoord cell = Trinity::ComputeCellCoord(data->posX, data->posY);
+        CellObjectGuids& guids = _mapObjectGuidsStore[MAKE_PAIR32(data->mapid, difficulty)][cell.GetId()];
+        guids.gameobjects.erase(guid);
+    }
 }
+
 
 // name must be checked to correctness (if received) before call this function
 ObjectGuid ObjectMgr::GetPlayerGUIDByName(std::string const& name)
@@ -8097,6 +8215,8 @@ static LanguageType GetRealmLanguageType(bool create)
             return create ? LT_BASIC_LATIN : LT_ANY;        // basic-Latin at create, any at login
     }
 }
+
+
 
 bool isValidString(const std::wstring& wstr, uint32 strictMask, bool numericOrSpace, bool create = false)
 {

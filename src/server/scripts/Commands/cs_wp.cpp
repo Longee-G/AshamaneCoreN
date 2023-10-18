@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -666,25 +666,26 @@ public:
             target->AddObjectToRemoveList();
 
             // re-create
-            Creature* wpCreature = Creature::CreateCreature(VISUAL_WAYPOINT, map, chr->GetPosition());
-            if (!wpCreature)
+            Creature* lpCreature = Creature::CreateCreature(VISUAL_WAYPOINT, map, chr->GetPosition());
+            if (!lpCreature)
             {
                 handler->PSendSysMessage(LANG_WAYPOINT_VP_NOTCREATED, VISUAL_WAYPOINT);
                 return false;
             }
 
-            PhasingHandler::InheritPhaseShift(wpCreature, chr);
-            wpCreature->SaveToDB(map->GetId(), UI64LIT(1) << map->GetSpawnMode());
+            PhasingHandler::InheritPhaseShift(lpCreature, chr);
+            //lpCreature->SaveToDB(map->GetId(), UI64LIT(1) << map->GetSpawnMode());
+            lpCreature->SaveToDB(map->GetId(), { map->GetDifficultyID() });
 
-            ObjectGuid::LowType dbGuid = wpCreature->GetSpawnId();
+            ObjectGuid::LowType dbGuid = lpCreature->GetSpawnId();
 
-            // current "wpCreature" variable is deleted and created fresh new, otherwise old values might trigger asserts or cause undefined behavior
-            wpCreature->CleanupsBeforeDelete();
-            delete wpCreature;
+            // current "lpCreature" variable is deleted and created fresh new, otherwise old values might trigger asserts or cause undefined behavior
+            lpCreature->CleanupsBeforeDelete();
+            delete lpCreature;
 
             // To call _LoadGoods(); _LoadQuests(); CreateTrainerSpells();
-            wpCreature = Creature::CreateCreatureFromDB(dbGuid, map);
-            if (!wpCreature)
+            lpCreature = Creature::CreateCreatureFromDB(dbGuid, map);
+            if (!lpCreature)
             {
                 handler->PSendSysMessage(LANG_WAYPOINT_VP_NOTCREATED, VISUAL_WAYPOINT);
                 return false;
@@ -892,11 +893,13 @@ public:
                 }
 
                 PhasingHandler::InheritPhaseShift(wpCreature, chr);
-                wpCreature->SaveToDB(map->GetId(), UI64LIT(1) << map->GetSpawnMode());
+                //wpCreature->SaveToDB(map->GetId(), UI64LIT(1) << map->GetSpawnMode());
+                wpCreature->SaveToDB(map->GetId(), { map->GetDifficultyID() });
+                
 
                 ObjectGuid::LowType dbGuid = wpCreature->GetSpawnId();
 
-                // current "wpCreature" variable is deleted and created fresh new, otherwise old values might trigger asserts or cause undefined behavior
+                // current "lpCreature" variable is deleted and created fresh new, otherwise old values might trigger asserts or cause undefined behavior
                 wpCreature->CleanupsBeforeDelete();
                 delete wpCreature;
 
@@ -961,7 +964,8 @@ public:
             }
 
             PhasingHandler::InheritPhaseShift(creature, chr);
-            creature->SaveToDB(map->GetId(), UI64LIT(1) << map->GetSpawnMode());
+            //creature->SaveToDB(map->GetId(), UI64LIT(1) << map->GetSpawnMode());
+            creature->SaveToDB(map->GetId(), {map->GetDifficultyID()});
 
             ObjectGuid::LowType dbGuid = creature->GetSpawnId();
 
@@ -1018,7 +1022,8 @@ public:
             }
 
             PhasingHandler::InheritPhaseShift(creature, chr);
-            creature->SaveToDB(map->GetId(), UI64LIT(1) << map->GetSpawnMode());
+            //creature->SaveToDB(map->GetId(), UI64LIT(1) << map->GetSpawnMode());
+            creature->SaveToDB(map->GetId(), { map->GetDifficultyID() });
 
             ObjectGuid::LowType dbGuid = creature->GetSpawnId();
 

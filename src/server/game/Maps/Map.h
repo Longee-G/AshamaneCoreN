@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -395,7 +395,7 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         const char* GetMapName() const;
 
         // have meaning only for instanced map (that have set real difficulty)
-        Difficulty GetDifficultyID() const { return Difficulty(GetSpawnMode()); }
+        Difficulty GetDifficultyID() const { return Difficulty(_spawnMode); }
         MapDifficultyEntry const* GetMapDifficulty() const;
         uint8 GetDifficultyLootItemContext() const;
 
