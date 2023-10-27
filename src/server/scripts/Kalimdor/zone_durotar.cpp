@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -23,6 +23,7 @@
 #include "ScriptedCreature.h"
 #include "SpellInfo.h"
 #include "SpellScript.h"
+#include "ScriptedGossip.h"
 
 /*######
 ## Quest 37446: Lazy Peons
@@ -167,8 +168,193 @@ class spell_voodoo : public SpellScriptLoader
         }
 };
 
+/*
+  npc_durotar_duelist
+  实现任务`整装待发`的决斗, 
+*/
+#define GOSSIP_LETS_DUEL    "Let's duel"
+
+enum eDuelist
+{
+    QUEST_TO_BE_PREPARED = 44281,
+    KILL_CREDIT_WARM_DUEL = 108722,         // 这个id关联的是什么呢？ 这个关联到了任务目标ID，quest_objectives中定义的...
+    EVENT_DO_CAST = 1,
+    EVENT_STOP_DUEL = 2,
+    DATA_START_DUEL = 10,
+    SPELL_DUEL = 52996,         // 开始决斗使用的法术？谁使用的？
+    SPELL_DUEL_TRIGGERED = 52990,       // 这个值是定义在什么地方的？
+    SPELL_DUEL_VICTORY = 52994, // 这个Id是什么呢？
+    SPELL_DUEL_FLAG = 52991,        // 用在什么地方呢？定义在什么地方
+};
+
+// <creatureEntry, spellId>?
+// spellId defines in spell.db2
+
+std::map<uint32, uint32> const creatureAbilities
+{
+    { 113955,  172675 }, // Utona Wolfeye : Lighting Bolt
+    { 113951,  171884 }, // Sahale : Denounce
+    { 113947,  172769 }, // Maska : Mortal Strike
+    { 113545,  171764 }, // Dawn Merculus : Fireball
+    { 113961,  172028 }, // Pinkee Rizzo : Sinister Strike
+    { 113956,  171858 }, // Taela Shatterborne : Frostbolt
+    { 113952,  171957 }, // Aila Dourblade : Hemorrhage
+    { 113948,  172673 }, // Arienne Black : Holy Smite
+    { 113542,  11538 },  // Marius Sunshard : Frostbolt + Ice Barrier (33245)
+    { 113954,  171919 }, // Argonis Solheart : Crusader Strike
+    { 113544,  171777 }, // Neejala : Starfire
+    { 113950,  172779 }, // Lonan : Stormstrike
+    { 113546,  172673 }, // Yaalo : Holy Smite
+};
+
+// 决斗的npc的脚本，当前如果战胜npc有正确的处理，如果战败了有争取处理吗？
+
+class npc_durotar_duelist : public CreatureScript
+{
+public:
+    npc_durotar_duelist() : CreatureScript("npc_durotar_duelist") {}
+    // npc的AI，用来操控npc的战斗逻辑...
+    struct  npc_durotar_duelist_AI : public ScriptedAI
+    {
+        npc_durotar_duelist_AI(Creature* creature) : ScriptedAI(creature) {}
+        void Reset() override
+        {
+            _events.Reset();
+            me->RestoreFaction();
+            me->SetReactState(REACT_DEFENSIVE);
+        }
+
+        // 重载进入战斗的处理，who是战斗对象吗？
+        void EnterCombat(Unit* who) override
+        {
+            _events.ScheduleEvent(EVENT_DO_CAST, 1000);
+        }
+
+        // 重载自己出现伤害，用来处理自己的生命值..
+        void DamageTaken(Unit* attacker, uint32& damage) override
+        {
+            if (damage >= me->GetHealth())
+            { // 伤害溢出
+                damage = me->GetHealth() - 1;       // 因为要处理事件，所以不能打死？只能打到剩下1点血，然后处理击败事件
+                _events.Reset();
+                me->RemoveAllAuras();
+                // 阵营35是什么呢？
+                // 在faction.db2中35的定义是Villian, 不明定义啊... 是这个阵营属于特殊的中立的吗？
+                me->setFaction(35);            
+                me->AttackStop();
+
+                // 和npc进行决斗的逻辑是击败即可完成任务
+                attacker->AttackStop();
+                attacker->ClearInCombat();  // 这个函数的作用是什么？
+                // 直接调用击杀monster的凭证？ 用来触发击杀某个monster将要处理的条件判断
+                // 参数是monster的Id吗？
+
+
+                attacker->ToPlayer()->KilledMonsterCredit(KILL_CREDIT_WARM_DUEL);
+
+                // 将决斗的插旗移除？ 好像不上，施放这个法术并不会取消决斗旗
+                attacker->ToPlayer()->CastSpell(attacker->ToPlayer(), SPELL_DUEL_VICTORY, true);
+
+                // 这个函数是让1秒后停止决斗吗？
+                _events.ScheduleEvent(EVENT_STOP_DUEL, 1000);
+            }
+        }
+
+        // diff -- elapsed time in milliseconds?
+        // 处理AI的更新...
+        void UpdateAI(uint32 diff) override
+        {
+            if (!UpdateVictim())
+                return;
+            _events.Update(diff);
+
+            while (uint32 eventId = _events.ExecuteEvent())
+            {
+                switch (eventId)
+                {
+                    case EVENT_DO_CAST:
+                        // 处理cast事件，让AI控制的npc施放指定的法术
+                        DoCastVictim( creatureAbilities.at(me->GetEntry()));
+                        _events.RescheduleEvent(EVENT_DO_CAST, 4000);   // 4秒后再执行此事件..
+                        break;
+                    case EVENT_STOP_DUEL:
+                        me->Say("Fine duel.", LANG_UNIVERSAL, nullptr);
+                        me->GetMotionMaster()->MoveTargetedHome();  // npc回到原位...
+                        break;
+                    default:
+                        break;
+                }
+            }
+            // 执行近战攻击？
+            DoMeleeAttackIfReady();
+        }
+
+        void SetGUID(ObjectGuid guid, int32 /*id*/) override
+        {
+            _playerGuid = guid;
+        }
+             
+
+
+    private:
+        EventMap _events;
+        ObjectGuid _playerGuid = ObjectGuid::Empty;
+    };
+
+    // 这个回调处理的是什么呢？
+    bool OnGossipHello(Player* player, Creature* creature) override
+    {
+        // player或者npc不能处于战斗状态
+        if (player->IsInCombat() || creature->IsInCombat())
+            return true;
+
+        // 检查任务的状态..
+        if (player->GetQuestStatus(QUEST_TO_BE_PREPARED) == QUEST_STATUS_INCOMPLETE)
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_LETS_DUEL, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);// 这个函数的作用是什么呢？
+
+        // 这个调用的作用的时候？是让 `OnGossipSelect`的回调被触发吗？
+        SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
+        return true;
+    }
+
+    // 当player选择了一个对话选项的回调吗？
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
+    {
+        player->playerTalkClass->ClearMenus();
+        if (action == GOSSIP_ACTION_INFO_DEF + 1) {
+            creature->AI()->SetGUID(player->GetGUID());
+            creature->setFaction(FACTION_TEMPLATE_FLAG_PVP);
+
+            creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+            creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNK_15);       // 这个代码的作用未知...
+
+
+            creature->SetReactState(REACT_AGGRESSIVE);
+
+            player->CastSpell(creature, SPELL_DUEL, false);     // 和npc进行插旗决斗？
+            player->CastSpell(player, SPELL_DUEL_FLAG, true);   // 这个是往地上插旗吗？ 好像是 52991 是决斗旗 spell的id
+
+            // 让AI开始攻击player...
+            creature->AI()->AttackStart(player);
+            CloseGossipMenuFor(player);
+        }
+        return true;
+    }
+
+    // 获取npc的AI
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_durotar_duelist_AI(creature);
+    }
+};
+
+
+
+
 void AddSC_durotar()
 {
     new npc_lazy_peon();
     new spell_voodoo();
+
+    new npc_durotar_duelist();
 }

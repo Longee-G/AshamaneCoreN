@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2016 Firestorm Servers <https://firestorm-servers.com>
  *
@@ -20,6 +20,8 @@
 #include "InstanceScript.h"
 #include "Group.h"
 #include "WorldStatePackets.h"
+
+// 7.3.5团本，悬槌堡
 
 DoorData const g_DoorData[] =
 {

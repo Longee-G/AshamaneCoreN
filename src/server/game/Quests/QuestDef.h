@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -304,7 +304,7 @@ struct QuestObjective
     uint32 QuestID      = 0;
     uint8  Type         = 0;
     int8   StorageIndex = 0;
-    int32  ObjectID     = 0;
+    int32  ObjectID     = 0;        // 这个ObjectID关联到什么东西上呢？
     int32  Amount       = 0;
     uint32 Flags        = 0;
     uint32 Flags2       = 0;
@@ -525,7 +525,7 @@ class TC_GAME_API Quest
         uint64 AllowableRaces;
         uint32 QuestRewardID;
         int32 Expansion;
-        QuestObjectives Objectives;
+        QuestObjectives Objectives;         // quest's objectives
         std::string LogTitle;
         std::string LogDescription;
         std::string QuestDescription;

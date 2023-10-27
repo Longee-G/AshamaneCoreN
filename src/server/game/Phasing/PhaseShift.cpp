@@ -18,9 +18,15 @@
 #include "PhaseShift.h"
 #include "Containers.h"
 
+// 怎么使用PhaseGroup呢？
+
 bool PhaseShift::AddPhase(uint32 phaseId, PhaseFlags flags, std::vector<Condition*> const* areaConditions, int32 references /*= 1*/)
 {
+    // Phases是一个set容器...
+
     auto insertResult = Phases.emplace(phaseId, flags, nullptr);
+
+
     ModifyPhasesReferences(insertResult.first, references);
     if (areaConditions)
         insertResult.first->AreaConditions = areaConditions;

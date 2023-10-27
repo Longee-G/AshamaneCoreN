@@ -48,7 +48,8 @@ enum class PhaseFlags : uint16
     Personal    = 0x2
 };
 
-// 相位移动--管理player在不同位面..
+// shift应该翻译成为切换，或者是挡位的意思
+// 相位档...
 class TC_GAME_API PhaseShift
 {
 public:
@@ -121,6 +122,7 @@ protected:
     int32 NonCosmeticReferences;
     int32 CosmeticReferences;
     int32 DefaultReferences;
+    // is the phase data from the database
     bool IsDbPhaseShift;
 };
 

@@ -478,6 +478,8 @@ enum Misc_VBN
     FACTION_HOSTILE             = 2068
 };
 
+// dk的对手的AI吗？
+
 class npc_death_knight_initiate : public CreatureScript
 {
 public:
@@ -540,7 +542,7 @@ public:
         }
 
         bool lose;
-        ObjectGuid m_uiDuelerGUID;
+        ObjectGuid m_uiDuelerGUID;          // 决斗者的guid...应该是ai的对手的guid，那么就是player的guid...
         uint32 m_uiDuelTimer;
         bool m_bIsDuelInProgress;
 
@@ -552,7 +554,7 @@ public:
             CombatAI::Reset();
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNK_15);
         }
-
+        // 法术击中了AI..
         void SpellHit(Unit* pCaster, const SpellInfo* pSpell) override
         {
             if (!m_bIsDuelInProgress && pSpell->Id == SPELL_DUEL)

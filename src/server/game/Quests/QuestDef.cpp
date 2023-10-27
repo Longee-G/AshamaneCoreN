@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -220,6 +220,7 @@ void Quest::LoadQuestTemplateAddon(Field* fields)
         Flags |= QUEST_FLAGS_AUTO_ACCEPT;
 }
 
+// load an objective of quest from db.
 void Quest::LoadQuestObjective(Field* fields)
 {
     QuestObjective obj;

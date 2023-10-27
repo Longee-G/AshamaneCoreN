@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -33,7 +33,7 @@ namespace WorldPackets
         struct PartyMemberPhaseStates;
     }
 }
-
+// 游戏中的相位处理...`
 class TC_GAME_API PhasingHandler
 {
 public:

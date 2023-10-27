@@ -887,11 +887,23 @@ enum MountFlags
     MOUNT_FLAG_HIDE_IF_UNKNOWN          = 0x40
 };
 
+// 这里定义的相位Flags并不完整...
+// bind to `Phase.db2` Flags field.
 enum PhaseEntryFlags : uint16
 {
+    PHASE_FLAG_READ_ONLY = 0x01,
+    PHASE_FLAG_INTERNAL_PHASE = 0x02,
+    PHASE_FLAG_UNK_04  = 0x04,
+
     PHASE_FLAG_NORMAL   = 0x08,
     PHASE_FLAG_COSMETIC = 0x10,
-    PHASE_FLAG_PERSONAL = 0x20
+    PHASE_FLAG_PERSONAL = 0x20,
+
+    PHASE_FLAG_EXPENSIVE = 0x40,
+    PHASE_FLAG_EVENTS_ARE_OBSERVABLE = 0x80,
+    PHASE_FLAG_USES_PRELOAD_CONDITIONS = 0x100,
+    PHASE_FLAG_UNSHAREABLE_PERSONAL = 0x200,
+    PHASE_FLAG_OBJECTS_ARE_VISIBLE = 0x400,
 };
 
 // PhaseUseFlags fields in different db2s

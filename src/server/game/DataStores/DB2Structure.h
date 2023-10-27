@@ -2195,7 +2195,7 @@ struct PhaseEntry
 
 struct PhaseXPhaseGroupEntry
 {
-    uint32 ID;
+    uint32 ID;          // 这个id关联到什么地方？
     uint16 PhaseID;
     uint16 PhaseGroupID;
 };

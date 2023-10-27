@@ -9894,6 +9894,7 @@ void ObjectMgr::LoadTerrainSwapDefaults()
     TC_LOG_INFO("server.loading", ">> Loaded %u terrain swap defaults in %u ms.", count, GetMSTimeDiffToNow(oldMSTime));
 }
 
+// ??area?????...
 void ObjectMgr::LoadAreaPhases()
 {
     uint32 oldMSTime = getMSTime();

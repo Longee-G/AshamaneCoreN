@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -33,6 +33,7 @@ namespace
 {
 PhaseShift const Empty;
 
+// 相位Flags转换... 将在db中定义的flags转换成代码中使用的flags
 inline PhaseFlags GetPhaseFlags(uint32 phaseId)
 {
     if (PhaseEntry const* phase = sPhaseStore.LookupEntry(phaseId))
@@ -61,8 +62,10 @@ inline void ForAllControlled(Unit* unit, Func&& func)
 }
 }
 
+// 给worldObject设置相位信息？
 void PhasingHandler::AddPhase(WorldObject* object, uint32 phaseId, bool updateVisibility)
 {
+    // 给WorldObject添加一个相位信息 ...
     bool changed = object->GetPhaseShift().AddPhase(phaseId, GetPhaseFlags(phaseId), nullptr);
 
     if (Unit* unit = object->ToUnit())
@@ -219,10 +222,14 @@ void PhasingHandler::OnMapChange(WorldObject* object)
     UpdateVisibilityIfNeeded(object, false, true);
 }
 
+// Q:player是否会通过这个接口来切换自己的相位..
+// A:是的，这个接口只有player调用了...
+
 void PhasingHandler::OnAreaChange(WorldObject* object)
 {
     PhaseShift& phaseShift = object->GetPhaseShift();
     PhaseShift& suppressedPhaseShift = object->GetSuppressedPhaseShift();
+
     PhaseShift::PhaseContainer oldPhases = std::move(phaseShift.Phases); // for comparison
     ConditionSourceInfo srcInfo = ConditionSourceInfo(object);
 
@@ -231,6 +238,9 @@ void PhasingHandler::OnAreaChange(WorldObject* object)
 
     uint32 areaId = object->GetAreaId();
     AreaTableEntry const* areaEntry = sAreaTableStore.LookupEntry(areaId);
+
+    // 当player进入某一个Area的时候，就会切换到这个Area的Phase吗？
+
     while (areaEntry)
     {
         if (std::vector<PhaseAreaInfo> const* newAreaPhases = sObjectMgr->GetPhasesForArea(areaEntry->ID))
@@ -391,14 +401,14 @@ void PhasingHandler::OnConditionChange(WorldObject* object)
     UpdateVisibilityIfNeeded(object, true, changed);
 }
 
-// ����������player����λ��Ϣ�����͸�player...
+// 服务器构造player的相位信息并发送给player...
 
 void PhasingHandler::SendToPlayer(Player const* player, PhaseShift const& phaseShift)
 {
     WorldPackets::Misc::PhaseShiftChange phaseShiftChange;
     phaseShiftChange.Client = player->GetGUID();
     phaseShiftChange.Phaseshift.PhaseShiftFlags = phaseShift.Flags.AsUnderlyingType();
-    phaseShiftChange.Phaseshift.PersonalGUID = phaseShift.PersonalGuid;     // ���guid��ɶ�أ�
+    phaseShiftChange.Phaseshift.PersonalGUID = phaseShift.PersonalGuid;     // 这个guid是啥呢？
     phaseShiftChange.Phaseshift.Phases.reserve(phaseShift.Phases.size());
     std::transform(phaseShift.Phases.begin(), phaseShift.Phases.end(), std::back_inserter(phaseShiftChange.Phaseshift.Phases),
         [](PhaseShift::PhaseRef const& phase) -> WorldPackets::Misc::PhaseShiftDataPhase { return { phase.Flags.AsUnderlyingType(), phase.Id }; });
@@ -431,16 +441,23 @@ PhaseShift const& PhasingHandler::GetEmptyPhaseShift()
     return Empty;
 }
 
+// 根据数据库中的数据来初始化PhaseShift...
 void PhasingHandler::InitDbPhaseShift(PhaseShift& phaseShift, uint8 phaseUseFlags, uint16 phaseId, uint32 phaseGroupId)
 {
     phaseShift.ClearPhases();
     phaseShift.IsDbPhaseShift = true;
 
     EnumClassFlag<PhaseShiftFlags> flags = PhaseShiftFlags::None;
+
+    // 构建phase的useFlags ...
     if (phaseUseFlags & PHASE_USE_FLAGS_ALWAYS_VISIBLE)
         flags = flags | PhaseShiftFlags::AlwaysVisible | PhaseShiftFlags::Unphased;
     if (phaseUseFlags & PHASE_USE_FLAGS_INVERSE)
         flags |= PhaseShiftFlags::Inverse;
+
+    // 设置当前的相位Id，如果数据库中设置了PhaseId，那么就只使用PhaseId，否则将通过检查PhaseGroupId
+    // 来设置相位Id，也就是说PhaseGroupId只有在PhaseId为0的时候才能用...
+    // 当phaseGroup是有效值的时候，一般就是包含了超过1个的相位值..
 
     if (phaseId)
         phaseShift.AddPhase(phaseId, GetPhaseFlags(phaseId), nullptr);

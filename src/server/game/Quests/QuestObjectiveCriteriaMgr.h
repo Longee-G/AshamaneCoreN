@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -20,6 +20,7 @@
 
 #include "CriteriaHandler.h"
 
+// 任务目标的判断准则处理类..
 class TC_GAME_API QuestObjectiveCriteriaMgr : public CriteriaHandler
 {
 public:

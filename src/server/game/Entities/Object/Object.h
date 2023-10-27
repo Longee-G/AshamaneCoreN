@@ -635,6 +635,7 @@ class TC_GAME_API WorldObject : public Object, public WorldLocation
         //uint32 _mapId;
         // in map copy with instance id
         uint32 _instanceId;
+        // manage phase stuff of WorldObject
         PhaseShift _phaseShift;
         // contains phases for current area but not applied due to conditions
         PhaseShift _suppressedPhaseShift;

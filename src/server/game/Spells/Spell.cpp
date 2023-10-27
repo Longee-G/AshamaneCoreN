@@ -4743,6 +4743,7 @@ void Spell::TakeCastItem()
         }
     }
 
+    // 如果物品是可销毁的，并且数量变成0了，就可以被摧毁..
     if (expendable && withoutCharges)
     {
         uint32 count = 1;
