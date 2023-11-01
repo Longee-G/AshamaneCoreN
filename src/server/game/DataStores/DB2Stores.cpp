@@ -1277,7 +1277,8 @@ std::vector<uint32> DB2Manager::GetAreasForGroup(uint32 areaGroupId) const
     return std::vector<uint32>();
 }
 
-bool DB2Manager::IsInArea(uint32 objectAreaId, uint32 areaId)
+// 检查objectAreaId是否在areaId中？
+bool DB2Manager::IsInArea(uint32 objectAreaId, uint32 areaId) 
 {
     do
     {

@@ -443,6 +443,7 @@ enum SMART_SCRIPT_RESPAWN_CONDITION
     SMART_SCRIPT_RESPAWN_CONDITION_END = 3
 };
 
+// 这个枚举值有在什么表中定义吗？
 enum SMART_ACTION
 {
     SMART_ACTION_NONE                               = 0,      // No action

@@ -2200,6 +2200,7 @@ struct PhaseXPhaseGroupEntry
     uint16 PhaseGroupID;
 };
 
+// `PlayerCondition.db2` 
 struct PlayerConditionEntry
 {
     int64 RaceMask;

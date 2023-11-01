@@ -15470,6 +15470,7 @@ bool Player::CanRewardQuest(Quest const* quest, uint32 reward, bool msg)
     return true;
 }
 
+// player接一个任务到身上...
 void Player::AddQuest(Quest const* quest, Object* questGiver)
 {
     uint16 log_slot = FindQuestSlot(0);
@@ -16802,6 +16803,11 @@ void Player::SendQuestUpdate(uint32 questId)
     }
 
     UpdateForQuestWorldObjects();
+
+    // Q:是否是这个接口导致了player切换自己当前的相位...??
+    // A: 这个接口会重新检查一下phase关联的条件，看看player当前拥有的phase时候仍然满足条件...
+    // 那么这个接口只在任务发生变化的时候调用... 
+
     PhasingHandler::OnConditionChange(this);
 }
 

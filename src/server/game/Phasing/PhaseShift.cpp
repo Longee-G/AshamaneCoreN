@@ -20,12 +20,11 @@
 
 // 怎么使用PhaseGroup呢？
 
+// 给PhaseShift添加一个相位信息
+// 其中的
 bool PhaseShift::AddPhase(uint32 phaseId, PhaseFlags flags, std::vector<Condition*> const* areaConditions, int32 references /*= 1*/)
 {
-    // Phases是一个set容器...
-
     auto insertResult = Phases.emplace(phaseId, flags, nullptr);
-
 
     ModifyPhasesReferences(insertResult.first, references);
     if (areaConditions)
@@ -34,6 +33,7 @@ bool PhaseShift::AddPhase(uint32 phaseId, PhaseFlags flags, std::vector<Conditio
     return insertResult.second;
 }
 
+// 如果是Player，会在什么情况下调用这个接口将某个phaseId移除呢？
 PhaseShift::EraseResult<PhaseShift::PhaseContainer> PhaseShift::RemovePhase(uint32 phaseId)
 {
     auto itr = Phases.find(PhaseRef(phaseId, PhaseFlags::None, nullptr));

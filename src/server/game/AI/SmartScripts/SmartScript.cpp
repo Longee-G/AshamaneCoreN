@@ -236,7 +236,8 @@ void SmartScript::ProcessEventsFor(SMART_EVENT e, Unit* unit, uint32 var0, uint3
     }
 }
 
-void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, uint32 var1, bool bvar, const SpellInfo* spell, GameObject* gob, std::string const& varString)
+void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, uint32 var1, bool bvar,
+    const SpellInfo* spell, GameObject* gob, std::string const& varString)
 {
     //calc random
     if (e.GetEventType() != SMART_EVENT_LINK && e.event.event_chance < 100 && e.event.event_chance)
@@ -1263,7 +1264,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             delete targets;
             break;
         }
-        case SMART_ACTION_SET_INGAME_PHASE_GROUP:
+        case SMART_ACTION_SET_INGAME_PHASE_GROUP:       // 找不到其他的RemovePhase的调用... 是否这
         {
             ObjectList* targets = GetTargets(e, unit);
 

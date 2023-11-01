@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -891,18 +891,19 @@ struct TerrainSwapInfo
 
 struct PhaseInfoStruct
 {
-    uint32 Id;
-    std::unordered_set<uint32> Areas;
+    uint32 Id;                          // phase id in `phase.db2`
+    std::unordered_set<uint32> Areas;   // Area contains phase `Id`
 
     bool IsAllowedInArea(uint32 areaId) const;
 };
 
+// Area和Phase的关联结构
 struct PhaseAreaInfo
 {
     PhaseAreaInfo(PhaseInfoStruct const* phaseInfo) : PhaseInfo(phaseInfo) { }
 
     PhaseInfoStruct const* PhaseInfo;
-    std::unordered_set<uint32> SubAreaExclusions;
+    std::unordered_set<uint32> SubAreaExclusions;       // 被排除的Area，是否指在这个列表中的区域不受PhaseInfo指向的PhaseId的影响。
     ConditionContainer Conditions;
 };
 

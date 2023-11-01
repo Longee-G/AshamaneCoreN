@@ -5157,15 +5157,15 @@ SpellCastResult Spell::CheckCast(bool strict, uint32* param1 /*= nullptr*/, uint
         ConditionSourceInfo condInfo = ConditionSourceInfo(_caster, _targets.GetObjectTarget());
         if (!sConditionMgr->IsObjectMeetingNotGroupedConditions(CONDITION_SOURCE_TYPE_SPELL, _spellInfo->Id, condInfo))
         {
-            // mLastFailedCondition can be NULL if there was an error processing the condition in Condition::Meets (i.e. wrong data for ConditionTarget or others)
-            if (condInfo.mLastFailedCondition && condInfo.mLastFailedCondition->ErrorType)
+            // LastFailedCondition can be NULL if there was an error processing the condition in Condition::Meets (i.e. wrong data for ConditionTarget or others)
+            if (condInfo.LastFailedCondition && condInfo.LastFailedCondition->ErrorType)
             {
-                if (condInfo.mLastFailedCondition->ErrorType == SPELL_FAILED_CUSTOM_ERROR)
-                    _customError = SpellCustomErrors(condInfo.mLastFailedCondition->ErrorTextId);
-                return SpellCastResult(condInfo.mLastFailedCondition->ErrorType);
+                if (condInfo.LastFailedCondition->ErrorType == SPELL_FAILED_CUSTOM_ERROR)
+                    _customError = SpellCustomErrors(condInfo.LastFailedCondition->ErrorTextId);
+                return SpellCastResult(condInfo.LastFailedCondition->ErrorType);
             }
 
-            if (!condInfo.mLastFailedCondition || !condInfo.mLastFailedCondition->ConditionTarget)
+            if (!condInfo.LastFailedCondition || !condInfo.LastFailedCondition->ConditionTarget)
                 return SPELL_FAILED_CASTER_AURASTATE;
             return SPELL_FAILED_BAD_TARGETS;
         }
@@ -8026,7 +8026,7 @@ bool WorldObjectSpellTargetCheck::operator()(WorldObject* target)
     }
     if (!_condSrcInfo)
         return true;
-    _condSrcInfo->mConditionTargets[0] = target;
+    _condSrcInfo->ConditionTargets[0] = target;
     return sConditionMgr->IsObjectMeetToConditions(*_condSrcInfo, *_condList);
 }
 

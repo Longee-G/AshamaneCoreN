@@ -81,6 +81,9 @@ void PhasingHandler::AddPhase(WorldObject* object, uint32 phaseId, bool updateVi
     UpdateVisibilityIfNeeded(object, updateVisibility, changed);
 }
 
+// 移除WorldObject的指定phaseId的相位信息...
+// Q：在什么情况下会调用这个函数来移除WorldObject的相位信息呢？
+// A:
 void PhasingHandler::RemovePhase(WorldObject* object, uint32 phaseId, bool updateVisibility)
 {
     bool changed = object->GetPhaseShift().RemovePhase(phaseId).Erased;
@@ -223,44 +226,60 @@ void PhasingHandler::OnMapChange(WorldObject* object)
 }
 
 // Q:player是否会通过这个接口来切换自己的相位..
-// A:是的，这个接口只有player调用了...
-
+// A:是的，这个接口只有player调用了... 当player所在的Area变化的时候，将会根据Phase和Area的关联数据来修改
+// Player的相位信息（不仅仅是一个单一的相位，而是一组相位的组合...）
+//
+// Q: OnAreaChange触发的时候只看到AddPhase的操作，没有RemovePhase的操作，那么WorldObject是在
+//
+//
 void PhasingHandler::OnAreaChange(WorldObject* object)
 {
     PhaseShift& phaseShift = object->GetPhaseShift();
     PhaseShift& suppressedPhaseShift = object->GetSuppressedPhaseShift();
 
+    // 保存没有变化之前的相位信息
     PhaseShift::PhaseContainer oldPhases = std::move(phaseShift.Phases); // for comparison
     ConditionSourceInfo srcInfo = ConditionSourceInfo(object);
+
+    // 这个代码没有看到... 在改名Area的时候，会先将相位信息清空
 
     object->GetPhaseShift().ClearPhases();
     object->GetSuppressedPhaseShift().ClearPhases();
 
     uint32 areaId = object->GetAreaId();
+    // 这个信息是定义在`.db2`文件中的，记录的是某个区域的信息
     AreaTableEntry const* areaEntry = sAreaTableStore.LookupEntry(areaId);
 
-    // 当player进入某一个Area的时候，就会切换到这个Area的Phase吗？
-
+    // Q:当player进入某一个Area的时候，就会切换到这个Area的Phase吗？
+    // A: 代码中好像没有切换这个操作... 是通过控制WorldObject当前的相位信息来实现的.. 让通过检查worldObject是否有某个相位来判断是否可以让worldobject在
+    // 某个相位可见或者不可见，或者还有其他的应该，例如worldObject在某个相位中不可见，但是可以被攻击...
     while (areaEntry)
     {
+        // 获取某个Area关联的相位信息...
         if (std::vector<PhaseAreaInfo> const* newAreaPhases = sObjectMgr->GetPhasesForArea(areaEntry->ID))
         {
             for (PhaseAreaInfo const& phaseArea : *newAreaPhases)
             {
+                // 如果当前AreaId在排除列表中，则不处理
                 if (phaseArea.SubAreaExclusions.find(areaId) != phaseArea.SubAreaExclusions.end())
                     continue;
 
+                // 不在排除列表（SubAreaExclusions）中，表示当WorldObject进入到此AreaId时可能进入phaseId关联的相位...                
                 uint32 phaseId = phaseArea.PhaseInfo->Id;
+                // 将通过Conditions来判断WorldObject是否应该添加关联相位...
+                // 将可以通过条件判断的相位信息加入到 phaseShift 变量中
+                // 将没有通过条件判断的相位信息加入到 suppressedPhasedShift 变量中...
                 if (sConditionMgr->IsObjectMeetToConditions(srcInfo, phaseArea.Conditions))
                     phaseShift.AddPhase(phaseId, GetPhaseFlags(phaseId), &phaseArea.Conditions);
                 else
                     suppressedPhaseShift.AddPhase(phaseId, GetPhaseFlags(phaseId), &phaseArea.Conditions);
             }
         }
-
+        
         areaEntry = sAreaTableStore.LookupEntry(areaEntry->ParentAreaID);
     }
 
+    // 检查相位信息是否发生变化..
     bool changed = phaseShift.Phases != oldPhases;
     if (Unit* unit = object->ToUnit())
     {
@@ -290,6 +309,10 @@ void PhasingHandler::OnAreaChange(WorldObject* object)
     UpdateVisibilityIfNeeded(object, true, changed);
 }
 
+// 通过条件管理器来判断WorldObject是否改变了？
+// 这个函数用来移除WorldObject关联的phase..
+// Q: Player会在什么情况下调用这个接口来移除相关的相位了
+// A:
 void PhasingHandler::OnConditionChange(WorldObject* object)
 {
     PhaseShift& phaseShift = object->GetPhaseShift();
@@ -300,6 +323,8 @@ void PhasingHandler::OnConditionChange(WorldObject* object)
 
     for (auto itr = phaseShift.Phases.begin(); itr != phaseShift.Phases.end();)
     {
+        // 判断object是否满足条件管理器中的某个条件？
+        // 如果object是player，那么这些条件的来源是哪里呢？
         if (itr->AreaConditions && !sConditionMgr->IsObjectMeetToConditions(srcInfo, *itr->AreaConditions))
         {
             newSuppressions.AddPhase(itr->Id, itr->Flags, itr->AreaConditions, itr->References);

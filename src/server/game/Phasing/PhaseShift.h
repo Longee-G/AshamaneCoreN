@@ -53,7 +53,7 @@ enum class PhaseFlags : uint16
 class TC_GAME_API PhaseShift
 {
 public:
-    // 相位信息...
+    // 相位信息... 构建一个相位信息结构，其中的AreaConditions从哪里来？
     struct PhaseRef
     {
         PhaseRef(uint32 id, PhaseFlags flags, std::vector<Condition*> const* conditions)
@@ -61,7 +61,9 @@ public:
 
         uint16 Id;
         EnumClassFlag<PhaseFlags> Flags;
-        int32 References;           // 引用次数吗？
+        // 引用次数吗？
+        int32 References;           
+        // 和相位关联的一组条件
         std::vector<Condition*> const* AreaConditions;
         bool operator<(PhaseRef const& right) const { return Id < right.Id; }
         bool operator==(PhaseRef const& right) const { return Id == right.Id; }
@@ -87,7 +89,7 @@ public:
     typedef std::map<uint32, UiWorldMapAreaIdSwapRef> UiWorldMapAreaIdSwapContainer;
 
     PhaseShift() : Flags(PhaseShiftFlags::Unphased), NonCosmeticReferences(0), CosmeticReferences(0), DefaultReferences(0), IsDbPhaseShift(false) { }
-
+    // Add a phase stuff 
     bool AddPhase(uint32 phaseId, PhaseFlags flags, std::vector<Condition*> const* areaConditions, int32 references = 1);
     EraseResult<PhaseContainer> RemovePhase(uint32 phaseId);
     bool HasPhase(uint32 phaseId) const { return Phases.find(PhaseRef(phaseId, PhaseFlags::None, nullptr)) != Phases.end(); }
@@ -114,6 +116,7 @@ protected:
     EnumClassFlag<PhaseShiftFlags> Flags;
     ObjectGuid PersonalGuid;
     PhaseContainer Phases;
+    // 当前相位组合可以看到的所有mapId
     VisibleMapIdContainer VisibleMapIds;
     UiWorldMapAreaIdSwapContainer UiWorldMapAreaIdSwaps;
 
