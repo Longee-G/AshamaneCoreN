@@ -9781,6 +9781,7 @@ void ObjectMgr::LoadFactionChangeTitles()
     TC_LOG_INFO("server.loading", ">> Loaded %u faction change title pairs in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
 
+// load phases from `phase.db2`
 void ObjectMgr::LoadPhases()
 {
     for (PhaseEntry const* phase : sPhaseStore)
@@ -9894,7 +9895,7 @@ void ObjectMgr::LoadTerrainSwapDefaults()
     TC_LOG_INFO("server.loading", ">> Loaded %u terrain swap defaults in %u ms.", count, GetMSTimeDiffToNow(oldMSTime));
 }
 
-// ??area?????...
+// 从数据表`phase_area`中加载phase和area的关联数据..
 void ObjectMgr::LoadAreaPhases()
 {
     uint32 oldMSTime = getMSTime();
@@ -9940,6 +9941,8 @@ void ObjectMgr::LoadAreaPhases()
         ++count;
     } while (result->NextRow());
 
+    // build `PhaseAreaInfo.SubAreaExlucsions`
+
     for (auto itr = _phaseInfoByArea.begin(); itr != _phaseInfoByArea.end(); ++itr)
     {
         for (PhaseAreaInfo& phase : itr->second)
@@ -9954,6 +9957,12 @@ void ObjectMgr::LoadAreaPhases()
                 parentAreaId = area->ParentAreaID;
                 if (!parentAreaId)
                     break;
+
+                // 这个代码是用来收集某个phase排除的area。
+                // 原理是什么呢？
+                // 如果当前的Area关联了一个phaseId=n，然后你又发现phaseId=n也关联的area的parentArea，那么
+                // 就需要把phaseId=n添加到 parentAreaPhase.SubAreaExclusions
+                // 也就是说要让每个PhaseId都只关联到它能够影响的最小的Area..?
 
                 if (std::vector<PhaseAreaInfo>* parentAreaPhases = Trinity::Containers::MapGetValuePtr(_phaseInfoByArea, parentAreaId))
                     for (PhaseAreaInfo& parentAreaPhase : *parentAreaPhases)

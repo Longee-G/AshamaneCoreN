@@ -889,6 +889,7 @@ struct TerrainSwapInfo
     std::vector<uint32> UiWorldMapAreaIDSwaps;
 };
 
+// contruct with `PhaseEntry` in `phase.db2`
 struct PhaseInfoStruct
 {
     uint32 Id;                          // phase id in `phase.db2`
@@ -897,14 +898,17 @@ struct PhaseInfoStruct
     bool IsAllowedInArea(uint32 areaId) const;
 };
 
-// Area和Phase的关联结构
+// Area和Phase的关联结构， Key=PhaseId
+// associated to table `world.phase_area`
 struct PhaseAreaInfo
 {
     PhaseAreaInfo(PhaseInfoStruct const* phaseInfo) : PhaseInfo(phaseInfo) { }
 
     PhaseInfoStruct const* PhaseInfo;
     std::unordered_set<uint32> SubAreaExclusions;       // 被排除的Area，是否指在这个列表中的区域不受PhaseInfo指向的PhaseId的影响。
-    ConditionContainer Conditions;
+    // 这个Conditions的数据不在`phase_area`表中，来源于ConditionMgr，条件类型中为`CONDITION_SOURCE_TYPE_PHASE`的条件将会添加到这个
+    // 变量中，ConditionMgr的加载要晚于相位数据的加载，代码是由ConditionMgr主动添加数据到这个结构的..
+    ConditionContainer Conditions;                      
 };
 
 struct RaceUnlockRequirement
@@ -1708,8 +1712,10 @@ class TC_GAME_API ObjectMgr
         std::vector<TerrainSwapInfo*> const* GetTerrainSwapsForMap(uint32 mapId) const;
 
     private:
+        // key = phaseId, 1 : 1
         std::unordered_map<uint32, PhaseInfoStruct> _phaseInfoById;
         std::unordered_map<uint32, TerrainSwapInfo> _terrainSwapInfoById;
+        // key = areaId, 1 : *
         std::unordered_map<uint32, std::vector<PhaseAreaInfo>> _phaseInfoByArea;
         std::unordered_map<uint32, std::vector<TerrainSwapInfo*>> _terrainSwapInfoByMap;
 

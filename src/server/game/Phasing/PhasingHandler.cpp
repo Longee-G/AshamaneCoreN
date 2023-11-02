@@ -230,7 +230,8 @@ void PhasingHandler::OnMapChange(WorldObject* object)
 // Player的相位信息（不仅仅是一个单一的相位，而是一组相位的组合...）
 //
 // Q: OnAreaChange触发的时候只看到AddPhase的操作，没有RemovePhase的操作，那么WorldObject是在
-//
+// A: 感觉好像不需要调用RemovePhase接口，因为在进入一个新的Area的时候，会将旧的PhaseShift进行clear，然后在
+//    添加当前的Area所关联的phase。
 //
 void PhasingHandler::OnAreaChange(WorldObject* object)
 {
@@ -241,8 +242,7 @@ void PhasingHandler::OnAreaChange(WorldObject* object)
     PhaseShift::PhaseContainer oldPhases = std::move(phaseShift.Phases); // for comparison
     ConditionSourceInfo srcInfo = ConditionSourceInfo(object);
 
-    // 这个代码没有看到... 在改名Area的时候，会先将相位信息清空
-
+    // 在添加当前Area的Phase之前，将旧的Phase进行了清除，而不是使用RemovePhase的方式
     object->GetPhaseShift().ClearPhases();
     object->GetSuppressedPhaseShift().ClearPhases();
 
@@ -261,10 +261,13 @@ void PhasingHandler::OnAreaChange(WorldObject* object)
             for (PhaseAreaInfo const& phaseArea : *newAreaPhases)
             {
                 // 如果当前AreaId在排除列表中，则不处理
+                // SubAreaExclusion是定义在什么地方的？
+                // SubAreaExclusion是在构造area和phase的关联数据的时候创建的...
+                // 这个判断是为了避免出现重复添加，一个phaseId如果关联的一个AreaId，那么它也会同时关联到这个AreaId的parentAreaId
+                // 但是我们在处理的时候只需要处理最小的areaId，而跳过parentAreaId..
                 if (phaseArea.SubAreaExclusions.find(areaId) != phaseArea.SubAreaExclusions.end())
                     continue;
-
-                // 不在排除列表（SubAreaExclusions）中，表示当WorldObject进入到此AreaId时可能进入phaseId关联的相位...                
+             
                 uint32 phaseId = phaseArea.PhaseInfo->Id;
                 // 将通过Conditions来判断WorldObject是否应该添加关联相位...
                 // 将可以通过条件判断的相位信息加入到 phaseShift 变量中

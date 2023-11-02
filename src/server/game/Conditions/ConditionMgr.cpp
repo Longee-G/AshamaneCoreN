@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -1451,10 +1451,12 @@ bool ConditionMgr::addToSpellImplicitTargetConditions(Condition* cond) const
     return true;
 }
 
+// 将和相位关联的condition添加到相位数据中...
+// 最终需要将condition添加到某个area上...
 bool ConditionMgr::addToPhases(Condition* cond) const
 {
-    if (!cond->SourceEntry)
-    {
+    if (!cond->SourceEntry) 
+    {   // 关联的是phaseId
         if (PhaseInfoStruct const* phaseInfo = sObjectMgr->GetPhaseInfo(cond->SourceGroup))
         {
             bool found = false;
@@ -1478,7 +1480,7 @@ bool ConditionMgr::addToPhases(Condition* cond) const
         }
     }
     else if (std::vector<PhaseAreaInfo>* phases = const_cast<std::vector<PhaseAreaInfo>*>(sObjectMgr->GetPhasesForArea(cond->SourceEntry)))
-    {
+    {   // 关联的是areaId
         for (PhaseAreaInfo& phase : *phases)
         {
             if (phase.PhaseInfo->Id == cond->SourceGroup)

@@ -93,6 +93,7 @@ void PhaseShift::Clear()
     UiWorldMapAreaIdSwaps.clear();
 }
 
+// Q：ClearPhases()和Clear() 接口区别是什么呢？
 void PhaseShift::ClearPhases()
 {
     Flags &= EnumClassFlag<PhaseShiftFlags>(PhaseShiftFlags::AlwaysVisible) | PhaseShiftFlags::Inverse;
