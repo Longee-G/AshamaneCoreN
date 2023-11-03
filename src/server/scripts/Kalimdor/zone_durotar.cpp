@@ -172,12 +172,15 @@ class spell_voodoo : public SpellScriptLoader
   npc_durotar_duelist
   实现任务`整装待发`的决斗, 
 */
+
+// 这个字符串应该定义在数据库中，然后通过id来进行转换...
 #define GOSSIP_LETS_DUEL    "Let's duel"
 
 enum eDuelist
 {
     QUEST_TO_BE_PREPARED = 44281,
-    KILL_CREDIT_WARM_DUEL = 108722,         // 这个id关联的是什么呢？ 这个关联到了任务目标ID，quest_objectives中定义的...
+    KILL_CREDIT_WARM_DUEL = 108722,         // 这个id关联的是什么呢？ 这个关联到了任务目标ID，table `quest_objectives`中定义的...
+    QUEST_OBJECTIVE_ID = 286487,        // `Warmed up with a duel`
     EVENT_DO_CAST = 1,
     EVENT_STOP_DUEL = 2,
     DATA_START_DUEL = 10,
@@ -248,12 +251,16 @@ public:
                 attacker->ClearInCombat();  // 这个函数的作用是什么？
                 // 直接调用击杀monster的凭证？ 用来触发击杀某个monster将要处理的条件判断
                 // 参数是monster的Id吗？
-
-
                 attacker->ToPlayer()->KilledMonsterCredit(KILL_CREDIT_WARM_DUEL);
 
-                // 将决斗的插旗移除？ 好像不上，施放这个法术并不会取消决斗旗
-                attacker->ToPlayer()->CastSpell(attacker->ToPlayer(), SPELL_DUEL_VICTORY, true);
+                // 将决斗的插旗移除, 是因为决斗旗是player插的，所以也是由player来移除吗？
+                attacker->RemoveGameObject(SPELL_DUEL_FLAG, true);
+                // player向npc施放决斗胜利
+                attacker->CastSpell(me, SPELL_DUEL_VICTORY, true);
+                me->CastSpell(me, 7267, true);
+
+
+
 
                 // 这个函数是让1秒后停止决斗吗？
                 _events.ScheduleEvent(EVENT_STOP_DUEL, 1000);
@@ -301,7 +308,9 @@ public:
         ObjectGuid _playerGuid = ObjectGuid::Empty;
     };
 
-    // 这个回调处理的是什么呢？
+    // Q：这个回调处理的是什么呢？
+    // A：这个函数是处理玩家右键点击Npc进行交互的第1步
+    // 是通过`sScriptMgr->OnGossipHello(...)`来调用的...
     bool OnGossipHello(Player* player, Creature* creature) override
     {
         // player或者npc不能处于战斗状态
@@ -309,8 +318,11 @@ public:
             return true;
 
         // 检查任务的状态..
-        if (player->GetQuestStatus(QUEST_TO_BE_PREPARED) == QUEST_STATUS_INCOMPLETE)
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_LETS_DUEL, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);// 这个函数的作用是什么呢？
+        // 如果Player接到了任务`To Be Prepared` 并且没有完成，那么就添加菜单项，让Player可以选择和Npc进行决斗
+        // FIXME: 是否可以检查任务的某一个目标是否已经完成 
+        if (player->GetQuestStatus(QUEST_TO_BE_PREPARED) == QUEST_STATUS_INCOMPLETE &&
+            player->GetQuestObjectiveCounter(286487) < 1)   // `quest objective: Warmed up with a duel` 
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_LETS_DUEL, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
         // 这个调用的作用的时候？是让 `OnGossipSelect`的回调被触发吗？
         SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
