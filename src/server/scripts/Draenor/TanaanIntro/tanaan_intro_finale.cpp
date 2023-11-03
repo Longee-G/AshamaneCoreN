@@ -594,7 +594,8 @@ public:
 
     bool OnGossipHello(Player* player, GameObject* /*gameObject*/) override
     {
-        if (player->GetQuestStatus(TanaanQuests::QuestATasteOfIron) == QUEST_STATUS_INCOMPLETE && player->GetQuestObjectiveCounter(TanaanQuestObjectives::ObjIronHordeSlain) < 200)
+        if (player->GetQuestStatus(TanaanQuests::QuestATasteOfIron) == QUEST_STATUS_INCOMPLETE &&
+            player->GetQuestObjectiveCounter(TanaanQuestObjectives::ObjIronHordeSlain) < 200)
         {
             player->RemoveAurasDueToSpell(TanaanPhases::PhaseFinalSideCanons);
             player->GetSceneMgr().RecreateScene(TanaanSceneObjects::SceneShootingGallery, SCENEFLAG_NOT_CANCELABLE | SCENEFLAG_UNK16);

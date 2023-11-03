@@ -349,6 +349,8 @@ void WorldSession::HandleGossipHelloOpcode(WorldPackets::NPC::Hello& packet)
         }
     }
 
+    // 如果Npc(creature)设置了`ScriptName`，那么交互将会由脚本来完成...
+
     if (!sScriptMgr->OnGossipHello(_player, unit))
     {
         _player->TalkedToCreature(unit->GetEntry(), unit->GetGUID());
@@ -358,6 +360,7 @@ void WorldSession::HandleGossipHelloOpcode(WorldPackets::NPC::Hello& packet)
     unit->AI()->sGossipHello(_player);
 }
 
+// 处理玩家的菜单选择...
 void WorldSession::HandleGossipSelectOptionOpcode(WorldPackets::NPC::GossipSelectOption& packet)
 {
     if (!_player->playerTalkClass->GetGossipMenu().GetItem(packet.GossipIndex))
@@ -415,6 +418,7 @@ void WorldSession::HandleGossipSelectOptionOpcode(WorldPackets::NPC::GossipSelec
         if (unit)
         {
             unit->AI()->sGossipSelectCode(_player, packet.GossipID, packet.GossipIndex, packet.PromotionCode.c_str());
+            // 如果gossip_option关联了Script，那么将由script来完成工作，否则走缺省流程？
             if (!sScriptMgr->OnGossipSelectCode(_player, unit, _player->playerTalkClass->GetGossipOptionSender(packet.GossipIndex), _player->playerTalkClass->GetGossipOptionAction(packet.GossipIndex), packet.PromotionCode.c_str()))
                 _player->OnGossipSelect(unit, packet.GossipIndex, packet.GossipID);
         }

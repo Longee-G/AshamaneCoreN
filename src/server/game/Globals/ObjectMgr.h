@@ -660,6 +660,7 @@ struct PointOfInterest
     std::string Name;
 };
 
+// from table `gossip_menu_option` + `gossip_menu_option_action` + `gossip_menu_option_box` + `gossip_menu_option_trainer`
 struct GossipMenuItems
 {
     uint32               MenuId;
@@ -667,9 +668,9 @@ struct GossipMenuItems
     uint8                OptionIcon;
     std::string          OptionText;
     uint32               OptionBroadcastTextId;
-    uint32               OptionType;
+    uint32               OptionType;                // Declare in `enum Gossip_Option`
     uint64               OptionNpcFlag;
-    uint32               ActionMenuId;
+    uint32               ActionMenuId;              // table `gossip_menu_option_action.ActionMenuId`
     uint32               ActionPoiId;
     bool                 BoxCoded;
     uint32               BoxMoney;
@@ -898,14 +899,14 @@ struct PhaseInfoStruct
     bool IsAllowedInArea(uint32 areaId) const;
 };
 
-// Area和Phase的关联结构， Key=PhaseId
-// associated to table `world.phase_area`
+// associated to table `world.phase_area` Key=PhaseId
 struct PhaseAreaInfo
 {
     PhaseAreaInfo(PhaseInfoStruct const* phaseInfo) : PhaseInfo(phaseInfo) { }
 
     PhaseInfoStruct const* PhaseInfo;
-    std::unordered_set<uint32> SubAreaExclusions;       // 被排除的Area，是否指在这个列表中的区域不受PhaseInfo指向的PhaseId的影响。
+    // 被排除的Area，是否指在这个列表中的区域不受PhaseInfo指向的PhaseId的影响。
+    std::unordered_set<uint32> SubAreaExclusions;       
     // 这个Conditions的数据不在`phase_area`表中，来源于ConditionMgr，条件类型中为`CONDITION_SOURCE_TYPE_PHASE`的条件将会添加到这个
     // 变量中，ConditionMgr的加载要晚于相位数据的加载，代码是由ConditionMgr主动添加数据到这个结构的..
     ConditionContainer Conditions;                      

@@ -14840,7 +14840,7 @@ void Player::OnGossipSelect(WorldObject* source, uint32 optionIndex, uint32 menu
     // if not same, then something funky is going on
     if (menuId != gossipMenu.GetMenuId())
         return;
-
+    
     GossipMenuItem const* item = gossipMenu.GetItem(optionIndex);
     if (!item)
         return;
@@ -14858,6 +14858,7 @@ void Player::OnGossipSelect(WorldObject* source, uint32 optionIndex, uint32 menu
         }
     }
 
+    // defines in table `Gossip_Option_xxxx`
     GossipMenuItemData const* menuItemData = gossipMenu.GetItemData(optionIndex);
     if (!menuItemData)
         return;
@@ -17625,7 +17626,7 @@ int32 Player::GetQuestObjectiveCounter(uint32 objectiveId) const
 
     return GetQuestObjectiveData(quest, obj->StorageIndex);
 }
-
+// 检查指定的任务目标是否完成..
 bool Player::IsQuestObjectiveComplete(QuestObjective const& objective) const
 {
     Quest const* quest = sObjectMgr->GetQuestTemplate(objective.QuestID);

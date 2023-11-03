@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -143,23 +143,27 @@ enum Poi_Icon
 
 struct GossipMenuItem
 {
-    uint8       MenuItemIcon;
-    bool        IsCoded;
+    uint8       MenuItemIcon;           // `GossipMenuItems.OptionIcon`
+    bool        IsCoded;                // `GossipMenuItems.BoxCoded`
     std::string Message;
     uint32      Sender;
-    uint32      OptionType;
+    uint32      OptionType;             // `GossipMenuItems.OptionType`
     std::string BoxMessage;
-    uint32      BoxMoney;
+    uint32      BoxMoney;               // `GossipMenuItems.BoxMoney`
 };
 
 // need an ordered container
 typedef std::map<uint32, GossipMenuItem> GossipMenuItemContainer;
 
+// 
 struct GossipMenuItemData
 {
-    uint32 GossipActionMenuId;  // MenuId of the gossip triggered by this action
+    // MenuId of the gossip triggered by this action
+    // point to `GossipMenuItems.ActionMenuId`
+    uint32 GossipActionMenuId;
+    // point to `GossipMenuItems.ActionPoiId`
     uint32 GossipActionPoi;
-
+    // Point to `GossipMenuItems.TrainerId`
     uint32 TrainerId;
 };
 
@@ -174,6 +178,7 @@ struct QuestMenuItem
 
 typedef std::vector<QuestMenuItem> QuestMenuItemList;
 
+// 闲聊菜单
 class TC_GAME_API GossipMenu
 {
     public:
@@ -263,6 +268,8 @@ class InteractionData
         uint32 TrainerId;
         uint32 PlayerChoiceId;
 };
+
+// 这个类在什么时候构建的？是怎么构建的？
 
 class TC_GAME_API PlayerMenu
 {

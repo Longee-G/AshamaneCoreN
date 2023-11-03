@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -136,6 +136,7 @@ void GossipMenu::AddMenuItem(uint32 menuId, uint32 optionIndex, uint32 sender, u
     }
 }
 
+//
 void GossipMenu::AddGossipMenuItemData(uint32 optionIndex, uint32 gossipActionMenuId, uint32 gossipActionPoi, uint32 trainerId)
 {
     GossipMenuItemData& itemData = _menuItemData[optionIndex];
@@ -154,6 +155,7 @@ uint32 GossipMenu::GetMenuItemSender(uint32 menuItemId) const
     return itr->second.Sender;
 }
 
+// 根据player的选择来返回菜单项关联的Action
 uint32 GossipMenu::GetMenuItemAction(uint32 menuItemId) const
 {
     GossipMenuItemContainer::const_iterator itr = _menuItems.find(menuItemId);
