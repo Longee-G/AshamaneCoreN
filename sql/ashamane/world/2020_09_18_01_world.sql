@@ -1,4 +1,4 @@
-SET QUEST_ID := 44281;
+SET @QUEST_ID := 44281;
 -- BEGIN quest `To Be Prepared` (44281)  Horde
 
 -- recreate gameobject's info
@@ -80,8 +80,12 @@ INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `p
 INSERT IGNORE INTO `creature_addon` (`guid`, `mount`) VALUES (280000496, 29260);
 UPDATE `creature_addon` SET `mount`=29260, `bytes2`=256 WHERE `guid`=280000496;
 
+
+-- 113540 		Liu-So
+-- 113539		Orgek Ironhand
+-- 113541		Seleria Dawncaller
+
 -- Creature Texts 
--- 创建任务npc的对话内容...
 DELETE FROM `creature_text` WHERE `CreatureID` IN (113540, 113539, 113541);
 INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES
 (113540, 0, 0, 'Sit, friend, and enjoy this meal. You cannot fight on an ampty stomach.', 12, 0, 100, 0, 0, 0, 0, 0, 'Liu-So to Player'),
@@ -89,9 +93,6 @@ INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Lan
 (113541, 0, 0, 'Silvermoon stands behind you, $p. Allow us to bless your weapon with holy might.', 12, 0, 100, 0, 0, 0, 0, 0, 'Seleria Dawncaller to Player');
 
 -- Smart Scripts 
--- 113540 		Liu-So
--- 113539		Orgek Ironhand
--- 113541		Seleria Dawncaller
 UPDATE `creature_template` SET `AIName`="SmartAI" WHERE `entry` IN (113540, 113539, 113541);
 DELETE FROM `smart_scripts` WHERE `entryorguid` IN (113540, 113539, 113541) AND `source_type`=0;
 INSERT INTO `smart_scripts` (`entryorguid`,`source_type`,`id`,`link`,`event_type`,`event_phase_mask`,`event_chance`,`event_flags`,`event_param1`,`event_param2`,`event_param3`,`event_param4`,`action_type`,`action_param1`,`action_param2`,`action_param3`,`action_param4`,`action_param5`,`action_param6`,`target_type`,`target_param1`,`target_param2`,`target_param3`,`target_x`,`target_y`,`target_z`,`target_o`,`comment`) VALUES
@@ -122,18 +123,20 @@ SET @MENU_ID := 19861;
 -- gossip menu for quest(44281)'s objective `Warmed up with a duel`
 DELETE FROM `gossip_menu` WHERE `MenuId` = @MENU_ID;
 INSERT INTO `gossip_menu` (`MenuId`, `TextId`, `VerifiedBuild`) VALUES
-(19861, 29496, 27843); -- 108750 (Eunna Young);
+(@MENU_ID, 29496, 27843); -- 108750 (Eunna Young);
 
 -- 添加npc对话的菜单选项...
 DELETE FROM `gossip_menu_option` WHERE `MenuId` = @MENU_ID;
 INSERT INTO `gossip_menu_option` (`MenuId`, `OptionIndex`, `OptionIcon`, `OptionText`, `OptionBroadcastTextId`, `VerifiedBuild`) VALUES
 (@MENU_ID, 0, 0, "Let\'s duel.", 114449, 27843);
+-- OptionType ： 1 (GOSSIP_OPTION_GOSSIP)
 UPDATE `gossip_menu_option` SET `OptionType` = 1, `OptionNpcFlag` = 1 WHERE `MenuId` =  @MENU_ID;
 
 
 -- 修复npc和quest进行关联的数据...关联和npc对话后开启决斗的脚本
+-- 这里设置了duel对象的npc的`ScriptName`，当玩家和npc进行交互后，将由脚本`npc_durotar_duelist`来完成交互
 UPDATE `creature_template` SET `AIName`='', `ScriptName`='npc_durotar_duelist', `DamageModifier`=2.0, `ArmorModifier`=5.1, `ManaModifier`=3.56, `HealthModifier`=5.2 WHERE `entry` IN (113955, 113951, 113947, 113545, 113961, 113956, 113952, 113948, 113542, 113954, 113544, 113950, 113546);
-UPDATE `creature_template` SET `npcflag` = 1, `gossip_menu_id` = 19861, `minlevel` = 98, `maxlevel` = 100 WHERE `entry` IN (113955, 113951, 113947, 113545, 113961, 113956, 113952, 113948, 113542, 113954, 113544, 113950, 113546);
+UPDATE `creature_template` SET `npcflag` = 1, `gossip_menu_id` = @MENU_ID, `minlevel` = 98, `maxlevel` = 100 WHERE `entry` IN (113955, 113951, 113947, 113545, 113961, 113956, 113952, 113948, 113542, 113954, 113544, 113950, 113546);
 UPDATE `creature_template` SET `minlevel` = 98, `maxlevel` = 100 WHERE `entry` IN (113540, 113539, 113541);
 
 -- 创建areaId=4982(Dranoshar)关联的相位信息
@@ -151,27 +154,3 @@ INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry
 ('26', '315', '4982', '0', '0', '47', '0', '44281', '66', '0', '0', '0', '0', '', 'Dranoshar Blockade - Phase 315 when quest 44281 complete'),
 ('26', '324', '4982', '0', '0', '47', '0', '40518', '8', '0', '0', '0', '0', '', 'Dranoshar Blockade - Phase 324 when quest 40518 taken');
 -- END quest `To Be Prepared` (44281) 
-
--- Broodqueen Tyranna 95048 text
-DELETE FROM `creature_text` WHERE `CreatureID` = 95048;
-INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES
-(95048, 0, 0, 'Deal with these insects, Beliash.', 12, 0, 100, 0, 0, 55071, 0, 0, 'Tyranna to Beliash');
-
-
--- Make Tyranna visible and not attackable
-UPDATE `creature` SET `PhaseId` = '0' WHERE `guid` = '20541415';
-UPDATE `creature_addon` SET `auras` = '' WHERE `guid` = '20541415';
-UPDATE `creature_template_addon` SET `auras` = '' WHERE `entry` = '95048';
-UPDATE `creature_template` SET `unit_flags` = '196864' WHERE `entry` = '95048';
-
-
--- Sevis Brightflame 99915 text
-DELETE FROM `creature_text` WHERE `CreatureID` = 99915;
-INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES
-(99915, 0, 0, '$p, we have a huge problem here.', 12, 0, 100, 0, 0, 55342, 0, 0, 'Sevis Brightflame to Player'),
-(99915, 1, 0, 'It has been... an honor.', 12, 0, 100, 0, 0, 55341, 0, 0, 'Sevis Brightflame to Player'),
-(99915, 2, 0, 'Your sacrifice will NOT be in vain!', 12, 0, 100, 0, 0, 55343, 0, 0, 'Sevis Brightflame to Player');
--- Beliash kneel state animation
-DELETE FROM `creature_addon` WHERE `guid` = 20541414;
-INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `aiAnimKit`, `movementAnimKit`, `meleeAnimKit`, `auras`) VALUES
-(20541414, 0, 0, 8, 0, 0, 0, 0, 0, NULL);
