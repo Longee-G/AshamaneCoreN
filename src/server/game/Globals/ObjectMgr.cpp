@@ -2304,6 +2304,7 @@ ObjectGuid::LowType ObjectMgr::AddCreatureData(uint32 entry, uint32 mapId, float
     return guid;
 }
 
+// load all gameobjects from db ...
 void ObjectMgr::LoadGameobjects()
 {
     uint32 oldMSTime = getMSTime();
@@ -2460,6 +2461,7 @@ void ObjectMgr::LoadGameobjects()
             data.phaseGroup = 0;
         }
 
+        // fixes gameobject's phaseId
         if (data.phaseId)
         {
             if (!sPhaseStore.LookupEntry(data.phaseId))
@@ -2560,6 +2562,8 @@ void ObjectMgr::LoadGameobjects()
     TC_LOG_INFO("server.loading", ">> Loaded " SZFMTD " gameobjects in %u ms", _gameObjectDataStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
+// 将一个gameObject添加到Map中的一个Grid中...
+// 服务器是根据gameobject的坐标来确定gameobject在哪个grid中的，而不是根据`areaId`来分配的...
 void ObjectMgr::AddGameobjectToGrid(ObjectGuid::LowType guid, GameObjectData const* data)
 {
     uint64 mask = data->spawnMask;
