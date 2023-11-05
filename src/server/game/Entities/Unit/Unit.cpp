@@ -5045,6 +5045,8 @@ std::vector<GameObject*> Unit::GetGameObjects(uint32 spellId) const
     return gameobjects;
 }
 
+// 什么情况下，给Unit添加一个gameObject？
+// 施放法术的时候会调用这个函数...
 void Unit::AddGameObject(GameObject* gameObj)
 {
     if (!gameObj || !gameObj->GetOwnerGUID().IsEmpty())
@@ -5065,6 +5067,8 @@ void Unit::AddGameObject(GameObject* gameObj)
     if (GetTypeId() == TYPEID_UNIT && ToCreature()->IsAIEnabled)
         ToCreature()->AI()->JustSummonedGameobject(gameObj);
 }
+
+// 删除一个Unit创建的gameObject
 
 void Unit::RemoveGameObject(GameObject* gameObj, bool del)
 {
@@ -5105,7 +5109,7 @@ void Unit::RemoveGameObject(GameObject* gameObj, bool del)
         gameObj->Delete();
     }
 }
-
+// remove a gameobject create by spell which cast by current unit
 void Unit::RemoveGameObject(uint32 spellid, bool del)
 {
     if (_gameObjs.empty())

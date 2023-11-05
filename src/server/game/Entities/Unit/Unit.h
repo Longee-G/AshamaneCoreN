@@ -1999,6 +1999,7 @@ class TC_GAME_API Unit : public WorldObject
         DynObjectList _dynObjs;
 
         typedef std::list<GameObject*> GameObjectList;
+        // gameobjects create by owner?
         GameObjectList _gameObjs;
 
         typedef std::vector<AreaTrigger*> AreaTriggerList;

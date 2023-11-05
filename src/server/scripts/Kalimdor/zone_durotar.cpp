@@ -259,11 +259,8 @@ public:
                 attacker->CastSpell(me, SPELL_DUEL_VICTORY, true);
                 me->CastSpell(me, 7267, true);
 
-
-
-
                 // 这个函数是让1秒后停止决斗吗？
-                _events.ScheduleEvent(EVENT_STOP_DUEL, 1000);
+                _events.ScheduleEvent(EVENT_STOP_DUEL, 3000);
             }
         }
 
