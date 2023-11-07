@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -82,6 +82,7 @@ namespace WorldPackets
             uint32 ScenarioID = 0;
         };
 
+        // start scenario ...
         class ScenarioBoot final : public ServerPacket
         {
         public:

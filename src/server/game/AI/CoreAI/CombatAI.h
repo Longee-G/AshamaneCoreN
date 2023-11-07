@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -34,6 +34,7 @@ class TC_GAME_API AggressorAI : public CreatureAI
 
 typedef std::vector<uint32> SpellVct;
 
+// 战斗的AI
 class TC_GAME_API CombatAI : public CreatureAI
 {
     public:
@@ -49,7 +50,7 @@ class TC_GAME_API CombatAI : public CreatureAI
         static int Permissible(Creature const* /*creature*/) { return PERMIT_BASE_NO; }
 
     protected:
-        EventMap events;
+        EventMap _events;
         SpellVct spells;
 };
 

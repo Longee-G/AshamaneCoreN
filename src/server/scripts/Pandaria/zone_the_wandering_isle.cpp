@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <http://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -568,7 +568,7 @@ public:
                 _events.Reset();
                 me->RemoveAllAuras();
                 me->setFaction(35);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNK_15 | UNIT_FLAG_IMMUNE_TO_PC);
+                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_CAN_SWIM | UNIT_FLAG_IMMUNE_TO_PC);
                 me->AttackStop();
                 attacker->AttackStop();
                 me->_ExitVehicle();

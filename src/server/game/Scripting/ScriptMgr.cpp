@@ -2998,3 +2998,32 @@ template class TC_GAME_API ScriptRegistry<SceneScript>;
 template class TC_GAME_API ScriptRegistry<QuestScript>;
 template class TC_GAME_API ScriptRegistry<ZoneScript>;
 template class TC_GAME_API ScriptRegistry<BattlePayProductScript>;
+
+
+
+
+// Generic scripting text function.
+void DoScriptText(int32 textEntry, WorldObject* pSource, Unit* pTarget)
+{
+    if (!pSource)
+    {
+        TC_LOG_ERROR("script.abc", "DoScriptText entry %i, invalid Source pointer.", textEntry);
+        return;
+    }
+
+    if (textEntry >= 0)
+    {
+        TC_LOG_ERROR("script.abc", "DoScriptText with source entry %u (TypeId=%u, guid=%u) attempts to process text entry %i, but text entry must be negative.", pSource->GetEntry(), pSource->GetTypeId(), pSource->GetGUID().GetCounter(), textEntry);
+        return;
+    }
+
+
+
+
+    // NYI
+    // TODO:... 需要分析其他的脚本是怎么让npc说话的？
+    //Unit::Say(...)
+}
+
+
+

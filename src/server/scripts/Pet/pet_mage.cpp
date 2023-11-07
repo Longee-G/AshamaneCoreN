@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -163,8 +163,8 @@ class npc_pet_mage_mirror_image : public CreatureScript
                 if (me->GetVictim() && !me->GetVictim()->HasBreakableByDamageCrowdControlAura(me))
                 {
                     me->CastSpell(who, SPELL_MAGE_FIRE_BLAST, false);
-                    events.ScheduleEvent(SPELL_MAGE_FROST_BOLT, TIMER_MIRROR_IMAGE_INIT);
-                    events.ScheduleEvent(SPELL_MAGE_FIRE_BLAST, TIMER_MIRROR_IMAGE_FIRE_BLAST);
+                    _events.ScheduleEvent(SPELL_MAGE_FROST_BOLT, TIMER_MIRROR_IMAGE_INIT);
+                    _events.ScheduleEvent(SPELL_MAGE_FIRE_BLAST, TIMER_MIRROR_IMAGE_FIRE_BLAST);
                 }
                 else
                     EnterEvadeMode(EVADE_REASON_OTHER);
@@ -172,7 +172,7 @@ class npc_pet_mage_mirror_image : public CreatureScript
 
             void Reset() override
             {
-                events.Reset();
+                _events.Reset();
             }
 
             void UpdateAI(uint32 diff) override
@@ -183,7 +183,7 @@ class npc_pet_mage_mirror_image : public CreatureScript
 
                 Unit* target = owner->getAttackerForHelper();
 
-                events.Update(diff);
+                _events.Update(diff);
 
                 // prevent CC interrupts by images
                 if (me->GetVictim() && me->EnsureVictim()->HasBreakableByDamageCrowdControlAura(me))
@@ -217,17 +217,17 @@ class npc_pet_mage_mirror_image : public CreatureScript
                         Init();
                 }
 
-                if (uint32 spellId = events.ExecuteEvent())
+                if (uint32 spellId = _events.ExecuteEvent())
                 {
                     if (spellId == SPELL_MAGE_FROST_BOLT)
                     {
-                        events.ScheduleEvent(SPELL_MAGE_FROST_BOLT, TIMER_MIRROR_IMAGE_FROST_BOLT);
+                        _events.ScheduleEvent(SPELL_MAGE_FROST_BOLT, TIMER_MIRROR_IMAGE_FROST_BOLT);
                         DoCastVictim(spellId);
                     }
                     else if (spellId == SPELL_MAGE_FIRE_BLAST)
                     {
                         DoCastVictim(spellId);
-                        events.ScheduleEvent(SPELL_MAGE_FIRE_BLAST, TIMER_MIRROR_IMAGE_FIRE_BLAST);
+                        _events.ScheduleEvent(SPELL_MAGE_FIRE_BLAST, TIMER_MIRROR_IMAGE_FIRE_BLAST);
                     }
                 }
             }

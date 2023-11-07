@@ -59,7 +59,7 @@ enum CreatureDifficultyFlags
     CREATURE_DIFFICULTYFLAGS_IGNORE_COMBAT                     = 0x02000000,
     CREATURE_DIFFICULTYFLAGS_UNK12                             = 0x04000000,
     CREATURE_DIFFICULTYFLAGS_SUMMON_GUARD_IF_IN_AGGRO_RANGE    = 0x08000000, // Creature will summon a guard if player is within its aggro range (even if creature doesn't attack per se)
-    CREATURE_DIFFICULTYFLAGS_ONLY_SWIM                         = 0x10000000, // UNIT_FLAG_UNK_15
+    CREATURE_DIFFICULTYFLAGS_ONLY_SWIM                         = 0x10000000, // UNIT_FLAG_CAN_SWIM
     CREATURE_DIFFICULTYFLAGS_UNK13                             = 0x20000000, // Related to gravity
     CREATURE_DIFFICULTYFLAGS_TFLAG_UNK5                        = 0x40000000, // CREATURE_TYPEFLAGS_UNK5
     CREATURE_DIFFICULTYFLAGS_LARGE_AOI                         = 0x80000000  // UnitFlags2 0x200000
