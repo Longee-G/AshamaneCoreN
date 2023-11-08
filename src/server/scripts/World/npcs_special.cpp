@@ -100,29 +100,6 @@ SpawnAssociation spawnAssociations[] =
 };
 
 
-// Generic scripting text function.
-void DoScriptText(int32 textEntry, WorldObject* pSource, Unit* pTarget)
-{
-    if (!pSource)
-    {
-        TC_LOG_ERROR("script.abc", "DoScriptText entry %i, invalid Source pointer.", textEntry);
-        return;
-    }
-
-    if (textEntry >= 0)
-    {
-        TC_LOG_ERROR("script.abc", "DoScriptText with source entry %u (TypeId=%u, guid=%u) attempts to process text entry %i, but text entry must be negative.", pSource->GetEntry(), pSource->GetTypeId(), pSource->GetGUID().GetCounter(), textEntry);
-        return;
-    }
-
-    
-    // NYI
-    // TODO:... 需要分析其他的脚本是怎么让npc说话的？
-
-}
-
-
-
 class npc_air_force_bots : public CreatureScript
 {
 public:
@@ -2351,20 +2328,19 @@ enum eTruuen
     SAY_WP_5 = -1800069,  //Please, rise my friend. Keep the Blessing as a symbol of the strength of the Light and how heroes long gone might once again rise in each of us to inspire.
     SAY_WP_6 = -1800070   //Thank you my friend for making this possible. This is a day that I shall never forget! I think I will stay a while. Please return to High Priestess MacDonnell at the camp. I know that she'll be keenly interested to know of what has transpired here.
 };
+
 // 17238 - Anchorite Truuen<Western Plaguelands>
-// 西瘟疫之地npc...
 class npc_anchorite_truuen : public CreatureScript
 {
 public:
     npc_anchorite_truuen() : CreatureScript("npc_anchorite_truuen") {}
-    // 护送npc的任务...
+
     bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest)
     {
         npc_escortAI* pAI = CAST_AI(npc_anchorite_truuen::npc_anchorite_truuenAI, creature->AI());
         if (quest->GetQuestId() == 9446) // tomb lightbringer
             pAI->Start(true, true, player->GetGUID());
 
-        // [Longee] 这个脚本是不是不完整..为什么这里返回false
         return false;
     }
 

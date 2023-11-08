@@ -5068,8 +5068,7 @@ void Unit::AddGameObject(GameObject* gameObj)
         ToCreature()->AI()->JustSummonedGameobject(gameObj);
 }
 
-// 删除一个Unit创建的gameObject
-
+// delete a gameobject which created by Unit
 void Unit::RemoveGameObject(GameObject* gameObj, bool del)
 {
     if (!gameObj || gameObj->GetOwnerGUID() != GetGUID())
@@ -5949,8 +5948,6 @@ void Unit::SetOwnerGUID(ObjectGuid owner)
 
     // UNIT_FIELD_SUMMONEDBY 定义的时候使用了Size: 4 ? 是指4个字节还是 4个Uint32？
     // 应该是4个Uint32的大小... ObjectGuid需要2个Uint64存储数据，刚好是4个Uint32
- 
-
     SetGuidValue(UNIT_FIELD_SUMMONEDBY, owner);
     if (!owner)
         return;
@@ -8175,7 +8172,7 @@ bool Unit::_IsValidAttackTarget(Unit const* target, SpellInfo const* bySpell, Wo
     }
 
     // check flags
-    if (target->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_TAXI_FLIGHT | UNIT_FLAG_NOT_ATTACKABLE_1 | UNIT_FLAG_UNK_16)
+    if (target->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_TAXI_FLIGHT | UNIT_FLAG_NOT_ATTACKABLE_1 | UNIT_FLAG_NON_ATTACKABLE_2)
         || (!HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE) && target->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC))
         || (!target->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE) && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC)))
         return false;
@@ -11232,7 +11229,7 @@ void Unit::SetMeleeAnimKitId(uint16 animKitId)
     SendMessageToSet(data.Write(), true);
 }
 
-// Unit Kill Victim ... 击杀目标的处理...
+// Called when current Unit kill other Unit(victim) ...
 void Unit::Kill(Unit* victim, bool durabilityLoss)
 {
     // Prevent killing unit twice (and giving reward from kill twice)
@@ -11427,6 +11424,7 @@ void Unit::Kill(Unit* victim, bool durabilityLoss)
             ToCreature()->AI()->KilledUnit(victim);
 
         // Call creature just died function
+        // creature is victim
         if (creature->IsAIEnabled)
             creature->AI()->JustDied(this);
 
@@ -13201,6 +13199,7 @@ bool Unit::IsFalling() const
     return _movementInfo.HasMovementFlag(MOVEMENTFLAG_FALLING | MOVEMENTFLAG_FALLING_FAR) || movespline->isFalling();
 }
 
+// ????????
 bool Unit::CanSwim() const
 {
     // Mirror client behavior, if this method returns false then client will not use swimming animation and for players will apply gravity as if there was no water
@@ -13210,7 +13209,7 @@ bool Unit::CanSwim() const
         return true;
     if (HasFlag(UNIT_FIELD_FLAGS_2, 0x1000000))
         return false;
-    return HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PET_IN_COMBAT | UNIT_FLAG_RENAME | UNIT_FLAG_UNK_15);
+    return HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PET_IN_COMBAT | UNIT_FLAG_RENAME | UNIT_FLAG_CAN_SWIM);
 }
 
 void Unit::NearTeleportTo(Position const& pos, bool casting /*= false*/)

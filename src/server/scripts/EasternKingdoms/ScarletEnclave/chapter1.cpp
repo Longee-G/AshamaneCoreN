@@ -464,7 +464,7 @@ enum Spells_DKI
     //SPELL_DUEL_TRIGGERED        = 52990,
     SPELL_DUEL_VICTORY          = 52994,
     SPELL_DUEL_FLAG             = 52991,
-    SPELL_GROVEL                = 7267,
+    SPELL_GROVEL                = 7267,     // cast when duel lost
 };
 
 enum Says_VBM
@@ -477,8 +477,6 @@ enum Misc_VBN
     QUEST_DEATH_CHALLENGE       = 12733,
     FACTION_HOSTILE             = 2068
 };
-
-// dk的对手的AI吗？
 
 class npc_death_knight_initiate : public CreatureScript
 {
@@ -502,7 +500,7 @@ public:
             }
 
             creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
-            creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNK_15);
+            creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_CAN_SWIM);
 
             player->CastSpell(creature, SPELL_DUEL, false);
             player->CastSpell(player, SPELL_DUEL_FLAG, true);
@@ -542,7 +540,7 @@ public:
         }
 
         bool lose;
-        ObjectGuid m_uiDuelerGUID;          // 决斗者的guid...应该是ai的对手的guid，那么就是player的guid...
+        ObjectGuid m_uiDuelerGUID;          // the opponents's guid of AI
         uint32 m_uiDuelTimer;
         bool m_bIsDuelInProgress;
 
@@ -552,9 +550,10 @@ public:
 
             me->RestoreFaction();
             CombatAI::Reset();
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNK_15);
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_CAN_SWIM);
         }
-        // 法术击中了AI..
+        
+        // Called when *pCaster* use *pSpell* hit `AI`
         void SpellHit(Unit* pCaster, const SpellInfo* pSpell) override
         {
             if (!m_bIsDuelInProgress && pSpell->Id == SPELL_DUEL)

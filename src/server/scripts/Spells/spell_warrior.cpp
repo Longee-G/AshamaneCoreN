@@ -2790,9 +2790,7 @@ struct npc_warr_ravager : public ScriptedAI
         me->CastSpell(me, SPELL_RAVAGER_VISUAL, true);
         me->SetReactState(ReactStates::REACT_PASSIVE);
         me->AddUnitState(UnitState::UNIT_STATE_ROOT);
-        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE |
-                                        UNIT_FLAG_UNK_15 |
-                                        UNIT_FLAG_PVP_ATTACKABLE);
+        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_CAN_SWIM | UNIT_FLAG_PVP_ATTACKABLE);
 
         if (summoner == nullptr || !summoner->IsPlayer())
             return;
