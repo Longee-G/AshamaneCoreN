@@ -447,6 +447,7 @@ namespace WorldPackets
             float FarClip = 0.0f; ///< Visibility distance (for terrain)
         };
 
+        // 服务器给客户端发的信息？ 让客户端开始进入某张地图
         class LoginVerifyWorld final : public ServerPacket
         {
         public:

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -47,6 +47,7 @@ public:
     uint32 PlayScene(uint32 sceneId, Position const* position = nullptr);
     uint32 PlaySceneByTemplate(SceneTemplate const sceneTemplate, Position const* position = nullptr);
     uint32 PlaySceneByPackageId(uint32 sceneScriptPackageId, uint32 playbackflags = SCENEFLAG_UNK16, Position const* position = nullptr);
+
     void CancelScene(uint32 sceneInstanceID, bool removeFromMap = true);
 
     void OnSceneTrigger(uint32 sceneInstanceID, std::string const& triggerName);
@@ -81,7 +82,7 @@ private:
     Player* _player;
     SceneTemplateByInstance _scenesByInstance;
     uint32 _standaloneSceneInstanceID;
-    bool _isDebuggingScenes;
+    bool _isDebuggingScenes;        // how to enable this toggle
 };
 
 #endif // SceneMgr_h__

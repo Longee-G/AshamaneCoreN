@@ -712,6 +712,8 @@ void WorldSession::Handle_EarlyProccess(WorldPacket& recvPacket)
         , GetOpcodeNameForLogging(static_cast<OpcodeClient>(recvPacket.GetOpcode())).c_str(), GetPlayerInfo().c_str());
 }
 
+// 这个函数好像是用来将player分配到不同的游戏服务器上...如果有多组服务器提高服务
+// 调度服务器压力用... 
 void WorldSession::SendConnectToInstance(WorldPackets::Auth::ConnectToSerial serial)
 {
     boost::system::error_code ignored_error;

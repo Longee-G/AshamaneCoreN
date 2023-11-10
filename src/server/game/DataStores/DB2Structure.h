@@ -517,7 +517,7 @@ struct ChrClassesEntry
     uint32 IconFileDataID;
     int32 StartingLevel;
     uint16 Flags;
-    uint16 CinematicSequenceID;
+    uint16 CinematicSequenceID;     // use for first login game world.
     uint16 DefaultSpec;
     uint8 DisplayPower;
     uint8 SpellClassSet;
