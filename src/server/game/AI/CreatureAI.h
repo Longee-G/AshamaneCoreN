@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -122,7 +122,7 @@ class TC_GAME_API CreatureAI : public UnitAI
         // Called for reaction at enter to combat if not in combat yet (enemy can be nullptr)
         virtual void EnterCombat(Unit* /*victim*/) { }
 
-        // Called when the creature is killed
+        // Called when the creature is killed by killer
         virtual void JustDied(Unit* /*killer*/) { }
 
         // Called when the creature kills a unit

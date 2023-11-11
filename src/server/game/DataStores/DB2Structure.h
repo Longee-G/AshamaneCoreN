@@ -517,7 +517,7 @@ struct ChrClassesEntry
     uint32 IconFileDataID;
     int32 StartingLevel;
     uint16 Flags;
-    uint16 CinematicSequenceID;
+    uint16 CinematicSequenceID;     // use for first login game world.
     uint16 DefaultSpec;
     uint8 DisplayPower;
     uint8 SpellClassSet;
@@ -2195,7 +2195,7 @@ struct PhaseEntry
 
 struct PhaseXPhaseGroupEntry
 {
-    uint32 ID;          // 这个id关联到什么地方？
+    uint32 ID;          
     uint16 PhaseID;
     uint16 PhaseGroupID;
 };
@@ -2553,6 +2553,7 @@ struct ScalingStatDistributionEntry
     int32 MaxLevel;
 };
 
+// `Scenario.db2`
 struct ScenarioEntry
 {
     uint32 ID;

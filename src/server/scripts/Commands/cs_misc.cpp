@@ -1694,6 +1694,8 @@ public:
         uint32 areaId;
         std::string areaName    = handler->GetTrinityString(LANG_UNKNOWN);
         std::string zoneName    = handler->GetTrinityString(LANG_UNKNOWN);
+        std::string mapName     = handler->GetTrinityString(LANG_UNKNOWN);
+
 
         // Guild data print variables defined so that they exist, but are not necessarily used
         ObjectGuid::LowType guildId = UI64LIT(0);
@@ -1919,20 +1921,31 @@ public:
 
         // Position data
         MapEntry const* map = sMapStore.LookupEntry(mapId);
+        mapName = map->MapName->Str[handler->GetSessionDbcLocale()];
+        mapName.append("[").append(std::to_string(map->ID)).append("]");
+        
+
         AreaTableEntry const* area = sAreaTableStore.LookupEntry(areaId);
         if (area)
         {
             areaName = area->AreaName->Str[handler->GetSessionDbcLocale()];
+            areaName.append("[").append(std::to_string(area->ID)).append("]");
 
             AreaTableEntry const* zone = sAreaTableStore.LookupEntry(area->ParentAreaID);
             if (zone)
+            {
                 zoneName = zone->AreaName->Str[handler->GetSessionDbcLocale()];
+                zoneName.append("[").append(std::to_string(zone->ID)).append("]");
+            }                
         }
 
         if (target)
-            handler->PSendSysMessage(LANG_PINFO_CHR_MAP, map->MapName->Str[handler->GetSessionDbcLocale()],
+        {
+            handler->PSendSysMessage(LANG_PINFO_CHR_MAP, mapName.c_str(),
                 (!zoneName.empty() ? zoneName.c_str() : handler->GetTrinityString(LANG_UNKNOWN)),
                 (!areaName.empty() ? areaName.c_str() : handler->GetTrinityString(LANG_UNKNOWN)));
+        }
+            
 
         // Output XVII. - XVIX. if they are not empty
         if (!guildName.empty())

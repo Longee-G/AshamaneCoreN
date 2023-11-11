@@ -24,6 +24,7 @@
 #include "SpellInfo.h"
 #include "SpellScript.h"
 #include "ScriptedGossip.h"
+#include "CombatAI.h"
 
 /*######
 ## Quest 37446: Lazy Peons
@@ -181,9 +182,11 @@ enum eDuelist
     QUEST_TO_BE_PREPARED = 44281,
     KILL_CREDIT_WARM_DUEL = 108722,         // 这个id关联的是什么呢？ 这个关联到了任务目标ID，table `quest_objectives`中定义的...
     QUEST_OBJECTIVE_ID = 286487,        // `Warmed up with a duel`
-    EVENT_DO_CAST = 1,
-    EVENT_STOP_DUEL = 2,
-    DATA_START_DUEL = 10,
+
+    EVENT_START_DUEL = 1,
+    EVENT_DO_CAST = 2,
+    EVENT_STOP_DUEL = 3,
+
     SPELL_DUEL = 52996,         // 开始决斗使用的法术？谁使用的？
     SPELL_DUEL_TRIGGERED = 52990,       // 这个值是定义在什么地方的？
     SPELL_DUEL_VICTORY = 52994, // 这个Id是什么呢？
@@ -210,6 +213,7 @@ std::map<uint32, uint32> const creatureAbilities
     { 113546,  172673 }, // Yaalo : Holy Smite
 };
 
+
 // 决斗的npc的脚本，当前如果战胜npc有正确的处理，如果战败了有争取处理吗？
 
 class npc_durotar_duelist : public CreatureScript
@@ -217,19 +221,37 @@ class npc_durotar_duelist : public CreatureScript
 public:
     npc_durotar_duelist() : CreatureScript("npc_durotar_duelist") {}
     // npc的AI，用来操控npc的战斗逻辑...
-    struct  npc_durotar_duelist_AI : public ScriptedAI
+    struct  npc_durotar_duelist_AI : public CombatAI
     {
-        npc_durotar_duelist_AI(Creature* creature) : ScriptedAI(creature) {}
+        npc_durotar_duelist_AI(Creature* creature) : CombatAI(creature) {}
         void Reset() override
         {
+            _fireDelay = 3000;  // milliseconds
+            _isDueling = false;
             _events.Reset();
             me->RestoreFaction();
             me->SetReactState(REACT_DEFENSIVE);
         }
 
-        // 重载进入战斗的处理，who是战斗对象吗？
+        void SpellHit(Unit* caster, const SpellInfo* spell) override
+        { // 可以检查是哪个法术击中AI..
+            if (!_isDueling && (spell && spell->Id == SPELL_DUEL) )
+            {
+                _isDueling = true;
+            }            
+        }
+
+        // Called When AI enter combat
         void EnterCombat(Unit* who) override
         {
+            CombatAI::EnterCombat(who);
+
+            // 这个函数是在进入战斗的时候触发吗？谁调用这个接口的？
+
+
+
+
+            // 过了1秒才开始攻击？
             _events.ScheduleEvent(EVENT_DO_CAST, 1000);
         }
 
@@ -243,7 +265,9 @@ public:
                 me->RemoveAllAuras();
                 // 阵营35是什么呢？
                 // 在faction.db2中35的定义是Villian, 不明定义啊... 是这个阵营属于特殊的中立的吗？
-                me->setFaction(35);            
+                //me->setFaction(35);
+                // 恢复
+                me->RestoreFaction();
                 me->AttackStop();
 
                 // 和npc进行决斗的逻辑是击败即可完成任务
@@ -257,9 +281,12 @@ public:
                 attacker->RemoveGameObject(SPELL_DUEL_FLAG, true);
                 // player向npc施放决斗胜利
                 attacker->CastSpell(me, SPELL_DUEL_VICTORY, true);
-                me->CastSpell(me, 7267, true);
 
-                // 这个函数是让1秒后停止决斗吗？
+                // 197431/197434 这个才是鞠躬...
+
+                me->CastSpell(me, 7267, true);      // 鞠躬？
+
+                // 这个函数是让n秒后停止决斗吗？
                 _events.ScheduleEvent(EVENT_STOP_DUEL, 3000);
             }
         }
@@ -272,7 +299,29 @@ public:
                 return;
             _events.Update(diff);
 
-            while (uint32 eventId = _events.ExecuteEvent())
+            if (!_isDueling)
+                return;
+
+            if (_fireDelay > 0)
+            {
+                _fireDelay > diff ? (_fireDelay -= diff) : (_fireDelay = 0);
+
+                // enter combat when _fireDelay timeout
+                if (0 == _fireDelay)
+                {
+                    me->setFaction(FACTION_TEMPLATE_FLAG_PVP);
+
+                    // 通过guid获得
+
+                }
+                return;
+            }
+
+
+
+            
+
+            if (uint32 eventId = _events.ExecuteEvent())
             {
                 switch (eventId)
                 {
@@ -289,8 +338,10 @@ public:
                         break;
                 }
             }
-            // 执行近战攻击？
-            DoMeleeAttackIfReady();
+            else
+            {
+                DoMeleeAttackIfReady();
+            }
         }
 
         void SetGUID(ObjectGuid guid, int32 /*id*/) override
@@ -301,9 +352,11 @@ public:
 
 
     private:
-        EventMap _events;
         ObjectGuid _playerGuid = ObjectGuid::Empty;
+        bool _isDueling = false;
+        uint32 _fireDelay;   // delay time(ms) for enter combat
     };
+
 
     // Q：这个回调处理的是什么呢？
     // A：这个函数是处理玩家右键点击Npc进行交互的第1步
@@ -330,27 +383,45 @@ public:
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
         player->playerTalkClass->ClearMenus();
-        if (action == GOSSIP_ACTION_INFO_DEF + 1) {
+
+
+        if (action == GOSSIP_ACTION_INFO_DEF + 1)   // 这个地方为什么要+1呢？
+        {
             creature->AI()->SetGUID(player->GetGUID());
-            creature->setFaction(FACTION_TEMPLATE_FLAG_PVP);
 
+            // 
+            //creature->setFaction(FACTION_TEMPLATE_FLAG_PVP);
+
+            // 移除对Player无敌的标记...
             creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
-            creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNK_15);       // 这个代码的作用未知...
+            //creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_CAN_SWIM);
 
 
+
+
+
+            // 设置主动攻击... 这个代码应该通过AI来设置
             creature->SetReactState(REACT_AGGRESSIVE);
 
             player->CastSpell(creature, SPELL_DUEL, false);     // 和npc进行插旗决斗？
             player->CastSpell(player, SPELL_DUEL_FLAG, true);   // 这个是往地上插旗吗？ 好像是 52991 是决斗旗 spell的id
 
+
+            // 如果不在这里让AI主动攻击Player，需要在什么地方让AI进入战斗呢？
+            // 需要在UpdateAI(...)函数中来让AI进入战斗...
+
+
+
             // 让AI开始攻击player...
-            creature->AI()->AttackStart(player);
+            // 什么时候player可以开始攻击npc？当移除无敌标记之后就可以攻击吗？
+            // 调用这个接口，AI将先手主动攻击Player
+            //creature->AI()->AttackStart(player);
+
             CloseGossipMenuFor(player);
         }
         return true;
     }
 
-    // 获取npc的AI
     CreatureAI* GetAI(Creature* creature) const override
     {
         return new npc_durotar_duelist_AI(creature);

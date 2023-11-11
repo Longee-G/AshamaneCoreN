@@ -54,7 +54,7 @@ namespace Instances { namespace Bloodmaul
                     events.Reset();
 
                     me->AddUnitState(UNIT_STATE_ROOT);
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNK_6 | UNIT_FLAG_UNK_15 | UNIT_FLAG_NOT_SELECTABLE);
+                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNK_6 | UNIT_FLAG_CAN_SWIM | UNIT_FLAG_NOT_SELECTABLE);
                 }
 
                 void SetData(uint32 type, uint32) override
@@ -62,7 +62,7 @@ namespace Instances { namespace Bloodmaul
                     if (type == uint32(Data::SpawnSlagna))
                     {
                         me->RemoveAura(uint32(Spells::SubmergeVisual));
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNK_6 | UNIT_FLAG_UNK_15 | UNIT_FLAG_NOT_SELECTABLE);
+                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNK_6 | UNIT_FLAG_CAN_SWIM | UNIT_FLAG_NOT_SELECTABLE);
 
                         if (Unit* target = me->SelectNearestPlayer(20.0f))
                             AttackStart(target);
@@ -72,7 +72,7 @@ namespace Instances { namespace Bloodmaul
                 void EnterCombat(Unit*) override
                 {
                     me->RemoveAura(uint32(Spells::SubmergeVisual));
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNK_6 | UNIT_FLAG_UNK_15 | UNIT_FLAG_NOT_SELECTABLE);
+                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNK_6 | UNIT_FLAG_CAN_SWIM | UNIT_FLAG_NOT_SELECTABLE);
 
                     events.ScheduleEvent(uint32(Events::LavaSpit), urand(2000, 2500));
                 }

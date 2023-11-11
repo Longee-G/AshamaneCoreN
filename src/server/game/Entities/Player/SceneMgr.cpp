@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -39,6 +39,7 @@ uint32 SceneMgr::PlayScene(uint32 sceneId, Position const* position /*= nullptr*
     return 0;
 }
 
+// 播放场景动画吗...
 uint32 SceneMgr::PlaySceneByTemplate(SceneTemplate const sceneTemplate, Position const* position /*= nullptr*/)
 {
     SceneScriptPackageEntry const* entry = sSceneScriptPackageStore.LookupEntry(sceneTemplate.ScenePackageId);
@@ -55,12 +56,12 @@ uint32 SceneMgr::PlaySceneByTemplate(SceneTemplate const sceneTemplate, Position
         ChatHandler(GetPlayer()->GetSession()).PSendSysMessage(LANG_COMMAND_SCENE_DEBUG_PLAY, sceneInstanceID, sceneTemplate.ScenePackageId, sceneTemplate.PlaybackFlags);
 
     WorldPackets::Scenes::PlayScene playScene;
-    playScene.SceneID              = sceneTemplate.SceneId;
+    playScene.SceneID              = sceneTemplate.SceneId;         // 这个sceneId关联到什么数据上？
     playScene.PlaybackFlags        = sceneTemplate.PlaybackFlags;
     playScene.SceneInstanceID      = sceneInstanceID;
     playScene.SceneScriptPackageID = sceneTemplate.ScenePackageId;
     playScene.Location             = *position;
-    playScene.TransportGUID        = GetPlayer()->GetTransGUID();
+    playScene.TransportGUID        = GetPlayer()->GetTransGUID();   // 传送的guid？
 
     GetPlayer()->SendDirectMessage(playScene.Write());
 

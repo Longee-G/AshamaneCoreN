@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -247,6 +247,7 @@ class TC_GAME_API UnitAI
         void DoMeleeAttackIfReady();
         bool DoSpellAttackIfReady(uint32 spellId);
 
+        // stores all spell info
         static AISpellInfoType* AISpellInfo;
         static void FillAISpellInfo();
 

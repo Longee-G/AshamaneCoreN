@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
@@ -2645,7 +2645,7 @@ public:
             }
             //}
 
-            events.ScheduleEvent(spellId, 0); ///< Schedule cast
+            _events.ScheduleEvent(spellId, 0); ///< Schedule cast
             me->GetMotionMaster()->Clear(false);
         }
 
@@ -2681,7 +2681,7 @@ public:
 
         void UpdateAI(uint32 diff) override
         {
-            events.Update(diff);
+            _events.Update(diff);
 
             Unit* l_Victim = me->GetVictim();
             if (l_Victim)
@@ -2691,11 +2691,11 @@ public:
                     /// If not already casting, cast! ("I'm a cast machine")
                     if (!me->HasUnitState(UNIT_STATE_CASTING))
                     {
-                        if (uint32 spellId = events.ExecuteEvent())
+                        if (uint32 spellId = _events.ExecuteEvent())
                         {
                             DoCast(spellId);
                             uint32 castTime = me->GetCurrentSpellCastTime(spellId);
-                            events.ScheduleEvent(spellId, (castTime ? castTime : 500) + sSpellMgr->GetSpellInfo(spellId)->ProcCooldown);
+                            _events.ScheduleEvent(spellId, (castTime ? castTime : 500) + sSpellMgr->GetSpellInfo(spellId)->ProcCooldown);
                         }
                     }
                 }

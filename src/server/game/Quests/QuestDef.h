@@ -223,7 +223,7 @@ enum QuestSpecialFlags
 
 enum QuestObjectiveType
 {
-    QUEST_OBJECTIVE_MONSTER                 = 0,
+    QUEST_OBJECTIVE_MONSTER                 = 0,        // by killing monsters
     QUEST_OBJECTIVE_ITEM                    = 1,
     QUEST_OBJECTIVE_GAMEOBJECT              = 2,
     QUEST_OBJECTIVE_TALKTO                  = 3,
@@ -304,7 +304,7 @@ struct QuestObjective
     uint32 QuestID      = 0;
     uint8  Type         = 0;
     int8   StorageIndex = 0;
-    int32  ObjectID     = 0;        // 这个ObjectID关联到什么东西上呢？
+    int32  ObjectID     = 0;        // point to `Entry` in table `creature_template`
     int32  Amount       = 0;
     uint32 Flags        = 0;
     uint32 Flags2       = 0;

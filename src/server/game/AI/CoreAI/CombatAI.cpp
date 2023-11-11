@@ -52,7 +52,7 @@ void AggressorAI::UpdateAI(uint32 /*diff*/)
 /////////////////
 // CombatAI
 /////////////////
-
+// AI初始化，这个函数在什么地方调用？ Creature的AI创建的时候被调用
 void CombatAI::InitializeAI()
 {
     for (uint32 i = 0; i < MAX_CREATURE_SPELLS; ++i)
@@ -64,9 +64,10 @@ void CombatAI::InitializeAI()
 
 void CombatAI::Reset()
 {
-    events.Reset();
+    _events.Reset();
 }
 
+// Called When AI killed by killer...
 void CombatAI::JustDied(Unit* killer)
 {
     for (SpellVct::iterator i = spells.begin(); i != spells.end(); ++i)
@@ -74,6 +75,7 @@ void CombatAI::JustDied(Unit* killer)
             me->CastSpell(killer, *i, true);
 }
 
+// Called When AI enter combat..
 void CombatAI::EnterCombat(Unit* who)
 {
     for (SpellVct::iterator i = spells.begin(); i != spells.end(); ++i)
@@ -81,7 +83,7 @@ void CombatAI::EnterCombat(Unit* who)
         if (AISpellInfo[*i].condition == AICOND_AGGRO)
             me->CastSpell(who, *i, false);
         else if (AISpellInfo[*i].condition == AICOND_COMBAT)
-            events.ScheduleEvent(*i, AISpellInfo[*i].cooldown + rand32() % AISpellInfo[*i].cooldown);
+            _events.ScheduleEvent(*i, AISpellInfo[*i].cooldown + rand32() % AISpellInfo[*i].cooldown);
     }
 }
 
@@ -90,15 +92,17 @@ void CombatAI::UpdateAI(uint32 diff)
     if (!UpdateVictim())
         return;
 
-    events.Update(diff);
+    _events.Update(diff);
 
+    // avoid to repetitive casting
     if (me->HasUnitState(UNIT_STATE_CASTING))
         return;
 
-    if (uint32 spellId = events.ExecuteEvent())
+    if (uint32 spellId = _events.ExecuteEvent())
     {
         DoCast(spellId);
-        events.ScheduleEvent(spellId, AISpellInfo[spellId].cooldown + rand32() % AISpellInfo[spellId].cooldown);
+        // recast spell after cooldown ..
+        _events.ScheduleEvent(spellId, AISpellInfo[spellId].cooldown + rand32() % AISpellInfo[spellId].cooldown);
     }
     else
         DoMeleeAttackIfReady();
@@ -106,7 +110,7 @@ void CombatAI::UpdateAI(uint32 diff)
 
 void CombatAI::SpellInterrupted(uint32 spellId, uint32 unTimeMs)
 {
-    events.RescheduleEvent(spellId, unTimeMs);
+    _events.RescheduleEvent(spellId, unTimeMs);
 }
 
 /////////////////
@@ -144,7 +148,7 @@ void CasterAI::EnterCombat(Unit* who)
                 DoCast(spells[spell]);
                 cooldown += me->GetCurrentSpellCastTime(*itr);
             }
-            events.ScheduleEvent(*itr, cooldown);
+            _events.ScheduleEvent(*itr, cooldown);
         }
     }
 }
@@ -154,7 +158,7 @@ void CasterAI::UpdateAI(uint32 diff)
     if (!UpdateVictim())
         return;
 
-    events.Update(diff);
+    _events.Update(diff);
 
     if (me->GetVictim() && me->EnsureVictim()->HasBreakableByDamageCrowdControlAura(me))
     {
@@ -165,11 +169,11 @@ void CasterAI::UpdateAI(uint32 diff)
     if (me->HasUnitState(UNIT_STATE_CASTING))
         return;
 
-    if (uint32 spellId = events.ExecuteEvent())
+    if (uint32 spellId = _events.ExecuteEvent())
     {
         DoCast(spellId);
         uint32 casttime = me->GetCurrentSpellCastTime(spellId);
-        events.ScheduleEvent(spellId, (casttime ? casttime : 500) + GetAISpellInfo(spellId)->realCooldown);
+        _events.ScheduleEvent(spellId, (casttime ? casttime : 500) + GetAISpellInfo(spellId)->realCooldown);
     }
 }
 

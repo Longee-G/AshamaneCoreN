@@ -60,7 +60,7 @@
 #include "Util.h"
 #include "World.h"
 
-// holder 是什么以上？ 
+// holder 是什么意思？ 
 class LoginQueryHolder : public SQLQueryHolder
 {
     private:
@@ -359,7 +359,7 @@ void WorldSession::HandleCharEnum(PreparedQueryResult result)
     }
 
     charEnum.IsDemonHunterCreationAllowed = GetAccountExpansion() >= EXPANSION_LEGION || canAlwaysCreateDemonHunter;
-    charEnum.IsAlliedRacesCreationAllowed = GetAccountExpansion() >= EXPANSION_BATTLE_FOR_AZEROTH;
+    charEnum.IsAlliedRacesCreationAllowed = GetAccountExpansion() >= EXPANSION_LEGION;
 
     for (std::pair<uint8 const, RaceUnlockRequirement> const& requirement : sObjectMgr->GetRaceUnlockRequirements())
     {
@@ -839,6 +839,7 @@ void WorldSession::HandlePlayerLoginOpcode(WorldPackets::Character::PlayerLogin&
 
     TC_LOG_DEBUG("network", "Character %s logging in", playerLogin.Guid.ToString().c_str());
 
+    // check whether the account is valid...
     if (!IsLegitCharacterForAccount(playerLogin.Guid))
     {
         TC_LOG_ERROR("network", "Account (%u) can't login with that character (%s).", GetAccountId(), playerLogin.Guid.ToString().c_str());
@@ -910,6 +911,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
 
     pCurrChar->SetUInt32Value(PLAYER_FIELD_VIRTUAL_PLAYER_REALM, GetVirtualRealmAddress());
 
+    // 给服务器发送教程数据...
     SendTutorialsData();
 
     pCurrChar->GetMotionMaster()->Initialize();
@@ -979,6 +981,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
     WorldPackets::BattlePet::BattlePetJournalLockAcquired lock;
     SendPacket(lock.Write());
 
+    // [LEG]
     WorldPackets::Artifact::ArtifactKnowledge artifactKnowledge;
     artifactKnowledge.ArtifactCategoryID = ARTIFACT_CATEGORY_PRIMARY;
     artifactKnowledge.KnowledgeLevel = sWorld->getIntConfig(CONFIG_CURRENCY_START_ARTIFACT_KNOWLEDGE);
@@ -996,18 +999,23 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
     {
         pCurrChar->setCinematic(1);
 
+        // 根据新角色的种族、职业来确定应该播放什么剧情动画...
         if (ChrClassesEntry const* cEntry = sChrClassesStore.LookupEntry(pCurrChar->getClass()))
         {
+            // 1. playMovie             
+            // 2. playCinematic         class based
+            // 3. playScene             race based
             if (pCurrChar->getClass() == CLASS_DEMON_HUNTER) /// @todo: find a more generic solution
                 pCurrChar->SendMovieStart(469);
-            else if (cEntry->CinematicSequenceID)
+            else if (cEntry->CinematicSequenceID) 
                 pCurrChar->SendCinematicStart(cEntry->CinematicSequenceID);
             else if (ChrRacesEntry const* rEntry = sChrRacesStore.LookupEntry(pCurrChar->getRace()))
-            {
+            { // play cinematic based on character's race.
                 if (rEntry->CinematicSequenceID)
                     pCurrChar->SendCinematicStart(rEntry->CinematicSequenceID);
                 else
                 {
+                    // new race in Legion Expansion 7.x 
                     switch (pCurrChar->getRace())
                     {
                       case RACE_HIGHMOUNTAIN_TAUREN:

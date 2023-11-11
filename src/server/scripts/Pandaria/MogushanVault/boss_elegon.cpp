@@ -232,7 +232,7 @@ class boss_elegon : public CreatureScript
             {
                 pInstance = creature->GetInstanceScript();
                 creature->SetDisplayId(11686);
-                creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_UNK_15);
+                creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_CAN_SWIM);
             }
 
             InstanceScript* pInstance;
@@ -305,7 +305,7 @@ class boss_elegon : public CreatureScript
                     pInstance->SetBossState(DATA_ELEGON, IN_PROGRESS);
                 }
 
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_UNK_15);
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_CAN_SWIM);
                 me->RemoveAurasDueToSpell(SPELL_APPARITION_VISUAL);
                 me->SetReactState(REACT_AGGRESSIVE);
 
@@ -485,7 +485,7 @@ class boss_elegon : public CreatureScript
                         }
                         // Set invisible and unselectable
                         me->SetDisplayId(11686);
-                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_UNK_15);
+                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_CAN_SWIM);
 
                         me->RemoveAurasDueToSpell(SPELL_UNSTABLE_ENERGY);
                         me->RemoveAurasDueToSpell(SPELL_PHASE_SHIFTED);
@@ -1532,7 +1532,7 @@ class mob_infinite_energy : public CreatureScript
                     {
                         if (pInstance)
                             if (Creature* elegon = pInstance->GetCreature(NPC_ELEGON))
-                                elegon->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_UNK_15);
+                                elegon->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_CAN_SWIM);
                         break;
                     }
                     case EVENT_BOSS_INTRO_2:

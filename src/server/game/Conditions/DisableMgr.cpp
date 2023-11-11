@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -273,6 +273,7 @@ void CheckQuestDisables()
     TC_LOG_INFO("server.loading", ">> Checked " SZFMTD " quest disables in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
 
+// 检查指定的功能是否不能用...
 bool IsDisabledFor(DisableType type, uint32 entry, Unit const* unit, uint8 flags)
 {
     ASSERT(type < MAX_DISABLE_TYPES);

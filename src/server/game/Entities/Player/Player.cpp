@@ -6182,6 +6182,8 @@ void Player::SendDirectMessage(WorldPacket const* data) const
     _session->SendPacket(data);
 }
 
+// 让客户端触发指定的剧情动画... 这个类型剧情动画应该是movie的升级版本，有更多的控制参数
+// from `CinematicSequences.db2`
 void Player::SendCinematicStart(uint32 CinematicSequenceId) const
 {
     WorldPackets::Misc::TriggerCinematic packet;
@@ -6191,6 +6193,7 @@ void Player::SendCinematicStart(uint32 CinematicSequenceId) const
         _cinematicMgr->SetActiveCinematicCamera(sequence->Camera[0]);
 }
 
+// where can i find movieID? ==> `movie.db2`
 void Player::SendMovieStart(uint32 movieId)
 {
     SetMovie(movieId);
