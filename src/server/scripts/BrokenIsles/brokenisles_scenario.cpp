@@ -19,7 +19,7 @@
 #include "ScriptedCreature.h"
 #include "Player.h"
 #include "GossipDef.h"
-
+#include "ScriptedGossip.h"
 
 // Horder NPC - Captain Russo [113118]
 // quest [40518]
@@ -32,20 +32,30 @@ public:
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
         player->playerTalkClass->ClearMenus();
-
+        
         // make quest objective completed 
         player->KilledMonsterCredit(113118);
-        // spell:225147 `前往破碎海滩客户端场景`
+        // play cutscene
         player->CastSpell(player, 225147, false);
+
+        CloseGossipMenuFor(player);
         return true;
     }
 };
 
-// Alliance NPC - 
+// Alliance NPC - Captain angelica[108920]
 class npc_captain_angelica : public CreatureScript
 {
 public:
     npc_captain_angelica() : CreatureScript("npc_captain_angelica") {}
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
+    {
+        player->playerTalkClass->ClearMenus();
+        player->KilledMonsterCredit(108920);        // angelica
+        player->CastSpell(player, 216356, false);   // alliance spell
+        CloseGossipMenuFor(player);
+        return true;
+    }
 };
 
 

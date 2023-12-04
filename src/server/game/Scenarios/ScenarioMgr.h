@@ -46,8 +46,8 @@ struct ScenarioDBData
 {
     uint32 MapID;
     uint8 DifficultyID;
-    uint32 Scenario_A;
-    uint32 Scenario_H;
+    uint32 Scenario_A;      // scenario id for alliance
+    uint32 Scenario_H;      // scenario id for horde
 };
 
 typedef std::unordered_map<std::pair<uint32, uint8>, ScenarioDBData> ScenarioDBDataContainer;
@@ -97,7 +97,7 @@ struct ScenarioPOI
 typedef std::vector<ScenarioPOI> ScenarioPOIVector;
 typedef std::unordered_map<uint32, ScenarioPOIVector> ScenarioPOIContainer;
 
-// 这个是剧情管理器吗？
+// `场景战役` 的管理器？
 class TC_GAME_API ScenarioMgr
 {
 private:

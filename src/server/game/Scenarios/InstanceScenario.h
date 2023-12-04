@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -24,6 +24,7 @@ class Map;
 
 typedef std::unordered_map<uint8, CriteriaProgressMap> StepCriteriaProgressMap;
 
+// `场景战役` 副本？
 class TC_GAME_API InstanceScenario : public Scenario
 {
     public:
