@@ -154,3 +154,7 @@ INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry
 ('26', '315', '4982', '0', '0', '47', '0', '44281', '66', '0', '0', '0', '0', '', 'Dranoshar Blockade - Phase 315 when quest 44281 complete'),
 ('26', '324', '4982', '0', '0', '47', '0', '40518', '8', '0', '0', '0', '0', '', 'Dranoshar Blockade - Phase 324 when quest 40518 taken');
 -- END quest `To Be Prepared` (44281) 
+
+
+
+-- fixed quest `40518`
