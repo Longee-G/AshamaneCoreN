@@ -21,7 +21,7 @@
 #include "GossipDef.h"
 
 
-// Captain Russo [113118]
+// Horder NPC - Captain Russo [113118]
 // quest [40518]
 // quest objective [113118]
 class npc_captain_russo : public CreatureScript
@@ -35,9 +35,22 @@ public:
 
         // make quest objective completed 
         player->KilledMonsterCredit(113118);
-        // 通过spell来切换
+        // spell:225147 `前往破碎海滩客户端场景`
         player->CastSpell(player, 225147, false);
         return true;
     }
-
 };
+
+// Alliance NPC - 
+class npc_captain_angelica : public CreatureScript
+{
+public:
+    npc_captain_angelica() : CreatureScript("npc_captain_angelica") {}
+};
+
+
+void AddSC_scenario_scripts()
+{
+    new npc_captain_russo();
+    //new npc_captain_angelica();
+}

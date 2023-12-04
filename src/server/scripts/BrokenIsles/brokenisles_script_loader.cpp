@@ -21,6 +21,9 @@
 // Portals
 void AddSC_legion_portal_at_scripts();
 
+// Scenario
+void AddSC_scenario_scripts();
+
 // Zones
 void AddSC_dalaran_legion();
 void AddSC_azsuna();
@@ -186,6 +189,8 @@ void AddBrokenIslesScripts()
 {
     // Portals
     AddSC_legion_portal_at_scripts();
+
+    AddSC_scenario_scripts();
 
     // Zones
     AddSC_dalaran_legion();

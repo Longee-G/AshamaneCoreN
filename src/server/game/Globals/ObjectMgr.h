@@ -667,7 +667,7 @@ struct GossipMenuItems
     uint32               OptionIndex;
     uint8                OptionIcon;
     std::string          OptionText;
-    uint32               OptionBroadcastTextId;
+    uint32               OptionBroadcastTextId;     // `BroadcastText.db2`
     uint32               OptionType;                // Declare in `enum Gossip_Option`
     uint64               OptionNpcFlag;
     uint32               ActionMenuId;              // table `gossip_menu_option_action.ActionMenuId`
@@ -680,10 +680,11 @@ struct GossipMenuItems
     ConditionContainer   Conditions;
 };
 
+// table `world.gossip_menu`
 struct GossipMenus
 {
     uint32               MenuId;
-    uint32               TextId;
+    uint32               TextId;            // `world.npc_text`
     ConditionContainer   Conditions;
 };
 

@@ -140,12 +140,17 @@ UPDATE `creature_template` SET `npcflag` = 1, `gossip_menu_id` = @MENU_ID, `minl
 UPDATE `creature_template` SET `minlevel` = 98, `maxlevel` = 100 WHERE `entry` IN (113540, 113539, 113541);
 
 -- 创建areaId=4982(Dranoshar)关联的相位信息
-DELETE FROM `phase_area` WHERE `AreaId`=4982 AND `PhaseId` IN (169, 313, 315, 324);
+-- area:374 -- 刃拳海湾
+-- area:817 -- 骷髅石
+-- area:4982 -- 
+DELETE FROM `phase_area` WHERE `AreaId` IN (374, 817, 4982) AND `PhaseId` IN (169, 313, 315, 324);
 INSERT INTO `phase_area` (`AreaId`, `PhaseId`, `Comment`) VALUES
 (4982, 169, 'Dranoshar Blockade - See All'),
 (4982, 313, 'Dranoshar Blockade - Phase 313 After Quest 44281 Taken and Before Quest 44281 Rewarded'),
 (4982, 315, 'Dranoshar Blockade - Phase 315 After Quest 44281 Rewarded and Before Quest 40518 Rewarded'),
-(4982, 324, 'Dranoshar Blockade - Phase 324 After Quest 44281 Rewarded and Before Quest 40518 Rewarded');
+(4982, 324, 'Dranoshar Blockade - Phase 324 After Quest 44281 Rewarded and Before Quest 40518 Rewarded'),
+(374, 313, 'Dranoshar Blockade - See All'),
+(817, 313, 'Dranoshar Blockade - See All');
 
 -- 创建相位(phase)关联的条件，type=26是进入相位的条件类型
 DELETE FROM `conditions` WHERE (`SourceTypeOrReferenceId` = 26) AND (`SourceGroup` IN (313, 315, 324)) AND (`SourceEntry` =4982) AND (`ConditionValue1` IN (44281, 40518)); 
@@ -153,8 +158,26 @@ INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry
 ('26', '313', '4982', '0', '0', '47', '0', '44281', '8', '0', '0', '0', '0', '', 'Dranoshar Blockade - Phase 313 when quest 44281 taken'),
 ('26', '315', '4982', '0', '0', '47', '0', '44281', '66', '0', '0', '0', '0', '', 'Dranoshar Blockade - Phase 315 when quest 44281 complete'),
 ('26', '324', '4982', '0', '0', '47', '0', '40518', '8', '0', '0', '0', '0', '', 'Dranoshar Blockade - Phase 324 when quest 40518 taken');
+
+
+
 -- END quest `To Be Prepared` (44281) 
 
 
-
+--
 -- fixed quest `40518`
+--
+-- from TDB `2018_10_11_04_world.sql`
+INSERT IGNORE INTO `npc_text` (`ID`, `Probability0`, `Probability1`, `Probability2`, `Probability3`, `Probability4`, `Probability5`, `Probability6`, `Probability7`, `BroadcastTextId0`, `BroadcastTextId1`, `BroadcastTextId2`, `BroadcastTextId3`, `BroadcastTextId4`, `BroadcastTextId5`, `BroadcastTextId6`, `BroadcastTextId7`, `VerifiedBuild`) VALUES
+(29515, 1, 0, 0, 0, 0, 0, 0, 0, 114580, 0, 0, 0, 0, 0, 0, 0, 27843); -- 29515
+
+INSERT IGNORE INTO `gossip_menu` (`MenuId`, `TextId`, `VerifiedBuild`) VALUES
+(19870, 29515, 27843); -- 113118 (Captain Russo)   29515 npc_text
+
+INSERT IGNORE INTO `gossip_menu_option` (`MenuId`, `OptionIndex`, `OptionIcon`, `OptionText`, `OptionBroadcastTextId`, `VerifiedBuild`) VALUES
+(19870, 0, 0, 'I am ready to face the Legion.', 114581, 27843);
+-- (19870, 2, 0, `I\'ve heard this tale before... <Skip the scenario and begin your next mission.>`, 162120, 27843);
+UPDATE `gossip_menu_option` SET `OptionType` = 1, `OptionNpcFlag` = 1 WHERE `MenuId` =  19870; -- OptionType ： 1 (GOSSIP_OPTION_GOSSIP)
+
+UPDATE `creature_template` SET `gossip_menu_id`=19870, `ScriptName`='npc_captain_russo', `npcflag`=`npcflag`|1 WHERE `entry`=113118; -- Captain Russo, Horde
+-- UPDATE `creature_template` SET `gossip_menu_id`=19870 WHERE `entry`=108920; -- Captain Angelica, Alliance
