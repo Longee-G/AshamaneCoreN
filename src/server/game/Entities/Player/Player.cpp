@@ -19685,7 +19685,7 @@ void Player::LoadPetsFromDB(PreparedQueryResult result)
         playerPetData->Active = fields[10].GetBool();
         playerPetData->SavedHealth = fields[11].GetUInt32();
         playerPetData->SavedMana = fields[12].GetUInt32();
-        playerPetData->Actionbar = fields[13].GetString();
+        playerPetData->Actionbar = fields[13].GetString();      // field `abdata`  ActionBar data ...
         playerPetData->Timediff = fields[14].GetUInt32();
         playerPetData->SummonSpellId = fields[15].GetUInt32();
         playerPetData->Type = PetType(fields[16].GetUInt8());

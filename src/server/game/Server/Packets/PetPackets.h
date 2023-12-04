@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -27,6 +27,7 @@
 
 namespace WorldPackets
 {
+    // Hunter's pet
     namespace Pet
     {
         class DismissCritter final : public ClientPacket

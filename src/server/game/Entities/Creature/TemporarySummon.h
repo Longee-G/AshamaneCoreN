@@ -110,7 +110,7 @@ class TC_GAME_API TempSummon : public Creature
         bool _visibleBySummonerOnly;
 };
 
-// who use `Minion`
+// Warlock/DK/Shaman Pets use this class
 class TC_GAME_API Minion : public TempSummon
 {
     public:

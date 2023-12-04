@@ -73,7 +73,7 @@ enum class HighGuid
     Conversation     = 7,
     Creature         = 8,
     Vehicle          = 9,
-    Pet              = 10,
+    Pet              = 10,  // Hunter's Pet?
     GameObject       = 11,
     DynamicObject    = 12,
     AreaTrigger      = 13,

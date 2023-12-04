@@ -53,6 +53,7 @@ typedef std::vector<uint32> AutoSpellList;
 
 class Player;
 
+// Hunter's Pets
 class TC_GAME_API Pet : public Guardian
 {
     public:

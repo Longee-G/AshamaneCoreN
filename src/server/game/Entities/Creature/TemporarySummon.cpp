@@ -174,6 +174,7 @@ void TempSummon::Update(uint32 diff)
     }
 }
 
+// duration: summoned's life in seconds?
 void TempSummon::InitStats(uint32 duration)
 {
     ASSERT(!IsPet());

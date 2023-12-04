@@ -170,6 +170,7 @@ enum SpellFacingFlags
 #define MAX_AGGRO_RESET_TIME 10 // in seconds
 #define MAX_AGGRO_RADIUS 45.0f  // yards
 
+// Victim -- a person who has been attacked...
 enum VictimState
 {
     VICTIMSTATE_INTACT         = 0, // set when attacker misses
@@ -234,6 +235,7 @@ namespace WorldPackets
 
 typedef std::list<Unit*> UnitList;
 
+// aura that can be seen
 class DispelableAura
 {
     public:
@@ -311,6 +313,7 @@ enum TriggerCastFlags : uint32
     TRIGGERED_CAN_CAST_WHILE_CASTING_MASK           = 0x000000A0
 };
 
+// Unit Modifiers
 enum UnitMods
 {
     UNIT_MOD_STAT_STRENGTH,                                 // UNIT_MOD_STAT_STRENGTH..UNIT_MOD_STAT_INTELLECT must be in existed order, it's accessed by index values of Stats enum.
