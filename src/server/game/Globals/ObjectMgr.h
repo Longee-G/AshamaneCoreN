@@ -751,7 +751,7 @@ typedef std::unordered_map<uint32, std::string> RealmNameContainer;
 // table `scene_template`
 struct SceneTemplate
 {
-    uint32 SceneId;
+    uint32 SceneId;             
     uint32 PlaybackFlags;
     uint32 ScenePackageId;      // field `ID` in `SceneScriptPackage.db2`
     uint32 ScriptId;            // convert from `ScriptName` in table `scene_template`
