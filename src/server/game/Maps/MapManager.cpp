@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -267,12 +267,20 @@ bool MapManager::ExistMapAndVMap(uint32 mapid, float x, float y)
 
 bool MapManager::IsValidMAP(uint32 mapid, bool startUp)
 {
-    MapEntry const* mEntry = sMapStore.LookupEntry(mapid);
+    MapEntry const* pEntry = sMapStore.LookupEntry(mapid);
 
-    if (startUp)
-        return mEntry ? true : false;
+    // FIXED: scenario check failed fixed.
+    if (pEntry)
+    {
+        if (startUp) return true;
+
+        if (pEntry->IsDungeon() && !pEntry->IsScenario())
+            return sObjectMgr->GetInstanceTemplate(mapid);
+
+        return true;
+    }
     else
-        return mEntry && (!mEntry->IsDungeon() || sObjectMgr->GetInstanceTemplate(mapid));
+        return false;
 
     /// @todo add check for battleground template
 }

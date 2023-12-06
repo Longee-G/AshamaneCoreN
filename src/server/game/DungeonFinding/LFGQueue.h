@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -134,15 +134,16 @@ class TC_GAME_API LFGQueue
         LfgCompatibility CheckCompatibility(GuidList check);
 
         // Queue
-        LfgQueueDataContainer QueueDataStore;              ///< Queued groups
-        LfgCompatibleContainer CompatibleMapStore;         ///< Compatible dungeons
+        LfgQueueDataContainer _queueDataStore;               // Queued groups
+        LfgCompatibleContainer _compatibleMapStore;          // Compatible dungeons
 
-        LfgWaitTimesContainer waitTimesAvgStore;           ///< Average wait time to find a group queuing as multiple roles
-        LfgWaitTimesContainer waitTimesTankStore;          ///< Average wait time to find a group queuing as tank
-        LfgWaitTimesContainer waitTimesHealerStore;        ///< Average wait time to find a group queuing as healer
-        LfgWaitTimesContainer waitTimesDpsStore;           ///< Average wait time to find a group queuing as dps
-        GuidList currentQueueStore;                        ///< Ordered list. Used to find groups
-        GuidList newToQueueStore;                          ///< New groups to add to queue
+        LfgWaitTimesContainer waitTimesAvgStore;            // Average wait time to find a group queuing as multiple roles
+        LfgWaitTimesContainer waitTimesTankStore;           // Average wait time to find a group queuing as tank
+        LfgWaitTimesContainer waitTimesHealerStore;         // Average wait time to find a group queuing as healer
+        LfgWaitTimesContainer waitTimesDpsStore;            // Average wait time to find a group queuing as dps
+
+        GuidList _currentQueueStore;                        // Ordered list. Used to find groups
+        GuidList _newToQueueStore;                          // New groups to add to queue
 };
 
 } // namespace lfg

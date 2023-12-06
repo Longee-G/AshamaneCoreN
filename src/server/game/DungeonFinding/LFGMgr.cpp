@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -54,12 +54,17 @@ minlevel(uint8(dbc->MinLevel)), maxlevel(uint8(dbc->MaxLevel)), difficulty(Diffi
 seasonal((dbc->Flags & LFG_FLAG_SEASONAL) != 0), x(0.0f), y(0.0f), z(0.0f), o(0.0f),
 requiredItemLevel(0)
 {
+    if (maxlevel < minlevel && maxlevel == 0)
+        maxlevel = DEFAULT_MAX_LEVEL;
 }
 
-LFGMgr::LFGMgr() : m_QueueTimer(0), m_lfgProposalId(1),
+LFGMgr::LFGMgr() : m_QueueTimer(0), m_lfgProposalId(1), _lastProposalId(0),
     m_options(sWorld->getIntConfig(CONFIG_LFG_OPTIONSMASK)),
     m_isTesting(false)
 {
+    // TODO:
+    m_isTesting = true;
+
 }
 
 LFGMgr::~LFGMgr()
@@ -338,20 +343,25 @@ void LFGMgr::Update(uint32 diff)
         }
     }
 
-    uint32 lastProposalId = m_lfgProposalId;
+    //uint32 lastProposalId = m_lfgProposalId;
+
+    // FindGroups(...)用来从副本排队人群中尝试进行组队，然后返回一个proposalId
+    // 有proposalId才能让系统将组在一起的player传送到副本...
     // Check if a proposal can be formed with the new groups being added
     for (LfgQueueContainer::iterator it = QueuesStore.begin(); it != QueuesStore.end(); ++it)
         if (uint8 newProposals = it->second.FindGroups())
             TC_LOG_DEBUG("lfg.update", "Found %u new groups in queue %u", newProposals, it->first);
 
-    if (lastProposalId != m_lfgProposalId)
+    // 这里的代码应该有问题，无法进入条件判断内...
+
+    if (_lastProposalId != m_lfgProposalId)
     {
         // FIXME lastProposalId ? lastProposalId +1 ?
         for (LfgProposalContainer::const_iterator itProposal = ProposalsStore.find(m_lfgProposalId); itProposal != ProposalsStore.end(); ++itProposal)
         {
             uint32 proposalId = itProposal->first;
             LfgProposal& proposal = ProposalsStore[proposalId];
-
+            // player's guid
             ObjectGuid guid;
             for (LfgProposalPlayerContainer::const_iterator itPlayers = proposal.players.begin(); itPlayers != proposal.players.end(); ++itPlayers)
             {
@@ -370,6 +380,9 @@ void LFGMgr::Update(uint32 diff)
 
             if (proposal.state == LFG_PROPOSAL_SUCCESS)
                 UpdateProposal(proposalId, guid, true);
+
+
+            _lastProposalId = m_lfgProposalId;
         }
     }
 
@@ -399,7 +412,7 @@ void LFGMgr::JoinLfg(Player* player, uint8 roles, LfgDungeonSet& dungeons)
         return;
 
     Group* grp = player->GetGroup();
-    ObjectGuid guid = player->GetGUID();
+    ObjectGuid guid = player->GetGUID();        // player's guid
     ObjectGuid gguid = grp ? grp->GetGUID() : guid;
     LfgJoinResultData joinData;
     GuidSet players;
@@ -435,7 +448,7 @@ void LFGMgr::JoinLfg(Player* player, uint8 roles, LfgDungeonSet& dungeons)
     else if (player->HasAura(9454)) // check Freeze debuff
         joinData.result = LFG_JOIN_NO_SLOTS_PLAYER;
     else if (grp)
-    {
+    {   // player in the group
         if (grp->GetMembersCount() > MAX_GROUP_SIZE)
             joinData.result = LFG_JOIN_TOO_MANY_MEMBERS;
         else
@@ -582,6 +595,12 @@ void LFGMgr::JoinLfg(Player* player, uint8 roles, LfgDungeonSet& dungeons)
         rolesMap[guid] = roles;
         LFGQueue& queue = GetQueue(guid);
         queue.AddQueueData(guid, time(NULL), dungeons, rolesMap);
+
+        // TODO:
+        // 在这里应该是缺少了处理代码，当player独自加入副本队列，并且队列是以player的guid做key
+        // 可以等同于这个副本是player创建的... player应该创建group
+        
+
 
         if (!isContinue)
         {

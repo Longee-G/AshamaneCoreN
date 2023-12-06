@@ -183,5 +183,10 @@ UPDATE `creature_template` SET `gossip_menu_id`=19870, `ScriptName`='npc_captain
 -- UPDATE `creature_template` SET `gossip_menu_id`=19870 WHERE `entry`=108920; -- Captain Angelica, Alliance
 
 -- 给cutscene绑定脚本
-UPDATE `scene_template` SET `ScriptName`='scene_face_the_legion' WHERE SceneId=1439;	-- 7.0 Pre-Launch - Orgrimmar - Client Scene
---UPDATE `scene_template` SET `ScriptName`='scene_face_the_legion' WHERE SceneId=1335;	-- 7.0 Pre-Launch - Stormwind - Client Scene
+UPDATE `scene_template` SET `ScriptName`='scene_face_the_legion' WHERE SceneId=1439; -- 7.0 Pre-Launch - Orgrimmar - Client Scene
+-- UPDATE `scene_template` SET `ScriptName`='scene_face_the_legion' WHERE SceneId=1335; -- 7.0 Pre-Launch - Stormwind - Client Scene
+
+-- dungeon teleport coordiates update
+DELETE FROM `lfg_dungeon_template` WHERE `dungeonId`=908; -- The Battle for Broken Shore
+INSERT INTO `lfg_dungeon_template` (`dungeonId`, `name`, `position_x`, `position_y`, `position_z`, `orientation`, `requiredItemLevel`, `VerifiedBuild`) VALUES
+(908, 'The Battle for Broken Shore', 2.39286, 1.69455, 5.20573, 3.155920, 0, 26972);

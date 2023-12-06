@@ -84,6 +84,7 @@ public:
         // The Battle For Broken Shore [908] from `LFGDungeons.db2`
         lfg::LfgDungeonSet dungeons = { 908 };
 
+        // add self to `Scenario` LFG queue
         sLFGMgr->JoinLfg(player, GetRoleMask(player), dungeons);
     }
 };

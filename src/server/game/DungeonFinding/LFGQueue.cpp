@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software you can redistribute it and/or modify it
@@ -91,8 +91,8 @@ std::string LFGQueue::GetDetailedMatchRoles(GuidList const& check) const
 
     GuidSet::const_iterator it = guids.begin();
     o << it->ToString();
-    LfgQueueDataContainer::const_iterator itQueue = QueueDataStore.find(*it);
-    if (itQueue != QueueDataStore.end())
+    LfgQueueDataContainer::const_iterator itQueue = _queueDataStore.find(*it);
+    if (itQueue != _queueDataStore.end())
     {
         // skip leader flag, log only dps/tank/healer
         auto role = itQueue->second.roles.find(*it);
@@ -103,8 +103,8 @@ std::string LFGQueue::GetDetailedMatchRoles(GuidList const& check) const
     for (++it; it != guids.end(); ++it)
     {
         o << '|' << it->ToString();
-        itQueue = QueueDataStore.find(*it);
-        if (itQueue != QueueDataStore.end())
+        itQueue = _queueDataStore.find(*it);
+        if (itQueue != _queueDataStore.end())
         {
             // skip leader flag, log only dps/tank/healer
             auto role = itQueue->second.roles.find(*it);
@@ -118,8 +118,8 @@ std::string LFGQueue::GetDetailedMatchRoles(GuidList const& check) const
 
 void LFGQueue::AddToQueue(ObjectGuid guid, bool reAdd)
 {
-    LfgQueueDataContainer::iterator itQueue = QueueDataStore.find(guid);
-    if (itQueue == QueueDataStore.end())
+    LfgQueueDataContainer::iterator itQueue = _queueDataStore.find(guid);
+    if (itQueue == _queueDataStore.end())
     {
         TC_LOG_ERROR("lfg.queue.add", "Queue data not found for [%s]", guid.ToString().c_str());
         return;
@@ -141,8 +141,8 @@ void LFGQueue::RemoveFromQueue(ObjectGuid guid)
     o << guid;
     std::string sguid = o.str();
 
-    LfgQueueDataContainer::iterator itDelete = QueueDataStore.end();
-    for (LfgQueueDataContainer::iterator itr = QueueDataStore.begin(); itr != QueueDataStore.end(); ++itr)
+    LfgQueueDataContainer::iterator itDelete = _queueDataStore.end();
+    for (LfgQueueDataContainer::iterator itr = _queueDataStore.begin(); itr != _queueDataStore.end(); ++itr)
         if (itr->first != guid)
         {
             if (std::string::npos != itr->second.bestCompatible.find(sguid))
@@ -154,46 +154,46 @@ void LFGQueue::RemoveFromQueue(ObjectGuid guid)
         else
             itDelete = itr;
 
-    if (itDelete != QueueDataStore.end())
-        QueueDataStore.erase(itDelete);
+    if (itDelete != _queueDataStore.end())
+        _queueDataStore.erase(itDelete);
 }
 
 void LFGQueue::AddToNewQueue(ObjectGuid guid)
 {
-    newToQueueStore.push_back(guid);
+    _newToQueueStore.push_back(guid);
 }
 
 void LFGQueue::RemoveFromNewQueue(ObjectGuid guid)
 {
-    newToQueueStore.remove(guid);
+    _newToQueueStore.remove(guid);
 }
 
 void LFGQueue::AddToCurrentQueue(ObjectGuid guid)
 {
-    currentQueueStore.push_back(guid);
+    _currentQueueStore.push_back(guid);
 }
 
 void LFGQueue::AddToFrontCurrentQueue(ObjectGuid guid)
 {
-    currentQueueStore.push_front(guid);
+    _currentQueueStore.push_front(guid);
 }
 
 void LFGQueue::RemoveFromCurrentQueue(ObjectGuid guid)
 {
-    currentQueueStore.remove(guid);
+    _currentQueueStore.remove(guid);
 }
 
 void LFGQueue::AddQueueData(ObjectGuid guid, time_t joinTime, LfgDungeonSet const& dungeons, LfgRolesMap const& rolesMap)
 {
-    QueueDataStore[guid] = LfgQueueData(joinTime, dungeons, rolesMap);
+    _queueDataStore[guid] = LfgQueueData(joinTime, dungeons, rolesMap);
     AddToQueue(guid);
 }
 
 void LFGQueue::RemoveQueueData(ObjectGuid guid)
 {
-    LfgQueueDataContainer::iterator it = QueueDataStore.find(guid);
-    if (it != QueueDataStore.end())
-        QueueDataStore.erase(it);
+    LfgQueueDataContainer::iterator it = _queueDataStore.find(guid);
+    if (it != _queueDataStore.end())
+        _queueDataStore.erase(it);
 }
 
 void LFGQueue::UpdateWaitTimeAvg(int32 waitTime, uint32 dungeonId)
@@ -236,11 +236,11 @@ void LFGQueue::RemoveFromCompatibles(ObjectGuid guid)
     std::string strGuid = out.str();
 
     TC_LOG_DEBUG("lfg.queue.data.compatibles.remove", "Removing %s", guid.ToString().c_str());
-    for (LfgCompatibleContainer::iterator itNext = CompatibleMapStore.begin(); itNext != CompatibleMapStore.end();)
+    for (LfgCompatibleContainer::iterator itNext = _compatibleMapStore.begin(); itNext != _compatibleMapStore.end();)
     {
         LfgCompatibleContainer::iterator it = itNext++;
         if (std::string::npos != it->first.find(strGuid))
-            CompatibleMapStore.erase(it);
+            _compatibleMapStore.erase(it);
     }
 }
 
@@ -252,13 +252,13 @@ void LFGQueue::RemoveFromCompatibles(ObjectGuid guid)
 */
 void LFGQueue::SetCompatibles(std::string const& key, LfgCompatibility compatibles)
 {
-    LfgCompatibilityData& data = CompatibleMapStore[key];
+    LfgCompatibilityData& data = _compatibleMapStore[key];
     data.compatibility = compatibles;
 }
 
 void LFGQueue::SetCompatibilityData(std::string const& key, LfgCompatibilityData const& data)
 {
-    CompatibleMapStore[key] = data;
+    _compatibleMapStore[key] = data;
 }
 
 /**
@@ -269,8 +269,8 @@ void LFGQueue::SetCompatibilityData(std::string const& key, LfgCompatibilityData
 */
 LfgCompatibility LFGQueue::GetCompatibles(std::string const& key)
 {
-    LfgCompatibleContainer::iterator itr = CompatibleMapStore.find(key);
-    if (itr != CompatibleMapStore.end())
+    LfgCompatibleContainer::iterator itr = _compatibleMapStore.find(key);
+    if (itr != _compatibleMapStore.end())
         return itr->second.compatibility;
 
     return LFG_COMPATIBILITY_PENDING;
@@ -278,28 +278,29 @@ LfgCompatibility LFGQueue::GetCompatibles(std::string const& key)
 
 LfgCompatibilityData* LFGQueue::GetCompatibilityData(std::string const& key)
 {
-    LfgCompatibleContainer::iterator itr = CompatibleMapStore.find(key);
-    if (itr != CompatibleMapStore.end())
+    LfgCompatibleContainer::iterator itr = _compatibleMapStore.find(key);
+    if (itr != _compatibleMapStore.end())
         return &(itr->second);
 
     return NULL;
 }
 
+// 尝试在副本队列中创建一个队伍
 uint8 LFGQueue::FindGroups()
 {
     uint8 proposals = 0;
     GuidList firstNew;
-    while (!newToQueueStore.empty())
+    while (!_newToQueueStore.empty())
     {
-        ObjectGuid frontguid = newToQueueStore.front();
+        ObjectGuid frontguid = _newToQueueStore.front();
         TC_LOG_DEBUG("lfg.queue.match.check.new", "Checking [%s] newToQueue(%u), currentQueue(%u)", frontguid.ToString().c_str(),
-            uint32(newToQueueStore.size()), uint32(currentQueueStore.size()));
+            uint32(_newToQueueStore.size()), uint32(_currentQueueStore.size()));
 
         firstNew.clear();
         firstNew.push_back(frontguid);
         RemoveFromNewQueue(frontguid);
 
-        GuidList temporalList = currentQueueStore;
+        GuidList temporalList = _currentQueueStore;
         LfgCompatibility compatibles = FindNewGroups(firstNew, temporalList);
 
         if (compatibles == LFG_COMPATIBLES_MATCH)
@@ -307,6 +308,7 @@ uint8 LFGQueue::FindGroups()
         else
             AddToCurrentQueue(frontguid);                  // Lfg group not found, add this group to the queue.
     }
+
     return proposals;
 }
 
@@ -393,8 +395,8 @@ LfgCompatibility LFGQueue::CheckCompatibility(GuidList check)
     for (GuidList::const_iterator it = check.begin(); it != check.end() && numLfgGroups < 2 && numPlayers <= MAX_GROUP_SIZE; ++it)
     {
         ObjectGuid guid = *it;
-        LfgQueueDataContainer::iterator itQueue = QueueDataStore.find(guid);
-        if (itQueue == QueueDataStore.end())
+        LfgQueueDataContainer::iterator itQueue = _queueDataStore.find(guid);
+        if (itQueue == _queueDataStore.end())
         {
             TC_LOG_ERROR("lfg.queue.match.compatibility.check", "Guid: [%s] is not queued but listed as queued!", guid.ToString().c_str());
             RemoveFromQueue(guid);
@@ -419,7 +421,7 @@ LfgCompatibility LFGQueue::CheckCompatibility(GuidList check)
     if (!sLFGMgr->IsTesting() && check.size() == 1 && numPlayers != MAX_GROUP_SIZE)
     {
         TC_LOG_DEBUG("lfg.queue.match.compatibility.check", "Guids: (%s) single group. Compatibles", GetDetailedMatchRoles(check).c_str());
-        LfgQueueDataContainer::iterator itQueue = QueueDataStore.find(check.front());
+        LfgQueueDataContainer::iterator itQueue = _queueDataStore.find(check.front());
 
         LfgCompatibilityData data(LFG_COMPATIBLES_WITH_LESS_PLAYERS);
         data.roles = itQueue->second.roles;
@@ -449,7 +451,7 @@ LfgCompatibility LFGQueue::CheckCompatibility(GuidList check)
     {
         for (GuidList::const_iterator it = check.begin(); it != check.end(); ++it)
         {
-            LfgRolesMap const& roles = QueueDataStore[(*it)].roles;
+            LfgRolesMap const& roles = _queueDataStore[(*it)].roles;
             for (LfgRolesMap::const_iterator itRoles = roles.begin(); itRoles != roles.end(); ++itRoles)
             {
                 LfgRolesMap::const_iterator itPlayer;
@@ -485,13 +487,13 @@ LfgCompatibility LFGQueue::CheckCompatibility(GuidList check)
         }
 
         GuidList::iterator itguid = check.begin();
-        proposalDungeons = QueueDataStore[*itguid].dungeons;
+        proposalDungeons = _queueDataStore[*itguid].dungeons;
         std::ostringstream o;
         o << ", " << *itguid << ": (" << ConcatenateDungeons(proposalDungeons) << ")";
         for (++itguid; itguid != check.end(); ++itguid)
         {
             LfgDungeonSet temporal;
-            LfgDungeonSet& dungeons = QueueDataStore[*itguid].dungeons;
+            LfgDungeonSet& dungeons = _queueDataStore[*itguid].dungeons;
             o << ", " << *itguid << ": (" << ConcatenateDungeons(dungeons) << ")";
             std::set_intersection(proposalDungeons.begin(), proposalDungeons.end(), dungeons.begin(), dungeons.end(), std::inserter(temporal, temporal.begin()));
             proposalDungeons = temporal;
@@ -507,7 +509,7 @@ LfgCompatibility LFGQueue::CheckCompatibility(GuidList check)
     else
     {
         ObjectGuid gguid = *check.begin();
-        const LfgQueueData &queue = QueueDataStore[gguid];
+        const LfgQueueData &queue = _queueDataStore[gguid];
         proposalDungeons = queue.dungeons;
         proposalRoles = queue.roles;
         LFGMgr::CheckGroupRoles(proposalRoles);          // assing new roles
@@ -521,7 +523,7 @@ LfgCompatibility LFGQueue::CheckCompatibility(GuidList check)
         data.roles = proposalRoles;
 
         for (GuidList::const_iterator itr = check.begin(); itr != check.end(); ++itr)
-            UpdateBestCompatibleInQueue(QueueDataStore.find(*itr), strGuids, data.roles);
+            UpdateBestCompatibleInQueue(_queueDataStore.find(*itr), strGuids, data.roles);
 
         SetCompatibilityData(strGuids, data);
         return LFG_COMPATIBLES_WITH_LESS_PLAYERS;
@@ -583,7 +585,7 @@ LfgCompatibility LFGQueue::CheckCompatibility(GuidList check)
 void LFGQueue::UpdateQueueTimers(uint8 queueId, time_t currTime)
 {
     TC_LOG_TRACE("lfg.queue.timers.update", "Updating queue timers...");
-    for (LfgQueueDataContainer::iterator itQueue = QueueDataStore.begin(); itQueue != QueueDataStore.end(); ++itQueue)
+    for (LfgQueueDataContainer::iterator itQueue = _queueDataStore.begin(); itQueue != _queueDataStore.end(); ++itQueue)
     {
         LfgQueueData& queueinfo = itQueue->second;
         uint32 dungeonId = (*queueinfo.dungeons.begin());
@@ -632,8 +634,8 @@ void LFGQueue::UpdateQueueTimers(uint8 queueId, time_t currTime)
 
 time_t LFGQueue::GetJoinTime(ObjectGuid guid) const
 {
-    LfgQueueDataContainer::const_iterator itr = QueueDataStore.find(guid);
-    if (itr != QueueDataStore.end())
+    LfgQueueDataContainer::const_iterator itr = _queueDataStore.find(guid);
+    if (itr != _queueDataStore.end())
         return itr->second.joinTime;
 
     return 0;
@@ -647,7 +649,7 @@ std::string LFGQueue::DumpQueueInfo() const
 
     for (uint8 i = 0; i < 2; ++i)
     {
-        GuidList const& queue = i ? newToQueueStore : currentQueueStore;
+        GuidList const& queue = i ? _newToQueueStore : _currentQueueStore;
         for (GuidList::const_iterator it = queue.begin(); it != queue.end(); ++it)
         {
             ObjectGuid guid = *it;
@@ -668,9 +670,9 @@ std::string LFGQueue::DumpQueueInfo() const
 std::string LFGQueue::DumpCompatibleInfo(bool full /* = false */) const
 {
     std::ostringstream o;
-    o << "Compatible Map size: " << CompatibleMapStore.size() << "\n";
+    o << "Compatible Map size: " << _compatibleMapStore.size() << "\n";
     if (full)
-        for (LfgCompatibleContainer::const_iterator itr = CompatibleMapStore.begin(); itr != CompatibleMapStore.end(); ++itr)
+        for (LfgCompatibleContainer::const_iterator itr = _compatibleMapStore.begin(); itr != _compatibleMapStore.end(); ++itr)
         {
             o << "(" << itr->first << "): " << GetCompatibleString(itr->second.compatibility);
             if (!itr->second.roles.empty())
@@ -699,7 +701,7 @@ void LFGQueue::FindBestCompatibleInQueue(LfgQueueDataContainer::iterator itrQueu
     o << itrQueue->first;
     std::string sguid = o.str();
 
-    for (LfgCompatibleContainer::const_iterator itr = CompatibleMapStore.begin(); itr != CompatibleMapStore.end(); ++itr)
+    for (LfgCompatibleContainer::const_iterator itr = _compatibleMapStore.begin(); itr != _compatibleMapStore.end(); ++itr)
         if (itr->second.compatibility == LFG_COMPATIBLES_WITH_LESS_PLAYERS &&
             std::string::npos != itr->first.find(sguid))
         {
