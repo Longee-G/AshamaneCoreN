@@ -788,6 +788,11 @@ public:
             if (mechanicImmuneMask & (1 << (mechanicImmunes[i].Value - 1)))
                 handler->PSendSysMessage("%s (0x%X)", mechanicImmunes[i].Name, mechanicImmunes[i].Value);
 
+
+        // addon ..
+        handler->PSendSysMessage("* MenuId: (%d)", cInfo->GossipMenuId);
+
+
         return true;
     }
 
