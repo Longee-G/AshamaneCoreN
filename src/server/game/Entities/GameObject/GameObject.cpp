@@ -61,7 +61,7 @@ GameObject::GameObject() : WorldObject(false), MapObject(),
 {
     _objectType |= TYPEMASK_GAMEOBJECT;
     _objectTypeId = TYPEID_GAMEOBJECT;
-
+    // default flags: (positon+orientation) + rotation 
     _updateFlag = (UPDATEFLAG_STATIONARY_POSITION | UPDATEFLAG_ROTATION);
 
     _valuesCount = GAMEOBJECT_END;
@@ -258,7 +258,16 @@ bool GameObject::Create(uint32 entry, Map* map, Position const& pos, QuaternionD
         return false;
     }
 
-    SetWorldRotation(rotation.x, rotation.y, rotation.z, rotation.w);
+    //
+    // TrinityCore Rotation use `ZYX-order`
+    // 
+    // fixed gameobject's without rotation set
+    G3D::Quat rot1(rotation.x, rotation.y, rotation.z, rotation.w);
+    if (rot1.isUnit()) // (0, 0, 0, 1)
+        SetWorldRotationAngles(NormalizeOrientation(pos.GetOrientation()), 0.0f, 0.0f);
+    else
+        SetWorldRotation(rotation.x, rotation.y, rotation.z, rotation.w);
+
     GameObjectAddon const* gameObjectAddon = sObjectMgr->GetGameObjectAddon(GetSpawnId());
 
     // For most of gameobjects is (0, 0, 0, 1) quaternion, there are only some transports with not standard rotation
@@ -407,7 +416,9 @@ bool GameObject::Create(uint32 entry, Map* map, Position const& pos, QuaternionD
     return true;
 }
 
-GameObject* GameObject::CreateGameObject(uint32 entry, Map* map, Position const& pos, QuaternionData const& rotation, uint32 animProgress, GOState goState, uint32 artKit /*= 0*/)
+// 
+GameObject* GameObject::CreateGameObject(uint32 entry, Map* map, Position const& pos, QuaternionData const& rotation,
+    uint32 animProgress, GOState goState, uint32 artKit /*= 0*/)
 {
     GameObjectTemplate const* goInfo = sObjectMgr->GetGameObjectTemplate(entry);
     if (!goInfo)
@@ -2151,8 +2162,10 @@ void GameObject::SetParentRotation(QuaternionData const& rotation)
     SetFloatValue(GAMEOBJECT_PARENTROTATION + 3, rotation.w);
 }
 
+// convert angle(x, y, z) to Quaternion of rotation
 void GameObject::SetWorldRotationAngles(float z_rot, float y_rot, float x_rot)
 {
+    // TrinityCore's Rotation use ZYX-order
     G3D::Quat quat(G3D::Matrix3::fromEulerAnglesZYX(z_rot, y_rot, x_rot));
     SetWorldRotation(quat.x, quat.y, quat.z, quat.w);
 }

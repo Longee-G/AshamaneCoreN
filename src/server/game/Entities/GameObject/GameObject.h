@@ -80,7 +80,6 @@ enum LootState
 // 5 sec for bobber catch
 #define FISHING_BOBBER_READY_TIME 5
 
-// GameObject是不是指地图上的非creature对象？
 class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>, public MapObject
 {
     public:
@@ -108,7 +107,7 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
         bool IsTransport() const;
         bool IsDynTransport() const;
         bool IsDestructibleBuilding() const;
-
+        // Get gameoject's Db guid
         ObjectGuid::LowType GetSpawnId() const { return _spawnId; }
 
          // z_rot, y_rot, x_rot - rotation angles around z, y and x axes
@@ -160,6 +159,7 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
 
         void SetRespawnTime(int32 respawn)
         {
+            // how to use _respawnTime & _respawnDelayTime
             _respawnTime = respawn > 0 ? time(NULL) + respawn : 0;
             _respawnDelayTime = respawn > 0 ? respawn : 0;
         }
@@ -345,6 +345,7 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
         ChairSlotAndUser ChairListSlots;
 
         ///< For new or temporary gameobjects is 0 for saved it is lowguid
+        // This equals table [gameobject.guid]
         ObjectGuid::LowType _spawnId;                              
         GameObjectTemplate const* _goInfo;
         GameObjectTemplateAddon const* _goTemplateAddon;
