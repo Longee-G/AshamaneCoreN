@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -39,6 +39,8 @@ EndScriptData */
 #include "PoolMgr.h"
 #include "RBAC.h"
 #include "WorldSession.h"
+#include <G3D/Quat.h>
+
 
 class gobject_commandscript : public CommandScript
 {
@@ -161,7 +163,11 @@ public:
         Player* player = handler->GetSession()->GetPlayer();
         Map* map = player->GetMap();
 
-        GameObject* object = GameObject::CreateGameObject(objectInfo->entry, map, *player, QuaternionData::fromEulerAnglesZYX(player->GetOrientation(), 0.0f, 0.0f), 255, GO_STATE_READY);
+        // 
+        GameObject* object = GameObject::CreateGameObject(objectInfo->entry, map, *player,
+            QuaternionData::fromEulerAnglesZYX(player->GetOrientation(), 0.0f, 0.0f), 255, GO_STATE_READY);
+
+
         if (!object)
             return false;
 
@@ -191,7 +197,8 @@ public:
 
         player->SetLastTargetedGO(spawnId);
 
-        handler->PSendSysMessage(LANG_GAMEOBJECT_ADD, objectId, objectInfo->name.c_str(), std::to_string(spawnId).c_str(), player->GetPositionX(), player->GetPositionY(), player->GetPositionZ());
+        handler->PSendSysMessage(LANG_GAMEOBJECT_ADD, objectId, objectInfo->name.c_str(),
+            spawnId, player->GetPositionX(), player->GetPositionY(), player->GetPositionZ());
         return true;
     }
 
@@ -208,7 +215,8 @@ public:
         Player* player = handler->GetSession()->GetPlayer();
 
         char* spawntime = strtok(NULL, " ");
-        uint32 spawntm = 300;
+        // modify default spawn time from 300s to 30s
+        uint32 spawntm = 30;   // seconds
 
         if (spawntime)
             spawntm = atoul(spawntime);
@@ -221,7 +229,7 @@ public:
             handler->SetSentErrorMessage(true);
             return false;
         }
-
+        // summon a gameobject use player's orientation
         if (GameObject* tempGob = player->SummonGameObject(objectId, *player, QuaternionData::fromEulerAnglesZYX(player->GetOrientation(), 0.0f, 0.0f), spawntm))
         {
             player->SetLastTargetedGO(tempGob->GetGUID().GetCounter());
@@ -389,14 +397,27 @@ public:
         return true;
     }
 
-    //turn selected object
+    // turn selected object
+    // 
+    // Syntax: .gobject turn [guid|link] [oz [oy [ox]]]
+    //
+    // oz/oy/oz in [0, 2*PI]
+    // Set the orientation of the gameobject to player's orientation or the given rotation.
     static bool HandleGameObjectTurnCommand(ChatHandler* handler, char const* args)
     {
-        ObjectGuid::LowType guidLow = GetGuidFromArgsOrLastTargetedGo(handler, args);
-        if (!guidLow)
-            return false;
+        ObjectGuid::LowType guidLow = 0;
+        GameObject* object = nullptr;
+        if(*args)
+        {
+            guidLow = GetGuidFromArgsOrLastTargetedGo(handler, args);
+            if (!guidLow)
+                return false;
 
-        GameObject* object = handler->GetObjectFromPlayerMapByDbGuid(guidLow);
+            object = handler->GetObjectFromPlayerMapByDbGuid(guidLow);
+        }
+        else  // NOT specified guid, get the gameobject closest to player
+            object = handler->GetNearbyGameObject();
+
         if (!object)
         {
             handler->PSendSysMessage(LANG_COMMAND_OBJNOTFOUND, std::to_string(guidLow).c_str());
@@ -423,18 +444,26 @@ public:
         else
         {
             Player* player = handler->GetSession()->GetPlayer();
-            oz = player->GetOrientation();
+            object->GetWorldRotation().toEulerAnglesZYX(oz, oy, ox);
+            oz = player->GetOrientation();  // oz
         }
 
+        
         object->Relocate(object->GetPositionX(), object->GetPositionY(), object->GetPositionZ());
         object->RelocateStationaryPosition(object->GetPositionX(), object->GetPositionY(), object->GetPositionZ(), object->GetOrientation());
         object->SetWorldRotationAngles(oz, oy, ox);
+
+        // FIXME: turn op can NOT take effect immediately
+        // so i add this...
+        object->SetRespawnTime(3);
+
         object->DestroyForNearbyPlayers();
         object->UpdateObjectVisibility();
 
         object->SaveToDB();
 
-        handler->PSendSysMessage(LANG_COMMAND_TURNOBJMESSAGE, std::to_string(object->GetSpawnId()).c_str(), object->GetGOInfo()->name.c_str(), object->GetGUID().ToString().c_str(), object->GetOrientation());
+        handler->PSendSysMessage(LANG_COMMAND_TURNOBJMESSAGE, TOSTR(object->GetSpawnId()).c_str(),
+            object->GetGOInfo()->name.c_str(), object->GetGUID().ToString().c_str(), object->GetOrientation());
 
         return true;
     }
@@ -482,10 +511,13 @@ public:
                 return false;
             }
         }
+        // try to take effect in client immidiately
+        object->SetRespawnTime(3);
 
         object->DestroyForNearbyPlayers();
         object->RelocateStationaryPosition(x, y, z, object->GetOrientation());
         object->GetMap()->GameObjectRelocation(object, x, y, z, object->GetOrientation());
+
 
         object->SaveToDB();
 
@@ -584,30 +616,49 @@ public:
         uint32 displayId = 0;
         std::string name;
         uint32 lootId = 0;
-
-        if (!*args)
-            return false;
-
-        char* param1 = handler->extractKeyFromLink((char*)args, "Hgameobject_entry");
-        if (!param1)
-            return false;
-
-        if (strcmp(param1, "guid") == 0)
+        uint32 dbguid = 0;
+        float x, y, z;
+        float orient;   // radian [0, 2*PI]
+        QuaternionData rot;
+        
+        if (*args)
         {
-            char* tail = strtok(nullptr, "");
-            char* cValue = handler->extractKeyFromLink(tail, "Hgameobject");
-            if (!cValue)
+            char* param1 = handler->extractKeyFromLink((char*)args, "Hgameobject_entry");
+            if (!param1)
                 return false;
-            ObjectGuid::LowType guidLow = atoull(cValue);
-            const GameObjectData* data = sObjectMgr->GetGOData(guidLow);
-            if (!data)
-                return false;
-            entry = data->id;
+
+            if (strcmp(param1, "guid") == 0)
+            {
+                char* tail = strtok(nullptr, "");
+                char* cValue = handler->extractKeyFromLink(tail, "Hgameobject");
+                if (!cValue)
+                    return false;
+                ObjectGuid::LowType guidLow = atoull(cValue);
+                const GameObjectData* data = sObjectMgr->GetGOData(guidLow);
+                if (!data)
+                    return false;
+                entry = data->id;
+                x = data->posX, y = data->posY, z = data->posZ;
+                orient = data->orientation;
+                dbguid = guidLow;
+            }
+            else
+            {
+                entry = atoul(param1);
+            }
+        }
+        else if (GameObject* go = handler->GetNearbyGameObject())
+        {
+            entry = go->GetEntry();
+            dbguid = go->GetSpawnId();
+            x = go->GetPosition().GetPositionX();
+            y = go->GetPosition().GetPositionY();
+            z = go->GetPosition().GetPositionZ();
+            orient = go->GetOrientation();
+            rot = go->GetWorldRotation();
         }
         else
-        {
-            entry = atoul(param1);
-        }
+            return false;
 
         GameObjectTemplate const* gameObjectInfo = sObjectMgr->GetGameObjectTemplate(entry);
 
@@ -620,17 +671,30 @@ public:
         lootId = gameObjectInfo->GetLootId();
 
         handler->PSendSysMessage(LANG_GOINFO_ENTRY, entry);
+
         handler->PSendSysMessage(LANG_GOINFO_TYPE, type);
         handler->PSendSysMessage(LANG_GOINFO_LOOTID, lootId);
         handler->PSendSysMessage(LANG_GOINFO_DISPLAYID, displayId);
         handler->PSendSysMessage(LANG_GOINFO_NAME, name.c_str());
         handler->PSendSysMessage(LANG_GOINFO_SIZE, gameObjectInfo->size);
-
+        
         if (GameObjectTemplateAddon const* addon = sObjectMgr->GetGameObjectTemplateAddon(entry))
             handler->PSendSysMessage(LANG_GOINFO_ADDON, addon->faction, addon->flags);
 
         if (GameObjectDisplayInfoEntry const* modelInfo = sGameObjectDisplayInfoStore.LookupEntry(displayId))
             handler->PSendSysMessage(LANG_GOINFO_MODEL, modelInfo->GeoBoxMax.X, modelInfo->GeoBoxMax.Y, modelInfo->GeoBoxMax.Z, modelInfo->GeoBoxMin.X, modelInfo->GeoBoxMin.Y, modelInfo->GeoBoxMin.Z);
+
+        // output Db Guid & Coordinate
+        if (dbguid)
+        {
+            handler->PSendSysMessage("Db Guid: %u", dbguid);
+            handler->PSendSysMessage("Coordinate: %.2f, %.2f, %.2f", x, y, z);
+            handler->PSendSysMessage("Orientation: %.2f (Rad), %.2f (Deg)", orient, G3D::toDegrees(orient));
+            rot.toEulerAnglesZYX(z, y, x);
+            handler->PSendSysMessage("Rotation Quaternion(xyzw): %.4f, %.4f, %.4f, %.4f", rot.x, rot.y, rot.z, rot.w);
+            handler->PSendSysMessage("Rotation EulerAngle(xyz): %.4f, %.4f, %.4f (Rad), %.2f, %.2f, %.2f (Deg)",
+                x, y, z, G3D::toDegrees(x), G3D::toDegrees(y), G3D::toDegrees(z));
+        }
 
         return true;
     }

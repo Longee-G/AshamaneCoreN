@@ -1922,7 +1922,9 @@ public:
         // Position data
         MapEntry const* map = sMapStore.LookupEntry(mapId);
         mapName = map->MapName->Str[handler->GetSessionDbcLocale()];
-        mapName.append("[").append(std::to_string(map->ID)).append("]");
+        mapName.append("[").append(TOSTR(map->ID)).append("]");
+
+
         
 
         AreaTableEntry const* area = sAreaTableStore.LookupEntry(areaId);
@@ -1944,6 +1946,11 @@ public:
             handler->PSendSysMessage(LANG_PINFO_CHR_MAP, mapName.c_str(),
                 (!zoneName.empty() ? zoneName.c_str() : handler->GetTrinityString(LANG_UNKNOWN)),
                 (!areaName.empty() ? areaName.c_str() : handler->GetTrinityString(LANG_UNKNOWN)));
+
+            //
+            Position p = target->GetPosition();
+            handler->PSendSysMessage("Coordinate: %.2f, %.2f, %.2f", p.GetPositionX(), p.GetPositionY(), p.GetPositionZ());
+            handler->PSendSysMessage("Orientation: %.2f (rad)", target->GetOrientation());
         }
             
 

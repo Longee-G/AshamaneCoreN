@@ -49,6 +49,11 @@ bool QuaternionData::isUnit() const
     return fabs(x * x + y * y + z * z + w * w - 1.0f) < 1e-5;
 }
 
+void QuaternionData::toEulerAnglesZYX(float & ez, float & ey, float & ex) const
+{
+    G3D::Matrix3(G3D::Quat(x, y, z, w)).toEulerAnglesZYX(ez, ey, ex);
+}
+
 QuaternionData QuaternionData::fromEulerAnglesZYX(float Z, float Y, float X)
 {
     G3D::Quat quat(G3D::Matrix3::fromEulerAnglesZYX(Z, Y, X));

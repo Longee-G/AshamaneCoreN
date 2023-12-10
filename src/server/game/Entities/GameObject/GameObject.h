@@ -113,8 +113,10 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
          // z_rot, y_rot, x_rot - rotation angles around z, y and x axes
         void SetWorldRotationAngles(float z_rot, float y_rot, float x_rot);
         void SetWorldRotation(float qx, float qy, float qz, float qw);
+        QuaternionData const& GetWorldRotation() const { return _worldRotation; }
         void SetParentRotation(QuaternionData const& rotation);      // transforms(rotates) transport's path
         int64 GetPackedWorldRotation() const { return _packedRotation; }
+
 
         // overwrite WorldObject function for proper name localization
         std::string const& GetNameForLocaleIdx(LocaleConstant locale_idx) const override;
