@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -862,7 +862,7 @@ struct GameObjectData
     float posX;
     float posY;
     float posZ;
-    float orientation;
+    float orientation;          // is radian in [0, 2PI]
     QuaternionData rotation;
     int32  spawntimesecs;
     uint32 animprogress;

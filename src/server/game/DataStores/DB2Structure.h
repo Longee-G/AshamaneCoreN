@@ -875,6 +875,7 @@ struct CriteriaEntry
     int8 EligibilityWorldStateValue;
 };
 
+// `CriteriaTree.db2`
 struct CriteriaTreeEntry
 {
     uint32 ID;

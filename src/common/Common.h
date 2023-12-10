@@ -68,6 +68,9 @@ inline unsigned long long atoull(char const* str) { return strtoull(str, nullptr
 
 #define STRINGIZE(a) #a
 
+#define TOSTR std::to_string
+
+
 enum TimeConstants
 {
     MINUTE          = 60,

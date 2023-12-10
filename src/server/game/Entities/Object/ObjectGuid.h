@@ -204,7 +204,7 @@ class ByteBuffer;
 
 #pragma pack(push, 1)
 
-// ObjectGuid这个类使用多少个字节存储？ 需要2个Uint64 总共16个字节...
+// ObjectGuid equals 2 Uint64, 4 Uint32, 16 bytes, 128 bits.
 class TC_GAME_API ObjectGuid
 {
     friend TC_GAME_API std::ostream& operator<<(std::ostream& stream, ObjectGuid const& guid);

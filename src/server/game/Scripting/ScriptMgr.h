@@ -963,6 +963,8 @@ class TC_GAME_API ConversationScript : public ScriptObject
         virtual void OnConversationCreate(Conversation* /*conversation*/, Unit* /*creator*/) { }
 };
 
+// Script invoked during the cutscene playing
+// Associate with table `world.scene_template` [SceneId, ScriptName]
 class TC_GAME_API SceneScript : public ScriptObject
 {
     protected:

@@ -540,6 +540,7 @@ enum CriteriaTreeFlags : uint16
     CRITERIA_TREE_FLAG_NOT_LINKED_TO_ACH    = 0x1000
 };
 
+// Bind to [CriteriaTree.db2].operator
 enum CriteriaTreeOperator : uint8
 {
     CRITERIA_TREE_OPERATOR_SINGLE                   = 0,
@@ -887,7 +888,7 @@ enum MountFlags
     MOUNT_FLAG_HIDE_IF_UNKNOWN          = 0x40
 };
 
-// 这里定义的相位Flags并不完整...
+
 // bind to `Phase.db2` Flags field.
 enum PhaseEntryFlags : uint16
 {

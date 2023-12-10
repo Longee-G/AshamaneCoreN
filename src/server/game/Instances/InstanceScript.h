@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -134,7 +134,7 @@ struct MinionData
 
 struct ObjectData
 {
-    uint32 entry;
+    uint32 entry;       // creature.entry or gameobject.entry
     uint32 type;
 };
 
@@ -411,7 +411,9 @@ class TC_GAME_API InstanceScript : public ZoneScript
         std::vector<BossInfo> bosses;
         DoorInfoMap doors;
         MinionInfoMap minions;
+        // creature entry to type
         ObjectInfoMap _creatureInfo;
+        // gameobject entry to type
         ObjectInfoMap _gameObjectInfo;
         ObjectGuidMap _objectGuids;
         uint32 completedEncounters; // completed encounter mask, bit indexes are DungeonEncounter.dbc boss numbers, used for packets

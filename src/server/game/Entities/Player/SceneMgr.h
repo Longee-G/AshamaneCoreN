@@ -23,11 +23,12 @@
 
 enum SceneFlags
 {
-    SCENEFLAG_UNK1           = 0x01,
-    SCENEFLAG_CANCEL_AT_END  = 0x02,
-    SCENEFLAG_NOT_CANCELABLE = 0x04,
-    SCENEFLAG_UNK8           = 0x08,
-    SCENEFLAG_UNK16          = 0x10, // 16, most common value
+    SCENEFLAG_NONE           = 0x00,
+    SCENEFLAG_UNK1           = 0x01,        // PlayerNonInteractablePhased Sets UNIT_FLAG_IMMUNE_TO_PC + UNIT_FLAG_IMMUNE_TO_NPC + UNIT_FLAG_PACIFIED
+    SCENEFLAG_CANCEL_AT_END  = 0x02,        // FadeToBlackscreenOnComplete
+    SCENEFLAG_NOT_CANCELABLE = 0x04,        // NotCancelable 
+    SCENEFLAG_UNK8           = 0x08,        // FadeToBlackscreenOnCancel
+    SCENEFLAG_UNK16          = 0x10,        // 16, most common value
     SCENEFLAG_UNK32          = 0x20,
 };
 
