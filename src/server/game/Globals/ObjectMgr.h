@@ -1451,6 +1451,7 @@ class TC_GAME_API ObjectMgr
             if (itr == _playerChoiceLocales.end()) return nullptr;
             return &itr->second;
         }
+        // get by db guid
         GameObjectData const* GetGOData(ObjectGuid::LowType guid) const
         {
             GameObjectDataContainer::const_iterator itr = _gameObjectDataStore.find(guid);

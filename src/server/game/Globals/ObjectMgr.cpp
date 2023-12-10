@@ -2375,10 +2375,10 @@ void ObjectMgr::LoadGameobjects()
         data.posY           = fields[4].GetFloat();
         data.posZ           = fields[5].GetFloat();
         data.orientation    = fields[6].GetFloat();
-        data.rotation.x     = fields[7].GetFloat();
-        data.rotation.y     = fields[8].GetFloat();
-        data.rotation.z     = fields[9].GetFloat();
-        data.rotation.w     = fields[10].GetFloat();
+        data.rotation.x     = fields[7].GetFloat();     // rotation0
+        data.rotation.y     = fields[8].GetFloat();     // rotation1
+        data.rotation.z     = fields[9].GetFloat();     // rotation2
+        data.rotation.w     = fields[10].GetFloat();    // rotation3
         data.spawntimesecs  = fields[11].GetInt32();
 
         MapEntry const* mapEntry = sMapStore.LookupEntry(data.mapid);
