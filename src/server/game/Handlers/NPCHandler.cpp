@@ -99,6 +99,7 @@ void WorldSession::SendTrainerList(Creature* npc, uint32 trainerId)
     if (GetPlayer()->HasUnitState(UNIT_STATE_DIED))
         GetPlayer()->RemoveAurasByType(SPELL_AURA_FEIGN_DEATH);
 
+
     Trainer::Trainer const* trainer = sObjectMgr->GetTrainer(trainerId);
     if (!trainer)
     {
@@ -165,6 +166,7 @@ void WorldSession::SendTrainerListLegacy(ObjectGuid guid, uint32 index)
         if (!valid)
             continue;
 
+        // where to find trainSpell state
         TrainerSpellState state = _player->GetTrainerSpellState(tSpell);
 
         WorldPackets::NPC::TrainerListSpell spell;
@@ -173,6 +175,7 @@ void WorldSession::SendTrainerListLegacy(ObjectGuid guid, uint32 index)
         spell.ReqSkillLine = tSpell->ReqSkillLine;
         spell.ReqSkillRank = tSpell->ReqSkillRank;
         spell.ReqLevel = tSpell->ReqLevel;
+
         spell.Usable = (state == TRAINER_SPELL_GREEN_DISABLED ? TRAINER_SPELL_GREEN : state);
 
         uint8 maxReq = 0;
@@ -315,7 +318,7 @@ void WorldSession::HandleTrainerBuySpellOpcodeLegacy(WorldPackets::NPC::TrainerB
         _player->LearnSpell(packet.SpellID, false);
 }
 
-// 点击npc的时候，客户端发这个消息...
+// called when Interacting with NPC
 void WorldSession::HandleGossipHelloOpcode(WorldPackets::NPC::Hello& packet)
 {
     Creature* unit = GetPlayer()->GetNPCIfCanInteractWith(packet.Unit, UNIT_NPC_FLAG_GOSSIP);
@@ -349,8 +352,7 @@ void WorldSession::HandleGossipHelloOpcode(WorldPackets::NPC::Hello& packet)
         }
     }
 
-    // 如果Npc(creature)设置了`ScriptName`，那么交互将会由脚本来完成...
-
+    // If npc's `ScriptName` is set
     if (!sScriptMgr->OnGossipHello(_player, unit))
     {
         _player->TalkedToCreature(unit->GetEntry(), unit->GetGUID());
@@ -360,7 +362,7 @@ void WorldSession::HandleGossipHelloOpcode(WorldPackets::NPC::Hello& packet)
     unit->AI()->sGossipHello(_player);
 }
 
-// 处理玩家的菜单选择...
+// Called when player select a menu option
 void WorldSession::HandleGossipSelectOptionOpcode(WorldPackets::NPC::GossipSelectOption& packet)
 {
     if (!_player->playerTalkClass->GetGossipMenu().GetItem(packet.GossipIndex))
@@ -418,7 +420,7 @@ void WorldSession::HandleGossipSelectOptionOpcode(WorldPackets::NPC::GossipSelec
         if (unit)
         {
             unit->AI()->sGossipSelectCode(_player, packet.GossipID, packet.GossipIndex, packet.PromotionCode.c_str());
-            // 如果gossip_option关联了Script，那么将由script来完成工作，否则走缺省流程？
+            // if has `ScriptName` sets
             if (!sScriptMgr->OnGossipSelectCode(_player, unit, _player->playerTalkClass->GetGossipOptionSender(packet.GossipIndex), _player->playerTalkClass->GetGossipOptionAction(packet.GossipIndex), packet.PromotionCode.c_str()))
                 _player->OnGossipSelect(unit, packet.GossipIndex, packet.GossipID);
         }

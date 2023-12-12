@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -24,6 +24,10 @@
 
 namespace Trainer
 {
+    bool Spell::IsCastable() const
+    {
+        return sSpellMgr->AssertSpellInfo(SpellId)->HasEffect(SPELL_EFFECT_LEARN_SPELL);
+    }
 
     Trainer::Trainer(uint32 id, Type type, std::string greeting, std::vector<Spell> spells) : _id(id), _type(type), _spells(std::move(spells))
     {
@@ -40,6 +44,8 @@ namespace Trainer
         trainerList.TrainerID = _id;
         trainerList.Greeting = GetGreeting(locale);
         trainerList.Spells.reserve(_spells.size());
+
+
         for (Spell const& trainerSpell : _spells)
         {
             if (!player->IsSpellFitByClassAndRace(trainerSpell.SpellId))
@@ -47,11 +53,14 @@ namespace Trainer
 
             trainerList.Spells.emplace_back();
             WorldPackets::NPC::TrainerListSpell& trainerListSpell = trainerList.Spells.back();
+            
+            // FIXME: spell can relearn when open gossip menu again
             trainerListSpell.SpellID = trainerSpell.SpellId;
             trainerListSpell.MoneyCost = int32(trainerSpell.MoneyCost * reputationDiscount);
             trainerListSpell.ReqSkillLine = trainerSpell.ReqSkillLine;
             trainerListSpell.ReqSkillRank = trainerSpell.ReqSkillRank;
             std::copy(trainerSpell.ReqAbility.begin(), trainerSpell.ReqAbility.end(), trainerListSpell.ReqAbility.begin());
+
             trainerListSpell.Usable = AsUnderlyingType(GetSpellState(player, &trainerSpell));
             trainerListSpell.ReqLevel = trainerSpell.ReqLevel;
         }

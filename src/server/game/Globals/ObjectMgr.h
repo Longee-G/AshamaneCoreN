@@ -744,6 +744,7 @@ typedef std::pair<GraveYardContainer::const_iterator, GraveYardContainer::const_
 typedef std::pair<GraveYardContainer::iterator, GraveYardContainer::iterator> GraveYardMapBoundsNonConst;
 
 typedef std::unordered_map<uint32, VendorItemData> CacheVendorItemContainer;
+// key = trainerId
 typedef std::unordered_map<uint32, TrainerSpellData> CacheTrainerSpellContainer;
 
 typedef std::unordered_map<uint32, std::string> RealmNameContainer;
@@ -907,7 +908,6 @@ struct PhaseAreaInfo
     PhaseAreaInfo(PhaseInfoStruct const* phaseInfo) : PhaseInfo(phaseInfo) { }
 
     PhaseInfoStruct const* PhaseInfo;
-    // 被排除的Area，是否指在这个列表中的区域不受PhaseInfo指向的PhaseId的影响。
     std::unordered_set<uint32> SubAreaExclusions;       
     // 这个Conditions的数据不在`phase_area`表中，来源于ConditionMgr，条件类型中为`CONDITION_SOURCE_TYPE_PHASE`的条件将会添加到这个
     // 变量中，ConditionMgr的加载要晚于相位数据的加载，代码是由ConditionMgr主动添加数据到这个结构的..

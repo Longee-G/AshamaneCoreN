@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -145,6 +145,8 @@ void WorldSession::HandleGameObjectQueryOpcode(WorldPackets::Query::QueryGameObj
         stats.DisplayID = gameObjectInfo->displayId;
 
         stats.Name[0] = gameObjectInfo->name;
+        
+
         stats.IconName = gameObjectInfo->IconName;
         stats.CastBarCaption = gameObjectInfo->castBarCaption;
         stats.UnkString = gameObjectInfo->unk1;
@@ -157,6 +159,18 @@ void WorldSession::HandleGameObjectQueryOpcode(WorldPackets::Query::QueryGameObj
                 ObjectMgr::GetLocaleString(gameObjectLocale->CastBarCaption, localeConstant, stats.CastBarCaption);
                 ObjectMgr::GetLocaleString(gameObjectLocale->Unk1, localeConstant, stats.UnkString);
             }
+
+        // for Test
+        stats.Name[0].append("[Id:").append(TOSTR(gameObjectInfo->entry)).append("]")
+            .append("[Type:").append(TOSTR(gameObjectInfo->type)).append("]");
+        // Name[1]?Name[2]?Name[3] ?????? ????
+        // if (gameObjectInfo->entry == 204213)
+        {
+            stats.Name[1].append("Name-1");
+            stats.Name[2].append("Name-2");
+            stats.Name[3].append("Name-3");
+        }
+
 
         stats.Size = gameObjectInfo->size;
 

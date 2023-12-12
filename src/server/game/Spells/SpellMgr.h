@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -526,7 +526,7 @@ struct SpellLearnSpellNode
     bool Active;                    // show in spellbook or not
     bool AutoLearned;               // This marks the spell as automatically learned from another source that - will only be used for unlearning
 };
-
+// key = original spell, value = associated spell
 typedef std::multimap<uint32, SpellLearnSpellNode> SpellLearnSpellMap;
 typedef std::pair<SpellLearnSpellMap::const_iterator, SpellLearnSpellMap::const_iterator> SpellLearnSpellMapBounds;
 
@@ -563,11 +563,16 @@ typedef std::map<int32, std::vector<int32> > SpellLinkedMap;
 
 bool IsPrimaryProfessionSkill(uint32 skill);
 
+inline bool IsSecondaryProfessionSkill(uint32 skill)
+{
+    return SKILL_FIRST_AID == skill || SKILL_COOKING == skill || SKILL_ARCHAEOLOGY == skill || SKILL_FISHING == skill;
+}
+
 bool IsWeaponSkill(uint32 skill);
 
 inline bool IsProfessionSkill(uint32 skill)
 {
-    return  IsPrimaryProfessionSkill(skill) || skill == SKILL_FISHING || skill == SKILL_COOKING || skill == SKILL_FIRST_AID;
+    return  IsPrimaryProfessionSkill(skill) || IsSecondaryProfessionSkill(skill);
 }
 
 inline bool IsProfessionOrRidingSkill(uint32 skill)
@@ -578,6 +583,7 @@ inline bool IsProfessionOrRidingSkill(uint32 skill)
 bool IsPartOfSkillLine(uint32 skillId, uint32 spellId);
 
 TC_GAME_API extern PetFamilySpellsStore                         sPetFamilySpellsStore;
+TC_GAME_API extern std::set<uint16>                             sClientVisibleSkills;
 
 struct SpellInfoLoadHelper
 {

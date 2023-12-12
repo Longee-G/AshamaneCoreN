@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -50,6 +50,7 @@ namespace Trainer
         NotEnoughMoney = 1
     };
 
+    // trainer Spell
     struct Spell
     {
         uint32 SpellId = 0;
@@ -59,9 +60,11 @@ namespace Trainer
         std::array<uint32, 3> ReqAbility = { };
         uint8 ReqLevel = 0;
 
-        uint32 LearnedSpellId = 0;
-        bool IsCastable() const { return LearnedSpellId != SpellId; }
+        uint32 LearnedSpellId = 0;    // use for spell-chain
+        bool IsCastable() const;
     };
+
+
 
     class Trainer
     {

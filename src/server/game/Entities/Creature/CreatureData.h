@@ -614,6 +614,7 @@ struct VendorItemData
 
 #define MAX_TRAINERSPELL_ABILITY_REQS 3
 
+// associatie with table `trainer_spell`
 struct TrainerSpell
 {
     TrainerSpell() : SpellID(0), MoneyCost(0), ReqSkillLine(0), ReqSkillRank(0), ReqLevel(0), Index(0)

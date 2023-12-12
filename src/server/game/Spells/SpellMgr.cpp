@@ -34,12 +34,14 @@
 #include <G3D/g3dmath.h>
 
 PetFamilySpellsStore sPetFamilySpellsStore;
+std::set<uint16> sClientVisibleSkills;
 
 bool IsPrimaryProfessionSkill(uint32 skill)
 {
     SkillLineEntry const* pSkill = sSkillLineStore.LookupEntry(skill);
     return pSkill && pSkill->CategoryID == SKILL_CATEGORY_PROFESSION;
 }
+
 
 bool IsWeaponSkill(uint32 skill)
 {
@@ -1005,6 +1007,7 @@ void SpellMgr::LoadSpellLearnSpells()
 
                 if (!found)                                  // add new spell-spell pair if not found
                 {
+                    // relationship from `spellEffect.db2`
                     mSpellLearnSpells.insert(SpellLearnSpellMap::value_type(spell, dbc_node));
                     ++dbc_count;
                 }

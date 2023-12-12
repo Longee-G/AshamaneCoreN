@@ -8711,6 +8711,7 @@ void ObjectMgr::LoadTrainerSpell()
     TC_LOG_INFO("server.loading", ">> Loaded %d Trainers in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
 
+// ID - trainer's entry
 void ObjectMgr::AddSpellToTrainer(uint32 ID, uint32 SpellID, uint32 MoneyCost, uint32 ReqSkillLine, uint32 ReqSkillRank, uint32 ReqLevel, uint32 Index)
 {
     if (ID >= TRINITY_TRAINER_START_REF)
@@ -8782,6 +8783,7 @@ void ObjectMgr::AddSpellToTrainer(uint32 ID, uint32 SpellID, uint32 MoneyCost, u
     }
 }
 
+// legacy trainers [6.x] before..
 void ObjectMgr::LoadTrainers()
 {
     uint32 oldMSTime = getMSTime();
@@ -8868,7 +8870,7 @@ void ObjectMgr::LoadTrainers()
                 spells = std::move(spellsItr->second);
                 spellsByTrainer.erase(spellsItr);
             }
-
+            // new a trainer and push_back to _trainers.
             _trainers.emplace(std::piecewise_construct, std::forward_as_tuple(trainerId), std::forward_as_tuple(trainerId, trainerType, std::move(greeting), std::move(spells)));
 
         } while (trainersResult->NextRow());
@@ -8901,6 +8903,16 @@ void ObjectMgr::LoadTrainers()
                     trainerId, localeName.c_str());
 
         } while (trainerLocalesResult->NextRow());
+    }
+
+    // store profesion skill & riding skill
+    for (uint32 i = 0; i < sSkillLineStore.GetNumRows(); ++i)
+    {
+        SkillLineEntry const* ski = sSkillLineStore.LookupEntry(i);
+        if (!ski)
+            continue;
+        if (IsProfessionOrRidingSkill(ski->ID))
+            sClientVisibleSkills.insert(ski->ID);
     }
 
     TC_LOG_INFO("server.loading", ">> Loaded " SZFMTD " Trainers in %u ms", _trainers.size(), GetMSTimeDiffToNow(oldMSTime));

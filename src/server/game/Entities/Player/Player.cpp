@@ -5666,7 +5666,7 @@ void Player::SetSkill(uint16 id, uint16 step, uint16 newVal, uint16 maxVal)
     SkillStatusMap::iterator itr = _skillStatus.find(id);
 
     //has skill
-    if (itr != _skillStatus.end() && itr->second._updateState != SKILL_DELETED)
+    if (itr != _skillStatus.end() && itr->second._updateState != SKILL_DELETED )
     {
         uint16 field = itr->second.pos / 2;
         uint8 offset = itr->second.pos & 1; // itr->second.pos % 2
@@ -5677,9 +5677,9 @@ void Player::SetSkill(uint16 id, uint16 step, uint16 newVal, uint16 maxVal)
             if (newVal < currVal)
                 UpdateSkillEnchantments(id, currVal, newVal);
 
-            // update step
+            // update skill points
+            SetUInt16Value(PLAYER_SKILL_LINEID + SKILL_ID_OFFSET + field, offset, id);
             SetUInt16Value(PLAYER_SKILL_LINEID + SKILL_STEP_OFFSET + field, offset, step);
-            // update value
             SetUInt16Value(PLAYER_SKILL_LINEID + SKILL_RANK_OFFSET + field, offset, newVal);
             SetUInt16Value(PLAYER_SKILL_LINEID + SKILL_MAX_RANK_OFFSET + field, offset, maxVal);
 
@@ -5698,8 +5698,9 @@ void Player::SetSkill(uint16 id, uint16 step, uint16 newVal, uint16 maxVal)
         {
             //remove enchantments needing this skill
             UpdateSkillEnchantments(id, currVal, 0);
-            // clear skill fields
-            SetUInt16Value(PLAYER_SKILL_LINEID + SKILL_ID_OFFSET + field, offset, 0);
+
+            // bugfixed: do NOT clear the profession skill's pos
+            SetUInt16Value(PLAYER_SKILL_LINEID + SKILL_ID_OFFSET + field, offset, IsProfessionOrRidingSkill(id) ? id : 0);
             SetUInt16Value(PLAYER_SKILL_LINEID + SKILL_STEP_OFFSET + field, offset, 0);
             SetUInt16Value(PLAYER_SKILL_LINEID + SKILL_RANK_OFFSET + field, offset, 0);
             SetUInt16Value(PLAYER_SKILL_LINEID + SKILL_MAX_RANK_OFFSET + field, offset, 0);
@@ -5712,11 +5713,14 @@ void Player::SetSkill(uint16 id, uint16 step, uint16 newVal, uint16 maxVal)
             else
                 _skillStatus.erase(itr);
 
+
             // remove all spells that related to this skill
             for (uint32 j = 0; j < sSkillLineAbilityStore.GetNumRows(); ++j)
+            {
                 if (SkillLineAbilityEntry const* pAbility = sSkillLineAbilityStore.LookupEntry(j))
                     if (pAbility->SkillLine == id)
                         RemoveSpell(sSpellMgr->GetFirstSpellInChain(pAbility->Spell));
+            }
 
             // Clear profession lines
             if (GetUInt32Value(PLAYER_PROFESSION_SKILL_LINE_1) == id)
@@ -5733,7 +5737,10 @@ void Player::SetSkill(uint16 id, uint16 step, uint16 newVal, uint16 maxVal)
             uint16 field = i / 2;
             uint8 offset = i & 1; // i % 2
 
-            if (!GetUInt16Value(PLAYER_SKILL_LINEID + SKILL_ID_OFFSET + field, offset))
+            // bugfixed: do NOT clear the profession skill's pos
+            uint16 o_skill = GetUInt16Value(PLAYER_SKILL_LINEID + SKILL_ID_OFFSET + field, offset);
+
+            if (o_skill == id || (!o_skill && !IsProfessionOrRidingSkill(id)))
             {
                 SkillLineEntry const* skillEntry = sSkillLineStore.LookupEntry(id);
                 if (!skillEntry)
@@ -5752,6 +5759,7 @@ void Player::SetSkill(uint16 id, uint16 step, uint16 newVal, uint16 maxVal)
                         SetUInt32Value(PLAYER_PROFESSION_SKILL_LINE_1 + 1, id);
                 }
 
+                // profession skill rank set
                 SetUInt16Value(PLAYER_SKILL_LINEID + SKILL_STEP_OFFSET + field, offset, step);
                 SetUInt16Value(PLAYER_SKILL_LINEID + SKILL_RANK_OFFSET + field, offset, newVal);
                 SetUInt16Value(PLAYER_SKILL_LINEID + SKILL_MAX_RANK_OFFSET + field, offset, maxVal);
@@ -26697,9 +26705,10 @@ void Player::_LoadSkills(PreparedQueryResult result)
             uint16 field = count / 2;
             uint8 offset = count & 1;
 
+            // write skill id
             SetUInt16Value(PLAYER_SKILL_LINEID + SKILL_ID_OFFSET + field, offset, skill);
-            uint16 step = 0;
 
+            uint16 step = 0;
             SkillLineEntry const* skillLine = sSkillLineStore.LookupEntry(rcEntry->SkillID);
             if (skillLine)
             {
@@ -26742,6 +26751,24 @@ void Player::_LoadSkills(PreparedQueryResult result)
     if (HasSkill(SKILL_FIST_WEAPONS))
         SetSkill(SKILL_FIST_WEAPONS, 0, GetSkillValue(SKILL_UNARMED), GetMaxSkillValueForLevel());
 
+    // sClientVisibleSkills must be updated to the client to avoid UI error
+    for (auto& sid : sClientVisibleSkills)
+    {
+        if (_skillStatus.find(sid) == _skillStatus.end())
+        {
+            uint16 field = count / 2;
+            uint8 offset = count & 1;
+            SetUInt16Value(PLAYER_SKILL_LINEID + SKILL_ID_OFFSET + field, offset, sid);
+            SetUInt16Value(PLAYER_SKILL_LINEID + SKILL_STEP_OFFSET + field, offset, 0);
+            SetUInt16Value(PLAYER_SKILL_LINEID + SKILL_RANK_OFFSET + field, offset, 0);
+            SetUInt16Value(PLAYER_SKILL_LINEID + SKILL_MAX_RANK_OFFSET + field, offset, 0);
+            SetUInt16Value(PLAYER_SKILL_LINEID + SKILL_TEMP_BONUS_OFFSET + field, offset, 0);
+            SetUInt16Value(PLAYER_SKILL_LINEID + SKILL_PERM_BONUS_OFFSET + field, offset, 0);
+
+            count++;
+        }
+    }
+    
     for (; count < PLAYER_MAX_SKILLS; ++count)
     {
         uint16 field = count / 2;
@@ -29235,6 +29262,7 @@ SpellInfo const* Player::GetCastSpellInfo(SpellInfo const* spellInfo) const
     return Unit::GetCastSpellInfo(spellInfo);
 }
 
+//  Get a state of Spell that can learn from trainer.
 TrainerSpellState Player::GetTrainerSpellState(TrainerSpell const* trainer_spell) const
 {
     if (!trainer_spell)
@@ -29601,6 +29629,7 @@ enum LegionProfessionSpells
     Fishing = 210829
 };
 
+// profession skill associate with spell
 const std::map<uint32, uint32> skillLearningSpells =
 {
     { SkillType::SKILL_ALCHEMY,         LegionProfessionSpells::Alchemy         },
@@ -29619,6 +29648,8 @@ const std::map<uint32, uint32> skillLearningSpells =
     { SkillType::SKILL_ARCHAEOLOGY,     LegionProfessionSpells::Archaeology     },
     { SkillType::SKILL_FISHING,         LegionProfessionSpells::Fishing         }
 };
+
+
 
 void Player::UpdateShop(uint32 diff)
 {
