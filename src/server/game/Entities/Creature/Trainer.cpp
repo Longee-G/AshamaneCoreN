@@ -53,8 +53,7 @@ namespace Trainer
 
             trainerList.Spells.emplace_back();
             WorldPackets::NPC::TrainerListSpell& trainerListSpell = trainerList.Spells.back();
-            
-            // FIXME: spell can relearn when open gossip menu again
+           
             trainerListSpell.SpellID = trainerSpell.SpellId;
             trainerListSpell.MoneyCost = int32(trainerSpell.MoneyCost * reputationDiscount);
             trainerListSpell.ReqSkillLine = trainerSpell.ReqSkillLine;
@@ -127,6 +126,14 @@ namespace Trainer
     {
         if (player->HasSpell(trainerSpell->SpellId))
             return SpellState::Known;
+
+        // bugfixed: also check spell learn spell
+        SpellLearnSpellMapBounds bounds = sSpellMgr->GetSpellLearnSpellMapBounds(trainerSpell->SpellId);        
+        for (auto itr = bounds.first; itr != bounds.second; ++itr)
+        {
+            if (player->HasSpell(itr->second.Spell))
+                return SpellState::Known;
+        }
 
         // check race/class requirement
         if (!player->IsSpellFitByClassAndRace(trainerSpell->SpellId))

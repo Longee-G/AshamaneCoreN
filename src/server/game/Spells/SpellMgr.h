@@ -526,6 +526,9 @@ struct SpellLearnSpellNode
     bool Active;                    // show in spellbook or not
     bool AutoLearned;               // This marks the spell as automatically learned from another source that - will only be used for unlearning
 };
+//
+// when learn key spell autolearn associated spell
+//
 // key = original spell, value = associated spell
 typedef std::multimap<uint32, SpellLearnSpellNode> SpellLearnSpellMap;
 typedef std::pair<SpellLearnSpellMap::const_iterator, SpellLearnSpellMap::const_iterator> SpellLearnSpellMapBounds;
@@ -639,6 +642,7 @@ class TC_GAME_API SpellMgr
 
         // Spell learning
         SpellLearnSkillNode const* GetSpellLearnSkill(uint32 spell_id) const;
+        // get associated spell list by original spell
         SpellLearnSpellMapBounds GetSpellLearnSpellMapBounds(uint32 spell_id) const;
         bool IsSpellLearnSpell(uint32 spell_id) const;
         bool IsSpellLearnToSpell(uint32 spell_id1, uint32 spell_id2) const;

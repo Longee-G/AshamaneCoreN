@@ -955,7 +955,7 @@ void SpellMgr::LoadSpellLearnSpells()
             TC_LOG_ERROR("sql.sql", "The spell %u listed in `spell_learn_spell` attempts learning talent spell %u, skipped.", spell_id, node.Spell);
             continue;
         }
-
+        // load from db table `spell_learn_spell`
         mSpellLearnSpells.insert(SpellLearnSpellMap::value_type(spell_id, node));
 
         ++count;
@@ -989,7 +989,12 @@ void SpellMgr::LoadSpellLearnSpells()
                 // talent or passive spells or skill-step spells auto-cast and not need dependent learning,
                 // pet teaching spells must not be dependent learning (cast)
                 // other required explicit dependent learning
-                dbc_node.AutoLearned = effect->TargetA.GetTarget() == TARGET_UNIT_PET || entry->HasAttribute(SPELL_ATTR0_CU_IS_TALENT) || entry->IsPassive() || entry->HasEffect(SPELL_EFFECT_SKILL_STEP);
+                dbc_node.AutoLearned = effect->TargetA.GetTarget() == TARGET_UNIT_PET
+                    || entry->HasAttribute(SPELL_ATTR0_CU_IS_TALENT)
+                    || entry->IsPassive()
+                    || entry->HasEffect(SPELL_EFFECT_SKILL_STEP);
+
+
 
                 SpellLearnSpellMapBounds db_node_bounds = dbSpellLearnSpells.equal_range(spell);
 

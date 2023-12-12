@@ -39,7 +39,7 @@ namespace Trainer
 
     enum class SpellState : uint8
     {
-        Known = 0,
+        Known = 0,          // has learned
         Available = 1,
         Unavailable = 2
     };
