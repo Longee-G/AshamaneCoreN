@@ -347,9 +347,9 @@ struct SmartEvent
 
         struct
         {
-            uint32 textGroupID;
-            uint32 creatureEntry;
-        } textOver;
+            uint32 textGroupID;         // param 1  
+            uint32 creatureEntry;       // param 2    
+        } textOver; // processAction when  `creatureEntry` finishes No.[textGroupID] says
 
         struct
         {
@@ -598,9 +598,9 @@ struct SmartAction
     {
         struct
         {
-            uint32 textGroupID;
-            uint32 duration;
-            uint32 useTalkTarget;
+            uint32 textGroupID;     // p1
+            uint32 duration;        // p2
+            uint32 useTalkTarget;   // p3
         } talk;
 
         struct

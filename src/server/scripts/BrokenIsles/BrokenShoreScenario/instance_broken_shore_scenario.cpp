@@ -19,6 +19,9 @@
 #include "broken_shore_scenario.h"
 #include "GameObject.h"
 #include "Vehicle.h"
+#include "Transport.h"
+#include "MoveSplineInit.h"
+
 
 /* The Battle for Broken Shore
    Stage 1: The Broken Shore
@@ -36,12 +39,6 @@
 // Script for Instance(Dungeon/Scenario) Map..
 class instance_broken_shore_scenario : public InstanceMapScript
 {
-    enum _Enums
-    {
-        _DT_SCENARIA_TEAM = 0,      // data type
-        _CIMEMATIC_ID = 999,
-    };
-
 public:
     instance_broken_shore_scenario() : InstanceMapScript("scenario_broken_shore_7.0", 1460) {}
 
@@ -55,19 +52,16 @@ public:
     {
         broken_shore_scenario_InstanceScript(InstanceMap* map) : InstanceScript(map) {}
 
-        std::map<uint32, ObjectGuid> _objects;
-
         uint32 _team = 0;
-        int32 _waveTotal = 0;               // 总共几波怪..
-        int32 _waveCurr = 0;                // 当前是第几波怪
-        int32 _spiresDestroyCount = 0;      // Spires of Woe destroyed
+        int32 _waveTotal = 0;               //
+        int32 _waveCurr = 0;                // 
+        int32 _towerDestroyCount = 0;      // Destroyed Tower Count
         WorldLocation _graveyardPoint;
 
+        EventMap _events;
 
-        void Initialize() override
-        {
+        bool _initialized = false;
 
-        }
 
         // Check If all parts of Unit have been destroyed
         bool IsAllPartsDestroyed(Unit* unit, int8 count)
@@ -82,35 +76,85 @@ public:
             return (dc >= count);
         }
 
+        void Update(uint32 diff) override
+        {
+            _events.Update(diff);
+
+            switch (_events.ExecuteEvent())
+            {
+                case _EVENT_TeleportAlliance:
+                    if (Transport* transport = GetGameObject(GO_TransportAlliance)->ToTransport())
+                        transport->EnableMovement(true);
+                    break;
+                case _EVENT_TeleportHorde:
+                    if (Transport* transport = GetGameObject(GO_TransportHorde)->ToTransport())
+                        transport->EnableMovement(true);
+                    break;
+                default:
+                    break;
+            }
+        }
         void OnPlayerEnter(Player* player) override
         {
             if (!_team)
                 _team = player->GetTeam();
 
+            SetData(_DT_SCENARIA_TEAM, _team);
 
-
-
-        }
-        uint32 GetData(uint32 type) const override
-        {
-            switch (type)
+            if (!_initialized)
             {
-                case _DT_SCENARIA_TEAM: return _team;
-                default: return 0;
+                _initialized = true;
+                // TODO: ...
+                // ????????grid???grid?????
+                instance->LoadGrid(521.7239f, 1862.63f);
+                instance->LoadGrid(461.8785f, 2032.679f);
+                instance->LoadGrid(472.92f, 2037.86f);
+                instance->LoadGrid(591.77f, 1898.48f);
             }
-        }
-        void SetData(uint32 type, uint32 data) override
-        {
 
+            // objective of quest: `The Battle For Broken Shore`
+            player->KilledMonsterCredit(108920);        // Captain Angelica
+            player->KilledMonsterCredit(113118);        // Captain Russo -
+
+            // set pvp states
+            player->ApplyModFlag(PLAYER_FLAGS, PLAYER_FLAGS_IN_PVP, true);
+            player->ApplyModFlag(PLAYER_FLAGS, PLAYER_FLAGS_PVP_TIMER, false);
+            player->UpdatePvP(true, true);
+
+            //player->GetMap()->GetTransport();
+
+            // ?player???????????? ... ????????????
+            // ?????????,???player??????
+
+            uint32 tp = player->IsInAlliance() ? GO_TransportAlliance : GO_TransportHorde;
+
+            // ??player?????????,????????????
+            if (Transport* transport = GetGameObject(tp)->ToTransport())
+            {
+                transport->AddPassenger(player);
+
+                Movement::MoveSplineInit msi(player);
+                if (player->IsInAlliance())
+                {
+                    msi.MoveTo(2.39286f, 1.694546f, 5.205733f, false, true);
+                    msi.SetFacing(3.155922f);
+                }
+                else // Horde
+                {
+                    msi.MoveTo(-7.351539f, -3.37038f, 10.99244f, false, true);
+                    msi.SetFacing(0.4190969f);
+                }
+
+                msi.Launch();
+
+                // ????????, ??????? 5s ????
+                _events.ScheduleEvent(player->IsInAlliance() ? _EVENT_TeleportAlliance : _EVENT_TeleportHorde, 5s);
+            }
+
+            // play scene `broken shore Scenario Intro`
+            player->GetSceneMgr().PlaySceneByPackageId(player->IsInAlliance() ? 1531 : 1716);
         }
-        ObjectGuid GetGuidData(uint32 type) const override
-        {
-            ObjectGuid guid = ObjectGuid::Empty;
-            auto itr = _objects.find(type);
-            if (itr != _objects.end())
-                guid = itr->second;
-            return guid;
-        }
+        
         void OnUnitDeath(Unit* unit) override
         {
             switch (unit->GetEntry())
@@ -136,22 +180,19 @@ public:
                     // Achievement: Fel Lords slain
                     UpdateCriteria(54117);      // Horde
                     break;
+                // Stage 2 - 
                 case 91704:
                 case 110618:
                 {
                     // Achievement: Spires of Woe destroyed
                     if (IsAllPartsDestroyed(unit, 3))
                     {
-                        // Step2 ?
-                        UpdateCriteria(44077);  // Alliance
-                        UpdateCriteria(54114);  // Horde
+                        UpdateCriteria(TowerDestroyAlliance);
+                        UpdateCriteria(TowerDestroyHorde);                        
+                        UpdateCriteria(BlackCityRazed_1p);
 
-                        // Step6?  部落和联盟的步骤不一样吗？
-                        UpdateCriteria(44384);  // Alliance
-
-                        // Spire of Woe: 240194
                         // Active building when all of it's Guard Unit destroyed
-                        if (GameObject* go = unit->FindNearestGameObject(240194, 20.0f))
+                        if (GameObject* go = unit->FindNearestGameObject(GO_SpiresOfWoe, 20.0f))
                         {
                             go->SetGoState(GO_STATE_ACTIVE);
                             // set phaseMask=2
@@ -159,7 +200,7 @@ public:
                             // go->GetPhaseShift();
                         }
 
-                        // 为什么要删除owner ？
+                        // ??????owner ?
                         if (auto c = unit->GetOwner()->ToCreature())
                             c->DespawnOrUnsummon();
                     }
@@ -167,15 +208,15 @@ public:
                 }
                 // Stage 3 - Defeat the Commander
                 case 90705: // Dread Commander Arganoth                    
-                    UpdateCriteria(45131);      // Alliance
+                    UpdateCriteria(DefeatCommanderAlliance);
                     break;
                 case 93719: // Fel Commander Azgalor
-                    UpdateCriteria(54109);      // Horde
+                    UpdateCriteria(DefeatCommanderHorde);
                     break;
                 // Stage 5 - Destroy the Portal
                 case 101667:
-                    UpdateCriteria(45288);  // Alliance
-                    UpdateCriteria(54141);  // Horde
+                    UpdateCriteria(DestroyPortalAlliance);
+                    UpdateCriteria(DestroyPortalHorde);
                     break;
                 // Stage 6 - Raze the Black City
                 case 102698:
@@ -198,7 +239,7 @@ public:
                 case 113056:
                 case 113057:
                     // Increase progress by 10% When unit be killed
-                    UpdateCriteria(53064);
+                    UpdateCriteria(BlackCityRazed_10p);
                     break;
                 case 110615:
                 case 102696:
@@ -206,7 +247,7 @@ public:
                 case 94189:
                 case 90525:
                     // Increase progress by 5% When unit be killed
-                    UpdateCriteria(53063);
+                    UpdateCriteria(BlackCityRazed_5p);
                     break;
                 case 100959:
                 case 91970:
@@ -214,7 +255,7 @@ public:
                 case 102702:
                 case 94191:
                     // Increase progress by 1% When unit be killed
-                    UpdateCriteria(44384);
+                    UpdateCriteria(BlackCityRazed_1p);
                     break;
                 case 105199:
                 case 111074:
@@ -277,13 +318,35 @@ public:
                     break;
             }
         }
-        void OnCreatureCreate(Creature* creautre) override
+        void OnCreatureCreate(Creature* creature) override
         {
+            InstanceScript::OnCreatureCreate(creature);
 
+            switch (creature->GetEntry())
+            {
+                case NPC_Kross:
+                case NPC_Jaina:
+                case NPC_Varian:
+                case NPC_Guldan:
+                case NPC_Tirion:
+                    creature->setActive(true);
+                    creature->SetWorldObject(true);
+                    break;
+                default:
+                    break;
+            }
         }
         void OnGameObjectCreate(GameObject* go) override
         {
-
+            InstanceScript::OnGameObjectCreate(go);
+            switch (go->GetEntry())
+            {
+                case GO_ShipAlliance:
+                case GO_ShipHorde:
+                    // ?????,????????????? spell:217781 `phase update`
+                    go->setActive(false);
+                    break;
+            }
         }
         // update Criteria for players in this dungeon..
         void UpdateCriteria(uint32 objective)
@@ -291,22 +354,20 @@ public:
             Map::PlayerList const& playerList = instance->GetPlayers();
             if (playerList.isEmpty()) return;
 
-            // Spires of Woe destroyed 
-            if (objective == 44077 || objective == 54114) 
+            if (objective == TowerDestroyAlliance || objective == TowerDestroyHorde)
             {
-                ++_spiresDestroyCount;
+                ++_towerDestroyCount;
                 
-                if (objective == 44077)  
+                if (objective == TowerDestroyAlliance)
                 {
-                    // Genn Greymane [Alliance]
-                    if (Creature* npc = instance->GetCreature(GetGuidData(90717)))
-                        npc->CastSpell(npc, (1 == _spiresDestroyCount ? 181978 : (2 == _spiresDestroyCount ? 199675 : 199676)));
+                    if (Creature* npc = GetCreature(NPC_GennGreymane))
+                        npc->CastSpell(npc, (1 == _towerDestroyCount ? 181978 : (2 == _towerDestroyCount ? 199675 : 199676)));
                 }
-                else if (objective == 54114)
+                else
                 {
-                    // Vol'jin [Horde]
-                    if (Creature* npc = instance->GetCreature(GetGuidData(90708)))
-                        npc->CastSpell(npc, (1 == _spiresDestroyCount ? 224901 : (2 == _spiresDestroyCount ? 224904 : 224905)));
+                    
+                    if (Creature* npc = GetCreature(NPC_Voljin))
+                        npc->CastSpell(npc, (1 == _towerDestroyCount ? 224901 : (2 == _towerDestroyCount ? 224904 : 224905)));
                 }
             }
 

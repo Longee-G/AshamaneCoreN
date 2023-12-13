@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -73,7 +73,7 @@ public:
         if (!player->GetSceneMgr().HasScene(p_SceneInstanceID, SCENE_LANDING_TO_TOP_OF_HILL))
             return;
 
-        if (p_Event == "durotanIntroduced")
+        if (p_Event == "durotanIntroduced") // event字符串是在什么地方定义的？
         {
             if (Creature* durotan = player->FindNearestCreature(NPC_DUROTAN_BEGIN, 50.0f))
                 durotan->AI()->Talk(0);
@@ -98,7 +98,7 @@ public:
     }
 };
 
-// 76411 - Drek'Thar - D�but Givrefeu
+// 76411 - Drek'Thar - D閎ut Givrefeu
 class npc_drekthar_frostridge_begin : public CreatureScript
 {
 public:
@@ -155,7 +155,7 @@ public:
     };
 };
 
-// 78272 - Durotan - D�but Givrefeu
+// 78272 - Durotan - D閎ut Givrefeu
 class npc_durotan_frostridge_begin : public CreatureScript
 {
 public:
@@ -207,7 +207,7 @@ public:
     }
 };
 
-// 233664 - Niveau de Geom�tre
+// 233664 - Niveau de Geom鑤re
 class go_frostridge_master_surveyor : public GameObjectScript
 {
 public:

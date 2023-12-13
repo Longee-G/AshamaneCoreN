@@ -3346,6 +3346,8 @@ ObjectList* SmartScript::GetWorldObjectsInDist(float dist)
     return targets;
 }
 
+// 这个接口是否可以被其他实例调用？
+// 
 void SmartScript::ProcessEvent(SmartScriptHolder& e, Unit* unit, uint32 var0, uint32 var1, bool bvar, const SpellInfo* spell, GameObject* gob, std::string const& varString)
 {
     if (!e.active && e.GetEventType() != SMART_EVENT_LINK)

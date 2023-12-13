@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -21,6 +21,7 @@
 
 ObjectData const creatureData[] =
 {
+    // entry            , type
     { NPC_RAZ_THE_CRAZED, DATA_RAZ_THE_CRAZED },
     { 0,                  0                   }
 };

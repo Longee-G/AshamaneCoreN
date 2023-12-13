@@ -1774,7 +1774,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         bool IsResurrectRequested() const { return _resurrectionData.get() != nullptr; }
         void ResurrectUsingRequestData();
         void ResurrectUsingRequestDataImpl();
-
+        // check If character has already played new character cinematic.
         uint8 getCinematic() const { return _cinematic; }
         void setCinematic(uint8 cine) { _cinematic = cine; }
 

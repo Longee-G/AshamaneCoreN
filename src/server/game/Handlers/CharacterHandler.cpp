@@ -60,7 +60,7 @@
 #include "Util.h"
 #include "World.h"
 
-// holder 是什么意思？ 
+
 class LoginQueryHolder : public SQLQueryHolder
 {
     private:
@@ -292,10 +292,9 @@ bool LoginQueryHolder::Initialize()
     return res;
 }
 
-// 已经从数据库中获得角色数据...
+// Retrieve character data from DB
 void WorldSession::HandleCharEnum(PreparedQueryResult result)
 {
-    // 检查当前账号DH的数量..
     uint8 demonHunterCount = 0; // We use this counter to allow multiple demon hunter creations when allowed in config
     bool canAlwaysCreateDemonHunter = HasPermission(rbac::RBAC_PERM_SKIP_CHECK_CHARACTER_CREATION_DEMON_HUNTER);
 
@@ -303,7 +302,6 @@ void WorldSession::HandleCharEnum(PreparedQueryResult result)
     if (sWorld->getIntConfig(CONFIG_CHARACTER_CREATING_MIN_LEVEL_FOR_DEMON_HUNTER) == 0) 
         canAlwaysCreateDemonHunter = true;
 
-    // 返回给客户端的消息...
     WorldPackets::Character::EnumCharactersResult charEnum;
     charEnum.Success = true;
     charEnum.IsDeletedCharacters = false;
@@ -373,8 +371,7 @@ void WorldSession::HandleCharEnum(PreparedQueryResult result)
     SendPacket(charEnum.Write());
 }
 
-// 处理客户端的角色列表请求... 在角色界面中
-// 给客户端返回当前账号的所用角色信息...
+// Enumerate all characters of the account
 void WorldSession::HandleCharEnumOpcode(WorldPackets::Character::EnumCharacters& /*enumCharacters*/)
 {
     // remove expired bans
@@ -390,8 +387,7 @@ void WorldSession::HandleCharEnumOpcode(WorldPackets::Character::EnumCharacters&
 
     stmt->setUInt32(0, GetAccountId());
 
-    // 将数据库查询放入到处理队列中，通过背景线程来完成查询，传入回调函数让背景线程在完成
-    // query之后调用...
+    // execute query in background threads
     _queryProcessor.AddQuery(CharacterDatabase.AsyncQuery(stmt).WithPreparedCallback(std::bind(&WorldSession::HandleCharEnum, this, std::placeholders::_1)));
 }
 
@@ -825,7 +821,7 @@ void WorldSession::HandleCharDeleteOpcode(WorldPackets::Character::CharDelete& c
     SendCharDelete(CHAR_DELETE_SUCCESS);
 }
 
-// 客户端请求进入游戏...从登录选人界面进入游戏中...
+// player enter game world handle.
 void WorldSession::HandlePlayerLoginOpcode(WorldPackets::Character::PlayerLogin& playerLogin)
 {
     if (PlayerLoading() || GetPlayer() != NULL)
@@ -888,7 +884,6 @@ void WorldSession::HandleLoadScreenOpcode(WorldPackets::Character::LoadingScreen
     // TODO: Do something with this packet
 }
 
-// 处理角色登录... 
 void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
 {
     ObjectGuid playerGuid = holder->GetGuid();
@@ -897,7 +892,6 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
      // for send server info and strings (config)
     ChatHandler chH = ChatHandler(pCurrChar->GetSession());
 
-    // 从数据库中`characters`表加载player的信息...
     // "GetAccountId() == db stored account id" checked in LoadFromDB (prevent login not own character using cheating tools)
     if (!pCurrChar->LoadFromDB(playerGuid, holder))
     {
@@ -911,7 +905,6 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
 
     pCurrChar->SetUInt32Value(PLAYER_FIELD_VIRTUAL_PLAYER_REALM, GetVirtualRealmAddress());
 
-    // 给服务器发送教程数据...
     SendTutorialsData();
 
     pCurrChar->GetMotionMaster()->Initialize();
@@ -994,19 +987,21 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
 
     pCurrChar->SendInitialPacketsBeforeAddToMap();
 
+    // for [TEST] [Longee]
+    //pCurrChar->setCinematic(0);
+
     //Show cinematic at the first time that player login
     if (!pCurrChar->getCinematic())
     {
         pCurrChar->setCinematic(1);
 
-        // 根据新角色的种族、职业来确定应该播放什么剧情动画...
         if (ChrClassesEntry const* cEntry = sChrClassesStore.LookupEntry(pCurrChar->getClass()))
         {
-            // 1. playMovie             
+             // 1. playMovie             `movie.db2`
             // 2. playCinematic         class based
             // 3. playScene             race based
             if (pCurrChar->getClass() == CLASS_DEMON_HUNTER) /// @todo: find a more generic solution
-                pCurrChar->SendMovieStart(469);
+                pCurrChar->SendMovieStart(/*469*/497); // 478(intro)->497(escape)
             else if (cEntry->CinematicSequenceID) 
                 pCurrChar->SendCinematicStart(cEntry->CinematicSequenceID);
             else if (ChrRacesEntry const* rEntry = sChrRacesStore.LookupEntry(pCurrChar->getRace()))
@@ -1015,15 +1010,15 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
                     pCurrChar->SendCinematicStart(rEntry->CinematicSequenceID);
                 else
                 {
-                    // new race in Legion Expansion 7.x 
+                    // new race in Legion Expansion [7.x]
                     switch (pCurrChar->getRace())
                     {
-                      case RACE_HIGHMOUNTAIN_TAUREN:
-                            pCurrChar->GetSceneMgr().PlayScene(1901);
-                            break;
                         case RACE_NIGHTBORNE:
                             pCurrChar->GetSceneMgr().PlayScene(1900);
                             break;
+                      case RACE_HIGHMOUNTAIN_TAUREN:
+                            pCurrChar->GetSceneMgr().PlayScene(1901);
+                            break;                        
                         case RACE_LIGHTFORGED_DRAENEI:
                             pCurrChar->GetSceneMgr().PlayScene(1902);
                             break;

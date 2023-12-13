@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -56,6 +56,7 @@ public:
         return true;
     }
 
+    // play scend by sceneId
     static bool HandlePlaySceneCommand(ChatHandler* handler, char const* args)
     {
         if (!*args)

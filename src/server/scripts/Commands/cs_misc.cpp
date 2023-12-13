@@ -1944,8 +1944,8 @@ public:
         if (target)
         {
             handler->PSendSysMessage(LANG_PINFO_CHR_MAP, mapName.c_str(),
-                (!zoneName.empty() ? zoneName.c_str() : handler->GetTrinityString(LANG_UNKNOWN)),
-                (!areaName.empty() ? areaName.c_str() : handler->GetTrinityString(LANG_UNKNOWN)));
+                (!areaName.empty() ? areaName.c_str() : handler->GetTrinityString(LANG_UNKNOWN)),
+                (!zoneName.empty() ? zoneName.c_str() : handler->GetTrinityString(LANG_UNKNOWN)));
 
             //
             Position p = target->GetPosition();

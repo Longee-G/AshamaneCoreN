@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -88,6 +88,11 @@ public:
                 session->SendNotification(LANG_GM_CHAT_OFF);
                 return true;
             }
+
+            // [TEST] play movie
+            uint32 movieId = atoul(param.c_str());
+            if(movieId)
+                session->GetPlayer()->SendMovieStart(469);
         }
 
         handler->SendSysMessage(LANG_USE_BOL);
@@ -163,6 +168,8 @@ public:
             handler->SendSysMessage("========================");
         if (first)
             handler->SendSysMessage(LANG_GMS_NOT_LOGGED);
+
+
         return true;
     }
 

@@ -15,3 +15,23 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 #include "broken_shore_scenario.h"
+
+// spell:217781     `phase update`
+
+// 场景动画和脚本的关联在[world.scene_template]中
+
+// ScriptPackageID: 1531 `Broken Shore Scenario - Alliance - Intro`
+// ScriptPackageID: 1716 `Broken Shore Scenario - Horde - Intro`
+
+// 这个cutscene的动画是由谁来触发的呢？
+class scene_broken_shore_intro : public SceneScript
+{
+public:
+    scene_broken_shore_intro() : SceneScript("scene_broken_shore_intro") {}
+    void OnSceneTriggerEvent(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/, std::string const& triggerName) override
+    {
+    }
+    void OnSceneEnd(Player* /*player*/, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/) override
+    {
+    }
+};

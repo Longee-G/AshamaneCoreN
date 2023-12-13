@@ -123,6 +123,16 @@ void SmartAIMgr::LoadSmartAIFromDB()
     }
 
     uint32 count = 0;
+    //            0           1          2    3     4          5                   6               7      
+    // "SELECT entryorguid, source_type, id, link, event_type, event_phase_mask, event_chance, event_flags,
+    //   8            9             10             11           12                 13              14           15            16
+    // event_param1, event_param2, event_param3, event_param4, event_param_string, action_type, action_param1, action_param2, action_param3,
+    //   17             18             19            20            21            22              23            24  
+    // action_param4, action_param5, action_param6, target_type, target_param1, target_param2, target_param3, target_x,
+    //   25        26       27    
+    // target_y, target_z, target_o
+    // FROM smart_scripts ORDER BY entryorguid, source_type, id, link"
+
 
     do
     {

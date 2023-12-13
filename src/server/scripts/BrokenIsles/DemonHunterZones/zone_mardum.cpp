@@ -15,6 +15,12 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*
+ * the Shattered Abyss
+ * Map: 1481 Mardum
+ */
+
+
 #include "Creature.h"
 #include "GameObject.h"
 #include "MotionMaster.h"
@@ -25,10 +31,12 @@
 #include "ScriptedCreature.h"
 #include "SpellScript.h"
 #include "TemporarySummon.h"
+#include "Conversation.h"
+
 
 enum eQuests
 {
-    QUEST_INVASION_BEGIN        = 40077,
+    QUEST_INVASION_BEGIN        = 40077,            // DH 马顿的开始任务
     QUEST_ASHTONGUE_FORCES      = 40378,
     QUEST_COILSKAR_FORCES       = 40379,
     QUEST_MEETING_WITH_QUEEN    = 39050,
@@ -51,7 +59,7 @@ enum eScenes
 
 enum ePhaseSpells
 {
-    SPELL_PHASE_170 = 59073,
+    SPELL_PHASE_170 = 59073,        // phase 是在哪里定义的？
     SPELL_PHASE_171 = 59074,
     SPELL_PHASE_172 = 59087,
     SPELL_PHASE_173 = 54341,
@@ -82,38 +90,17 @@ enum eMisc
     PLAYER_CHOICE_DH_SPEC_SELECTION_VENGEANCE   = 479,
 };
 
-class PlayerScript_mardum_welcome_scene_trigger : public PlayerScript
+
+enum eEnums
 {
-public:
-    PlayerScript_mardum_welcome_scene_trigger() : PlayerScript("PlayerScript_mardum_welcome_scene_trigger") {}
-
-    uint32 checkTimer = 1000;
-
-    void OnLogin(Player* player, bool firstLogin) override
-    {
-        if (player->getClass() == CLASS_DEMON_HUNTER && player->GetZoneId() == 7705 && firstLogin)
-        {
-            player->RemoveAurasDueToSpell(SPELL_PHASE_MARDUM_WELCOME);
-        }
-    }
-
-    void OnUpdate(Player* player, uint32 diff) override
-    {
-        if (checkTimer <= diff)
-        {
-            if (player->getClass() == CLASS_DEMON_HUNTER && player->GetZoneId() == 7705 && player->GetQuestStatus(QUEST_INVASION_BEGIN) == QUEST_STATUS_NONE &&
-                player->GetPositionY() < 3280 && !player->HasAura(SPELL_SCENE_MARDUM_WELCOME) &&
-                !player->HasAura(SPELL_PHASE_MARDUM_WELCOME))
-            {
-                player->CastSpell(player, SPELL_SCENE_MARDUM_WELCOME, true);
-            }
-
-            checkTimer = 1000;
-        }
-        else checkTimer -= diff;
-    }
+    MAP_MARDUM = 1481,           // Mardum Map Id
+    ZONE_MARDUM = 7705,
+    STARTING_QUEST = QUEST_INVASION_BEGIN,
 };
 
+
+// table `scene_template`, sceneId: 1106, ScriptPackageID: 1487
+// 凯恩 日怒带队冲出来...
 class scene_mardum_welcome : public SceneScript
 {
 public:
@@ -121,20 +108,119 @@ public:
 
     void OnSceneComplete(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/) override
     {
-        player->AddAura(SPELL_PHASE_MARDUM_WELCOME);
+        player->AddAura(SPELL_PHASE_MARDUM_WELCOME);    // 当
     }
 };
 
+// playerScript 是怎么关联到玩家身上的？
+// 它是一个全局的脚本，注册到ScriptMgr ... 每个player都会触发 ... 不应该写这么多PlayerScript
+// 而是只有1个 ...
+class PlayerScript_mardum_welcome_scene_trigger : public PlayerScript
+{
+public:
+    PlayerScript_mardum_welcome_scene_trigger() : PlayerScript("PlayerScript_mardum_welcome_scene_trigger") {}
+
+    uint32 checkTimer = 1000;
+
+
+    // starting quest check...
+    // 什么时候应该召唤凯恩？ 没有接到任务的时候..
+    void SummonKaynSunfuryForStarting(Player* player)
+    {
+        if (player->GetQuestStatus(STARTING_QUEST) == QUEST_STATUS_NONE
+            && !player->HasAura(SPELL_SCENE_MARDUM_WELCOME)
+            && !player->HasAura(SPELL_PHASE_MARDUM_WELCOME))
+        {
+            player->CastSpell(player, SPELL_SCENE_MARDUM_WELCOME, true);
+        }
+    }
+
+
+    void OnLogin(Player* player, bool firstLogin) override
+    {
+        // zone:7705 破碎深渊马顿
+
+        if (player->getClass() == CLASS_DEMON_HUNTER && player->GetZoneId() == ZONE_MARDUM && firstLogin)
+        {
+            // 使用spell来移除aura 
+            player->RemoveAurasDueToSpell(SPELL_PHASE_MARDUM_WELCOME);
+        }
+    }
+    
+    void OnQuestAbandon(Player* player, Quest const* quest) override
+    {
+        if (!quest || quest->ID != STARTING_QUEST)
+            return;
+
+        if (player->GetMapId() != MAP_MARDUM || player->GetZoneId() != ZONE_MARDUM)
+            return;
+
+        // must be in the right area 
+        if (player->GetAreaId() != 0 && player->GetAreaId() != ZONE_MARDUM)
+            return;
+
+        // Recall Kayn
+        SummonKaynSunfuryForStarting(player);
+    }
+    
+    // When new DH character finishes watching the intro movie.
+    void OnMovieComplete(Player* player, uint32 movieId) override
+    {
+        if (movieId != 469 && movieId != 497 && movieId != 478)
+            return;
+        if (player->GetMapId() != MAP_MARDUM)
+            return;
+        if (player->getClass() != CLASS_DEMON_HUNTER)
+            return;
+
+        SummonKaynSunfuryForStarting(player);
+    }
+
+    void OnUpdateArea(Player* player, uint32 newArea, uint32 oldArea)
+    {
+        if (player->getClass() != CLASS_DEMON_HUNTER)
+            return;
+
+        if (player->GetMapId() != MAP_MARDUM || player->GetZoneId() != ZONE_MARDUM)
+            return;
+
+        if ( newArea == 0 || newArea == ZONE_MARDUM)
+            SummonKaynSunfuryForStarting(player);
+    }
+};
+
+
+
+// npc: 93011 `Kayn SunFury`
+// phaseId: 50/170
+
+// 这个npc是出现在一开始的时候...
 class npc_kayn_sunfury_welcome : public CreatureScript
 {
 public:
     npc_kayn_sunfury_welcome() : CreatureScript("npc_kayn_sunfury_welcome") { }
 
-    bool OnQuestAccept(Player* /*player*/, Creature* /*creature*/, Quest const* quest) override
+    bool OnQuestAccept(Player* player, Creature* /*creature*/, Quest const* quest) override
     {
+        // 当player从npc身上接了任务 ...
+
         if (quest->GetQuestId() == QUEST_INVASION_BEGIN)
         {
             // Todo : Make creatures wing out
+            /*
+            player->GetMap()->LoadGrid(1170.74f, 3204.71f); // voice ? what voice
+            Conversation* conver = new Conversation();
+            if (!conver->CreateConversation())
+                delete conver;
+            */
+
+            // 这里的代码应该通过区域触发来实现...
+            // 引用player需要在这里交接任务...
+
+
+            //player->SummonCreature();
+
+
         }
         return true;
     }

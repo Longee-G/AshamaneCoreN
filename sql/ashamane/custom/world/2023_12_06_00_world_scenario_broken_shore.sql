@@ -872,3 +872,12 @@ INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, 
 (@OCUIG+99, 240535, 1460, 7534, 8454, 4096, 0, 0, 0, -1, 1274.54, 1549.36, 42.3156, 2.28016, 0, 0, 0, 1, 7200, 255, 1, 0, '', 26972),
 (@OCUIG+100, 240535, 1460, 7534, 8454, 4096, 0, 0, 0, -1, 1254.01, 1534.54, 42.3999, 1.5886, 0, 0, 0, 1, 7200, 255, 1, 0, '', 26972),
 (@OCUIG+101, 240535, 1460, 7534, 8454, 4096, 0, 0, 0, -1, 1114.95, 1656.63, 36.4962, 3.57094, 0, 0, 0, 1, 7200, 255, 1, 0, '', 26972);
+
+
+-- rebuild battle ship
+DELETE FROM `gameobject_template` WHERE `entry` IN (254124, 251513, 255203, 251604);
+INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, `unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, `Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, `Data21`, `Data22`, `Data23`, `Data24`, `Data25`, `Data26`, `Data27`, `Data28`, `Data29`, `Data30`, `Data31`, `Data32`, `RequiredLevel`, `VerifiedBuild`) VALUES
+(254124, 15, 36890, 'Horde Battleship', '', '', '', 1, 5915, 20, 1, 0, 0, 1, 1649, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 22522), -- Horde Battleship Transport
+(251513, 15, 12843, 'Alliance Battleship', '', '', '', 1, 5698, 20, 1, 0, 0, 1, 1628, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 22522), -- Alliance Battleship Transport
+(255203, 43, 9563, 'Horde Battleship', '', '', '', 1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 22522), -- Horde Battleship
+(251604, 43, 18022, 'Alliance Battleship', '', '', '', 1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 22522); -- Alliance Battleship

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -52,6 +52,7 @@ void Scenario::Reset()
     SetStep(GetFirstStep());
 }
 
+// Q：完成剧情的某一步，是自动调用的还是需要脚本来调用呢？
 void Scenario::CompleteStep(ScenarioStepEntry const* step)
 {
     if (Quest const* quest = sObjectMgr->GetQuestTemplate(step->RewardQuestID))
@@ -185,6 +186,11 @@ bool Scenario::CanCompleteCriteriaTree(CriteriaTree const* tree)
 
     return true;
 }
+
+// 剧情阶段的推进是通过CriteriaTree来完成的...
+// 等同于完成关联的CriteriaTree就可以完成关联的ScenarioStep...
+// Q: 谁来调用这个接口完成ScenarioStep呢？
+// A: 这个是通过内部来调用的 ...
 
 void Scenario::CompletedCriteriaTree(CriteriaTree const* tree, Player* /*referencePlayer*/)
 {
