@@ -52,10 +52,11 @@ SmartScript::SmartScript()
     mEventPhase = 0;
     mPathId = 0;
     mTargetStorage = new ObjectListMap();
-    mTextTimer = 0;
-    mLastTextID = 0;
-    mUseTextTimer = false;
-    mTalkerEntry = 0;
+    _textTimer = 0;
+    _lastTextID = 0;
+    _isTextTimerUsed = false;
+    _talkerEntry = 0;
+    _nextTalker = 0;
     mTemplate = SMARTAI_TEMPLATE_BASIC;
     mScriptType = SMART_SCRIPT_TYPE_CREATURE;
     isProcessingTimedActionList = false;
@@ -163,6 +164,7 @@ GameObject* SmartScript::FindGameObjectNear(WorldObject* searchObject, ObjectGui
     return bounds.first->second;
 }
 
+// guid = db guid (spawn id)
 Creature* SmartScript::FindCreatureNear(WorldObject* searchObject, ObjectGuid::LowType guid) const
 {
     auto bounds = searchObject->GetMap()->GetCreatureBySpawnIdStore().equal_range(guid);
@@ -222,7 +224,8 @@ void SmartScript::ResetBaseObject()
     meOrigGUID.Clear();
 }
 
-void SmartScript::ProcessEventsFor(SMART_EVENT e, Unit* unit, uint32 var0, uint32 var1, bool bvar, const SpellInfo* spell, GameObject* gob, std::string const& varString)
+void SmartScript::ProcessEventsFor(SMART_EVENT e, Unit* unit, uint32 var0, uint32 var1, bool bvar,
+    const SpellInfo* spell, GameObject* gob, std::string const& varString)
 {
     for (SmartAIEventList::iterator i = mEvents.begin(); i != mEvents.end(); ++i)
     {
@@ -271,7 +274,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                         if (e.action.talk.useTalkTarget)
                             talkTarget = (*itr)->ToCreature();
                         else
-                            talker = (*itr)->ToCreature();
+                            talker =  (*itr)->ToCreature();      // FIXME: Why replace talker with target ?
                         break;
                     }
                     else if (IsPlayer(*itr))
@@ -287,16 +290,18 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             if (!talker)
                 break;
 
-            mTalkerEntry = talker->GetEntry();
-            mLastTextID = e.action.talk.textGroupID;
-            mTextTimer = e.action.talk.duration;
+            // set params related to `SMART_ACTION_TALK`
+            _talkerEntry = talker->GetEntry();
+            _lastTextID = e.action.talk.textGroupID;
+            _textTimer = e.action.talk.duration;
+            _isTextTimerUsed = true;
+            _nextTalker = e.action.talk.nextTalker;
 
             if (IsPlayer(GetLastInvoker())) // used for $vars in texts and whisper target
                 talkTarget = GetLastInvoker();
             else if (targetPlayer)
                 talkTarget = targetPlayer;
-
-            mUseTextTimer = true;
+            
             sCreatureTextMgr->SendChat(talker, uint8(e.action.talk.textGroupID), talkTarget);
             TC_LOG_DEBUG("scripts.ai", "SmartScript::ProcessAction: SMART_ACTION_TALK: talker: %s (%s), textGuid: %s",
                 talker->GetName().c_str(), talker->GetGUID().ToString().c_str(), talkTarget ? talkTarget->GetGUID().ToString().c_str() : "Empty");
@@ -3346,9 +3351,31 @@ ObjectList* SmartScript::GetWorldObjectsInDist(float dist)
     return targets;
 }
 
-// 这个接口是否可以被其他实例调用？
-// 
-void SmartScript::ProcessEvent(SmartScriptHolder& e, Unit* unit, uint32 var0, uint32 var1, bool bvar, const SpellInfo* spell, GameObject* gob, std::string const& varString)
+// find the creature `dist` away from me
+Creature * SmartScript::GetCreatureInDist(float dist, uint32 entry)
+{
+    Creature* creature = nullptr;
+
+    Trinity::AllCreaturesOfEntryInRange check(me, entry, dist);
+    Trinity::CreatureSearcher<Trinity::AllCreaturesOfEntryInRange> searcher(me, creature, check);
+    Cell::VisitAllObjects(me, searcher, dist);
+
+    return creature;
+}
+
+GameObject * SmartScript::GetGameObjectInDist(float dist, uint32 entry)
+{
+    GameObject* obj = nullptr;
+
+    Trinity::AllGameObjectsWithEntryInRange check(me, entry, dist);
+    Trinity::GameObjectSearcher<Trinity::AllGameObjectsWithEntryInRange> searcher(me, obj, check);
+    Cell::VisitAllObjects(me, searcher, dist);
+
+    return obj;
+}
+
+void SmartScript::ProcessEvent(SmartScriptHolder& e, Unit* unit, uint32 var0, uint32 var1, bool bvar,
+    const SpellInfo* spell, GameObject* gob, std::string const& varString)
 {
     if (!e.active && e.GetEventType() != SMART_EVENT_LINK)
         return;
@@ -4137,18 +4164,27 @@ void SmartScript::OnUpdate(uint32 const diff)
              RemoveStoredEvent((*i));
         }
     }
-    if (mUseTextTimer && me)
+
+    if (_isTextTimerUsed && me)
     {
-        if (mTextTimer < diff)
-        {
-            uint32 textID = mLastTextID;
-            mLastTextID = 0;
-            uint32 entry = mTalkerEntry;
-            mTalkerEntry = 0;
-            mTextTimer = 0;
-            mUseTextTimer = false;
+        if (_textTimer < diff)
+        { // process text over when `duration` timeout.
+            uint32 textID = _lastTextID;
+            _lastTextID = 0;
+            uint32 entry = _talkerEntry;
+            _talkerEntry = 0;
+            _textTimer = 0;
+            _isTextTimerUsed = false;
+
+            // process self event
             ProcessEventsFor(SMART_EVENT_TEXT_OVER, nullptr, textID, entry);
-        } else mTextTimer -= diff;
+
+            // If has next talker, then transfer `SMART_EVENT_TEXT_OVER` event to him
+            if (_nextTalker)
+                if (Creature* nextTalker = FindCreatureNear(me, _nextTalker))
+                    nextTalker->GetAI()->sOnTextOver(me, textID);
+
+        } else _textTimer -= diff;
     }
 }
 

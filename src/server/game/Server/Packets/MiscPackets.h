@@ -202,6 +202,7 @@ namespace WorldPackets
             uint32 CinematicID = 0;
         };
 
+        // C->S
         class TriggerMovie final : public ServerPacket
         {
         public:
@@ -797,7 +798,6 @@ namespace WorldPackets
             bool EnablePVP = false;
         };
 
-        // 传家宝更新...
         class AccountHeirloomUpdate final : public ServerPacket
         {
         public:

@@ -347,9 +347,9 @@ struct SmartEvent
 
         struct
         {
-            uint32 textGroupID;         // param 1  
-            uint32 creatureEntry;       // param 2    
-        } textOver; // processAction when  `creatureEntry` finishes No.[textGroupID] says
+            uint32 textGroupID;         // event_param 1          
+            uint32 creatureEntry;       // event_param 2    talker entry
+        } textOver;                     // ProcessAction when `creatureEntry` finishes [textGroupID] says
 
         struct
         {
@@ -598,9 +598,10 @@ struct SmartAction
     {
         struct
         {
-            uint32 textGroupID;     // p1
-            uint32 duration;        // p2
-            uint32 useTalkTarget;   // p3
+            uint32 textGroupID;     // action_p1
+            uint32 duration;        // action_p2
+            uint32 useTalkTarget;   // action_p3
+            uint32 nextTalker;      // action_p4
         } talk;
 
         struct
@@ -1297,7 +1298,7 @@ struct SmartTarget
         {
             uint32 creature;
             uint32 dist;
-        } unitDistance;
+        } unitDistance;         // find  target(entry=creature) within `dist` radius
 
         struct
         {
@@ -1379,17 +1380,17 @@ struct SmartTarget
 
 enum SmartScriptType
 {
-    SMART_SCRIPT_TYPE_CREATURE = 0, //done
-    SMART_SCRIPT_TYPE_GAMEOBJECT = 1, //done
-    SMART_SCRIPT_TYPE_AREATRIGGER = 2, //done
-    SMART_SCRIPT_TYPE_EVENT = 3, //
-    SMART_SCRIPT_TYPE_GOSSIP = 4, //
-    SMART_SCRIPT_TYPE_QUEST = 5, //
-    SMART_SCRIPT_TYPE_SPELL = 6, //
-    SMART_SCRIPT_TYPE_TRANSPORT = 7, //
-    SMART_SCRIPT_TYPE_INSTANCE = 8, //
-    SMART_SCRIPT_TYPE_TIMED_ACTIONLIST = 9, //
-    SMART_SCRIPT_TYPE_SCENE = 10, //done
+    SMART_SCRIPT_TYPE_CREATURE = 0,
+    SMART_SCRIPT_TYPE_GAMEOBJECT = 1,
+    SMART_SCRIPT_TYPE_AREATRIGGER = 2,
+    SMART_SCRIPT_TYPE_EVENT = 3,            // NYI
+    SMART_SCRIPT_TYPE_GOSSIP = 4,           // NYI
+    SMART_SCRIPT_TYPE_QUEST = 5,            // NYI
+    SMART_SCRIPT_TYPE_SPELL = 6,            // NYI
+    SMART_SCRIPT_TYPE_TRANSPORT = 7,        // NYI
+    SMART_SCRIPT_TYPE_INSTANCE = 8,         // NYI
+    SMART_SCRIPT_TYPE_TIMED_ACTIONLIST = 9, // NYI
+    SMART_SCRIPT_TYPE_SCENE = 10,
     SMART_SCRIPT_TYPE_MAX = 11
 };
 
@@ -1641,7 +1642,6 @@ class TC_GAME_API SmartAIMgr
         SmartAIEventList GetScript(int32 entry, SmartScriptType type);
 
         static SmartScriptHolder& FindLinkedSourceEvent(SmartAIEventList& list, uint32 eventId);
-
         static SmartScriptHolder& FindLinkedEvent(SmartAIEventList& list, uint32 link);
 
     private:

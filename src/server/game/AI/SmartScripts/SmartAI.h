@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -180,6 +180,7 @@ class TC_GAME_API SmartAI : public CreatureAI
         void sQuestReward(Player* player, Quest const* quest, uint32 opt) override;
         bool sOnDummyEffect(Unit* caster, uint32 spellId, SpellEffIndex effIndex) override;
         void sOnGameEvent(bool start, uint16 eventId) override;
+        void sOnTextOver(Unit* talker, uint32 textGroupID) override;
 
         uint32 mEscortQuestID;
 

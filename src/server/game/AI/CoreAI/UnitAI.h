@@ -259,6 +259,7 @@ class TC_GAME_API UnitAI
         virtual void sQuestReward(Player* /*player*/, Quest const* /*quest*/, uint32 /*opt*/) { }
         virtual bool sOnDummyEffect(Unit* /*caster*/, uint32 /*spellId*/, SpellEffIndex /*effIndex*/) { return false; }
         virtual void sOnGameEvent(bool /*start*/, uint16 /*eventId*/) { }
+        virtual void sOnTextOver(Unit* talker, uint32 textGroupID) { }
 
         /// Add timed delayed operation
         /// @p_Timeout  : Delay time

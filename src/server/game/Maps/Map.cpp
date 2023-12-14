@@ -182,7 +182,6 @@ void Map::LoadMap(int gx, int gy)
         childBaseMap->LoadMap(gx, gy);
 }
 
-// map加载内部函数... 
 void Map::LoadMapImpl(Map* map, int gx, int gy)
 {
     if (map->GridMaps[gx][gy])
@@ -268,7 +267,6 @@ void Map::DeleteStateMachine()
     delete si_GridStates[GRID_STATE_IDLE];
     delete si_GridStates[GRID_STATE_REMOVAL];
 }
-
 
 // 在数据表中，地图是分成3级的，Map->Zone->Area
 // 但是代码中class Map可以是上述3级地图中的任意一种...
@@ -588,7 +586,8 @@ void Map::LoadGrid(float x, float y)
 {
     EnsureGridLoaded(Cell(x, y));
 }
-// 将player添加到当前地图...
+
+// add the player to current map(Grid also a map)
 bool Map::AddPlayerToMap(Player* player, bool initPlayer /*= true*/)
 {
     CellCoord cellCoord = Trinity::ComputeCellCoord(player->GetPositionX(), player->GetPositionY());
@@ -733,8 +732,6 @@ void Map::VisitNearbyCellsOf(WorldObject* obj, TypeContainerVisitor<Trinity::Obj
     if (!obj->IsPositionValid())
         return;
 
-    // 获取obj感知的区域？
-
     // Update mobs/objects in ALL visible cells around object!
     CellArea area = Cell::CalculateCellArea(obj->GetPositionX(), obj->GetPositionY(), obj->GetGridActivationRange());
 
@@ -782,9 +779,6 @@ void Map::Update(const uint32 t_diff)
     // for pets
     TypeContainerVisitor<Trinity::ObjectUpdater, WorldTypeMapContainer > world_object_update(updater);
 
-
-    // 遍历此Map上的所有player，将Map上的object更新给Player...
-
     // the player iterator is stored in the map object
     // to make sure calls to Map::Remove don't invalidate it
     for (_mapRefIter = _mapRefManager.begin(); _mapRefIter != _mapRefManager.end(); ++_mapRefIter)
@@ -821,7 +815,6 @@ void Map::Update(const uint32 t_diff)
                 // 为什么只更新不在player视线范围内的本地图仇恨对象呢？
                 // 是不是写反了，应该更新的是在视线范围内的仇恨对象才对吧？
                 // 修改成视线内 in sight 试试
-
                 if (Unit* unit = ref->GetSource()->GetOwner())
                     if (unit->ToCreature() && unit->GetMapId() == player->GetMapId() && unit->IsWithinDistInMap(player, GetVisibilityRange(), false))
                         updateList.push_back(unit->ToCreature());
@@ -3226,6 +3219,7 @@ uint32 Map::GetPlayersCountExceptGMs() const
             ++count;
     return count;
 }
+
 
 // [Longee] 这个有可能是更新地图上的worldobject给player的消息包了.... 分析下...
 // 在什么情况下调用这个函数的？

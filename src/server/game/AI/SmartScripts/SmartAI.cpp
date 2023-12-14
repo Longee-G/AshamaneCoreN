@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -910,6 +910,11 @@ void SmartAI::SetScript9(SmartScriptHolder& e, uint32 entry, Unit* invoker)
 void SmartAI::sOnGameEvent(bool start, uint16 eventId)
 {
     GetScript()->ProcessEventsFor(start ? SMART_EVENT_GAME_EVENT_START : SMART_EVENT_GAME_EVENT_END, nullptr, eventId);
+}
+
+void SmartAI::sOnTextOver(Unit * talker, uint32 textGroupID)
+{
+    GetScript()->ProcessEventsFor(SMART_EVENT_TEXT_OVER, talker, textGroupID, talker ? talker->GetEntry() : 0);
 }
 
 void SmartAI::OnSpellClick(Unit* clicker, bool& result)
