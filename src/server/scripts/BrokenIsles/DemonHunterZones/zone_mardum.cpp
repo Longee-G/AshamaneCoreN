@@ -18,6 +18,7 @@
 /*
  * the Shattered Abyss
  * Map: 1481 Mardum
+ * zone: 7705 破碎深渊马顿
  */
 
 
@@ -32,6 +33,7 @@
 #include "SpellScript.h"
 #include "TemporarySummon.h"
 #include "Conversation.h"
+#include "GameObjectAI.h"
 
 
 enum eQuests
@@ -49,28 +51,29 @@ enum eQuests
 
 enum eScenes
 {
-    SPELL_SCENE_MARDUM_WELCOME          = 193525,
-    SPELL_SCENE_MARDUM_LEGION_BANNER    = 191677,
-    SPELL_SCENE_MARDUM_ASHTONGUE_FORCES = 189261,
-    SPELL_SCENE_MARDUM_COILSKAR_FORCES  = 190793,
-    SPELL_SCENE_MEETING_WITH_QUEEN      = 188539,
-    SPELL_SCENE_MARDUM_SHIVARRA_FORCES  = 190851,
+    SPELL_SCENE_MARDUM_WELCOME          = 193525,   // 召唤npc凯恩·日怒
+    SPELL_SCENE_MARDUM_LEGION_BANNER    = 191677,   // Banner Planted Client-Side Scene
+    SPELL_SCENE_MARDUM_ASHTONGUE_FORCES = 189261,   // 加入伊利达雷：灰舌—播放场景
+    SPELL_SCENE_MARDUM_COILSKAR_FORCES  = 190793,   // 加入伊利达雷：库斯卡—播放场景
+    SPELL_SCENE_MARDUM_SHIVARRA_FORCES  = 190851,   // 加入伊利达雷：破坏魔—播放场景
+    SPELL_SCENE_MEETING_WITH_QUEEN      = 188539,   // 恶魔蛛后：仪式完成
 };
 
+// phase id defines in `phase.db2`
 enum ePhaseSpells
 {
-    SPELL_PHASE_170 = 59073,        // phase 是在哪里定义的？
-    SPELL_PHASE_171 = 59074,
-    SPELL_PHASE_172 = 59087,
-    SPELL_PHASE_173 = 54341,
+    SPELL_PHASE_170 = 59073,        // Phase - Quest Zone-Specific 01   
+    SPELL_PHASE_171 = 59074,        // Phase - Quest Zone-Specific 02
+    SPELL_PHASE_172 = 59087,        // Phase - Quest Zone-Specific 03
+    SPELL_PHASE_173 = 54341,        // Zuramat Add
 
-    SPELL_PHASE_175 = 57569,
-    SPELL_PHASE_176 = 74789,
-    SPELL_PHASE_177 = 69819,
+    SPELL_PHASE_175 = 57569,        // 银色前线基地第二章 ?? 这个spell是不是用错了
+    SPELL_PHASE_176 = 74789,        // GT Over Phase
+    SPELL_PHASE_177 = 69819,        // 错误的spell，不存在
 
-    SPELL_PHASE_179 = 67789,
-    SPELL_PHASE_180 = 68480,
-    SPELL_PHASE_181 = 68481
+    SPELL_PHASE_179 = 67789,        // Phase - Quest Zone-Specific 04
+    SPELL_PHASE_180 = 68480,        // Phase - Quest Zone-Specific 05
+    SPELL_PHASE_181 = 68481         // Phase - Quest Zone-Specific 06
 };
 
 enum ePhases
@@ -98,6 +101,25 @@ enum eEnums
     STARTING_QUEST = QUEST_INVASION_BEGIN,
 };
 
+// starting quest check...
+void SummonKaynSunfuryForStarting(Player* player)
+{
+    if (player->GetQuestStatus(STARTING_QUEST) == QUEST_STATUS_NONE
+        && !player->HasAura(SPELL_SCENE_MARDUM_WELCOME)
+        && !player->HasAura(SPELL_PHASE_MARDUM_WELCOME))
+    {
+        // Summon a team of NPCs & add phase:170 to player
+        //
+        // npc:93011    Kayn Sunfury
+        // npc:98228    
+        // npc:98227    
+        // npc:98292    Bloodthorn
+        // npc:98290
+        // npc:99918
+        player->CastSpell(player, SPELL_SCENE_MARDUM_WELCOME, true);
+    }
+}
+
 
 // table `scene_template`, sceneId: 1106, ScriptPackageID: 1487
 // 凯恩 日怒带队冲出来...
@@ -108,7 +130,8 @@ public:
 
     void OnSceneComplete(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/) override
     {
-        player->AddAura(SPELL_PHASE_MARDUM_WELCOME);    // 当
+        // player enter phase-170
+        player->AddAura(SPELL_PHASE_MARDUM_WELCOME);
     }
 };
 
@@ -119,31 +142,23 @@ class PlayerScript_mardum_welcome_scene_trigger : public PlayerScript
 {
 public:
     PlayerScript_mardum_welcome_scene_trigger() : PlayerScript("PlayerScript_mardum_welcome_scene_trigger") {}
-
     uint32 checkTimer = 1000;
-
-
-    // starting quest check...
-    // 什么时候应该召唤凯恩？ 没有接到任务的时候..
-    void SummonKaynSunfuryForStarting(Player* player)
-    {
-        if (player->GetQuestStatus(STARTING_QUEST) == QUEST_STATUS_NONE
-            && !player->HasAura(SPELL_SCENE_MARDUM_WELCOME)
-            && !player->HasAura(SPELL_PHASE_MARDUM_WELCOME))
-        {
-            player->CastSpell(player, SPELL_SCENE_MARDUM_WELCOME, true);
-        }
-    }
-
 
     void OnLogin(Player* player, bool firstLogin) override
     {
-        // zone:7705 破碎深渊马顿
-
-        if (player->getClass() == CLASS_DEMON_HUNTER && player->GetZoneId() == ZONE_MARDUM && firstLogin)
+        if (player->getClass() == CLASS_DEMON_HUNTER && player->GetZoneId() == ZONE_MARDUM)
         {
-            // 使用spell来移除aura 
-            player->RemoveAurasDueToSpell(SPELL_PHASE_MARDUM_WELCOME);
+            switch (player->GetQuestStatus(STARTING_QUEST))
+            {
+                case QUEST_STATUS_REWARDED: // 任务已经完成了
+                    player->RemoveAurasDueToSpell(SPELL_PHASE_MARDUM_WELCOME);
+                    break;
+                case QUEST_STATUS_NONE: // 没有接任务
+                    break;
+                default: // 有任务在身上
+                    player->AddAura(SPELL_PHASE_MARDUM_WELCOME);
+                    break;
+            }
         }
     }
     
@@ -200,46 +215,70 @@ class npc_kayn_sunfury_welcome : public CreatureScript
 public:
     npc_kayn_sunfury_welcome() : CreatureScript("npc_kayn_sunfury_welcome") { }
 
-    bool OnQuestAccept(Player* player, Creature* /*creature*/, Quest const* quest) override
+    bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest) override
     {
-        // 当player从npc身上接了任务 ...
-
         if (quest->GetQuestId() == QUEST_INVASION_BEGIN)
         {
-            // Todo : Make creatures wing out
-            /*
-            player->GetMap()->LoadGrid(1170.74f, 3204.71f); // voice ? what voice
-            Conversation* conver = new Conversation();
-            if (!conver->CreateConversation())
-                delete conver;
-            */
+            // 接了任务之后，让npc过了一会之后消失
 
-            // 这里的代码应该通过区域触发来实现...
-            // 引用player需要在这里交接任务...
+            // 这个代码会让npc在17s后消失
+            // creature->DespawnOrUnsummon(17s);
 
+            // 移除170 phase？
 
-            //player->SummonCreature();
+            // 当移除了170 phaseId，Kayn Sunfury将会消失不见，因为它们是和phase:170绑定的..
 
-
+            //player->RemoveAurasDueToSpell(SPELL_PHASE_MARDUM_WELCOME);
         }
+
         return true;
     }
 };
 
+// 任务目标，激活会烧掉军团的旗帜..
 class go_mardum_legion_banner_1 : public GameObjectScript
 {
 public:
     go_mardum_legion_banner_1() : GameObjectScript("go_mardum_legion_banner_1") { }
 
-    bool OnGossipHello(Player* player, GameObject* /*go*/) override
+    bool OnGossipHello(Player* player, GameObject* go) override
     {
+        // 必须第1个目标完成之后，才能烧掉
+        if (!player->GetQuestObjectiveData(QUEST_INVASION_BEGIN, 0))
+            return true;
+
         if (!player->GetQuestObjectiveData(QUEST_INVASION_BEGIN, 1))
+        {
+            // 记录player对于这个go的状态 ..
+            go->SetLootState(GO_ACTIVATED, player);
+
+            // 播放烧掉旗子的动画
             player->CastSpell(player, SPELL_SCENE_MARDUM_LEGION_BANNER, true);
+            player->CastSpell(player, SPELL_PHASE_171, true);       // 进入第2阶段？
+        }
 
-        if (!player->GetQuestObjectiveData(QUEST_INVASION_BEGIN, 1))
-            player->CastSpell(player, SPELL_PHASE_171, true);
+        // return true 表示这个回调的结果由AI自己来完成，否则由缺省代码完成
+        // 如果由缺省代码完成，就会导致和Go关联的成就条件直接被完成了。
+        // _player->UpdateCriteria(CRITERIA_TYPE_USE_GAMEOBJECT, go->GetEntry());
 
-        return false;
+        return true;
+    }
+
+    // 给这个Go设置一个AI
+    struct go_mardum_legion_banner_1AI : public GameObjectAI
+    {
+        go_mardum_legion_banner_1AI(GameObject* gob) : GameObjectAI(gob) {}
+        // 什么时候调用Reset的？初始化的时候吗？
+        void Reset() override
+        {
+            go->SetGoState(GO_STATE_ACTIVE);
+            go->SetLootState(GO_NOT_READY);
+        }
+    };
+
+    GameObjectAI* GetAI(GameObject* gob) const override
+    {
+        return new go_mardum_legion_banner_1AI(gob);
     }
 };
 
@@ -974,7 +1013,7 @@ void AddSC_zone_mardum()
     new PlayerScript_mardum_welcome_scene_trigger();
     new scene_mardum_welcome();
     new npc_kayn_sunfury_welcome();
-    //new go_mardum_legion_banner_1();
+    new go_mardum_legion_banner_1();
     new go_mardum_portal_ashtongue();
     new scene_mardum_welcome_ashtongue();
     RegisterSpellScript(spell_learn_felsaber);

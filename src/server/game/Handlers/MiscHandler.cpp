@@ -1150,9 +1150,14 @@ void WorldSession::HandleGetRemainingGameTime(WorldPackets::ClientConfig::GetRem
     // TODO:
 }
 
-void WorldSession::HandleSaveClientVariables(WorldPackets::ClientConfig::SaveClientVariables& /*packet*/)
+void WorldSession::HandleSaveClientVariables(WorldPackets::ClientConfig::SaveClientVariables& packet)
 {
     // TODO: how to save client variables ...
+    if (packet.Varables.size() > 0)
+    {
+        //ChatHandler(player->GetSession()).PSendSysMessage("Varables size: %u", packet.Varables.size());
+        TC_LOG_INFO("network", "Receive SaveClientVariables: %u", packet.Varables.size());
+    }
 }
 
 
