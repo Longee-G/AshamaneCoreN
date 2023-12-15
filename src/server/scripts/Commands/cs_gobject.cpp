@@ -40,7 +40,26 @@ EndScriptData */
 #include "RBAC.h"
 #include "WorldSession.h"
 #include <G3D/Quat.h>
+#include <map>
+#include <string>
 
+typedef std::map<int32, std::string> IDString;
+IDString ls =
+{
+    {GO_NOT_READY, "GO_NOT_READY" },
+    {GO_READY, "GO_READY" },
+    {GO_ACTIVATED, "GO_ACTIVATED" },
+    {GO_JUST_DEACTIVATED, "GO_JUST_DEACTIVATED" }
+};
+
+IDString gs =
+{
+    {GO_STATE_ACTIVE, "GO_STATE_ACTIVE" },
+    {GO_STATE_READY, "GO_STATE_READY" },
+    {GO_STATE_ACTIVE_ALTERNATIVE, "GO_STATE_ACTIVE_ALTERNATIVE" },
+    {GO_STATE_TRANSPORT_ACTIVE, "GO_STATE_TRANSPORT_ACTIVE" },
+    {GO_STATE_TRANSPORT_STOPPED, "GO_STATE_TRANSPORT_STOPPED" }
+};
 
 class gobject_commandscript : public CommandScript
 {
@@ -608,6 +627,9 @@ public:
         return true;
     }
 
+
+
+
     //show info of gameobject
     static bool HandleGameObjectInfoCommand(ChatHandler* handler, char const* args)
     {
@@ -620,6 +642,10 @@ public:
         float x, y, z;
         float orient;   // radian [0, 2*PI]
         QuaternionData rot;
+
+        std::string lstate;
+        std::string gstate;
+
         
         if (*args)
         {
@@ -656,6 +682,9 @@ public:
             z = go->GetPosition().GetPositionZ();
             orient = go->GetOrientation();
             rot = go->GetWorldRotation();
+
+            lstate = ls[go->getLootState()];
+            gstate = gs[go->GetByteValue(GAMEOBJECT_BYTES_1, 0)];
         }
         else
             return false;
@@ -694,6 +723,9 @@ public:
             handler->PSendSysMessage("Rotation Quaternion(xyzw): %.4f, %.4f, %.4f, %.4f", rot.x, rot.y, rot.z, rot.w);
             handler->PSendSysMessage("Rotation EulerAngle(xyz): %.4f, %.4f, %.4f (Rad), %.2f, %.2f, %.2f (Deg)",
                 x, y, z, G3D::toDegrees(x), G3D::toDegrees(y), G3D::toDegrees(z));
+
+            handler->PSendSysMessage("GoState: %s", gstate.c_str());
+            handler->PSendSysMessage("LootState: %s", lstate.c_str());
         }
 
         return true;
