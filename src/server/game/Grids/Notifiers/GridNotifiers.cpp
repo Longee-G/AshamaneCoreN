@@ -64,7 +64,7 @@ void VisibleNotifier::SendToSelf()
 
     for (auto it = vis_guids.begin(); it != vis_guids.end(); ++it)
     {
-        i_player.m_clientGUIDs.erase(*it);
+        i_player._clientGUIDs.erase(*it);
         i_data.AddOutOfRangeGUID(*it);
 
         if (it->IsPlayer())

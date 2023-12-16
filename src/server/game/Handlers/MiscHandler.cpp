@@ -1076,7 +1076,7 @@ void WorldSession::HandleObjectUpdateFailedOpcode(WorldPackets::Misc::ObjectUpda
     }
 
     // Pretend we've never seen this object
-    _player->m_clientGUIDs.erase(objectUpdateFailed.ObjectGUID);
+    _player->_clientGUIDs.erase(objectUpdateFailed.ObjectGUID);
 }
 
 void WorldSession::HandleObjectUpdateRescuedOpcode(WorldPackets::Misc::ObjectUpdateRescued& objectUpdateRescued)
@@ -1084,8 +1084,8 @@ void WorldSession::HandleObjectUpdateRescuedOpcode(WorldPackets::Misc::ObjectUpd
     TC_LOG_ERROR("network", "Object update rescued for %s for player %s (%s)", objectUpdateRescued.ObjectGUID.ToString().c_str(), GetPlayerName().c_str(), _player->GetGUID().ToString().c_str());
 
     // Client received values update after destroying object
-    // re-register object in m_clientGUIDs to send DestroyObject on next visibility update
-    _player->m_clientGUIDs.insert(objectUpdateRescued.ObjectGUID);
+    // re-register object in _clientGUIDs to send DestroyObject on next visibility update
+    _player->_clientGUIDs.insert(objectUpdateRescued.ObjectGUID);
 }
 
 void WorldSession::HandleSaveCUFProfiles(WorldPackets::Misc::SaveCUFProfiles& packet)

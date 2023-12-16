@@ -17900,7 +17900,7 @@ void Player::SendQuestGiverStatusMultiple()
 {
     WorldPackets::Quest::QuestGiverStatusMultiple response;
 
-    for (auto itr = m_clientGUIDs.begin(); itr != m_clientGUIDs.end(); ++itr)
+    for (auto itr = _clientGUIDs.begin(); itr != _clientGUIDs.end(); ++itr)
     {
         if (itr->IsAnyTypeCreature())
         {
@@ -24034,7 +24034,7 @@ WorldLocation Player::GetStartPosition() const
 
 bool Player::HaveAtClient(Object const* u) const
 {
-    return u == this || m_clientGUIDs.find(u->GetGUID()) != m_clientGUIDs.end();
+    return u == this || _clientGUIDs.find(u->GetGUID()) != _clientGUIDs.end();
 }
 
 bool Player::IsNeverVisibleFor(WorldObject const* seer) const
@@ -24146,7 +24146,7 @@ void Player::UpdateVisibilityOf(WorldObject* target)
                 BeforeVisibilityDestroy<Creature>(target->ToCreature(), this);
 
             target->DestroyForPlayer(this);
-            m_clientGUIDs.erase(target->GetGUID());
+            _clientGUIDs.erase(target->GetGUID());
 
 #ifdef TRINITY_DEBUG
             TC_LOG_DEBUG("maps", "%s out of range for %s. Distance = %f", target->GetGUID().ToString().c_str(), GetGUID().ToString().c_str(), GetDistance(target));
@@ -24158,7 +24158,7 @@ void Player::UpdateVisibilityOf(WorldObject* target)
         if (CanSeeOrDetect(target, false, true))
         {
             target->SendUpdateToPlayer(this);
-            m_clientGUIDs.insert(target->GetGUID());
+            _clientGUIDs.insert(target->GetGUID());
 
 #ifdef TRINITY_DEBUG
             TC_LOG_DEBUG("maps", "%s is visible now for %s. Distance = %f", target->GetGUID().ToString().c_str(), GetGUID().ToString().c_str(), GetDistance(target));
@@ -24174,7 +24174,7 @@ void Player::UpdateVisibilityOf(WorldObject* target)
 
 void Player::UpdateTriggerVisibility()
 {
-    if (m_clientGUIDs.empty())
+    if (_clientGUIDs.empty())
         return;
 
     if (!IsInWorld())
@@ -24182,7 +24182,7 @@ void Player::UpdateTriggerVisibility()
 
     UpdateData udata(GetMapId());
     WorldPacket packet;
-    for (auto itr = m_clientGUIDs.begin(); itr != m_clientGUIDs.end(); ++itr)
+    for (auto itr = _clientGUIDs.begin(); itr != _clientGUIDs.end(); ++itr)
     {
         if (itr->IsCreatureOrVehicle())
         {
@@ -24234,7 +24234,7 @@ void Player::UpdateVisibilityOf(T* target, UpdateData& data, std::set<Unit*>& vi
             BeforeVisibilityDestroy<T>(target, this);
 
             target->BuildOutOfRangeUpdateBlock(&data);
-            m_clientGUIDs.erase(target->GetGUID());
+            _clientGUIDs.erase(target->GetGUID());
 
 #ifdef TRINITY_DEBUG
             TC_LOG_DEBUG("maps", "Object %s (%u) is out of range for %s. Distance = %f", target->GetGUID().ToString().c_str(), target->GetEntry(), GetGUID().ToString().c_str(), GetDistance(target));
@@ -24246,7 +24246,7 @@ void Player::UpdateVisibilityOf(T* target, UpdateData& data, std::set<Unit*>& vi
         if (CanSeeOrDetect(target, false, true))
         {
             target->BuildCreateUpdateBlockForPlayer(&data, this);
-            UpdateVisibilityOf_helper(m_clientGUIDs, target, visibleNow);
+            UpdateVisibilityOf_helper(_clientGUIDs, target, visibleNow);
 
 #ifdef TRINITY_DEBUG
             TC_LOG_DEBUG("maps", "Object %s (%u) is visible now for %s. Distance = %f", target->GetGUID().ToString().c_str(), target->GetEntry(), GetGUID().ToString().c_str(), GetDistance(target));
@@ -25328,12 +25328,12 @@ bool Player::HasQuest(uint32 questID) const
 
 void Player::UpdateForQuestWorldObjects()
 {
-    if (m_clientGUIDs.empty())
+    if (_clientGUIDs.empty())
         return;
 
     UpdateData udata(GetMapId());
     WorldPacket packet;
-    for (auto itr = m_clientGUIDs.begin(); itr != m_clientGUIDs.end(); ++itr)
+    for (auto itr = _clientGUIDs.begin(); itr != _clientGUIDs.end(); ++itr)
     {
         if (itr->IsGameObject())
         {

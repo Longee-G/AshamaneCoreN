@@ -612,7 +612,7 @@ bool Map::AddPlayerToMap(Player* player, bool initPlayer /*= true*/)
     SendInitTransports(player);
 
     if (initPlayer)
-        player->m_clientGUIDs.clear();
+        player->_clientGUIDs.clear();
 
     player->UpdateObjectVisibility(false);
     PhasingHandler::SendToPlayer(player);

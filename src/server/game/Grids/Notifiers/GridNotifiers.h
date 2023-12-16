@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -42,7 +42,7 @@ namespace Trinity
         std::set<Unit*> i_visibleNow;
         GuidUnorderedSet vis_guids;
 
-        VisibleNotifier(Player &player) : i_player(player), i_data(player.GetMapId()), vis_guids(player.m_clientGUIDs) { }
+        VisibleNotifier(Player &player) : i_player(player), i_data(player.GetMapId()), vis_guids(player._clientGUIDs) { }
         template<class T> void Visit(GridRefManager<T> &m);
         void SendToSelf(void);
     };

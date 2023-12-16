@@ -2270,7 +2270,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         WorldLocation GetStartPosition() const;
 
         // currently visible objects at player client
-        GuidUnorderedSet m_clientGUIDs;
+        GuidUnorderedSet _clientGUIDs;
         GuidUnorderedSet m_visibleTransports;
 
         bool HaveAtClient(Object const* u) const;

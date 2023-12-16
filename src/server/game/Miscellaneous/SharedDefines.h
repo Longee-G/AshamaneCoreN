@@ -2447,8 +2447,11 @@ enum GameObjectFlags
     // for object types GAMEOBJECT_TYPE_GARRISON_BUILDING, GAMEOBJECT_TYPE_GARRISON_PLOT and GAMEOBJECT_TYPE_PHASEABLE_MO flag bits 8 to 12 are used as WMOAreaTable::NameSetID
     GO_FLAG_DAMAGED         = 0x00000200,
     GO_FLAG_DESTROYED       = 0x00000400,
+    GO_FLAG_IGNORE_CURRENT_STATE_FOR_USE_SPELL_EXCEPT_UNLOCKED = 0x00040000, // Allows casting use spell without checking current state except unlocking unlocked gamobjets (opening open gameobjects and closing closed gameobjects)
     GO_FLAG_INTERACT_DISTANCE_USES_TEMPLATE_MODEL = 0x00080000, // client checks interaction distance from model sent in SMSG_QUERY_GAMEOBJECT_RESPONSE instead of GAMEOBJECT_DISPLAYID
-    GO_FLAG_MAP_OBJECT      = 0x00100000                    // pre-7.0 model loading used to be controlled by file extension (wmo vs m2)
+    GO_FLAG_MAP_OBJECT      = 0x00100000,                       // pre-7.0 model loading used to be controlled by file extension (wmo vs m2)
+    GO_FLAG_IN_MULTI_USE    = 0x00200000,                       // GO_FLAG_IN_USE equivalent for objects usable by multiple players
+    GO_FLAG_LOW_PRIORITY_SELECTION = 0x04000000,                // client will give lower cursor priority to this object when multiple objects overlap
 };
 
 enum GameObjectDynamicLowFlags
