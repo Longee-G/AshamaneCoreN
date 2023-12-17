@@ -424,6 +424,7 @@ namespace WorldPackets
             void Read() override { }
         };
 
+
         class UndeleteCooldownStatusResponse final : public ServerPacket
         {
         public:
@@ -434,6 +435,43 @@ namespace WorldPackets
             bool OnCooldown    = false; ///<
             uint32 MaxCooldown     = 0; ///< Max. cooldown until next free character restoration. Displayed in undelete confirm message. (in sec)
             uint32 CurrentCooldown = 0; ///< Current cooldown until next free character restoration. (in sec)
+        };
+
+        // 当小退的时候，返回角色列表，客户端请求信息...
+        class GetAccountCharacterList final : public ClientPacket
+        {
+        public:
+            GetAccountCharacterList(WorldPacket&& packet) : ClientPacket(CMSG_GET_ACCOUNT_CHARACTER_LIST, std::move(packet)) { }
+            void Read() override {}
+        };
+
+        // 这个应该是用来读取多个服务器的账号信息的...
+        class GetAccountCharacterListResult final : public ServerPacket
+        {
+            // from 8.0.1
+            struct CharInfo
+            {
+                ObjectGuid WowAccountGuid;
+                ObjectGuid CharacterGuid;
+                uint32 VirtualRealmAddress;
+                uint8 Race;
+                uint8 Class;
+                uint8 Gender;
+                uint8 Level;
+                uint8 NumCharacters;
+                // charNameLength  Bits(6)
+                // realmNameLength Bits(9)
+                // for(NumCharacters)
+                //   std::string characterName
+                //   std::string realmName;             
+            };
+
+        public:
+            GetAccountCharacterListResult() : ServerPacket(SMSG_GET_ACCOUNT_CHARACTER_LIST_RESULT) {}
+            WorldPacket const* Write() override;
+            uint32 token;
+            uint32 numCharacters;
+            bool unkBit = false;
         };
 
         class PlayerLogin final : public ClientPacket

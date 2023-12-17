@@ -1214,6 +1214,12 @@ void WorldSession::HandleQueryCountdownTimer(WorldPackets::Instance::QueryCountd
         bg->QueryCountdownTimer(player, packet.Type);
 }
 
+// Save Enabled Addons
+void WorldSession::HandleReportEnabledAddons(WorldPackets::Misc::ReportEnabledAddons & packet)
+{
+    // TODO:
+}
+
 void WorldSession::HandleSelectFactionOpcode(WorldPackets::Misc::FactionSelect& selectFaction)
 {
     if (_player->getRace() != RACE_PANDAREN_NEUTRAL)

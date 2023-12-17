@@ -371,6 +371,18 @@ namespace WorldPackets
             bool CheckInstance = false;
         };
 
+        // CMSG_REPORT_ENABLED_ADDONS
+        // save enable addons
+        class ReportEnabledAddons final : public ClientPacket
+        {
+        public:
+            ReportEnabledAddons(WorldPacket&& packet) : ClientPacket(CMSG_REPORT_ENABLED_ADDONS, std::move(packet)) { }
+            void Read() override;
+
+            uint32 enabledAddonsCount = 0;
+        };
+
+
         class RequestCemeteryList final : public ClientPacket
         {
         public:

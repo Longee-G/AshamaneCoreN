@@ -627,3 +627,10 @@ void WorldPackets::Character::EngineSurvey::Read()
     _worldPacket >> UnkByte66;
     _worldPacket >> UnkByte67;
 }
+
+WorldPacket const * WorldPackets::Character::GetAccountCharacterListResult::Write()
+{
+
+
+    return &_worldPacket;
+}

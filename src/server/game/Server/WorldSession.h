@@ -219,6 +219,7 @@ namespace WorldPackets
         class CharRaceOrFactionChange;
         class GenerateRandomCharacterName;
         class GetUndeleteCharacterCooldownStatus;
+        class GetAccountCharacterList;
         class ReorderCharacters;
         class UndeleteCharacter;
         class PlayerLogin;
@@ -523,6 +524,7 @@ namespace WorldPackets
         class StartElapsedTimer;
         class OpenAlliedRaceDetailsGiver;
         class RequestConsumptionConversionInfo;
+        class ReportEnabledAddons;
     }
 
     namespace Movement
@@ -1220,6 +1222,8 @@ class TC_GAME_API WorldSession
         void HandleReorderCharacters(WorldPackets::Character::ReorderCharacters& reorderChars);
         void HandleOpeningCinematic(WorldPackets::Misc::OpeningCinematic& packet);
         void HandleGetUndeleteCooldownStatus(WorldPackets::Character::GetUndeleteCharacterCooldownStatus& /*getCooldown*/);
+        void HandleGetAccountCharacterListOpcode(WorldPackets::Character::GetAccountCharacterList& packet);
+
         void HandleUndeleteCooldownStatusCallback(PreparedQueryResult result);
         void HandleCharUndeleteOpcode(WorldPackets::Character::UndeleteCharacter& undeleteInfo);
 
@@ -1782,6 +1786,7 @@ class TC_GAME_API WorldSession
         void HandleEngineSurvey(WorldPackets::Character::EngineSurvey & packet);
         void HandleAdventureJournalStartQuest(WorldPackets::Misc::AdventureJournalStartQuest& packet);
         void HandleQueryCountdownTimer(WorldPackets::Instance::QueryCountdownTimer& packet);
+        void HandleReportEnabledAddons(WorldPackets::Misc::ReportEnabledAddons& packet);
 
         // Toys
         void HandleAddToy(WorldPackets::Toy::AddToy& packet);

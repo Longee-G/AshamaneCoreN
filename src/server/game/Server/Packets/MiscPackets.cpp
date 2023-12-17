@@ -760,3 +760,33 @@ void WorldPackets::Misc::RequestConsumptionConversionInfo::Read()
 {
     _worldPacket >> ID;
 }
+
+struct AddonsStuff
+{
+    bool loaded;
+    bool disabled;
+    std::string name;
+    std::string version;
+};
+
+// TODO: 客户端向服务器报告客户端使用的插件(\Interface\AddOns\)的信息
+void WorldPackets::Misc::ReportEnabledAddons::Read()
+{
+    _worldPacket >> enabledAddonsCount;
+
+    std::vector<AddonsStuff> addons;
+    addons.resize(enabledAddonsCount);
+
+    for (uint32 i = 0; i < enabledAddonsCount; ++i)
+    {
+        uint32 nameLen = _worldPacket.ReadBits(7);
+        uint32 versionLen = _worldPacket.ReadBits(6);
+
+        addons[i].loaded = _worldPacket.ReadBit();
+        addons[i].disabled = _worldPacket.ReadBit();
+        if (nameLen > 1)
+            addons[i].name = _worldPacket.ReadString(nameLen);      // 
+        if(versionLen)
+            addons[i].version = _worldPacket.ReadString(versionLen);
+    }
+}
