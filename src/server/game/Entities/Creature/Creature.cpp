@@ -998,8 +998,6 @@ bool Creature::Create(ObjectGuid::LowType guidlow, Map* map, uint32 entry, float
     return true;
 }
 
-// 在服务器启动的时候，在数据库中的所有creature信息都会被加载到内存中吗？
-
 Creature* Creature::CreateCreature(uint32 entry, Map* map, Position const& pos, uint32 vehId /*= 0*/)
 {
     CreatureTemplate const* cInfo = sObjectMgr->GetCreatureTemplate(entry);
@@ -1586,7 +1584,6 @@ void Creature::LoadEquipment(int8 id, bool force /*= true*/)
         SetVirtualItem(i, einfo->Items[i].ItemId, einfo->Items[i].AppearanceModId, einfo->Items[i].ItemVisual);
 }
 
-// 设置出生时的生命值...
 void Creature::SetSpawnHealth()
 {
     if (!_creatureData)
@@ -1924,6 +1921,7 @@ void Creature::Respawn(bool force)
             SelectLevel();
 
         // 为什么设置了这个状态之后，Creature就不会再调用Update呢？通过什么方法来实现的？
+        // 因为这个状态是一个中间状态，当update的时候会马上切换到其他状态
         setDeathState(JUST_RESPAWNED);
 
         uint32 displayID = GetNativeDisplayId();
@@ -2428,7 +2426,7 @@ bool Creature::LoadCreaturesAddon()
         // 3 ShapeshiftForm     Must be determined/set by shapeshift spell/aura
 
         SetByteValue(UNIT_FIELD_BYTES_2, UNIT_BYTES_2_OFFSET_SHEATH_STATE, uint8(cainfo->bytes2 & 0xFF));
-        //SetByteValue(UNIT_FIELD_BYTES_2, UNIT_BYTES_2_OFFSET_PVP_FLAG, uint8((cainfo->bytes2 >> 8) & 0xFF));
+        SetByteValue(UNIT_FIELD_BYTES_2, UNIT_BYTES_2_OFFSET_PVP_FLAG, uint8((cainfo->bytes2 >> 8) & 0xFF));
         //SetByteValue(UNIT_FIELD_BYTES_2, UNIT_BYTES_2_OFFSET_PET_FLAGS, uint8((cainfo->bytes2 >> 16) & 0xFF));
         SetByteValue(UNIT_FIELD_BYTES_2, UNIT_BYTES_2_OFFSET_PET_FLAGS, 0);
         //SetByteValue(UNIT_FIELD_BYTES_2, UNIT_BYTES_2_OFFSET_SHAPESHIFT_FORM, uint8((cainfo->bytes2 >> 24) & 0xFF));
@@ -2561,18 +2559,13 @@ void Creature::GetRespawnPosition(float &x, float &y, float &z, float* ori, floa
         *dist = 0;
 }
 
-// 这个是一个OnEvent函数，当尸体中的所有物品被拾取完之后调用...
+// Called when finish loot 
 void Creature::AllLootRemovedFromCorpse()
 {
     if (loot.loot_type != LOOT_SKINNING && !IsPet() && GetCreatureTemplate()->SkinLootId && hasLootRecipient())
     {
         if (LootTemplates_Skinning.HaveLootFor(GetCreatureTemplate()->SkinLootId))
-            SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE); // creature 死了之后为什么要设置这个Flag呢？
-
-        // UNIT_FLAG_SKINNABLE 这个flag到底起什么作用呢？
-        // 当客户端进行剥皮(使用剥皮相关的Spell)的时候，需要检查这个Flag，有这个Flag才能进行剥皮？
-        
-
+            SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE); // mark creature as skinnable, clientside use
     }
         
     // seconds from `1970-01-10 00:00:00`
@@ -2583,8 +2576,6 @@ void Creature::AllLootRemovedFromCorpse()
 
     float decayRate = sWorld->getRate(RATE_CORPSE_DECAY_LOOTED);
 
-
-    // 这个标记是不是包含了剥皮，采矿，工程等技能的使用？[Longee]
     // corpse skinnable, but without skinning flag, and then skinned, corpse will despawn next update
     if (loot.loot_type == LOOT_SKINNING)
         _corpseRemoveTime = now;

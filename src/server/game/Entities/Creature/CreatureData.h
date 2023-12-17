@@ -558,7 +558,7 @@ struct CreatureAddon
     uint32 path_id;
     uint32 mount;
     uint32 bytes1;
-    uint32 bytes2;
+    uint32 bytes2;          // what's bytes2
     uint32 emote;
     uint16 aiAnimKit;
     uint16 movementAnimKit;

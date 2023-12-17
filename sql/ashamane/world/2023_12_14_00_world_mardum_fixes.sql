@@ -11,5 +11,7 @@ UPDATE `creature_text` SET `Type`=6, `Emote`=15 WHERE `CreatureID` = 98292;	-- Y
 -- Remove invalid [aura:195821]
 UPDATE `creature_addon` SET `auras`='' WHERE `auras`='195821' AND `guid` IN (20541317, 20541333, 20541320);
 
--- update GameObjects
-UPDATE `gameobject_template` SET `ScriptName`='go_mardum_legion_banner_1' WHERE `entry`=250560;	-- Legion Banner
+-- update GameObject:250560 `Legion Banner`
+SET @GOID := 250560;
+UPDATE `gameobject_template` SET `ScriptName`='go_mardum_legion_banner_1' WHERE `entry`=@GOID;	-- Legion Banner
+UPDATE `gameobject_template_addon` SET `flags`=4 WHERE `entry`=@GOID;	-- update flags: 262144(0x40000) to 4

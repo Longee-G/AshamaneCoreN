@@ -421,7 +421,7 @@ enum OpcodeClient : uint16
     CMSG_LIVE_REGION_ACCOUNT_RESTORE                  = 0x36B9,
     CMSG_LIVE_REGION_CHARACTER_COPY                   = 0x36B8,
     CMSG_LIVE_REGION_GET_ACCOUNT_CHARACTER_LIST       = 0x36B7,
-    CMSG_GET_ACCOUNT_CHARACTER_LIST                   = 0x36B6,
+    
     CMSG_LOADING_SCREEN_NOTIFY                        = 0x35F8,
     CMSG_LOAD_SELECTED_TROPHY                         = 0x32F2,
     CMSG_LOGOUT_CANCEL                                = 0x34DC,
@@ -561,7 +561,8 @@ enum OpcodeClient : uint16
     CMSG_QUERY_GARRISON_CREATURE_NAME                 = 0x3269,
     CMSG_QUERY_GUILD_INFO                             = 0x368D,
     CMSG_QUERY_INSPECT_ACHIEVEMENTS                   = 0x3506,
-    CMSG_QUERY_NEXT_MAIL_TIME                         = 0x353D,
+
+
     CMSG_QUERY_NPC_TEXT                               = 0x3264,
     CMSG_QUERY_PAGE_TEXT                              = 0x3266,
     CMSG_QUERY_PETITION                               = 0x326A,
@@ -604,9 +605,7 @@ enum OpcodeClient : uint16
     CMSG_REPAIR_ITEM                                  = 0x34F0,
     CMSG_REPLACE_TROPHY                               = 0x32F3,
     CMSG_REPOP_REQUEST                                = 0x352A,
-    CMSG_REPORT_ENABLED_ADDONS                        = 0x36FE,
     CMSG_REPORT_CLIENT_VARIABLES                      = 0x36FF,
-    CMSG_REPORT_KEYBINDING_EXECUTION_COUNTS           = 0x3700,
     CMSG_REPORT_PVP_PLAYER_AFK                        = 0x34F8,
     CMSG_REQUEST_ACCOUNT_DATA                         = 0x3695,
     CMSG_REQUEST_AREA_POI_UPDATE                      = 0x3338,
@@ -773,6 +772,15 @@ enum OpcodeClient : uint16
     CMSG_WHO_IS                                       = 0x3680,
     CMSG_WORLD_PORT_RESPONSE                          = 0x35F9,
     CMSG_WRAP_ITEM                                    = 0x3994,
+
+    // unconfirmed messages
+    CMSG_REPORT_ENABLED_ADDONS = 0x36FE,
+    CMSG_REPORT_KEYBINDING_EXECUTION_COUNTS = 0x3700,
+    CMSG_GET_ACCOUNT_CHARACTER_LIST = 0x36B6, // FIXME: stuck by the 3 msgs above
+
+    CMSG_QUERY_NEXT_MAIL_TIME = 0x354D,     // 0x353D -> 0x354D
+    CMSG_UNK_0x353D = 0x353D,
+
 
     CMSG_BF_MGR_ENTRY_INVITE_RESPONSE                 = 0xBADD,
     CMSG_BF_MGR_QUEUE_INVITE_RESPONSE                 = 0xBADD,
