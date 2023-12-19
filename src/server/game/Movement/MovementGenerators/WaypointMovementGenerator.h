@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -57,10 +57,10 @@ class WaypointMovementGenerator<Creature> : public MovementGeneratorMedium< Crea
 {
     public:
         WaypointMovementGenerator(uint32 _path_id = 0, bool _repeating = true)
-            : i_nextMoveTime(0), IsArrivalDone(false), path_id(_path_id), repeating(_repeating), LoadedFromDB(true)  { }
+            : i_nextMoveTime(0), IsArrivalDone(false), _pathId(_path_id), repeating(_repeating), LoadedFromDB(true)  { }
 
         WaypointMovementGenerator(WaypointPath& path, bool _repeating = true)
-            : i_nextMoveTime(0), IsArrivalDone(false), path_id(0), repeating(_repeating), LoadedFromDB(false)
+            : i_nextMoveTime(0), IsArrivalDone(false), _pathId(0), repeating(_repeating), LoadedFromDB(false)
         {
             i_path = &path;
         }
@@ -111,7 +111,7 @@ class WaypointMovementGenerator<Creature> : public MovementGeneratorMedium< Crea
         bool i_recalculateSpeed;
 
         bool IsArrivalDone;
-        uint32 path_id;
+        uint32 _pathId;
         bool repeating;
         bool LoadedFromDB;
 };

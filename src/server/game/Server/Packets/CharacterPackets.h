@@ -438,6 +438,7 @@ namespace WorldPackets
         };
 
         // 当小退的时候，返回角色列表，客户端请求信息...
+        // 返回的是所有区的角色信息？
         class GetAccountCharacterList final : public ClientPacket
         {
         public:

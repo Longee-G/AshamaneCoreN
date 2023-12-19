@@ -32,16 +32,16 @@ void WaypointMovementGenerator<Creature>::LoadPath(Creature* creature)
 {
     if (LoadedFromDB)
     {
-        if (!path_id)
-            path_id = creature->GetWaypointPath();
+        if (!_pathId)
+            _pathId = creature->GetWaypointPath();
 
-        i_path = sWaypointMgr->GetPath(path_id);
+        i_path = sWaypointMgr->GetPath(_pathId);
     }
 
     if (!i_path)
     {
         // No path id found for entry
-        TC_LOG_ERROR("sql.sql", "WaypointMovementGenerator::LoadPath: creature %s (%s DB GUID: " UI64FMTD ") doesn't have waypoint path id: %u", creature->GetName().c_str(), creature->GetGUID().ToString().c_str(), creature->GetSpawnId(), path_id);
+        TC_LOG_ERROR("sql.sql", "WaypointMovementGenerator::LoadPath: creature %s (%s DB GUID: " UI64FMTD ") doesn't have waypoint path id: %u", creature->GetName().c_str(), creature->GetGUID().ToString().c_str(), creature->GetSpawnId(), _pathId);
         return;
     }
 

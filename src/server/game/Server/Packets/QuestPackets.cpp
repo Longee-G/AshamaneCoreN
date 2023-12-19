@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -712,4 +712,9 @@ void WorldPackets::Quest::ChoiceResponse::Read()
 {
     _worldPacket >> ChoiceID;
     _worldPacket >> ResponseID;
+}
+
+void WorldPackets::Quest::QuestGiverCloseQuest::Read()
+{
+    _worldPacket >> QuestID;
 }

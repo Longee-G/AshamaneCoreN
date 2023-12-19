@@ -780,8 +780,8 @@ enum OpcodeClient : uint16
     CMSG_GET_ACCOUNT_CHARACTER_LIST = 0x36B6, // FIXME: stuck by the 3 msgs above
 
 
-    CMSG_QUERY_NEXT_MAIL_TIME = 0x354D,     // 0x353D -> 0x354D
-    CMSG_UNK_0x353D = 0x353D,
+    CMSG_QUERY_NEXT_MAIL_TIME = 0x353D,
+    CMSG_QUEST_GIVER_CLOSE_QUEST = 0x354D,  // unconfirmed
 
 
     CMSG_BF_MGR_ENTRY_INVITE_RESPONSE                 = 0xBADD,

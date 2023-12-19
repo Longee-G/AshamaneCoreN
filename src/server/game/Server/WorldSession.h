@@ -649,6 +649,7 @@ namespace WorldPackets
 
         class QuestConfirmAccept;
         class QuestGiverStatusQuery;
+        class QuestGiverCloseQuest;
         class QuestGiverStatusMultipleQuery;
         class QuestGiverHello;
         class QueryQuestInfo;
@@ -1540,6 +1541,8 @@ class TC_GAME_API WorldSession
         
 
         void HandleQuestgiverStatusQueryOpcode(WorldPackets::Quest::QuestGiverStatusQuery& packet);
+        void HandleQuestgiverCloseQuestOpcode(WorldPackets::Quest::QuestGiverCloseQuest& packet);
+
         void HandleQuestgiverStatusMultipleQuery(WorldPackets::Quest::QuestGiverStatusMultipleQuery& packet);
         void HandleQuestgiverHelloOpcode(WorldPackets::Quest::QuestGiverHello& packet);
         void HandleQuestgiverAcceptQuestOpcode(WorldPackets::Quest::QuestGiverAcceptQuest& packet);

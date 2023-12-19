@@ -449,6 +449,7 @@ WorldPacket const* WorldPackets::Misc::PlayObjectSound::Write()
     _worldPacket << SourceObjectGUID;
     _worldPacket << TargetObjectGUID;
     _worldPacket << Position;
+    _worldPacket << int32(BroadcastTextID);
 
     return &_worldPacket;
 }
@@ -769,7 +770,7 @@ struct AddonsStuff
     std::string version;
 };
 
-// TODO: 客户端向服务器报告客户端使用的插件(\Interface\AddOns\)的信息
+// Report (\Interface\AddOns\) which enabled
 void WorldPackets::Misc::ReportEnabledAddons::Read()
 {
     _worldPacket >> enabledAddonsCount;
@@ -785,7 +786,7 @@ void WorldPackets::Misc::ReportEnabledAddons::Read()
         addons[i].loaded = _worldPacket.ReadBit();
         addons[i].disabled = _worldPacket.ReadBit();
         if (nameLen > 1)
-            addons[i].name = _worldPacket.ReadString(nameLen);      // 
+            addons[i].name = _worldPacket.ReadString(nameLen);
         if(versionLen)
             addons[i].version = _worldPacket.ReadString(versionLen);
     }

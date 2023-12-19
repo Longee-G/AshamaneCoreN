@@ -18,7 +18,7 @@
 /*
  * the Shattered Abyss
  * Map: 1481 Mardum
- * zone: 7705 破碎深渊马顿
+ * Zone: 7705 破碎深渊马顿
  */
 
 
@@ -38,7 +38,7 @@
 
 enum eQuests
 {
-    QUEST_INVASION_BEGIN        = 40077,            // DH 马顿的开始任务
+    QUEST_INVASION_BEGIN        = 40077,            // DH starting quest: The Invasion Begins
     QUEST_ASHTONGUE_FORCES      = 40378,
     QUEST_COILSKAR_FORCES       = 40379,
     QUEST_MEETING_WITH_QUEEN    = 39050,
@@ -99,6 +99,16 @@ enum eEnums
     MAP_MARDUM = 1481,           // Mardum Map Id
     ZONE_MARDUM = 7705,
     STARTING_QUEST = QUEST_INVASION_BEGIN,
+
+    // Kayn Team
+    NPC_Kayn = 93011,
+    NPC_Jayce = 98228,
+    NPC_Allari = 98227,
+
+    // Korvas Team
+    NPC_Korvas = 98292,
+    NPC_Cyana = 98290,
+    NPC_Sevis = 99918,
 };
 
 // starting quest check...
@@ -109,14 +119,8 @@ void SummonKaynSunfuryForStarting(Player* player)
         && !player->HasAura(SPELL_PHASE_MARDUM_WELCOME))
     {
         // Summon a team of NPCs & add phase:170 to player
-        //
-        // npc:93011    Kayn Sunfury
-        // npc:98228    
-        // npc:98227    
-        // npc:98292    Bloodthorn
-        // npc:98290
-        // npc:99918
-        player->CastSpell(player, SPELL_SCENE_MARDUM_WELCOME, true);
+        if (!player->FindNearestCreature({ NPC_Kayn }, 30.f))
+            player->CastSpell(player, SPELL_SCENE_MARDUM_WELCOME, true);
     }
 }
 
@@ -127,6 +131,13 @@ class scene_mardum_welcome : public SceneScript
 {
 public:
     scene_mardum_welcome() : SceneScript("scene_mardum_welcome") { }
+
+    void OnSceneStart(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/)
+    {
+        // Illidan Stormrage says
+        Conversation::CreateConversation(705, player, *player, { player->GetGUID() }, nullptr);
+    }
+
 
     void OnSceneComplete(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/) override
     {
@@ -205,6 +216,16 @@ public:
 };
 
 
+Position const WrathWarriorSpawnPosition = { 1081.9166f, 3183.8716f, 26.335993f };
+Position const KaynDoubleJumpPosition = { 1094.2384f, 3186.058f, 28.81562f };
+
+Position const KaynJumpPos = { 1172.17f, 3202.55f, 54.3479f };
+Position const JayceJumpPos = { 1119.24f, 3203.42f, 38.1061f };
+Position const AllariJumpPos = { 1120.08f, 3197.2f, 36.8502f };
+Position const KorvasJumpPos = { 1117.89f, 3196.24f, 36.2158f };
+Position const SevisJumpPos = { 1120.74f, 3199.47f, 37.5157f };
+Position const CyanaJumpPos = { 1120.34f, 3194.28f, 36.4321f };
+
 
 // npc: 93011 `Kayn SunFury`
 // phaseId: 50/170
@@ -229,10 +250,59 @@ public:
             // 当移除了170 phaseId，Kayn Sunfury将会消失不见，因为它们是和phase:170绑定的..
 
             //player->RemoveAurasDueToSpell(SPELL_PHASE_MARDUM_WELCOME);
+
+            // summon the wrath warrior to begins the invasion
+            //player->CastSpell(WrathWarriorSpawnPosition, 187382, false);
+
+            // 922 无法创建
+            //Conversation::CreateConversation(922, player, *player, { player->GetGUID() }, nullptr);
+
+            // 让Kayn 做什么呢？
+
+            // 播放飞离地面的动作和声音
+            //creature->SendPlaySpellVisualKit(59406, 4, 3000);
+            //creature->PlayObjectSound(53780, creature->GetGUID(), player);
+
+            // 播放跳跃？
+            //creature->SendPlaySpellVisualKit(58110, 0, 0);
+            ///creature->GetMotionMaster()->MoveJump(KaynDoubleJumpPosition, 24.0f, 0.9874f, 3);
+
+            // 测试控制npc移动 ...
+            if (Creature* Korvas = creature->FindNearestCreature({ NPC_Korvas }, 30.0f))
+                Korvas->GetMotionMaster()->MoveCharge(&KorvasJumpPos);
+
+            if (Creature* Cyana = creature->FindNearestCreature({ NPC_Cyana }, 30.f))
+                Cyana->GetMotionMaster()->MoveCharge(&CyanaJumpPos);
+
+            if (Creature* Sevis = creature->FindNearestCreature({ NPC_Sevis }, 30.f))
+                Sevis->GetMotionMaster()->MoveCharge(&SevisJumpPos);
+
         }
 
         return true;
     }
+    /*
+    // Q：通过AI，我们可以得到creature已经移动到某个位置的消息吗？
+    struct npc_kayn_sunfury_welcomeAI : public CreatureAI
+    {
+        npc_kayn_sunfury_welcomeAI(Creature* creature) : CreatureAI(creature)
+        {
+            
+        }
+        void UpdateAI(uint32 diff) override
+        {
+
+        }
+
+
+
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_kayn_sunfury_welcomeAI(creature);
+    }
+    */
 };
 
 // 任务目标，激活会烧掉军团的旗帜..

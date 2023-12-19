@@ -1000,6 +1000,9 @@ class TC_GAME_API QuestScript : public ScriptObject
 
         // Called when a quest objective data change
         virtual void OnQuestObjectiveChange(Player* /*player*/, Quest const* /*quest*/, QuestObjective const& /*objective*/, int32 /*oldAmount*/, int32 /*newAmount*/) { }
+
+        // Called for auto accept quests when player closes quest UI after seeing initial quest details
+        virtual void OnAcknowledgeAutoAccept(Player* player, Quest const* quest) {}
 };
 
 
@@ -1346,6 +1349,7 @@ class TC_GAME_API ScriptMgr
 
         void OnQuestStatusChange(Player* player, Quest const* quest, QuestStatus oldStatus, QuestStatus newStatus);
         void OnQuestObjectiveChange(Player* player, Quest const* quest, QuestObjective const& objective, int32 oldAmount, int32 newAmount);
+        void OnQuestAcknowledgeAutoAccept(Player* player, Quest const* quest);
 
     public: /* ZoneScript */
         ZoneScript* GetZoneScript(uint32 scriptId);

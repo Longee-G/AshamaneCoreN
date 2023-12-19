@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -379,7 +379,8 @@ void MotionMaster::MoveTakeoff(uint32 id, Position const& pos)
     Mutate(new EffectMovementGenerator(id), MOTION_SLOT_ACTIVE);
 }
 
-void MotionMaster::MoveCharge(Position* pos, float speed /*= SPEED_CHARGE*/, uint32 id /*= EVENT_CHARGE*/, bool generatePath /*= false*/,
+// move charge, fast-moving
+void MotionMaster::MoveCharge(Position const* pos, float speed /*= SPEED_CHARGE*/, uint32 id /*= EVENT_CHARGE*/, bool generatePath /*= false*/,
     Unit const* target /*= nullptr*/, Movement::SpellEffectExtraData const* spellEffectExtraData /*= nullptr*/)
 {
     MoveCharge(pos->GetPositionX(), pos->GetPositionY(), pos->GetPositionZ(), speed, id, generatePath, target, spellEffectExtraData);
@@ -476,7 +477,7 @@ void MotionMaster::MoveJump(float x, float y, float z, float o, float speedXY, f
 
     Movement::MoveSplineInit init(_owner);
     init.MoveTo(x, y, z, false);
-    init.SetParabolic(max_height, 0);
+    init.SetParabolic(max_height, 0);   // 设置抛物线
     init.SetVelocity(speedXY);
     if (hasOrientation)
         init.SetFacing(o);

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -36,6 +36,17 @@ namespace WorldPackets
 
             ObjectGuid QuestGiverGUID;
         };
+
+        // [Longee] new msg
+        class QuestGiverCloseQuest final : public ClientPacket
+        {
+        public:
+            QuestGiverCloseQuest(WorldPacket&& packet) : ClientPacket(CMSG_QUEST_GIVER_CLOSE_QUEST, std::move(packet)) { }
+
+            void Read() override;
+            uint32 QuestID;
+        };
+
 
         // Empty packet, server replies with quest giver status of visible creatures
         class QuestGiverStatusMultipleQuery final : public ClientPacket

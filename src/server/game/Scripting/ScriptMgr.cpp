@@ -2729,6 +2729,15 @@ void ScriptMgr::OnQuestObjectiveChange(Player* player, Quest const* quest, Quest
     tmpscript->OnQuestObjectiveChange(player, quest, objective, oldAmount, newAmount);
 }
 
+void ScriptMgr::OnQuestAcknowledgeAutoAccept(Player * player, Quest const * quest)
+{
+    ASSERT(player);
+    ASSERT(quest);
+
+    GET_SCRIPT(QuestScript, quest->GetScriptId(), tmpscript);
+    tmpscript->OnAcknowledgeAutoAccept(player, quest);
+}
+
 SpellScriptLoader::SpellScriptLoader(const char* name)
     : ScriptObject(name)
 {
@@ -2919,6 +2928,7 @@ QuestScript::QuestScript(const char* name)
 {
     ScriptRegistry<QuestScript>::Instance()->AddScript(this);
 }
+
 
 GuildScript::GuildScript(const char* name)
     : ScriptObject(name)

@@ -74,6 +74,19 @@ void WorldSession::HandleQuestgiverStatusQueryOpcode(WorldPackets::Quest::QuestG
     _player->playerTalkClass->SendQuestGiverStatus(questStatus, packet.QuestGiverGUID);
 }
 
+// Called when player close to quest giver
+void WorldSession::HandleQuestgiverCloseQuestOpcode(WorldPackets::Quest::QuestGiverCloseQuest & packet)
+{
+    if (_player->FindQuestSlot(packet.QuestID) >= MAX_QUEST_LOG_SIZE)
+        return;
+
+    Quest const* quest = sObjectMgr->GetQuestTemplate(packet.QuestID);
+    if (!quest)
+        return;
+
+    sScriptMgr->OnQuestAcknowledgeAutoAccept(_player, quest);
+}
+
 void WorldSession::HandleQuestgiverHelloOpcode(WorldPackets::Quest::QuestGiverHello& packet)
 {
     TC_LOG_DEBUG("network", "WORLD: Received CMSG_QUESTGIVER_HELLO %s", packet.QuestGiverGUID.ToString().c_str());

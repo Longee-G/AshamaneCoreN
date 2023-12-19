@@ -59,6 +59,7 @@ public:
             { "cinematic",     rbac::RBAC_PERM_COMMAND_DEBUG_PLAY_CINEMATIC, false, &HandleDebugPlayCinematicCommand,   "" },
             { "movie",         rbac::RBAC_PERM_COMMAND_DEBUG_PLAY_MOVIE,     false, &HandleDebugPlayMovieCommand,       "" },
             { "sound",         rbac::RBAC_PERM_COMMAND_DEBUG_PLAY_SOUND,     false, &HandleDebugPlaySoundCommand,       "" },
+            { "svk",           rbac::RBAC_PERM_COMMAND_DEBUG_PLAY_SVK,       false, &HandleDebugPlaySVKCommand,         "" },
         };
         static std::vector<ChatCommand> debugSendCommandTable =
         {
@@ -223,6 +224,38 @@ public:
             unit->PlayDirectSound(soundId, handler->GetSession()->GetPlayer());
 
         handler->PSendSysMessage(LANG_YOU_HEAR_SOUND, soundId);
+        return true;
+    }
+
+    // Play Spell Visual Kit
+    static bool HandleDebugPlaySVKCommand(ChatHandler* handler, char const* args)
+    {
+        // USAGE: .debug play svk #spell_id
+        // #spell_id - ID decimal number from spell.db2 (1st column)
+        if (!*args)
+        {
+            handler->SendSysMessage(LANG_BAD_VALUE);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        uint32 spellId = atoul(args);
+
+        if (!sSpellStore.LookupEntry(spellId))
+        {
+            handler->PSendSysMessage("Spell: %u NOT exist.", spellId);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        Unit* unit = handler->getSelectedUnit();
+
+        if (unit)
+            unit->SendPlaySpellVisualKit(spellId, 0, 3000);
+        else
+            handler->GetSession()->GetPlayer()->SendPlaySpellVisualKit(spellId, 0, 3000);
+
+        handler->PSendSysMessage("Play Visual Kit of spell: %u", spellId);
         return true;
     }
 

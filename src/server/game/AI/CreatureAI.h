@@ -231,6 +231,13 @@ public:
     // Called when victim entered water and creature can not enter water
     //virtual bool CanReachByRangeAttack(Unit*) { return false; }
 
+
+    // Waypoints system [NYI]
+    //virtual void WaypointStarted(uint32 nodeId, uint32 pathId) {}
+    //virtual void WaypointReached(uint32 nodeId, uint32 pathId) {}
+    //virtual void WaypointPathEnded(uint32 nodeId, uint32 pathId) {}
+
+
     /// == Fields =======================================
 
     virtual void PassengerBoarded(Unit* /*passenger*/, int8 /*seatId*/, bool /*apply*/) { }

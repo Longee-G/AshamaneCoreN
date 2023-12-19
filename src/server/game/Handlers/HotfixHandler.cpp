@@ -33,9 +33,8 @@ void WorldSession::HandleDBQueryBulk(WorldPackets::Hotfix::DBQueryBulk& dbQuery)
     if (!store)
     {
         // 会出现这个错误应该是服务器没有将所用的.db2文件加载导致的...
-
         TC_LOG_ERROR("network", "CMSG_DB_QUERY_BULK: %s requested unsupported unknown hotfix type: %u", GetPlayerInfo().c_str(), dbQuery.TableHash);
-        return;
+        //return;
     }
 
     for (WorldPackets::Hotfix::DBQueryBulk::DBQueryRecord const& record : dbQuery.Queries)
@@ -44,7 +43,7 @@ void WorldSession::HandleDBQueryBulk(WorldPackets::Hotfix::DBQueryBulk& dbQuery)
         dbReply.TableHash = dbQuery.TableHash;
         dbReply.RecordID = record.RecordID;
 
-        if (store->HasRecord(record.RecordID))
+        if (store && store->HasRecord(record.RecordID))
         {
             dbReply.Allow = true;
             dbReply.Timestamp = sWorld->GetGameTime();

@@ -104,6 +104,7 @@ Conversation* Conversation::CreateConversation(uint32 conversationEntry, Unit* c
     return conversation;
 }
 
+
 bool Conversation::Create(ObjectGuid::LowType lowGuid, uint32 conversationEntry, Map* map, Unit* creator, Position const& pos, GuidUnorderedSet&& participants, SpellInfo const* /*spellInfo = nullptr*/)
 {
     ConversationTemplate const* conversationTemplate = sConversationDataStore->GetConversationTemplate(conversationEntry);
@@ -173,6 +174,7 @@ bool Conversation::Create(ObjectGuid::LowType lowGuid, uint32 conversationEntry,
 
     return true;
 }
+
 
 void Conversation::AddActor(ObjectGuid const& actorGuid, uint16 actorIdx)
 {

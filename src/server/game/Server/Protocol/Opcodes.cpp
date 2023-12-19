@@ -685,6 +685,8 @@ void OpcodeTable::Initialize()
     DEFINE_HANDLER(CMSG_QUEST_GIVER_REQUEST_REWARD,                         STATUS_LOGGEDIN,  PROCESS_THREADUNSAFE, &WorldSession::HandleQuestgiverRequestRewardOpcode);
     DEFINE_HANDLER(CMSG_QUEST_GIVER_STATUS_MULTIPLE_QUERY,                  STATUS_LOGGEDIN,  PROCESS_THREADUNSAFE, &WorldSession::HandleQuestgiverStatusMultipleQuery);
     DEFINE_HANDLER(CMSG_QUEST_GIVER_STATUS_QUERY,                           STATUS_LOGGEDIN,  PROCESS_INPLACE,      &WorldSession::HandleQuestgiverStatusQueryOpcode);
+    DEFINE_HANDLER(CMSG_QUEST_GIVER_CLOSE_QUEST, STATUS_LOGGEDIN, PROCESS_INPLACE, &WorldSession::HandleQuestgiverCloseQuestOpcode);
+
     DEFINE_HANDLER(CMSG_QUEST_LOG_REMOVE_QUEST,                             STATUS_LOGGEDIN,  PROCESS_THREADUNSAFE, &WorldSession::HandleQuestLogRemoveQuest);
     DEFINE_HANDLER(CMSG_QUEST_POI_QUERY,                                    STATUS_LOGGEDIN,  PROCESS_THREADUNSAFE, &WorldSession::HandleQuestPOIQuery);
     DEFINE_HANDLER(CMSG_QUEST_PUSH_RESULT,                                  STATUS_LOGGEDIN,  PROCESS_THREADUNSAFE, &WorldSession::HandleQuestPushResult);
@@ -878,7 +880,7 @@ void OpcodeTable::Initialize()
     DEFINE_HANDLER(CMSG_WRAP_ITEM,                                          STATUS_LOGGEDIN,  PROCESS_THREADUNSAFE, &WorldSession::HandleWrapItem);
 
     // new handler    
-    DEFINE_HANDLER(CMSG_GET_ACCOUNT_CHARACTER_LIST, STATUS_AUTHED, PROCESS_THREADUNSAFE, &WorldSession::HandleGetAccountCharacterListOpcode);
+    //DEFINE_HANDLER(CMSG_GET_ACCOUNT_CHARACTER_LIST, STATUS_AUTHED, PROCESS_THREADUNSAFE, &WorldSession::HandleGetAccountCharacterListOpcode);
 
 #undef DEFINE_HANDLER
 

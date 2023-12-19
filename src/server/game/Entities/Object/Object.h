@@ -486,6 +486,7 @@ class TC_GAME_API WorldObject : public Object, public WorldLocation
         void PlayDistanceSound(uint32 soundId, Player* target = nullptr);
         void PlayDirectSound(uint32 soundId, Player* target = nullptr);
         void PlayDirectMusic(uint32 musicId, Player* target = nullptr);
+        void PlayObjectSound(uint32 soundId, ObjectGuid targetObject, Player* target = nullptr, int32 broadcastTextId = 0);
 
         virtual void SaveRespawnTime() { }
         void AddObjectToRemoveList();

@@ -3233,6 +3233,22 @@ void WorldObject::PlayDirectMusic(uint32 musicId, Player* target /*= nullptr*/)
         SendMessageToSet(WorldPackets::Misc::PlayMusic(musicId).Write(), true);
 }
 
+// 播放声音...
+void WorldObject::PlayObjectSound(uint32 soundId, ObjectGuid targetObjectGUID, Player * target, int32 broadcastTextId)
+{
+    WorldPackets::Misc::PlayObjectSound pkt;
+    pkt.TargetObjectGUID = targetObjectGUID;
+    pkt.SourceObjectGUID = GetGUID();
+    pkt.SoundKitID = soundId;
+    pkt.Position = GetPosition();
+    pkt.BroadcastTextID = broadcastTextId;
+
+    if (target)
+        target->SendDirectMessage(pkt.Write());
+    else
+        SendMessageToSet(pkt.Write(), true);
+}
+
 void WorldObject::DestroyForNearbyPlayers()
 {
     if (!IsInWorld())

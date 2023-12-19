@@ -15,3 +15,8 @@ INSERT INTO `command` (`name`, `permission`, `help`) VALUES ('go offset', 852, '
 
 UPDATE `command` SET `help`='Syntax: .gobject info [$entry|$link | guid [$guid|$link]\r \r Query Gameobject information for given gameobject entry, guid or link.\rFor example .gobject info 36\ror .gobject info guid 100' WHERE  `name`='gobject info';
 UPDATE `command` SET `help`='Syntax: .wp show $option\nOptions:\non $pathid (or selected creature with loaded path) - Show path\nfirst $pathid (or selected creature with loaded path) - Show first waypoint in path\nlast $pathid (or selected creature with loaded path) - Show last waypoint in path\noff - Hide all paths\ninfo $selected_waypoint - Show info for selected waypoint.' WHERE  `name`='wp show';
+
+-- Preconditions -- record must be added to `auth.rbac_permissions`
+-- new command `debug play svk #spellid
+DELETE FROM `command` WHERE `name` = 'debug play svk';
+INSERT INTO `command` (`name`, `permission`, `help`) VALUES ('debug play svk', 1000, 'Syntax: .debug play svk #spell_id\nPlay Spell Visual Kit with #spell_id.');
