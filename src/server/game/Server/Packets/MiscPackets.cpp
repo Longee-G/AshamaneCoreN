@@ -787,7 +787,29 @@ void WorldPackets::Misc::ReportEnabledAddons::Read()
         addons[i].disabled = _worldPacket.ReadBit();
         if (nameLen > 1)
             addons[i].name = _worldPacket.ReadString(nameLen);
-        if(versionLen)
+        if(versionLen > 1)
             addons[i].version = _worldPacket.ReadString(versionLen);
+    }
+}
+// 客户端上报的角色的按键绑定信息，需要存储在DB中...
+void WorldPackets::Misc::ReportKeybindingExecutionCounts::Read()
+{
+    keyBindingsCount = _worldPacket.ReadBits(10);
+
+    _worldPacket.ResetBitPos();
+
+    keyBindings.resize(keyBindingsCount);
+
+    for (uint32 i = 0; i < keyBindingsCount; ++i)
+    {
+        uint32 len1 = _worldPacket.ReadBits(6);
+        uint32 len2 = _worldPacket.ReadBits(6);
+
+        _worldPacket.ResetBitPos();
+
+        _worldPacket >> keyBindings[i].executionCount;
+
+        keyBindings[i].key = _worldPacket.ReadString(len1);
+        keyBindings[i].action = _worldPacket.ReadString(len2);
     }
 }

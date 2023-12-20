@@ -382,6 +382,24 @@ namespace WorldPackets
             uint32 enabledAddonsCount = 0;
         };
 
+        class ReportKeybindingExecutionCounts final : public ClientPacket
+        {
+        public:
+            ReportKeybindingExecutionCounts(WorldPacket&& packet) : ClientPacket(CMSG_REPORT_KEYBINDING_EXECUTION_COUNTS, std::move(packet)) { }
+            void Read() override;
+
+            struct Stuff
+            {
+                uint32 executionCount;
+                std::string key;
+                std::string action;
+            };
+
+            uint32 keyBindingsCount = 0;
+            std::vector<Stuff> keyBindings;
+        };
+
+
 
         class RequestCemeteryList final : public ClientPacket
         {

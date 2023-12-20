@@ -1226,6 +1226,7 @@ void GameObject::Respawn()
     }
 }
 
+// 检查GameObject是否被任务所激活
 bool GameObject::ActivateToQuest(Player* target) const
 {
     if (target->HasQuestForGO(GetEntry()))

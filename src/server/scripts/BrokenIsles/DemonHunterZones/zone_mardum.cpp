@@ -51,11 +51,11 @@ enum eQuests
 
 enum eScenes
 {
-    SPELL_SCENE_MARDUM_WELCOME          = 193525,   // 召唤npc凯恩·日怒
-    SPELL_SCENE_MARDUM_LEGION_BANNER    = 191677,   // Banner Planted Client-Side Scene
-    SPELL_SCENE_MARDUM_ASHTONGUE_FORCES = 189261,   // 加入伊利达雷：灰舌—播放场景
-    SPELL_SCENE_MARDUM_COILSKAR_FORCES  = 190793,   // 加入伊利达雷：库斯卡—播放场景
-    SPELL_SCENE_MARDUM_SHIVARRA_FORCES  = 190851,   // 加入伊利达雷：破坏魔—播放场景
+    SPELL_SCENE_MARDUM_WELCOME          = 193525,   // 召唤npc凯恩·日怒                   (sceneId: 1106) 
+    SPELL_SCENE_MARDUM_LEGION_BANNER    = 191677,   // Banner Planted Client-Side Scene    (sceneId: 1116)
+    SPELL_SCENE_MARDUM_ASHTONGUE_FORCES = 189261,   // 加入伊利达雷：灰舌—播放场景           (sceneId: 1053)
+    SPELL_SCENE_MARDUM_COILSKAR_FORCES  = 190793,   // 加入伊利达雷：库斯卡—播放场景      (sceneId: 1077)
+    SPELL_SCENE_MARDUM_SHIVARRA_FORCES  = 190851,   // 加入伊利达雷：破坏魔—播放场景      (sceneId: 1078)
     SPELL_SCENE_MEETING_WITH_QUEEN      = 188539,   // 恶魔蛛后：仪式完成
 };
 
@@ -126,7 +126,6 @@ void SummonKaynSunfuryForStarting(Player* player)
 
 
 // table `scene_template`, sceneId: 1106, ScriptPackageID: 1487
-// 凯恩 日怒带队冲出来...
 class scene_mardum_welcome : public SceneScript
 {
 public:
@@ -145,6 +144,11 @@ public:
         player->AddAura(SPELL_PHASE_MARDUM_WELCOME);
     }
 };
+
+// 7.0 Quest - DH-Mardum (The Invasion Begins: Banner Planted) - ELM [pkgId:1493]
+// sceneId: 1116
+
+
 
 // playerScript 是怎么关联到玩家身上的？
 // 它是一个全局的脚本，注册到ScriptMgr ... 每个player都会触发 ... 不应该写这么多PlayerScript
@@ -181,13 +185,27 @@ public:
         if (player->GetMapId() != MAP_MARDUM || player->GetZoneId() != ZONE_MARDUM)
             return;
 
+        player->RemoveAurasDueToSpell(SPELL_PHASE_171);
+
         // must be in the right area 
         if (player->GetAreaId() != 0 && player->GetAreaId() != ZONE_MARDUM)
             return;
 
+        player->RemoveRewardedQuest(quest->ID);
+
+
         // Recall Kayn
         SummonKaynSunfuryForStarting(player);
     }
+
+    void OnQuestComplete(Player* player, Quest const* quest) override
+    {
+        if (quest && quest->ID == STARTING_QUEST)
+            player->CastSpell(player, SPELL_PHASE_171, true);
+    }
+
+
+
     
     // When new DH character finishes watching the intro movie.
     void OnMovieComplete(Player* player, uint32 movieId) override
@@ -268,6 +286,7 @@ public:
             ///creature->GetMotionMaster()->MoveJump(KaynDoubleJumpPosition, 24.0f, 0.9874f, 3);
 
             // 测试控制npc移动 ...
+            /*
             if (Creature* Korvas = creature->FindNearestCreature({ NPC_Korvas }, 30.0f))
                 Korvas->GetMotionMaster()->MoveCharge(&KorvasJumpPos);
 
@@ -276,6 +295,8 @@ public:
 
             if (Creature* Sevis = creature->FindNearestCreature({ NPC_Sevis }, 30.f))
                 Sevis->GetMotionMaster()->MoveCharge(&SevisJumpPos);
+            */
+
 
         }
 
@@ -318,40 +339,19 @@ public:
             return true;
 
         if (!player->GetQuestObjectiveData(QUEST_INVASION_BEGIN, 1))
-        {
-            // 记录player对于这个go的状态 ..
-            go->SetLootState(GO_ACTIVATED, player);
-
-            // 播放烧掉旗子的动画
             player->CastSpell(player, SPELL_SCENE_MARDUM_LEGION_BANNER, true);
-            player->CastSpell(player, SPELL_PHASE_171, true);       // 进入第2阶段？
-        }
 
         // return true 表示这个回调的结果由AI自己来完成，否则由缺省代码完成
         // 如果由缺省代码完成，就会导致和Go关联的成就条件直接被完成了。
-        // _player->UpdateCriteria(CRITERIA_TYPE_USE_GAMEOBJECT, go->GetEntry());
+        //_player->UpdateCriteria(CRITERIA_TYPE_USE_GAMEOBJECT, go->GetEntry());
+        // return false 表示让缺省代码来完成criteria的更新
 
-        return true;
-    }
-
-    // 给这个Go设置一个AI
-    struct go_mardum_legion_banner_1AI : public GameObjectAI
-    {
-        go_mardum_legion_banner_1AI(GameObject* gob) : GameObjectAI(gob) {}
-        // 什么时候调用Reset的？初始化的时候吗？
-        void Reset() override
-        {
-            go->SetGoState(GO_STATE_ACTIVE);
-            go->SetLootState(GO_NOT_READY);
-        }
-    };
-
-    GameObjectAI* GetAI(GameObject* gob) const override
-    {
-        return new go_mardum_legion_banner_1AI(gob);
+        // Do NOT return true here.
+        return false;
     }
 };
 
+// 灰舌..
 class go_mardum_portal_ashtongue : public GameObjectScript
 {
 public:
@@ -389,26 +389,26 @@ public:
 };
 
 // 200176 - Learn felsaber
-    class spell_learn_felsaber : public SpellScript
+class spell_learn_felsaber : public SpellScript
+{
+    PrepareSpellScript(spell_learn_felsaber);
+
+    void HandleMountOnHit(SpellEffIndex /*effIndex*/)
     {
-        PrepareSpellScript(spell_learn_felsaber);
+        GetCaster()->RemoveAurasDueToSpell(SPELL_PHASE_MARDUM_FELSABBER);
 
-        void HandleMountOnHit(SpellEffIndex /*effIndex*/)
+        // We schedule this to let hover animation pass
+        GetCaster()->GetScheduler().Schedule(Milliseconds(900), [](TaskContext context)
         {
-            GetCaster()->RemoveAurasDueToSpell(SPELL_PHASE_MARDUM_FELSABBER);
+            GetContextUnit()->CastSpell(GetContextUnit(), 200175, true); // Felsaber mount
+        });
+    }
 
-            // We schedule this to let hover animation pass
-            GetCaster()->GetScheduler().Schedule(Milliseconds(900), [](TaskContext context)
-            {
-                GetContextUnit()->CastSpell(GetContextUnit(), 200175, true); // Felsaber mount
-            });
-        }
-
-        void Register() override
-        {
-            OnEffectHitTarget += SpellEffectFn(spell_learn_felsaber::HandleMountOnHit, EFFECT_1, SPELL_EFFECT_APPLY_AURA);
-        }
-    };
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_learn_felsaber::HandleMountOnHit, EFFECT_1, SPELL_EFFECT_APPLY_AURA);
+    }
+};
 
 // 94410 - Allari the Souleater
 struct npc_mardum_allari : public ScriptedAI

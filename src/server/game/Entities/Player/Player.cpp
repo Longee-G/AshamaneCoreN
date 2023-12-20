@@ -15644,6 +15644,7 @@ void Player::ForceCompleteQuest(uint32 quest_id)
         CompleteQuest(quest_id);
 }
 
+// 
 void Player::CompleteQuest(uint32 quest_id)
 {
     if (quest_id)

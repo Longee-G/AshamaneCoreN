@@ -13,5 +13,8 @@ UPDATE `creature_addon` SET `auras`='' WHERE `auras`='195821' AND `guid` IN (205
 
 -- update GameObject:250560 `Legion Banner`
 SET @GOID := 250560;
-UPDATE `gameobject_template` SET `ScriptName`='go_mardum_legion_banner_1' WHERE `entry`=@GOID;	-- Legion Banner
+UPDATE `gameobject_template` SET `ScriptName`='go_mardum_legion_banner_1', `Data10`=40077 WHERE `entry`=@GOID;	-- Legion Banner
 UPDATE `gameobject_template_addon` SET `flags`=4 WHERE `entry`=@GOID;	-- update flags: 262144(0x40000) to 4
+
+-- 
+-- UPDATE `scene_template` SET `ScriptName`='scene_mardum_banner_planted' WHERE `SceneId`=1116 AND `ScriptPackageID`=1493;

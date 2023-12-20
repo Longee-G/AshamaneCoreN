@@ -525,6 +525,7 @@ namespace WorldPackets
         class OpenAlliedRaceDetailsGiver;
         class RequestConsumptionConversionInfo;
         class ReportEnabledAddons;
+        class ReportKeybindingExecutionCounts;
     }
 
     namespace Movement
@@ -1790,6 +1791,7 @@ class TC_GAME_API WorldSession
         void HandleAdventureJournalStartQuest(WorldPackets::Misc::AdventureJournalStartQuest& packet);
         void HandleQueryCountdownTimer(WorldPackets::Instance::QueryCountdownTimer& packet);
         void HandleReportEnabledAddons(WorldPackets::Misc::ReportEnabledAddons& packet);
+        void HandleReportKeybindingExecutionCounts(WorldPackets::Misc::ReportKeybindingExecutionCounts& packet);
 
         // Toys
         void HandleAddToy(WorldPackets::Toy::AddToy& packet);
