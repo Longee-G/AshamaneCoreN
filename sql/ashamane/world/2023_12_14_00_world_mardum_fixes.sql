@@ -16,5 +16,16 @@ SET @GOID := 250560;
 UPDATE `gameobject_template` SET `ScriptName`='go_mardum_legion_banner_1', `Data10`=40077 WHERE `entry`=@GOID;	-- Legion Banner
 UPDATE `gameobject_template_addon` SET `flags`=4 WHERE `entry`=@GOID;	-- update flags: 262144(0x40000) to 4
 
--- 
--- UPDATE `scene_template` SET `ScriptName`='scene_mardum_banner_planted' WHERE `SceneId`=1116 AND `ScriptPackageID`=1493;
+--
+-- quest-40378 Enter the Illidari: Ashtongue
+--
+UPDATE `gameobject_template` SET `ScriptName`='go_mardum_portal_ashtongue' WHERE `entry`=241751;
+UPDATE `gameobject_template` SET `Data10`=0 WHERE `entry`=241751; -- spell: 184561  Data10  NOT found
+
+-- update gameobject script
+UPDATE `gameobject_template` SET `ScriptName`='go_mardum_cage_belath' WHERE `entry`=242989;
+UPDATE `gameobject_template` SET `ScriptName`='go_mardum_cage_cyana' WHERE `entry`=244916;
+UPDATE `gameobject_template` SET `ScriptName`='go_mardum_cage_izal' WHERE `entry`=242987;
+UPDATE `gameobject_template` SET `ScriptName`='go_mardum_cage_mannethrel' WHERE `entry`=242990;
+-- update creature script
+-- UPDATE `creature_template` SET `ScriptName`='npc_mardum_allari' WHERE `entry`=94410;

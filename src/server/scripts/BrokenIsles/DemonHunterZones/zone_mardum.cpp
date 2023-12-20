@@ -47,6 +47,9 @@ enum eQuests
     QUEST_HIDDEN_NO_MORE        = 39495,
     QUEST_ON_FELBAT_WINGS       = 39663,
     QUEST_THE_KEYSTONE          = 38728,
+
+
+    QUEST_SetThemFree = 38759,
 };
 
 enum eScenes
@@ -79,10 +82,10 @@ enum ePhaseSpells
 enum ePhases
 {
     SPELL_PHASE_MARDUM_WELCOME              = SPELL_PHASE_170,
-    SPELL_PHASE_MARDUM_FELSABBER            = SPELL_PHASE_172,
+    SPELL_PHASE_MARDUM_FELSABBER            = SPELL_PHASE_172,      // 邪刃？
 
-    SPELL_PHASE_ILLIDARI_OUTPOST_ASHTONGUE  = SPELL_PHASE_175,
-    SPELL_PHASE_ILLIDARI_OUTPOST_COILSKAR   = SPELL_PHASE_176,
+    SPELL_PHASE_ILLIDARI_OUTPOST_ASHTONGUE  = SPELL_PHASE_175,      // 灰舌前哨？
+    SPELL_PHASE_ILLIDARI_OUTPOST_COILSKAR   = SPELL_PHASE_176,      
     SPELL_PHASE_ILLIDARI_OUTPOST_SHIVARRA   = SPELL_PHASE_177
 };
 
@@ -109,6 +112,18 @@ enum eEnums
     NPC_Korvas = 98292,
     NPC_Cyana = 98290,
     NPC_Sevis = 99918,
+
+
+    // Quest: Set Them Free NPCs
+    NPC_Belath = 94400,
+    NPC_Mannethrel = 93230,
+    NPC_Izal = 93117,
+    NPC_Cyana_2 = 94377,
+       
+    SAY_Belath = 96643,
+    SAY_Mannethrel = 96202,
+    SAY_Izal = 96644,
+    SAY_Cyana_2 = 95081
 };
 
 // starting quest check...
@@ -145,14 +160,10 @@ public:
     }
 };
 
-// 7.0 Quest - DH-Mardum (The Invasion Begins: Banner Planted) - ELM [pkgId:1493]
-// sceneId: 1116
 
 
-
-// playerScript 是怎么关联到玩家身上的？
-// 它是一个全局的脚本，注册到ScriptMgr ... 每个player都会触发 ... 不应该写这么多PlayerScript
-// 而是只有1个 ...
+// FIXME: This is a global Script, every player will trigger this script
+// Perhaps other scripts can be used instead
 class PlayerScript_mardum_welcome_scene_trigger : public PlayerScript
 {
 public:
@@ -165,14 +176,22 @@ public:
         {
             switch (player->GetQuestStatus(STARTING_QUEST))
             {
-                case QUEST_STATUS_REWARDED: // 任务已经完成了
-                    player->RemoveAurasDueToSpell(SPELL_PHASE_MARDUM_WELCOME);
+                case QUEST_STATUS_REWARDED:
+                    player->RemoveAurasDueToSpell(SPELL_PHASE_MARDUM_WELCOME);  // why remove phase 170
                     break;
-                case QUEST_STATUS_NONE: // 没有接任务
+                case QUEST_STATUS_NONE:
                     break;
-                default: // 有任务在身上
+                default: // get quest-40077
                     player->AddAura(SPELL_PHASE_MARDUM_WELCOME);
                     break;
+            }
+
+            // Quest: Enter the Illidari: Ashtongue
+            if (player->GetQuestStatus(40378) == QUEST_STATUS_INCOMPLETE)
+            {
+                // Accept Illidan's gift
+                if (player->GetQuestObjectiveData(40378, 4) && !player->GetQuestObjectiveData(40378, 3))    
+                    player->AddAura(SPELL_PHASE_MARDUM_FELSABBER);
             }
         }
     }
@@ -204,9 +223,6 @@ public:
             player->CastSpell(player, SPELL_PHASE_171, true);
     }
 
-
-
-    
     // When new DH character finishes watching the intro movie.
     void OnMovieComplete(Player* player, uint32 movieId) override
     {
@@ -258,34 +274,6 @@ public:
     {
         if (quest->GetQuestId() == QUEST_INVASION_BEGIN)
         {
-            // 接了任务之后，让npc过了一会之后消失
-
-            // 这个代码会让npc在17s后消失
-            // creature->DespawnOrUnsummon(17s);
-
-            // 移除170 phase？
-
-            // 当移除了170 phaseId，Kayn Sunfury将会消失不见，因为它们是和phase:170绑定的..
-
-            //player->RemoveAurasDueToSpell(SPELL_PHASE_MARDUM_WELCOME);
-
-            // summon the wrath warrior to begins the invasion
-            //player->CastSpell(WrathWarriorSpawnPosition, 187382, false);
-
-            // 922 无法创建
-            //Conversation::CreateConversation(922, player, *player, { player->GetGUID() }, nullptr);
-
-            // 让Kayn 做什么呢？
-
-            // 播放飞离地面的动作和声音
-            //creature->SendPlaySpellVisualKit(59406, 4, 3000);
-            //creature->PlayObjectSound(53780, creature->GetGUID(), player);
-
-            // 播放跳跃？
-            //creature->SendPlaySpellVisualKit(58110, 0, 0);
-            ///creature->GetMotionMaster()->MoveJump(KaynDoubleJumpPosition, 24.0f, 0.9874f, 3);
-
-            // 测试控制npc移动 ...
             /*
             if (Creature* Korvas = creature->FindNearestCreature({ NPC_Korvas }, 30.0f))
                 Korvas->GetMotionMaster()->MoveCharge(&KorvasJumpPos);
@@ -296,34 +284,10 @@ public:
             if (Creature* Sevis = creature->FindNearestCreature({ NPC_Sevis }, 30.f))
                 Sevis->GetMotionMaster()->MoveCharge(&SevisJumpPos);
             */
-
-
         }
 
         return true;
     }
-    /*
-    // Q：通过AI，我们可以得到creature已经移动到某个位置的消息吗？
-    struct npc_kayn_sunfury_welcomeAI : public CreatureAI
-    {
-        npc_kayn_sunfury_welcomeAI(Creature* creature) : CreatureAI(creature)
-        {
-            
-        }
-        void UpdateAI(uint32 diff) override
-        {
-
-        }
-
-
-
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_kayn_sunfury_welcomeAI(creature);
-    }
-    */
 };
 
 // 任务目标，激活会烧掉军团的旗帜..
@@ -351,6 +315,9 @@ public:
     }
 };
 
+// 进入第2个任务
+
+
 // 灰舌..
 class go_mardum_portal_ashtongue : public GameObjectScript
 {
@@ -361,8 +328,8 @@ public:
     {
         if (!player->GetQuestObjectiveData(QUEST_ASHTONGUE_FORCES, 0))
         {
-            player->KilledMonsterCredit(88872); // QUEST_ASHTONGUE_FORCES storageIndex 0 KillCredit
-            player->KilledMonsterCredit(97831); // QUEST_ASHTONGUE_FORCES storageIndex 1 KillCredit
+            player->KilledMonsterCredit(88872); // QUEST_ASHTONGUE_FORCES storageIndex 0 `Ashtongue forces`
+            player->KilledMonsterCredit(97831); // QUEST_ASHTONGUE_FORCES storageIndex 1 `First Summoned Guardian`
             player->CastSpell(player, SPELL_SCENE_MARDUM_ASHTONGUE_FORCES, true);
         }
 
@@ -370,6 +337,7 @@ public:
     }
 };
 
+// 播放灰舌加入的场景动画...
 class scene_mardum_welcome_ashtongue : public SceneScript
 {
 public:
@@ -379,22 +347,25 @@ public:
     {
         if (triggerName == "SEEFELSABERCREDIT")
         {
-            player->KilledMonsterCredit(101534); // QUEST_ASHTONGUE_FORCES storageIndex 1 KillCredit
+            player->KilledMonsterCredit(101534); // QUEST_ASHTONGUE_FORCES storageIndex 4 `See Felsaber -- Hidden Objective`
         }
-        else if (triggerName == "UPDATEPHASE")
+        else if (triggerName == "UPDATEPHASE")  // felsaber step out
         {
+            // AddAura直接添加spell关联的aura，不需要判断spell的cast条件
+            // 添加172相位，这样就可以看到邪刃豹坐骑完成任务目标了..
             player->AddAura(SPELL_PHASE_MARDUM_FELSABBER);
         }
     }
 };
 
-// 200176 - Learn felsaber
+// 200176 - Learn felsaber   学习DH的职业坐骑，邪刃豹
 class spell_learn_felsaber : public SpellScript
 {
     PrepareSpellScript(spell_learn_felsaber);
 
     void HandleMountOnHit(SpellEffIndex /*effIndex*/)
     {
+        // 移除了172 相位，这样就不会一直看到邪刃豹了
         GetCaster()->RemoveAurasDueToSpell(SPELL_PHASE_MARDUM_FELSABBER);
 
         // We schedule this to let hover animation pass
@@ -411,19 +382,26 @@ class spell_learn_felsaber : public SpellScript
 };
 
 // 94410 - Allari the Souleater
+// 这个脚本让玩家不需要和npc交互就可以完成任务--靠近的时候就完成
+// 这个类型的AI是怎么和Creature进行绑定的呢？
+
+// SAI 已经实现了这个功能，不需要这个脚本的支持了
+/*
 struct npc_mardum_allari : public ScriptedAI
 {
     npc_mardum_allari(Creature* creature) : ScriptedAI(creature) { }
-
+    // 当靠近npc的时候，完成quest-40378 最后一步，找到阿莱利
     void MoveInLineOfSight(Unit* unit) override
     {
         if (Player* player = unit->ToPlayer())
             if (player->GetDistance(me) < 5.0f)
                 if (!player->GetQuestObjectiveData(QUEST_ASHTONGUE_FORCES, 2))
-                    player->KilledMonsterCredit(me->GetEntry());
+                    player->KilledMonsterCredit(me->GetEntry());    // QUEST_ASHTONGUE_FORCES storageIndex 2 `Find Allari to the southeast`
     }
 };
-
+*/
+// Jailer Cage
+// GO-244916, NPC-94377
 class go_mardum_cage : public GameObjectScript
 {
 public:
@@ -435,19 +413,41 @@ public:
 
     bool OnGossipHello(Player* player, GameObject* go) override
     {
+        QuestStatus status = player->GetQuestStatus(QUEST_SetThemFree);        
+        if (status == QUEST_STATUS_NONE || status == QUEST_STATUS_REWARDED)
+            return true;
+
+        if (_insideNpc == NPC_Belath && player->GetQuestObjectiveData(QUEST_SetThemFree, 0))
+            return true;
+        else if (_insideNpc == NPC_Mannethrel && player->GetQuestObjectiveData(QUEST_SetThemFree, 1))
+            return true;
+        else if (_insideNpc == NPC_Izal && player->GetQuestObjectiveData(QUEST_SetThemFree, 2))
+            return true;
+        else if (_insideNpc == NPC_Cyana_2 && player->GetQuestObjectiveData(QUEST_SetThemFree, 4))
+            return true;
+
         if (Creature* creature = go->FindNearestCreature(_insideNpc, 10.0f))
         {
-            // TODO : Remove this line when phasing is done properly
-            creature->DestroyForPlayer(player);
-
-            if (TempSummon* personalCreature = player->SummonCreature(_insideNpc, creature->GetPosition(), TEMPSUMMON_TIMED_DESPAWN, 4000, 0, true))
+            if (TempSummon* personalCreature = player->SummonCreature(_insideNpc, creature->GetPosition(), TEMPSUMMON_TIMED_DESPAWN, 2000, 0, true))
             {
                 float x, y, z;
-                personalCreature->GetClosePoint(x, y, z, personalCreature->GetObjectSize() / 3, 50.0f);
+                personalCreature->GetClosePoint(x, y, z, personalCreature->GetObjectSize() / 3, 15.0f);
                 personalCreature->GetMotionMaster()->MovePoint(0, x, y, z);
 
-                // TODO : personalCreature->Talk(0);
+                if (NPC_Belath == _insideNpc)
+                    personalCreature->Say(SAY_Belath);
+                else if (NPC_Mannethrel == _insideNpc)
+                    personalCreature->Say(SAY_Mannethrel);
+                else if (NPC_Izal == _insideNpc)
+                    personalCreature->Say(SAY_Izal);
+                else if(NPC_Cyana_2 == _insideNpc)
+                    personalCreature->Say(SAY_Cyana_2);
             }
+
+            // TODO : Remove this line when phasing is done properly
+            //creature->DestroyForPlayer(player);
+            creature->DespawnOrUnsummon(300ms);
+            creature->SetRespawnTime(3000);
 
             player->KilledMonsterCredit(_killCredit);
         }

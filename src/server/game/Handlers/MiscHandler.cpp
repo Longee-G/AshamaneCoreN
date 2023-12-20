@@ -1220,6 +1220,11 @@ void WorldSession::HandleReportEnabledAddons(WorldPackets::Misc::ReportEnabledAd
     // TODO:
 }
 
+void WorldSession::HandleReportKeybindingExecutionCounts(WorldPackets::Misc::ReportKeybindingExecutionCounts & packet)
+{
+    // TODO:
+}
+
 void WorldSession::HandleSelectFactionOpcode(WorldPackets::Misc::FactionSelect& selectFaction)
 {
     if (_player->getRace() != RACE_PANDAREN_NEUTRAL)
@@ -1243,11 +1248,7 @@ void WorldSession::HandleSelectFactionOpcode(WorldPackets::Misc::FactionSelect& 
         _player->LearnSpell(108131, false);         // Language Pandaren Horde
         _player->CastSpell(_player, 113245, true);  // Faction Choice Trigger Spell: Horde
     }
-
-
-
 }
-
 
 // 客户端向服务器汇报信息 ..
 void WorldSession::HandleEngineSurvey(WorldPackets::Character::EngineSurvey& packet)
