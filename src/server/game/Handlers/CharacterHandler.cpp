@@ -59,7 +59,7 @@
 #include "SystemPackets.h"
 #include "Util.h"
 #include "World.h"
-
+#include "BattlePayMgr.h"
 
 class LoginQueryHolder : public SQLQueryHolder
 {
@@ -292,6 +292,13 @@ bool LoginQueryHolder::Initialize()
     return res;
 }
 
+bool WorldSession::HasAccountAchievement(uint32 achievementId) const
+{
+    // TODO:
+    return true;
+}
+
+
 // Retrieve character data from DB
 void WorldSession::HandleCharEnum(PreparedQueryResult result)
 {
@@ -317,7 +324,7 @@ void WorldSession::HandleCharEnum(PreparedQueryResult result)
 
             WorldPackets::Character::EnumCharactersResult::CharacterInfo& charInfo = charEnum.Characters.back();
 
-            TC_LOG_INFO("network", "Loading char guid %s from account %u.", charInfo.Guid.ToString().c_str(), GetAccountId());
+            //TC_LOG_INFO("server.loading", "Loading char guid %s from account %u.", charInfo.Guid.ToString().c_str(), GetAccountId());
 
             if (!Player::ValidateAppearance(charInfo.Race, charInfo.Class, charInfo.Sex, charInfo.HairStyle, charInfo.HairColor, charInfo.Face, charInfo.FacialHair, charInfo.Skin, charInfo.CustomDisplay))
             {
@@ -364,7 +371,7 @@ void WorldSession::HandleCharEnum(PreparedQueryResult result)
         WorldPackets::Character::EnumCharactersResult::RaceUnlock raceUnlock;
         raceUnlock.RaceID = requirement.first;
         raceUnlock.HasExpansion = GetAccountExpansion() >= requirement.second.Expansion;
-        raceUnlock.HasAchievement = requirement.second.AchievementId == 0 /*|| HasAchievement(requirement.second.AchievementId)*/;
+        raceUnlock.HasAchievement = requirement.second.AchievementId == 0 || HasAccountAchievement(requirement.second.AchievementId);
         charEnum.RaceUnlockData.push_back(raceUnlock);
     }
 
@@ -1217,7 +1224,9 @@ void WorldSession::SendFeatureSystemStatus()
     features.EuropaTicketSystemStatus->SuggestionsEnabled = sWorld->getBoolConfig(CONFIG_SUPPORT_SUGGESTIONS_ENABLED);
 
     features.CharUndeleteEnabled = sWorld->getBoolConfig(CONFIG_FEATURE_SYSTEM_CHARACTER_UNDELETE_ENABLED);
+
     features.BpayStoreEnabled = sWorld->getBoolConfig(CONFIG_FEATURE_SYSTEM_BPAY_STORE_ENABLED);
+    features.BpayStoreAvailable = GetBattlepayMgr()->IsAvailable();
 
     SendPacket(features.Write());
 }

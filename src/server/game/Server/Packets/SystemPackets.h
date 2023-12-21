@@ -88,7 +88,7 @@ namespace WorldPackets
             bool BrowserEnabled                      = false;
             bool BpayStoreAvailable                  = false;
             bool RecruitAFriendSendingEnabled        = false;
-            bool BpayStoreEnabled                    = false;
+            bool BpayStoreEnabled                    = false;       // battle pay
             Optional<SessionAlertConfig> SessionAlert;
             uint32 ScrollOfResurrectionMaxRequestsPerDay = 0;
             bool ScrollOfResurrectionEnabled         = false;

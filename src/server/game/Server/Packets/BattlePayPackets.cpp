@@ -1,4 +1,4 @@
-/*
+﻿/*
 * Copyright (C) 2008-2015 TrinityCore <http://www.trinitycore.org/>
 *
 * This program is free software; you can redistribute it and/or modify it
@@ -480,4 +480,10 @@ WorldPacket const* WorldPackets::BattlePay::BattlePayStartDistributionAssignToTa
     _worldPacket << unkint2;
 
     return &_worldPacket;
+}
+
+
+void WorldPackets::BattlePay::RequestConsumptionConversionInfo::Read()
+{
+    _worldPacket >> ID;
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -39,17 +39,19 @@ WorldPacket const* WorldPackets::Token::UpdateListedAuctionableTokensResponse::W
     return &_worldPacket;
 }
 
+// ??player?????
 void WorldPackets::Token::RequestWowTokenMarketPrice::Read()
 {
     _worldPacket >> UnkInt;
 }
 
+// ??player?????
 WorldPacket const* WorldPackets::Token::WowTokenMarketPriceResponse::Write()
 {
     _worldPacket << CurrentMarketPrice;
     _worldPacket << UnkInt;
     _worldPacket << Result;
-    _worldPacket << UnkInt2;
+    _worldPacket << AuctionDuration;
 
     return &_worldPacket;
 }
@@ -59,4 +61,18 @@ void WorldPackets::Token::WowTokenBuyStart::Read()
     _worldPacket >> UnkInt32;
     _worldPacket >> BuyerGuid;
     _worldPacket >> CurrentMarketPrice;
+}
+
+WorldPacket const * WorldPackets::Token::WowTokenCanVeteranBuyResult::Write()
+{
+    _worldPacket << UnkLong;
+    _worldPacket << UnkInt;
+    _worldPacket << UnkInt2;
+
+    return &_worldPacket;
+}
+
+void WorldPackets::Token::CheckVeteranTokenEligibility::Read()
+{
+    _worldPacket >> UnkInt;
 }

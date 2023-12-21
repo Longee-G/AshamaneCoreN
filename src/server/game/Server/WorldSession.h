@@ -522,8 +522,7 @@ namespace WorldPackets
         class AdventureJournalStartQuest;
         class StartTimer;
         class StartElapsedTimer;
-        class OpenAlliedRaceDetailsGiver;
-        class RequestConsumptionConversionInfo;
+        class OpenAlliedRaceDetailsGiver;        
         class ReportEnabledAddons;
         class ReportKeybindingExecutionCounts;
     }
@@ -768,6 +767,7 @@ namespace WorldPackets
         class UpdateListedAuctionableTokens;
         class RequestWowTokenMarketPrice;
         class WowTokenBuyStart;
+        class CheckVeteranTokenEligibility;
     }
 
     namespace Totem
@@ -842,6 +842,7 @@ namespace WorldPackets
         class BattlePayTrialBoostCharacter;
         class BattlePayPurchaseDetailsResponse;
         class BattlePayPurchaseUnkResponse;
+        class RequestConsumptionConversionInfo;
     }
 
     class Null final : public ClientPacket
@@ -1808,6 +1809,7 @@ class TC_GAME_API WorldSession
         void HandleUpdateListedAuctionableTokens(WorldPackets::Token::UpdateListedAuctionableTokens& updateListedAuctionableTokens);
         void HandleRequestWowTokenMarketPrice(WorldPackets::Token::RequestWowTokenMarketPrice& requestWowTokenMarketPrice);
         void HandleBuyWowTokenStart(WorldPackets::Token::WowTokenBuyStart& wowTokenBuyStart);
+        void HandleCheckVeteranTokenEligibility(WorldPackets::Token::CheckVeteranTokenEligibility& packet);
 
         // Compact Unit Frames (4.x)
         void HandleSaveCUFProfiles(WorldPackets::Misc::SaveCUFProfiles& packet);
@@ -1877,10 +1879,8 @@ class TC_GAME_API WorldSession
         // Challenge Modes
         void HandleChallengeModeStart(WorldPackets::ChallengeMode::StartRequest& /*start*/);
 
-        // TODO:  
-        void HandleRequestConsumptionConversionInfo(WorldPackets::Misc::RequestConsumptionConversionInfo& packet);
-
         // battlepay...
+        void HandleRequestConsumptionConversionInfo(WorldPackets::BattlePay::RequestConsumptionConversionInfo& packet);
         void HandleGetPurchaseListQuery(WorldPackets::BattlePay::GetPurchaseListQuery& packet);
         void HandleBattlePayQueryClassTrialResult(WorldPackets::BattlePay::BattlePayQueryClassTrialResult& packet);
         void HandleBattlePayTrialBoostCharacter(WorldPackets::BattlePay::BattlePayTrialBoostCharacter& packet);
@@ -1893,6 +1893,7 @@ class TC_GAME_API WorldSession
         void HandleBattlePayPurchaseProduct(WorldPackets::BattlePay::PurchaseProduct& packet);
         void HandleBattlePayConfirmPurchase(WorldPackets::BattlePay::ConfirmPurchaseResponse& packet);
         void HandleBattlePayAckFailedResponse(WorldPackets::BattlePay::BattlePayAckFailedResponse& packet);
+
         void SendDisplayPromo(int32 promotionID = 0);
 
         union ConnectToKey
@@ -1963,6 +1964,9 @@ class TC_GAME_API WorldSession
         {
             return _legitCharacters.find(lowGUID) != _legitCharacters.end();
         }
+
+        // Check account achievement
+        bool HasAccountAchievement(uint32 achievementId) const;
 
         // this stores the GUIDs of the characters who can login
         // characters who failed on Player::BuildEnumData shouldn't login

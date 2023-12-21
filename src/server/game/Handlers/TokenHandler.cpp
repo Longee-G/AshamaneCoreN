@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -37,11 +37,21 @@ void WorldSession::HandleRequestWowTokenMarketPrice(WorldPackets::Token::Request
     response.CurrentMarketPrice = 300000000;
     response.UnkInt = requestWowTokenMarketPrice.UnkInt;
     response.Result = TOKEN_RESULT_SUCCESS;
-    //packet.ReadUInt32("UnkInt32");
+    response.AuctionDuration = 10000;   //packet.ReadUInt32("UnkInt32");
 
     SendPacket(response.Write());
 }
 
 void WorldSession::HandleBuyWowTokenStart(WorldPackets::Token::WowTokenBuyStart& /*wowTokenBuyStart*/)
 {
+    // TODO:
+}
+
+void WorldSession::HandleCheckVeteranTokenEligibility(WorldPackets::Token::CheckVeteranTokenEligibility & packet)
+{
+    WorldPackets::Token::WowTokenCanVeteranBuyResult result;
+    result.UnkLong = 0;
+    result.UnkInt = packet.UnkInt;
+    result.UnkInt2 = 1;
+    SendPacket(result.Write());
 }

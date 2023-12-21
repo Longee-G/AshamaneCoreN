@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -64,7 +64,10 @@ void WorldSession::HandleChallengeModeStart(WorldPackets::ChallengeMode::StartRe
     _player->DestroyItem(start.Bag, start.Slot, true);
 }
 
- void WorldSession::HandleRequestConsumptionConversionInfo(WorldPackets::Misc::RequestConsumptionConversionInfo & packet)
- {
-     // TODO: response SMSG_CONSUMPTION_CONVERSION_INFO_RESPONSE or SMSG_CONSUMPTION_CONVERSION_RESULT
- }
+// 请求代币信息？
+void WorldSession::HandleRequestConsumptionConversionInfo(WorldPackets::BattlePay::RequestConsumptionConversionInfo & packet)
+{
+    // TODO: response SMSG_CONSUMPTION_CONVERSION_INFO_RESPONSE or SMSG_CONSUMPTION_CONVERSION_RESULT
+
+
+}

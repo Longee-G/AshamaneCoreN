@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -75,7 +75,7 @@ namespace WorldPackets
             uint64 CurrentMarketPrice   = 0;
             uint32 UnkInt               = 0; // send CMSG_REQUEST_WOW_TOKEN_MARKET_PRICE
             uint32 Result               = 0;
-            uint32 UnkInt2              = 0;
+            uint32 AuctionDuration = 0; // AuctionDuration
         };
 
         class WowTokenBuyStart final : public ClientPacket
@@ -89,6 +89,31 @@ namespace WorldPackets
             ObjectGuid BuyerGuid;
             uint64 CurrentMarketPrice = 0;
         };
+
+        // C->S 是否可以购买代币？
+        class CheckVeteranTokenEligibility final : public ClientPacket
+        {
+        public:
+            CheckVeteranTokenEligibility(WorldPacket&& packet) : ClientPacket(CMSG_CHECK_WOW_TOKEN_VETERAN_ELIGIBILITY, std::move(packet)) { }
+
+            void Read() override;
+
+            uint32 UnkInt = 0;
+        };
+
+
+        // 代币是否可以购买的应当
+        class WowTokenCanVeteranBuyResult final : public ServerPacket
+        {
+        public:
+            WowTokenCanVeteranBuyResult() : ServerPacket(SMSG_WOW_TOKEN_CAN_VETERAN_BUY_RESULT, 8 + 4 * 2) {}
+
+            WorldPacket const* Write() override;
+            uint64 UnkLong = 0;
+            uint32 UnkInt = 0;
+            uint32 UnkInt2 = 0;
+        };
+
     }
 }
 

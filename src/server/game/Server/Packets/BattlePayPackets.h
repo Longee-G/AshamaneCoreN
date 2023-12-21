@@ -1,4 +1,4 @@
-/*
+﻿/*
 * Copyright (C) 2008-2015 TrinityCore <http://www.trinitycore.org/>
 *
 * This program is free software; you can redistribute it and/or modify it
@@ -27,6 +27,17 @@ namespace WorldPackets
     // BattleNet Pay Service ...
     namespace BattlePay
     {
+        // TODO: 这个消息是和BattlePay相关的消息，客户端请求消费所用的代币的信息
+        class RequestConsumptionConversionInfo final : public ClientPacket
+        {
+        public:
+            RequestConsumptionConversionInfo(WorldPacket&& packet) : ClientPacket(CMSG_REQUEST_CONSUMPTION_CONVERSION_INFO, std::move(packet)) { }
+
+            void Read() override;
+            uint32 ID = 0;
+        };
+
+
         class GetProductList final : public ClientPacket
         {
         public:
@@ -352,6 +363,7 @@ namespace WorldPackets
             uint16 ChoiceID = 0;
         };
 
+        // Vas = Value-Added Service
         struct VasPurchaseData
         {
             std::vector<uint32> ItemIDs;

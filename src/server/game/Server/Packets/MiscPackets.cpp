@@ -757,11 +757,6 @@ WorldPacket const* WorldPackets::Misc::OpenAlliedRaceDetailsGiver::Write()
     return &_worldPacket;
 }
 
-void WorldPackets::Misc::RequestConsumptionConversionInfo::Read()
-{
-    _worldPacket >> ID;
-}
-
 struct AddonsStuff
 {
     bool loaded;

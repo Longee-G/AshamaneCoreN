@@ -1,4 +1,4 @@
-/*
+ï»¿/*
 * Copyright (C) 2008-2012 TrinityCore <http://www.trinitycore.org/>
 * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
 *
@@ -38,7 +38,7 @@ using namespace BattlePay;
 
 namespace Tools
 {
-    // »ñÈ¡ÎïÆ·µÄicon id...
+    // è·å–ç‰©å“çš„icon id...
     uint32 GetItemIconFileDataID(uint32 itemID, uint32 appearanceModId = 0)
     {
         if (auto appearance1 = sDB2Manager.GetItemModifiedAppearance(itemID, appearanceModId))
@@ -95,8 +95,8 @@ BattlePayCurrency BattlepayManager::GetShopCurrency() const
 
 bool BattlepayManager::IsAvailable() const
 {
-    if (AccountMgr::IsModeratorAccount(_session->GetSecurity()))
-        return true;
+    //if (AccountMgr::IsModeratorAccount(_session->GetSecurity()))
+    //    return true;
 
     return sWorld->getBoolConfig(CONFIG_FEATURE_SYSTEM_BPAY_STORE_ENABLED);
 }
@@ -175,7 +175,7 @@ void BattlepayManager::ProcessDelivery(Purchase* purchase)
         if (player)
             sCharacterService->ChangeRace(player);
         break;
-    case CharacterBoost:    // ÇëÇóÖ±Éı90¼¶·şÎñ...
+    case CharacterBoost:    // è¯·æ±‚ç›´å‡90çº§æœåŠ¡...
     {
         //if (_session->HasAuthFlag(AT_AUTH_FLAG_90_LVL_UP)) //@send error?
         //    break;
@@ -252,7 +252,7 @@ bool BattlepayManager::AlreadyOwnProduct(uint32 itemId) const
                 return true;
 
 
-        // ÊÕ¼¯ÏµÍ³£¬¼ì²éÍæ¾ß....
+        // æ”¶é›†ç³»ç»Ÿï¼Œæ£€æŸ¥ç©å…·....
         if (_session->GetCollectionMgr()->HasToy(itemId))
             return true;
     }
@@ -336,7 +336,7 @@ auto BattlepayManager::ProductFilter(Product product) -> bool
             if (itemTemplate->GetAllowableRace() && (itemTemplate->GetAllowableRace() & player->getRaceMask()) == 0)
                 return false;
 
-            // TODO: ¼ì²éÕóÓªµÄÉùÍûĞèÇó...
+            // TODO: æ£€æŸ¥é˜µè¥çš„å£°æœ›éœ€æ±‚...
             if (itemTemplate->GetRequiredReputationFaction() &&
                 uint32(player->GetReputationRank(itemTemplate->GetRequiredReputationFaction())) < itemTemplate->GetRequiredReputationRank())
                 return false;
@@ -734,7 +734,7 @@ void BattlepayManager::Update(uint32 diff)
     {
         switch (product.WebsiteType)
         {
-        case CharacterBoost:        // ½ÇÉ«Ö±Éı90¼¶...
+        case CharacterBoost:        // è§’è‰²ç›´å‡90çº§...
         {
             // TODO:
             auto const& player = ObjectAccessor::FindPlayer(data.TargetCharacter);
@@ -743,7 +743,7 @@ void BattlepayManager::Update(uint32 diff)
 
             WorldPackets::BattlePay::BattlePayCharacterUpgradeQueued responseQueued;
             //responseQueued.EquipmentItems = sDB2Manager.GetItemLoadOutItemsByClassID(player->getClass(), 3)[0];
-            // ´ÓCharacterLoadoutÊı¾İÖĞ»ñÈ¡Ö±Éı·şÎñ¸ø½ÇÉ«µÄÎïÆ·  purpose = 3 ?
+            // ä»CharacterLoadoutæ•°æ®ä¸­è·å–ç›´å‡æœåŠ¡ç»™è§’è‰²çš„ç‰©å“  purpose = 3 ?
             
 
 
@@ -795,14 +795,14 @@ void BattlepayManager::Update(uint32 diff)
     }
 }
 
-// »ñÈ¡´ú±ÒµÄÊıÁ¿...
+// è·å–ä»£å¸çš„æ•°é‡...
 uint64 BattlepayManager::GetBalance(uint8 tokenType)
 {
     // TODO:
     return 0;
 }
 
-// »ñÈ¡Player¼ÓÔØµÄÎïÆ·ÁĞ±í... Í¨¹ıplayerµÄÖ°Òµ£¬ÖÖ×åÀ´É¸Ñ¡...
+// è·å–PlayeråŠ è½½çš„ç‰©å“åˆ—è¡¨... é€šè¿‡playerçš„èŒä¸šï¼Œç§æ—æ¥ç­›é€‰...
 void BattlepayManager::GetLoadoutItems(Player * player, std::vector<uint32>& itemList, int8 purpose)
 {
     std::set<uint32> idSet;

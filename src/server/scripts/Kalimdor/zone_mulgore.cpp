@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
@@ -19,6 +19,7 @@
 #include "ScriptMgr.h"
 #include "MotionMaster.h"
 #include "ScriptedCreature.h"
+#include "GameObject.h"
 
 /*######
 ## npc_eagle_spirit
@@ -150,9 +151,44 @@ private:
     ObjectGuid _playerGUID;
 };
 
+
+// quest-24852
+// GO-202112
+class go_quilboar_cage : public GameObjectScript
+{
+public:
+    go_quilboar_cage() : GameObjectScript("go_quilboar_cage") {}
+    bool OnGossipHello(Player* player, GameObject* go) override
+    {
+        if (Creature* creature = go->FindNearestCreature(_npcBrave, 10.f))
+        {
+            if (!creature->IsAlive())
+                return true;           
+
+            if (TempSummon* clone = player->SummonCreature(_npcBrave, creature->GetPosition(), TEMPSUMMON_TIMED_DESPAWN, 2000, 0, true))
+            {
+                float x, y, z;
+                clone->GetClosePoint(x, y, z, clone->GetObjectSize() / 3, 15.0f);
+                clone->GetMotionMaster()->MovePoint(0, x, y, z);
+            }
+
+            uint32 secs = go->GetGOInfo()->goober.autoClose / 1000;
+            creature->DespawnOrUnsummon(0ms, Seconds(secs+3));
+
+            return false;
+        }
+
+        return true;
+    }
+private:
+    uint32 _npcBrave = 38345;   // `captured brave`
+};
+
 void AddSC_mulgore()
 {
     RegisterCreatureAI(npc_eagle_spirit);
     RegisterSpellScript(spell_mulgore_funeral_offering);
     RegisterCreatureAI(npc_agitated_earth_spirit);
+
+    new go_quilboar_cage();
 }

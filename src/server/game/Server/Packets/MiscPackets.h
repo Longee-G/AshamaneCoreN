@@ -1060,15 +1060,6 @@ namespace WorldPackets
             uint32 RaceId;
         };
 
-        // TODO: 这个消息是和BattlePay相关的消息，客户端请求消费所用的代币的信息
-        class RequestConsumptionConversionInfo final : public ClientPacket
-        {
-        public:
-            RequestConsumptionConversionInfo(WorldPacket&& packet) : ClientPacket(CMSG_REQUEST_CONSUMPTION_CONVERSION_INFO, std::move(packet)) { }
-
-            void Read() override;
-            uint32 ID = 0;
-        };
     }
 }
 

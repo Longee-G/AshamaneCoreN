@@ -201,29 +201,48 @@ void WorldSession::HandleGetPurchaseListQuery(WorldPackets::BattlePay::GetPurcha
     SendPacket(resp.Write());
 }
 
+// 有可能是用来购买角色升级服务的...
 void WorldSession::HandleBattlePayQueryClassTrialResult(WorldPackets::BattlePay::BattlePayQueryClassTrialResult & packet)
 {
+    if (!GetBattlepayMgr()->IsAvailable())
+        return;
+
     // TODO:
 }
 
+// 开始进行角色升级...
 void WorldSession::HandleBattlePayTrialBoostCharacter(WorldPackets::BattlePay::BattlePayTrialBoostCharacter & packet)
 {
+    if (!GetBattlepayMgr()->IsAvailable())
+        return;
     // TODO:
 }
 
 void WorldSession::HandleBattlePayPurchaseUnkResponse(WorldPackets::BattlePay::BattlePayPurchaseUnkResponse & packet)
 {
-    // TODO:
+    auto purchase = GetBattlepayMgr()->GetPurchase();
+    SendPurchaseUpdate(this, *purchase, BattlePay::Error::Ok);
 }
 
+// 
 void WorldSession::HandleBattlePayPurchaseDetailsResponse(WorldPackets::BattlePay::BattlePayPurchaseDetailsResponse & packet)
 {
-    // TODO:
+    WorldPackets::BattlePay::BattlePayPurchaseUnk resp;
+    resp.UnkInt = 0;
+    resp.Key = "";
+    resp.UnkByte = packet.UnkByte;
+    SendPacket(resp.Write());   
 }
 
 void WorldSession::HandleUpdateVasPurchaseStates(WorldPackets::BattlePay::UpdateVasPurchaseStates & packet)
 {
-    // TODO:
+    if (!GetBattlepayMgr()->IsAvailable())
+        return;
+    // TODO: `SMSG_ENUM_VAS_PURCHASE_STATES_RESPONSE`
+    //
+    WorldPackets::BattlePay::BattlePayVasPurchaseList resp;
+
+    SendPacket(resp.Write());
 }
 
 void WorldSession::HandleGetProductList(WorldPackets::BattlePay::GetProductList & packet)
@@ -254,18 +273,27 @@ void WorldSession::HandleBattlePayPurchaseProduct(WorldPackets::BattlePay::Purch
     MakePurchase(packet.TargetCharacter, packet.ClientToken, packet.ProductID, this);
 }
 
+// 确认购买
 void WorldSession::HandleBattlePayConfirmPurchase(WorldPackets::BattlePay::ConfirmPurchaseResponse & packet)
 {
-    // TODO:
+    if (!GetBattlepayMgr()->IsAvailable())
+        return;
+    // TODO:    
 }
 
 void WorldSession::HandleBattlePayAckFailedResponse(WorldPackets::BattlePay::BattlePayAckFailedResponse & packet)
 {
+    if (!GetBattlepayMgr()->IsAvailable())
+        return;
     // TODO:
 }
 
 // Promotion 推广消息...
 void WorldSession::SendDisplayPromo(int32 promotionID)
 {
-    // TODO:
+    SendPacket(WorldPackets::BattlePay::DisplayPromotion(promotionID).Write());
+
+    if (!GetBattlepayMgr()->IsAvailable())
+        return;
+    
 }

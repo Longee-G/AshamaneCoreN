@@ -474,7 +474,9 @@ public:
 
         // FIXME: turn op can NOT take effect immediately
         // so i add this...
-        object->SetRespawnTime(3);
+        object->SetRespawnTime(3);        
+
+
 
         object->DestroyForNearbyPlayers();
         object->UpdateObjectVisibility();
