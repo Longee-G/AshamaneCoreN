@@ -97,9 +97,9 @@ void WorldSession::SendFeatureSystemStatusGlueScreen()
 {
     WorldPackets::System::FeatureSystemStatusGlueScreen features;
 
-    features.BpayStoreAvailable = GetBattlepayMgr()->IsAvailable();   // 开启战网付费功能...
-    features.BpayStoreDisabledByParentalControls = false;
+    features.BpayStoreAvailable = GetBattlepayMgr()->IsAvailable();
     features.BpayStoreEnabled = sWorld->getBoolConfig(CONFIG_FEATURE_SYSTEM_BPAY_STORE_ENABLED);
+    features.BpayStoreDisabledByParentalControls = false;
 
     features.CharUndeleteEnabled = sWorld->getBoolConfig(CONFIG_FEATURE_SYSTEM_CHARACTER_UNDELETE_ENABLED);
     SendPacket(features.Write());

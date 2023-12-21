@@ -1064,8 +1064,6 @@ void WorldSession::InitializeSessionCallback(SQLQueryHolder* realmHolder, SQLQue
     SetInQueue(false);
     ResetTimeOutTime();
 
-    // 客户端请求进入游戏时发送信息给客户端....
-
     SendSetTimeZoneInformation();
     SendFeatureSystemStatusGlueScreen();
     SendClientCacheVersion(sWorld->getIntConfig(CONFIG_CLIENTCACHE_VERSION));

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -26,4 +26,11 @@ void WorldPackets::Warden::WardenData::Read()
         Data.resize(size);
         _worldPacket.read(Data.contents(), size);
     }
+}
+
+WorldPacket const* WorldPackets::Warden::Warden3Enabled::Write()
+{
+    _worldPacket << UnkInt;
+
+    return &_worldPacket;
 }

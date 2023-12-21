@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -33,6 +33,17 @@ namespace WorldPackets
 
             ByteBuffer Data;
         };
+
+        class Warden3Enabled final : public ServerPacket
+        {
+        public:
+            Warden3Enabled(uint32 unkInt) : ServerPacket(SMSG_WARDEN3_ENABLED, 4), UnkInt(unkInt) { }
+
+            WorldPacket const* Write() override;
+
+            uint32 UnkInt = 0;
+        };
+
     }
 }
 

@@ -898,8 +898,9 @@ enum OpcodeServer : uint16
     SMSG_BATTLE_PAY_VAS_PURCHASE_STARTED              = 0x2832,
     SMSG_BATTLE_PAY_VAS_REALM_LIST                    = 0x2831,
     SMSG_BATTLE_PAY_VAS_TRANSFER_QUEUE_STATUS         = 0x2858,
-    SMSG_BATTLE_PAY_UNK                               = 0x285F,     // or `SMSG_WARDEN3_ENABLED`
     // <WIP> bpay
+
+    
 
     SMSG_BATTLE_PETS_HEALED                           = 0x2609,
     SMSG_BATTLE_PET_CAGE_DATE_ERROR                   = 0x26A0,
@@ -1749,7 +1750,11 @@ enum OpcodeServer : uint16
     SMSG_VOID_TRANSFER_RESULT                         = 0x25DE,
     SMSG_WAIT_QUEUE_FINISH                            = 0x256E,
     SMSG_WAIT_QUEUE_UPDATE                            = 0x256D,
-    SMSG_WARDEN_DATA                                  = 0x2576,
+
+    SMSG_WARDEN_DATA                                  = 0x2576, // `SMSG_WARDEN3_DATA`
+    SMSG_WARDEN3_ENABLED                              = 0x285F,
+
+
     SMSG_WARGAME_REQUEST_SUCCESSFULLY_SENT_TO_OPPONENT = 0x25B4,
     SMSG_WEATHER                                      = 0x26CF,
     SMSG_WEEKLY_SPELL_USAGE                           = 0x2C18,

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2012 TrinityCore <http://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -176,7 +176,6 @@ void BattlePayDataStoreMgr::LoadProduct()
         _products.insert(std::make_pair(product.ProductID, product));
     } while (result->NextRow());
 
-    // ??????PQuery????????Query?
     result = WorldDatabase.PQuery("SELECT ID, ProductID, ItemID, Quantity, DisplayID, PetResult FROM battlepay_product_item");
     if (!result)
         return;
@@ -358,7 +357,7 @@ BattlePay::Product const& BattlePayDataStoreMgr::GetProduct(uint32 productID) co
 {
     if (ProductExist(productID))
         return _products.at(productID);
-    return{};   // TODO:
+    return _temp;
 }
 
 BattlePay::DisplayInfo const* BattlePayDataStoreMgr::GetDisplayInfo(uint32 id) const

@@ -159,6 +159,7 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::BattlePay::BattlePayPurch
     return data;
 }
 
+// 购买清单
 WorldPacket const* WorldPackets::BattlePay::PurchaseListResponse::Write()
 {
     _worldPacket << Result;
@@ -462,13 +463,6 @@ void WorldPackets::BattlePay::BattlePayPurchaseUnkResponse::Read()
 WorldPacket const* WorldPackets::BattlePay::DisplayPromotion::Write()
 {
     _worldPacket << PromotionID;
-
-    return &_worldPacket;
-}
-
-WorldPacket const* WorldPackets::BattlePay::BattlepayUnk::Write()
-{
-    _worldPacket << UnkInt;
 
     return &_worldPacket;
 }

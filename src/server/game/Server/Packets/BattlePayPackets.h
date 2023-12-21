@@ -502,15 +502,6 @@ namespace WorldPackets
             uint32 PromotionID = 0;
         };
 
-        class BattlepayUnk final : public ServerPacket
-        {
-        public:
-            BattlepayUnk(uint32 unkInt) : ServerPacket(SMSG_BATTLE_PAY_UNK, 4), UnkInt(unkInt) { }
-
-            WorldPacket const* Write() override;
-
-            uint32 UnkInt = 0;
-        };
 
         class BattlePayStartDistributionAssignToTargetResponse final : public ServerPacket
         {

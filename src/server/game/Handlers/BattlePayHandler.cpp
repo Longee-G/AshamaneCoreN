@@ -236,8 +236,6 @@ void WorldSession::HandleBattlePayPurchaseDetailsResponse(WorldPackets::BattlePa
 
 void WorldSession::HandleUpdateVasPurchaseStates(WorldPackets::BattlePay::UpdateVasPurchaseStates & packet)
 {
-    if (!GetBattlepayMgr()->IsAvailable())
-        return;
     // TODO: `SMSG_ENUM_VAS_PURCHASE_STATES_RESPONSE`
     //
     WorldPackets::BattlePay::BattlePayVasPurchaseList resp;
@@ -247,17 +245,12 @@ void WorldSession::HandleUpdateVasPurchaseStates(WorldPackets::BattlePay::Update
 
 void WorldSession::HandleGetProductList(WorldPackets::BattlePay::GetProductList & packet)
 {
-    if (!GetBattlepayMgr()->IsAvailable())
-        return;
-
     GetBattlepayMgr()->SendProductList();
     GetBattlepayMgr()->SendPointsBalance();
 }
 
 void WorldSession::HandleBattlePayDistributionAssign(WorldPackets::BattlePay::DistributionAssignToTarget & packet)
 {
-    if (!GetBattlepayMgr()->IsAvailable())
-        return;
     GetBattlepayMgr()->AssignDistributionToCharacter(packet.TargetCharacter, packet.DistributionID,
         packet.ProductID, packet.SpecializationID, packet.ChoiceID);
 }
