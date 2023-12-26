@@ -232,8 +232,8 @@ Player::Player(WorldSession* session) : Unit(true), _sceneMgr(this), _archaeolog
     _lastTick = _loginTime;
     _playedTime[PLAYED_TIME_TOTAL] = 0;
     _playedTime[PLAYED_TIME_LEVEL] = 0;
-    _weaponProficiency = 0;        // 武器精通，标记是否能使用某类武器
-    _armorProficiency = 0;         // 护甲精通
+    _weaponProficiency = 0;
+    _armorProficiency = 0;
     _canParry = false;
     _canBlock = false;
     _canTitanGrip = false;
@@ -279,7 +279,7 @@ Player::Player(WorldSession* session) : Unit(true), _sceneMgr(this), _archaeolog
         _baseRatingValue[i] = 0;
 
     _baseSpellPower = 0;
-    _baseManaRegen = 0;        // 法力回复值？每秒回魔？
+    _baseManaRegen = 0;
     _baseHealthRegen = 0;
     _spellPenetrationItemMod = 0;
 
@@ -2231,7 +2231,6 @@ bool Player::CanInteractWithQuestGiver(Object* questGiver) const
     return false;
 }
 
-// 检查player是否可以和npc进行交互...
 Creature* Player::GetNPCIfCanInteractWith(ObjectGuid const& guid, uint64 npcflagmask) const
 {
     // unit checks
@@ -2241,7 +2240,7 @@ Creature* Player::GetNPCIfCanInteractWith(ObjectGuid const& guid, uint64 npcflag
     if (!IsInWorld())
         return nullptr;
 
-    if (IsInFlight())           // 为什么飞行状态不让和npc交互呢？
+    if (IsInFlight())
         return nullptr;
 
     // exist (we need look pets also for some interaction (quest/etc)
@@ -6190,7 +6189,6 @@ void Player::SendDirectMessage(WorldPacket const* data) const
     _session->SendPacket(data);
 }
 
-// 让客户端触发指定的剧情动画... 这个类型剧情动画应该是movie的升级版本，有更多的控制参数
 // from `CinematicSequences.db2`
 void Player::SendCinematicStart(uint32 CinematicSequenceId) const
 {
@@ -6201,7 +6199,7 @@ void Player::SendCinematicStart(uint32 CinematicSequenceId) const
         _cinematicMgr->SetActiveCinematicCamera(sequence->Camera[0]);
 }
 
-// where can i find movieID? ==> `movie.db2`
+// movieID from `movie.db2`
 void Player::SendMovieStart(uint32 movieId)
 {
     SetMovie(movieId);
@@ -10320,9 +10318,6 @@ void Player::SetInventorySlotCount(uint8 slots)
     SetByteValue(PLAYER_FIELD_BYTES2, PLAYER_FIELD_BYTES_2_OFFSET_NUM_BACKPACK_SLOTS, slots);
 }
 
-// 检查player是否有指定的item
-// inBankAlso 是否检查player的银行
-// 是否检查player的虚空仓库，
 bool Player::HasItemCount(uint32 item, uint32 count, bool inBankAlso) const
 {
     uint32 tempcount = 0;
@@ -15483,7 +15478,7 @@ bool Player::CanRewardQuest(Quest const* quest, uint32 reward, bool msg)
     return true;
 }
 
-// player接一个任务到身上...
+// Add quest to player's Log
 void Player::AddQuest(Quest const* quest, Object* questGiver)
 {
     uint16 log_slot = FindQuestSlot(0);
@@ -16704,7 +16699,6 @@ bool Player::CanShareQuest(uint32 quest_id) const
     return qInfo && qInfo->HasFlag(QUEST_FLAGS_SHARABLE) && IsActiveQuest(quest_id);
 }
 
-// 发送定制的聊天消息...
 void Player::SendCustomMessage(std::string const & n)
 {
     std::ostringstream msg;
@@ -16821,7 +16815,6 @@ void Player::SendQuestUpdate(uint32 questId)
     // Q:是否是这个接口导致了player切换自己当前的相位...??
     // A: 这个接口会重新检查一下phase关联的条件，看看player当前拥有的phase时候仍然满足条件...
     // 那么这个接口只在任务发生变化的时候调用... 
-
     PhasingHandler::OnConditionChange(this);
 }
 
@@ -17639,7 +17632,7 @@ int32 Player::GetQuestObjectiveCounter(uint32 objectiveId) const
 
     return GetQuestObjectiveData(quest, obj->StorageIndex);
 }
-// 检查指定的任务目标是否完成..
+
 bool Player::IsQuestObjectiveComplete(QuestObjective const& objective) const
 {
     Quest const* quest = sObjectMgr->GetQuestTemplate(objective.QuestID);
@@ -18935,11 +18928,9 @@ void Player::_LoadCUFProfiles(PreparedQueryResult result)
     } while (result->NextRow());
 }
 
-// 从数据库中加载`宠物对战`数据...
 void Player::_LoadBattlePets(PreparedQueryResult result)
 {
     // TODO:
-
 }
 
 bool Player::isAllowedToLoot(const Creature* creature)
@@ -22710,7 +22701,6 @@ void Player::SendSpellModifiers() const
 }
 
 // send Proficiency
-// 熟练度相关？ 啥熟练度？
 void Player::SendProficiency(ItemClass itemClass, uint32 itemSubclassMask) const
 {
     WorldPackets::Item::SetProficiency packet;
@@ -28758,9 +28748,9 @@ bool Player::AddBattlePetWithSpeciesId(BattlePetSpeciesEntry const * species, ui
     pet->Level = 1;
     pet->Exp = 0;
 
-    // 随机获得pet的breed值
     pet->Breed = sBattlePetDataStore->RollPetBreed(species->ID);
     pet->Quality = sBattlePetDataStore->GetDefaultPetQuality(species->ID);
+
     // 根据宠物的breed（相性）和quality（品质）计算出宠物的属性...
     pet->CalculateStats();
 

@@ -39,6 +39,7 @@
 #include "WorldPacket.h"
 #include "WorldQuestMgr.h"
 
+// ??????????...
 void WorldSession::HandleQuestgiverStatusQueryOpcode(WorldPackets::Quest::QuestGiverStatusQuery& packet)
 {
     uint32 questStatus = DIALOG_STATUS_NONE;
@@ -87,6 +88,7 @@ void WorldSession::HandleQuestgiverCloseQuestOpcode(WorldPackets::Quest::QuestGi
     sScriptMgr->OnQuestAcknowledgeAutoAccept(_player, quest);
 }
 
+// 
 void WorldSession::HandleQuestgiverHelloOpcode(WorldPackets::Quest::QuestGiverHello& packet)
 {
     TC_LOG_DEBUG("network", "WORLD: Received CMSG_QUESTGIVER_HELLO %s", packet.QuestGiverGUID.ToString().c_str());
@@ -230,7 +232,8 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode(WorldPackets::Quest::QuestG
 
 void WorldSession::HandleQuestgiverQueryQuestOpcode(WorldPackets::Quest::QuestGiverQueryQuest& packet)
 {
-    TC_LOG_DEBUG("network", "WORLD: Received CMSG_QUESTGIVER_QUERY_QUEST QuestGiverGUID = %s, QuestID = %u, RespondToGiver = %u", packet.QuestGiverGUID.ToString().c_str(), packet.QuestID, packet.RespondToGiver);
+    TC_LOG_DEBUG("network", "WORLD: Received CMSG_QUESTGIVER_QUERY_QUEST QuestGiverGUID = %s, QuestID = %u, RespondToGiver = %u",
+        packet.QuestGiverGUID.ToString().c_str(), packet.QuestID, packet.RespondToGiver);
 
     // Verify that the guid is valid and is a questgiver or involved in the requested quest
     Object* object = ObjectAccessor::GetObjectByTypeMask(*_player, packet.QuestGiverGUID, TYPEMASK_UNIT | TYPEMASK_GAMEOBJECT | TYPEMASK_ITEM);
@@ -263,9 +266,19 @@ void WorldSession::HandleQuestQueryOpcode(WorldPackets::Quest::QueryQuestInfo& p
         _player->playerTalkClass->SendQuestQueryResponse(quest);
     else
     {
-        WorldPackets::Quest::QueryQuestInfoResponse response;
-        response.QuestID = packet.QuestID;
-        SendPacket(response.Write());
+        // ???????????????questId?????????????
+
+        // QuestId = QuestSortID
+        // ??????packet.QuestID > 0 ?????? AreaId
+        // ??packet.QuestID < 0 ?????? SortID..   ??? `QuestSort.db2`,??????????
+        // QuestSortID ??????????
+        // 
+        // ???????????????,??????????????
+
+        // TODO: ??????
+        //WorldPackets::Quest::QueryQuestInfoResponse response;
+        //response.QuestID = packet.QuestID;
+        //SendPacket(response.Write());
     }
 }
 

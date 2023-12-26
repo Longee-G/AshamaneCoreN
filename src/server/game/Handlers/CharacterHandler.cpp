@@ -1008,7 +1008,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
             // 2. playCinematic         class based
             // 3. playScene             race based
             if (pCurrChar->getClass() == CLASS_DEMON_HUNTER) /// @todo: find a more generic solution
-                pCurrChar->SendMovieStart(/*469*/497); // 478(intro)->497(escape)
+                pCurrChar->SendMovieStart(/*469*/478); // 478(intro)->497(escape)
             else if (cEntry->CinematicSequenceID) 
                 pCurrChar->SendCinematicStart(cEntry->CinematicSequenceID);
             else if (ChrRacesEntry const* rEntry = sChrRacesStore.LookupEntry(pCurrChar->getRace()))

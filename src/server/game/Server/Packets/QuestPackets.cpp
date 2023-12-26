@@ -50,7 +50,8 @@ void WorldPackets::Quest::QuestGiverHello::Read()
 void WorldPackets::Quest::QueryQuestInfo::Read()
 {
     _worldPacket >> QuestID;
-    _worldPacket >> QuestGiver;
+    //_worldPacket >> QuestGiver;
+    _worldPacket >> Flag;
 }
 
 WorldPacket const* WorldPackets::Quest::QueryQuestInfoResponse::Write()

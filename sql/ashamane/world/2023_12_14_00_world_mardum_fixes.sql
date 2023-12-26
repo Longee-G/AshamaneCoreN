@@ -29,3 +29,10 @@ UPDATE `gameobject_template` SET `ScriptName`='go_mardum_cage_izal' WHERE `entry
 UPDATE `gameobject_template` SET `ScriptName`='go_mardum_cage_mannethrel' WHERE `entry`=242990;
 -- update creature script
 -- UPDATE `creature_template` SET `ScriptName`='npc_mardum_allari' WHERE `entry`=94410;
+
+-- go_mardum_portal_coilskar
+UPDATE `gameobject_template` SET `ScriptName`='go_mardum_portal_coilskar' WHERE `entry`=241756;
+UPDATE `gameobject_template` SET `ScriptName`='go_meeting_with_queen_ritual' WHERE `entry`=243335;
+UPDATE `gameobject_template` SET `ScriptName`='go_mardum_portal_shivarra' WHERE `entry`=241757;
+UPDATE `gameobject_template` SET `ScriptName`='go_mardum_illidari_banner' WHERE `entry` IN (243968, 243967, 243965);
+UPDATE `gameobject_template` SET `ScriptName`='go_mardum_the_keystone' WHERE `entry`=245728; -- Sargerite Keystone

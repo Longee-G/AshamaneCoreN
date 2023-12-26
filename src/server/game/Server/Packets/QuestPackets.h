@@ -104,8 +104,9 @@ namespace WorldPackets
 
             void Read() override;
 
-            ObjectGuid QuestGiver;
-            int32 QuestID = 0;
+            int32 QuestID = 0;      // QuestId or QuestSortID
+            uint8 Flag = 0;
+            //ObjectGuid QuestGiver;            
         };
 
         struct QuestInfoChoiceItem

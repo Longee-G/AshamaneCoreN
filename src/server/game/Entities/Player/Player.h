@@ -2729,7 +2729,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         float _auraBaseMod[BASEMOD_END][MOD_END];
         int16 _baseRatingValue[MAX_COMBAT_RATING];
         uint32 _baseSpellPower;
-        uint32 _baseManaRegen;
+        uint32 _baseManaRegen;      // mana recover per sec
         uint32 _baseHealthRegen;
         int32 _spellPenetrationItemMod;
         SpellModContainer _spellMods[MAX_SPELLMOD][SPELLMOD_END];

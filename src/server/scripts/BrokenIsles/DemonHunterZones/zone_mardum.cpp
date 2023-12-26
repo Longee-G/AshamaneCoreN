@@ -18,7 +18,7 @@
 /*
  * the Shattered Abyss
  * Map: 1481 Mardum
- * Zone: 7705 破碎深渊马顿
+ * Zone: 7705 MardumtheShatteredAbyss
  */
 
 
@@ -68,11 +68,11 @@ enum ePhaseSpells
     SPELL_PHASE_170 = 59073,        // Phase - Quest Zone-Specific 01   
     SPELL_PHASE_171 = 59074,        // Phase - Quest Zone-Specific 02
     SPELL_PHASE_172 = 59087,        // Phase - Quest Zone-Specific 03
-    SPELL_PHASE_173 = 54341,        // Zuramat Add
+    SPELL_PHASE_173 = 54341,        //
 
-    SPELL_PHASE_175 = 57569,        // 银色前线基地第二章 ?? 这个spell是不是用错了
-    SPELL_PHASE_176 = 74789,        // GT Over Phase
-    SPELL_PHASE_177 = 69819,        // 错误的spell，不存在
+    SPELL_PHASE_175 = 57569,        // 
+    SPELL_PHASE_176 = 74789,        //
+    SPELL_PHASE_177 = 64576,        //
 
     SPELL_PHASE_179 = 67789,        // Phase - Quest Zone-Specific 04
     SPELL_PHASE_180 = 68480,        // Phase - Quest Zone-Specific 05
@@ -82,9 +82,9 @@ enum ePhaseSpells
 enum ePhases
 {
     SPELL_PHASE_MARDUM_WELCOME              = SPELL_PHASE_170,
-    SPELL_PHASE_MARDUM_FELSABBER            = SPELL_PHASE_172,      // 邪刃？
+    SPELL_PHASE_MARDUM_FELSABBER            = SPELL_PHASE_172,
 
-    SPELL_PHASE_ILLIDARI_OUTPOST_ASHTONGUE  = SPELL_PHASE_175,      // 灰舌前哨？
+    SPELL_PHASE_ILLIDARI_OUTPOST_ASHTONGUE  = SPELL_PHASE_175,
     SPELL_PHASE_ILLIDARI_OUTPOST_COILSKAR   = SPELL_PHASE_176,      
     SPELL_PHASE_ILLIDARI_OUTPOST_SHIVARRA   = SPELL_PHASE_177
 };
@@ -160,8 +160,6 @@ public:
     }
 };
 
-
-
 // FIXME: This is a global Script, every player will trigger this script
 // Perhaps other scripts can be used instead
 class PlayerScript_mardum_welcome_scene_trigger : public PlayerScript
@@ -233,7 +231,13 @@ public:
         if (player->getClass() != CLASS_DEMON_HUNTER)
             return;
 
-        SummonKaynSunfuryForStarting(player);
+        if(movieId == 478) // intro movie
+            SummonKaynSunfuryForStarting(player);
+        else if (movieId == 497)
+        { // Return to the Black Temple
+            // 得到蓝色武器，并装备...
+
+        }
     }
 
     void OnUpdateArea(Player* player, uint32 newArea, uint32 oldArea)
@@ -347,7 +351,8 @@ public:
     {
         if (triggerName == "SEEFELSABERCREDIT")
         {
-            player->KilledMonsterCredit(101534); // QUEST_ASHTONGUE_FORCES storageIndex 4 `See Felsaber -- Hidden Objective`
+            // QUEST_ASHTONGUE_FORCES storageIndex 4 `See Felsaber -- Hidden Objective`
+            player->KilledMonsterCredit(101534);
         }
         else if (triggerName == "UPDATEPHASE")  // felsaber step out
         {
@@ -459,6 +464,7 @@ public:
     uint32 _killCredit;
 };
 
+// NPC: 93105
 struct npc_mardum_inquisitor_pernissius : public ScriptedAI
 {
     npc_mardum_inquisitor_pernissius(Creature* creature) : ScriptedAI(creature) { }
@@ -562,6 +568,7 @@ class spell_mardum_infernal_smash : public SpellScript
     }
 };
 
+// NPC: 99914
 class npc_mardum_ashtongue_mystic : public CreatureScript
 {
 public:
@@ -580,6 +587,7 @@ public:
     }
 };
 
+// 第2只部队加入...
 class go_mardum_portal_coilskar : public GameObjectScript
 {
 public:
@@ -598,6 +606,7 @@ public:
     }
 };
 
+// 
 class go_meeting_with_queen_ritual : public GameObjectScript
 {
 public:
@@ -701,6 +710,7 @@ struct npc_mardum_sevis_brightflame_shivarra : public ScriptedAI
     }
 };
 
+// quest: 38765
 class go_mardum_portal_shivarra : public GameObjectScript
 {
 public:
@@ -708,7 +718,8 @@ public:
 
     bool OnGossipHello(Player* player, GameObject* /*go*/) override
     {
-        if (player->GetQuestObjectiveData(QUEST_SHIVARRA_FORCES, 0))
+        if (player->GetQuestObjectiveData(QUEST_SHIVARRA_FORCES, 0) &&
+            !player->GetQuestObjectiveData(QUEST_SHIVARRA_FORCES, 2) )
         {
             player->ForceCompleteQuest(QUEST_SHIVARRA_FORCES);
             player->CastSpell(player, SPELL_SCENE_MARDUM_SHIVARRA_FORCES, true);
@@ -734,31 +745,46 @@ public:
         SCENE_COILSKAR          = 191400,
         SCENE_SHIVARRA          = 191402
     };
-
+    // quest: 38813
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 /*action*/) override
     {
-        player->KilledMonsterCredit(creature->GetEntry());
-
-        uint32 sceneSpellId = 0;
-        uint32 phaseSpellId = 0;
-        switch (creature->GetEntry())
+        if (player->GetQuestStatus(38813) == QUEST_STATUS_INCOMPLETE)
         {
-            case NPC_ASHTONGUE_CAPTAIN: sceneSpellId = SCENE_ASHTONGUE; phaseSpellId = SPELL_PHASE_ILLIDARI_OUTPOST_ASHTONGUE;  break;
-            case NPC_COILSKAR_CAPTAIN:  sceneSpellId = SCENE_COILSKAR;  phaseSpellId = SPELL_PHASE_ILLIDARI_OUTPOST_COILSKAR;   break;
-            case NPC_SHIVARRA_CAPTAIN:  sceneSpellId = SCENE_SHIVARRA;  phaseSpellId = SPELL_PHASE_ILLIDARI_OUTPOST_SHIVARRA;   break;
-            default: break;
+            uint32 sceneSpellId = 0;
+            uint32 phaseSpellId = 0;
+            switch (creature->GetEntry())
+            {
+                case NPC_ASHTONGUE_CAPTAIN:
+                    if (player->GetQuestObjectiveData(38813, 0))
+                        return true;
+                    sceneSpellId = SCENE_ASHTONGUE;
+                    phaseSpellId = SPELL_PHASE_ILLIDARI_OUTPOST_ASHTONGUE;
+                    break;
+                case NPC_COILSKAR_CAPTAIN:
+                    if (player->GetQuestObjectiveData(38813, 1))
+                        return true;
+                    sceneSpellId = SCENE_COILSKAR;  phaseSpellId = SPELL_PHASE_ILLIDARI_OUTPOST_COILSKAR;   break;
+                case NPC_SHIVARRA_CAPTAIN:
+                    if (player->GetQuestObjectiveData(38813, 2))
+                        return true;
+                    sceneSpellId = SCENE_SHIVARRA;  phaseSpellId = SPELL_PHASE_ILLIDARI_OUTPOST_SHIVARRA;   break;
+                default: break;
+            }
+
+            player->KilledMonsterCredit(creature->GetEntry());
+
+            if (sceneSpellId)
+                player->CastSpell(player, sceneSpellId, true);
+
+            if (phaseSpellId)
+                player->RemoveAurasDueToSpell(phaseSpellId);
+
+            player->GetScheduler().Schedule(Seconds(15), [player, creature](TaskContext /*context*/)
+            {
+                creature->DestroyForPlayer(player);
+            });
         }
-
-        if (sceneSpellId)
-            player->CastSpell(player, sceneSpellId, true);
-
-        if (phaseSpellId)
-            player->RemoveAurasDueToSpell(phaseSpellId);
-
-        player->GetScheduler().Schedule(Seconds(15), [player, creature](TaskContext /*context*/)
-        {
-            creature->DestroyForPlayer(player);
-        });
+        
         return true;
     }
 };
@@ -871,6 +897,8 @@ struct npc_mardum_fel_lord_caza : public ScriptedAI
 // 243968 - Banner near 96732 - Destroyed by Ashtongue - KillCredit 96734
 // 243967 - Banner near 96731 - Destroyed by Shivarra - KillCredit 96733
 // 243965 - Banner near 93762 - Destroyed by Coilskar - KillCredit 96692
+//
+// quest - 38727
 class go_mardum_illidari_banner : public GameObjectScript
 {
 public:
@@ -878,29 +906,44 @@ public:
 
     bool OnGossipHello(Player* player, GameObject* go) override
     {
-        uint32 devastatorEntry = 0;
-        uint32 killCreditEntry = 0;
-        switch (go->GetEntry())
+        if (player->GetQuestStatus(38727) == QUEST_STATUS_INCOMPLETE)
         {
-            case 243968: devastatorEntry = 96732; killCreditEntry = 96734; break;
-            case 243967: devastatorEntry = 96731; killCreditEntry = 96733; break;
-            case 243965: devastatorEntry = 93762; killCreditEntry = 96692; break;
-            default: break;
-        }
-
-        if (Creature* devastator = player->FindNearestCreature(devastatorEntry, 50.0f))
-        {
-            if (Creature* personnalCreature = player->SummonCreature(devastatorEntry, devastator->GetPosition(), TEMPSUMMON_CORPSE_DESPAWN, 5000, 0, true))
+            uint32 devastatorEntry = 0;
+            uint32 killCreditEntry = 0;
+            switch (go->GetEntry())
             {
-                player->KilledMonsterCredit(devastatorEntry);
-                player->KilledMonsterCredit(killCreditEntry);
-                devastator->DestroyForPlayer(player);
+                case 243968:
+                    if (player->GetQuestObjectiveData(38727, 2))
+                        return true;
+                    devastatorEntry = 96732; killCreditEntry = 96734;  // Doom Fortress
+                    break;
+                case 243967: 
+                    if (player->GetQuestObjectiveData(38727, 4))
+                        return true;
+                    devastatorEntry = 96731; killCreditEntry = 96733;  // Forge Of Corruption
+                    break;
+                case 243965:
+                    if (player->GetQuestObjectiveData(38727, 0))
+                        return true;
+                    devastatorEntry = 93762; killCreditEntry = 96692;  // Soul Engine
+                    break;
+                default: break;
+            }
 
-                //TODO : Script destruction event
-                personnalCreature->GetScheduler().Schedule(Seconds(2), [](TaskContext context)
+            if (Creature* devastator = player->FindNearestCreature(devastatorEntry, 50.0f))
+            {
+                if (Creature* personnalCreature = player->SummonCreature(devastatorEntry, devastator->GetPosition(), TEMPSUMMON_CORPSE_DESPAWN, 5000, 0, true))
                 {
-                    GetContextUnit()->KillSelf();
-                });
+                    player->KilledMonsterCredit(devastatorEntry);
+                    player->KilledMonsterCredit(killCreditEntry);
+                    devastator->DestroyForPlayer(player);
+
+                    //TODO : Script destruction event
+                    personnalCreature->GetScheduler().Schedule(Seconds(2), [](TaskContext context)
+                    {
+                        GetContextUnit()->KillSelf();
+                    });
+                }
             }
         }
 
@@ -969,7 +1012,7 @@ public:
             // TODO Animation
         }
 
-        return true;
+        return false;
     }
 };
 
@@ -1020,6 +1063,7 @@ public:
 };
 
 // 245728
+// Quest - 38729
 class go_mardum_the_keystone : public GameObjectScript
 {
 public:
@@ -1027,12 +1071,20 @@ public:
 
     bool OnGossipHello(Player* player, GameObject* /*go*/) override
     {
-        player->KilledMonsterCredit(100651);
-        return false;
+        if(player->GetQuestStatus(38729) == QUEST_STATUS_INCOMPLETE)
+        {
+            player->KilledMonsterCredit(100651);
+            return false;
+        }        
+
+        return true;
     }
 };
 
-// 192140 back to black temple
+// 
+
+// spell[192140] - Return to the Black Temple: Quest Completion
+
 class spell_mardum_back_to_black_temple : public SpellScript
 {
     PrepareSpellScript(spell_mardum_back_to_black_temple);
@@ -1042,7 +1094,9 @@ class spell_mardum_back_to_black_temple : public SpellScript
         if (Player* player = GetCaster()->ToPlayer())
         {
             // Should be spell 192141 but we can't cast after a movie right now
-            //player->AddMovieDelayedTeleport(471, 1468, 4325.94, -620.21, -281.41, 1.658936);
+            //player->AddMovieDelayedTeleport(471, 1468, 4325.94, -620.21, -281.41, 1.658936);l
+
+            // 为什么传送到主城呢？ 并且播放的动画是471动画吗？
 
             if (player->GetTeam() == ALLIANCE)
                 player->AddMovieDelayedTeleport(471, 0, -8838.72f,   616.29f, 93.06f, 0.779564f);
