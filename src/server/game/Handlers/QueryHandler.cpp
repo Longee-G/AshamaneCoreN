@@ -160,7 +160,7 @@ void WorldSession::HandleGameObjectQueryOpcode(WorldPackets::Query::QueryGameObj
                 ObjectMgr::GetLocaleString(gameObjectLocale->Unk1, localeConstant, stats.UnkString);
             }
 
-        // for Test
+        // for [Test] [Longee]
         stats.Name[0].append("[Id:").append(TOSTR(gameObjectInfo->entry)).append("]")
             .append("[Type:").append(TOSTR(gameObjectInfo->type)).append("]");
         // Name[1]?Name[2]?Name[3] ?????? ????

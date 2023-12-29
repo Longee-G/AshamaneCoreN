@@ -994,9 +994,6 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
 
     pCurrChar->SendInitialPacketsBeforeAddToMap();
 
-    // for [TEST] [Longee]
-    //pCurrChar->setCinematic(0);
-
     //Show cinematic at the first time that player login
     if (!pCurrChar->getCinematic())
     {
@@ -1004,7 +1001,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
 
         if (ChrClassesEntry const* cEntry = sChrClassesStore.LookupEntry(pCurrChar->getClass()))
         {
-             // 1. playMovie             `movie.db2`
+            // 1. playMovie             `movie.db2`
             // 2. playCinematic         class based
             // 3. playScene             race based
             if (pCurrChar->getClass() == CLASS_DEMON_HUNTER) /// @todo: find a more generic solution

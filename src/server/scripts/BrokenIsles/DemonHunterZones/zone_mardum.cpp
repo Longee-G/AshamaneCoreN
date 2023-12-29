@@ -34,6 +34,8 @@
 #include "TemporarySummon.h"
 #include "Conversation.h"
 #include "GameObjectAI.h"
+#include "CreatureTextMgr.h"
+#include "GossipDef.h"
 
 
 enum eQuests
@@ -54,29 +56,47 @@ enum eQuests
 
 enum eScenes
 {
-    SPELL_SCENE_MARDUM_WELCOME          = 193525,   // 召唤npc凯恩·日怒                   (sceneId: 1106) 
-    SPELL_SCENE_MARDUM_LEGION_BANNER    = 191677,   // Banner Planted Client-Side Scene    (sceneId: 1116)
-    SPELL_SCENE_MARDUM_ASHTONGUE_FORCES = 189261,   // 加入伊利达雷：灰舌—播放场景           (sceneId: 1053)
-    SPELL_SCENE_MARDUM_COILSKAR_FORCES  = 190793,   // 加入伊利达雷：库斯卡—播放场景      (sceneId: 1077)
-    SPELL_SCENE_MARDUM_SHIVARRA_FORCES  = 190851,   // 加入伊利达雷：破坏魔—播放场景      (sceneId: 1078)
-    SPELL_SCENE_MEETING_WITH_QUEEN      = 188539,   // 恶魔蛛后：仪式完成
+    SPELL_SCENE_MARDUM_WELCOME          = 193525,   // (sceneId: 1106) 
+    SPELL_SCENE_MARDUM_LEGION_BANNER    = 191677,   // (sceneId: 1116)
+    SPELL_SCENE_MARDUM_ASHTONGUE_FORCES = 189261,   // (sceneId: 1053)
+    SPELL_SCENE_MARDUM_COILSKAR_FORCES  = 190793,   // (sceneId: 1077)
+    SPELL_SCENE_MARDUM_SHIVARRA_FORCES  = 190851,   // (sceneId: 1078)
+    SPELL_SCENE_MEETING_WITH_QUEEN      = 188539,   // 
 };
 
 // phase id defines in `phase.db2`
 enum ePhaseSpells
 {
-    SPELL_PHASE_170 = 59073,        // Phase - Quest Zone-Specific 01   
-    SPELL_PHASE_171 = 59074,        // Phase - Quest Zone-Specific 02
-    SPELL_PHASE_172 = 59087,        // Phase - Quest Zone-Specific 03
-    SPELL_PHASE_173 = 54341,        //
+    SPELL_PHASE_170 = 59073,
+    SPELL_PHASE_171 = 59074,
+    SPELL_PHASE_172 = 59087,
+    SPELL_PHASE_173 = 54341,
 
-    SPELL_PHASE_175 = 57569,        // 
-    SPELL_PHASE_176 = 74789,        //
-    SPELL_PHASE_177 = 64576,        //
+    SPELL_PHASE_175 = 57569,        // ASHTONGUE_FORCES
+    SPELL_PHASE_176 = 74789,        // Coilskar forces
+    SPELL_PHASE_177 = 64576,        // Shivarra forces
 
-    SPELL_PHASE_179 = 67789,        // Phase - Quest Zone-Specific 04
-    SPELL_PHASE_180 = 68480,        // Phase - Quest Zone-Specific 05
-    SPELL_PHASE_181 = 68481         // Phase - Quest Zone-Specific 06
+    SPELL_PHASE_179 = 67789,        // 关联到 Felguard Butcher
+
+    SPELL_PHASE_180 = 68480,
+    SPELL_PHASE_181 = 68481,
+    SPELL_PHASE_182 = 68482,
+    SPELL_PHASE_183 = 68483,
+    SPELL_PHASE_184 = 69077,
+
+    // temp phase
+    TEMP_PHASE_10 = 69078,  // phase-185
+    TEMP_PHASE_11 = 69484,  // phase-186
+    TEMP_PHASE_12 = 69485,  // phase-187
+    TEMP_PHASE_13 = 69486,  // phase-188
+    TEMP_PHASE_14 = 70695,  // phase-189
+    TEMP_PHASE_15 = 70696,  // phase-190
+    TEMP_PHASE_16 = 74093,  // phase-191
+    TEMP_PHASE_17 = 74094,  // phase-192
+    TEMP_PHASE_18 = 74095,  // phase-193
+    TEMP_PHASE_19 = 74096,  // phase-194
+    TEMP_PHASE_20 = 74097,  // phase-195
+    TEMP_PHASE_21 = 79041   // phase-196
 };
 
 enum ePhases
@@ -86,7 +106,11 @@ enum ePhases
 
     SPELL_PHASE_ILLIDARI_OUTPOST_ASHTONGUE  = SPELL_PHASE_175,
     SPELL_PHASE_ILLIDARI_OUTPOST_COILSKAR   = SPELL_PHASE_176,      
-    SPELL_PHASE_ILLIDARI_OUTPOST_SHIVARRA   = SPELL_PHASE_177
+    SPELL_PHASE_ILLIDARI_OUTPOST_SHIVARRA   = SPELL_PHASE_177,
+
+
+    // 灰舌秘术师，通过相位 180 控制
+    PHASE_ASHTONGUE_MYSTIC = SPELL_PHASE_180,
 };
 
 enum eMisc
@@ -191,28 +215,35 @@ public:
                 if (player->GetQuestObjectiveData(40378, 4) && !player->GetQuestObjectiveData(40378, 3))    
                     player->AddAura(SPELL_PHASE_MARDUM_FELSABBER);
             }
+
+            // Quest: Enter the Illidari: Coilskar
+            if (player->GetQuestStatus(QUEST_COILSKAR_FORCES) == QUEST_STATUS_NONE)
+                player->AddAura(SPELL_PHASE_173);
         }
     }
     
     void OnQuestAbandon(Player* player, Quest const* quest) override
     {
-        if (!quest || quest->ID != STARTING_QUEST)
-            return;
-
         if (player->GetMapId() != MAP_MARDUM || player->GetZoneId() != ZONE_MARDUM)
             return;
 
-        player->RemoveAurasDueToSpell(SPELL_PHASE_171);
+        if (quest->ID == STARTING_QUEST)
+        {
+            player->RemoveAurasDueToSpell(SPELL_PHASE_171);
 
-        // must be in the right area 
-        if (player->GetAreaId() != 0 && player->GetAreaId() != ZONE_MARDUM)
-            return;
+            // must be in the right area 
+            if (player->GetAreaId() != 0 && player->GetAreaId() != ZONE_MARDUM)
+                return;
 
-        player->RemoveRewardedQuest(quest->ID);
+            player->RemoveRewardedQuest(quest->ID);
 
-
-        // Recall Kayn
-        SummonKaynSunfuryForStarting(player);
+            // Recall Kayn
+            SummonKaynSunfuryForStarting(player);
+        }
+        else if (quest->ID == QUEST_COILSKAR_FORCES)
+        {
+            player->AddAura(SPELL_PHASE_173);
+        }
     }
 
     void OnQuestComplete(Player* player, Quest const* quest) override
@@ -234,9 +265,9 @@ public:
         if(movieId == 478) // intro movie
             SummonKaynSunfuryForStarting(player);
         else if (movieId == 497)
-        { // Return to the Black Temple
-            // 得到蓝色武器，并装备...
-
+        {
+            // Return to the Black Temple
+            // TODO:
         }
     }
 
@@ -294,6 +325,9 @@ public:
     }
 };
 
+
+// Legion版本使用 `go-244898` 是一个旗子
+
 // 任务目标，激活会烧掉军团的旗帜..
 class go_mardum_legion_banner_1 : public GameObjectScript
 {
@@ -302,17 +336,11 @@ public:
 
     bool OnGossipHello(Player* player, GameObject* go) override
     {
-        // 必须第1个目标完成之后，才能烧掉
         if (!player->GetQuestObjectiveData(QUEST_INVASION_BEGIN, 0))
             return true;
 
         if (!player->GetQuestObjectiveData(QUEST_INVASION_BEGIN, 1))
             player->CastSpell(player, SPELL_SCENE_MARDUM_LEGION_BANNER, true);
-
-        // return true 表示这个回调的结果由AI自己来完成，否则由缺省代码完成
-        // 如果由缺省代码完成，就会导致和Go关联的成就条件直接被完成了。
-        //_player->UpdateCriteria(CRITERIA_TYPE_USE_GAMEOBJECT, go->GetEntry());
-        // return false 表示让缺省代码来完成criteria的更新
 
         // Do NOT return true here.
         return false;
@@ -322,7 +350,9 @@ public:
 // 进入第2个任务
 
 
-// 灰舌..
+// 灰舌..  激活器会在完成任务目标后消失应该是和phase相关..
+// LegionCore 是怎么来控制phase的？ GO对某个phase可见...
+// GO-241751
 class go_mardum_portal_ashtongue : public GameObjectScript
 {
 public:
@@ -392,7 +422,7 @@ class spell_learn_felsaber : public SpellScript
 
 // SAI 已经实现了这个功能，不需要这个脚本的支持了
 /*
-struct npc_mardum_allari : public ScriptedAI
+struct r : public ScriptedAI
 {
     npc_mardum_allari(Creature* creature) : ScriptedAI(creature) { }
     // 当靠近npc的时候，完成quest-40378 最后一步，找到阿莱利
@@ -568,22 +598,122 @@ class spell_mardum_infernal_smash : public SpellScript
     }
 };
 
-// NPC: 99914
+
+// 100982 - Sevis Brightflame
+struct npc_sevis_enter_coilskar : public ScriptedAI
+{
+    npc_sevis_enter_coilskar(Creature* creature) : ScriptedAI(creature) {}
+
+
+    void sQuestAccept(Player* player, Quest const* quest) override
+    {
+        if (quest->GetQuestId() == QUEST_COILSKAR_FORCES)
+            player->SummonCreature(100982, 826.9f, 2758.64f, -30.5f, 1.62f, TEMPSUMMON_MANUAL_DESPAWN, 0, true);
+
+        player->RemoveAurasDueToSpell(SPELL_PHASE_173);
+    }
+
+    void IsSummonedBy(Unit* summoner) override
+    {
+        if (summoner->GetTypeId() == TYPEID_PLAYER)
+        {
+            sCreatureTextMgr->SendChat(me, 0, summoner);
+
+            me->Mount(64385);
+            me->GetMotionMaster()->MovePath(1009820, false);
+            me->DespawnOrUnsummon(10s);
+        }
+        else
+            me->DespawnOrUnsummon();
+    }
+};
+
+// 99917 - Sevis Brightflame
+
+// 正确的流程
+// 当靠近npc，Talk(0)
+// 然后当和npc进行交互的时候，打开菜单，显示1对话，然后做出2的emote..
+
+struct npc_mardum_sevis_99917 : public ScriptedAI
+{
+    npc_mardum_sevis_99917(Creature* creature) : ScriptedAI(creature) {}
+
+    void sGossipHello(Player* /*player*/) override
+    {
+        sCreatureTextMgr->SendChat(me, 1, player);
+        sCreatureTextMgr->SendChat(me, 2, player);
+    }
+
+    void MoveInLineOfSight(Unit* unit) override
+    {
+        if (Player* player = unit->ToPlayer())
+        {
+            if (player->GetQuestStatus(QUEST_COILSKAR_FORCES) == QUEST_STATUS_INCOMPLETE && !player->GetQuestObjectiveData(QUEST_COILSKAR_FORCES, 0))
+            {
+                float dist = player->GetDistance(me);
+                if (dist < 25.0f)
+                {
+                    // use temp phase to avoid repeated triggering  TEMP_PHASE_10
+
+                    if (!player->HasAura(PHASE_ASHTONGUE_MYSTIC))
+                    {
+                        sCreatureTextMgr->SendChat(me, 0, player);
+                        /*
+                        me->GetScheduler().Schedule(3s, [this, player](TaskContext context)
+                        {
+                            sCreatureTextMgr->SendChat(me, 1, player);
+                            sCreatureTextMgr->SendChat(me, 2, player);
+                        });
+                        */
+
+                        player->AddAura(PHASE_ASHTONGUE_MYSTIC);
+                    }
+                }
+                else if (dist > 41.0f)
+                {
+                    player->RemoveAurasDueToSpell(PHASE_ASHTONGUE_MYSTIC);
+                }
+            }
+        }
+    }
+};
+
+// 99914 - Ashtongue Mystic
 class npc_mardum_ashtongue_mystic : public CreatureScript
 {
 public:
     npc_mardum_ashtongue_mystic() : CreatureScript("npc_mardum_ashtongue_mystic") { }
 
+    bool OnGossipHello(Player* player, Creature* creature) override
+    {
+        
+        return false;
+    }
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 /*action*/) override
     {
-        player->KilledMonsterCredit(creature->GetEntry());
+        sCreatureTextMgr->SendChat(creature, 0, player);
 
-        // TODO : Remove this line when phasing is done properly
-        creature->DestroyForPlayer(player);
+        player->playerTalkClass->ClearMenus();
+        if (player->GetQuestStatus(QUEST_COILSKAR_FORCES) == QUEST_STATUS_INCOMPLETE && !player->GetQuestObjectiveData(QUEST_COILSKAR_FORCES, 0))
+        {   
+            player->KilledMonsterCredit(creature->GetEntry());
 
-        if (TempSummon* personalCreature = player->SummonCreature(creature->GetEntry(), creature->GetPosition(), TEMPSUMMON_TIMED_DESPAWN, 4000, 0, true))
-            personalCreature->KillSelf();
-        return true;
+            // TODO : Remove this line when phasing is done properly
+            //creature->DestroyForPlayer(player);
+            player->RemoveAurasDueToSpell(PHASE_ASHTONGUE_MYSTIC);
+
+            // 召唤出来的npc的相位是怎么设置的？
+            if (TempSummon* mystic = player->SummonCreature(creature->GetEntry(), creature->GetPosition(), TEMPSUMMON_TIMED_DESPAWN, 14000, 0, true))
+            {
+                // player attack mytic
+                player->CastSpell(mystic, 196724, false);
+                // mystic down
+                mystic->KillSelf();
+            }
+        }
+
+        player->playerTalkClass->SendCloseGossip();
+        return false;
     }
 };
 
@@ -709,6 +839,10 @@ struct npc_mardum_sevis_brightflame_shivarra : public ScriptedAI
                     player->KilledMonsterCredit(me->GetEntry());
     }
 };
+
+
+
+
 
 // quest: 38765
 class go_mardum_portal_shivarra : public GameObjectScript
@@ -1154,6 +1288,8 @@ void AddSC_zone_mardum()
     new scene_mardum_meeting_with_queen();
     RegisterCreatureAI(npc_mardum_doom_commander_beliash);
     RegisterCreatureAI(npc_mardum_sevis_brightflame_shivarra);
+    RegisterCreatureAI(npc_sevis_enter_coilskar);
+    RegisterCreatureAI(npc_mardum_sevis_99917);
     new go_mardum_portal_shivarra();
     new npc_mardum_captain();
     new npc_mardum_jace_darkweaver();

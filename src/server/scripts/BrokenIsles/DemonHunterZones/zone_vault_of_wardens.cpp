@@ -15,7 +15,11 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// ???
+
+
+
+
+// DH Mardum地图之后进入这个区域...
 void AddSC_zone_vault_of_wardens()
 {
 

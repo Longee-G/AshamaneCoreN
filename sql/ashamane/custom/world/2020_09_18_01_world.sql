@@ -572,6 +572,7 @@ UPDATE `creature_template` SET `AIName`="SmartAI" WHERE `entry`=@SEVIS_BRIGHTFLA
 DELETE FROM `smart_scripts` WHERE `entryorguid`=@SEVIS_BRIGHTFLAME_3 AND `source_type`=0;
 INSERT INTO `smart_scripts` (`entryorguid`,`source_type`,`id`,`link`,`event_type`,`event_phase_mask`,`event_chance`,`event_flags`,`event_param1`,`event_param2`,`event_param3`,`event_param4`,`action_type`,`action_param1`,`action_param2`,`action_param3`,`action_param4`,`action_param5`,`action_param6`,`target_type`,`target_param1`,`target_param2`,`target_param3`,`target_x`,`target_y`,`target_z`,`target_o`,`comment`) VALUES
 (@SEVIS_BRIGHTFLAME_3,0,0,0,10,0,100,1,1,30,0,0,1,0,5000,0,0,0,0,18,30,0,0,0,0,0,0,"Sevis Brightflame - Within 1-30 Range Out of Combat LoS - Say Line 0 (No Repeat)");
+
 UPDATE `creature` SET `spawntimesecs`=120 WHERE `guid`=20541238 AND `id`=@SEVIS_BRIGHTFLAME_3;
 DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=22 AND `SourceGroup`=0 AND `SourceEntry`=99917;
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`,`SourceGroup`,`SourceEntry`,`SourceId`,`ElseGroup`,`ConditionTypeOrReference`,`ConditionTarget`,`ConditionValue1`,`ConditionValue2`,`ConditionValue3`,`NegativeCondition`,`ErrorType`,`ErrorTextId`,`ScriptName`,`Comment`) VALUES
@@ -581,7 +582,8 @@ INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `text`, `type`, `lan
 (@SEVIS_BRIGHTFLAME_3, 0, 0, '$p, hurry! You don\'t have much time.', 12, 0, 100, 3, 0, 55345, 0, 'Sevis Brightflame to Player'),
 (@SEVIS_BRIGHTFLAME_3, 1, 0, 'Sevis looks down at the dying broken mystic.', 16, 0, 100, 3, 0, 55345, 0, 'Sevis Brightflame to Player'),
 (@SEVIS_BRIGHTFLAME_3, 2, 0, 'I will see you at the final gateway.', 12, 0, 100, 1, 0, 55347, 0, 'Sevis Brightflame to Player');
--- Sevis Brightflame Summon SAI
+
+-- Sevis Brightflame Summon SAI  这个SAI好像是接任务的时候用的...
 SET @SEVIS_BRIGHTFLAME_3_SUMMON := 9991700;
 UPDATE `creature_template` SET `AIName`="SmartAI" WHERE `entry`=@SEVIS_BRIGHTFLAME_3_SUMMON;
 DELETE FROM `smart_scripts` WHERE `entryorguid`=@SEVIS_BRIGHTFLAME_3_SUMMON AND `source_type`=0;
@@ -591,6 +593,7 @@ INSERT INTO `smart_scripts` (`entryorguid`,`source_type`,`id`,`link`,`event_type
 (@SEVIS_BRIGHTFLAME_3_SUMMON,0,2,3,61,0,100,0,1,@SEVIS_BRIGHTFLAME_3_SUMMON,0,0,43,0,64385,0,0,0,0,1,0,0,0,0,0,0,0,"Sevis Brightflame - On Text 1 Over - Mount To Model 64385"),
 (@SEVIS_BRIGHTFLAME_3_SUMMON,0,3,4,61,0,100,0,1,@SEVIS_BRIGHTFLAME_3_SUMMON,0,0,53,1,@SEVIS_BRIGHTFLAME_3_SUMMON,0,0,0,0,1,0,0,0,0,0,0,0,"Sevis Brightflame - On Text 1 Over - Start Waypoint"),
 (@SEVIS_BRIGHTFLAME_3_SUMMON,0,4,0,40,0,100,0,10,@SEVIS_BRIGHTFLAME_3_SUMMON,0,0,41,1,@SEVIS_BRIGHTFLAME_3_SUMMON,0,0,0,0,1,0,0,0,0,0,0,0,"Sevis Brightflame - On Waypoint 10 Reached - Despawn Instant");
+
 DELETE FROM `creature_template` WHERE `entry`=@SEVIS_BRIGHTFLAME_3_SUMMON;
 INSERT INTO `creature_template` (`entry`, `difficulty_entry_1`, `difficulty_entry_2`, `difficulty_entry_3`, `KillCredit1`, `KillCredit2`, `modelid1`, `modelid2`, `modelid3`, `modelid4`, `name`, `femaleName`, `subname`, `TitleAlt`, `IconName`, `gossip_menu_id`, `minlevel`, `maxlevel`, `HealthScalingExpansion`, `RequiredExpansion`, `VignetteID`, `faction`, `npcflag`, `speed_walk`, `speed_run`, `scale`, `rank`, `dmgschool`, `BaseAttackTime`, `RangeAttackTime`, `BaseVariance`, `RangeVariance`, `unit_class`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `family`, `trainer_type`, `trainer_class`, `trainer_race`, `type`, `type_flags`, `type_flags2`, `lootid`, `pickpocketloot`, `skinloot`, `resistance1`, `resistance2`, `resistance3`, `resistance4`, `resistance5`, `resistance6`, `spell1`, `spell2`, `spell3`, `spell4`, `spell5`, `spell6`, `spell7`, `spell8`, `VehicleId`, `mingold`, `maxgold`, `AIName`, `MovementType`, `InhabitType`, `HoverHeight`, `HealthModifier`, `HealthModifierExtra`, `ManaModifier`, `ManaModifierExtra`, `ArmorModifier`, `DamageModifier`, `ExperienceModifier`, `RacialLeader`, `movementId`, `RegenHealth`, `mechanic_immune_mask`, `flags_extra`, `ScriptName`, `VerifiedBuild`) VALUES 
 (@SEVIS_BRIGHTFLAME_3_SUMMON, '0', '0', '0', '0', '0', '66396', '0', '0', '0', 'Sevis Brightflame', '', 'Illidari', NULL, NULL, '0', '99', '99', '5', '0', '0', '2838', '1', '1', '1.14286', '1', '1', '0', '2000', '2000', '1', '1', '1', '33536', '2048', '0', '0', '0', '0', '0', '0', '7', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', 'SmartAI', '0', '3', '1', '9', '1', '5', '1', '1', '1', '1', '0', '0', '1', '0', '0', '', '25549');
@@ -617,6 +620,8 @@ INSERT INTO `waypoints` (`entry`, `pointid`, `position_x`, `position_y`, `positi
 (@SEVIS_BRIGHTFLAME_3_SUMMON,  8 ,879.905, 2523.32, -59.6002, 'Sevis Brightflame'),
 (@SEVIS_BRIGHTFLAME_3_SUMMON,  9 ,895.992, 2526.13, -59.2229, 'Sevis Brightflame'),
 (@SEVIS_BRIGHTFLAME_3_SUMMON,  10 ,918.927, 2533.12, -57.6723, 'Sevis Brightflame');
+
+
 -- Ashtongue Mystic SAI
 SET @ASHTONGUE_MYSTIC := 99914;
 UPDATE `creature_template` SET `AIName`="SmartAI" WHERE `entry`=@ASHTONGUE_MYSTIC;
