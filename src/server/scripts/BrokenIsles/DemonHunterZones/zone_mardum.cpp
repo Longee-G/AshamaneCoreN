@@ -154,8 +154,7 @@ enum eEnums
 void SummonKaynSunfuryForStarting(Player* player)
 {
     if (player->GetQuestStatus(STARTING_QUEST) == QUEST_STATUS_NONE
-        && !player->HasAura(SPELL_SCENE_MARDUM_WELCOME)
-        && !player->HasAura(SPELL_PHASE_MARDUM_WELCOME))
+        && !player->HasAura(SPELL_SCENE_MARDUM_WELCOME))
     {
         // Summon a team of NPCs & add phase:170 to player
         if (!player->FindNearestCreature({ NPC_Kayn }, 30.f))
@@ -172,8 +171,7 @@ public:
 
     void OnSceneStart(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/)
     {
-        // Illidan Stormrage says
-        Conversation::CreateConversation(705, player, *player, { player->GetGUID() }, nullptr);
+        
     }
 
 
@@ -181,6 +179,15 @@ public:
     {
         // player enter phase-170
         player->AddAura(SPELL_PHASE_MARDUM_WELCOME);
+    }
+
+    void OnSceneTriggerEvent(Player* player, uint32 sceneInstanceID, SceneTemplate const* sceneTemplate, std::string const& triggerName) override
+    {
+        if (triggerName == "CUEILLIDANTH")
+        {
+            // Illidan Stormrage says
+            Conversation::CreateConversation(705, player, *player, { player->GetGUID() }, nullptr);
+        }
     }
 };
 
@@ -196,18 +203,11 @@ public:
     {
         if (player->getClass() == CLASS_DEMON_HUNTER && player->GetZoneId() == ZONE_MARDUM)
         {
-            switch (player->GetQuestStatus(STARTING_QUEST))
-            {
-                case QUEST_STATUS_REWARDED:
-                    player->RemoveAurasDueToSpell(SPELL_PHASE_MARDUM_WELCOME);  // why remove phase 170
-                    break;
-                case QUEST_STATUS_NONE:
-                    break;
-                default: // get quest-40077
-                    player->AddAura(SPELL_PHASE_MARDUM_WELCOME);
-                    break;
-            }
-
+            if(player->GetQuestStatus(STARTING_QUEST) == QUEST_STATUS_NONE)
+                player->AddAura(SPELL_PHASE_MARDUM_WELCOME);
+            else
+                player->RemoveAurasDueToSpell(SPELL_PHASE_MARDUM_WELCOME);
+            
             // Quest: Enter the Illidari: Ashtongue
             if (player->GetQuestStatus(40378) == QUEST_STATUS_INCOMPLETE)
             {
@@ -638,10 +638,10 @@ struct npc_mardum_sevis_99917 : public ScriptedAI
 {
     npc_mardum_sevis_99917(Creature* creature) : ScriptedAI(creature) {}
 
-    void sGossipHello(Player* /*player*/) override
+    void sGossipHello(Player* player) override
     {
-        sCreatureTextMgr->SendChat(me, 1, player);
-        sCreatureTextMgr->SendChat(me, 2, player);
+        //sCreatureTextMgr->SendChat(me, 1, player);
+        //sCreatureTextMgr->SendChat(me, 2, player);
     }
 
     void MoveInLineOfSight(Unit* unit) override
