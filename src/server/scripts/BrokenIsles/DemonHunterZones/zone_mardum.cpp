@@ -235,6 +235,9 @@ public:
             if (player->GetAreaId() != 0 && player->GetAreaId() != ZONE_MARDUM)
                 return;
 
+            player->AddAura(SPELL_PHASE_170);
+
+
             player->RemoveRewardedQuest(quest->ID);
 
             // Recall Kayn
@@ -350,7 +353,14 @@ public:
         void IsSummonedBy(Unit* summoner) override
         {
             if (Player* player = summoner->ToPlayer())
-            {
+            {   
+                // 召唤出其他的npc...
+                player->SummonCreature(98228, 1182.36f, 3202.91f, 51.6049f, 4.88566f, TEMPSUMMON_TIMED_DESPAWN, 16000, true);
+                player->SummonCreature(98227, 1177.00f, 3203.07f, 51.3637f, 4.88746f, TEMPSUMMON_TIMED_DESPAWN, 16000, true);
+                player->SummonCreature(99918, 1172.92f, 3207.82f, 52.3935f, 3.73185f, TEMPSUMMON_TIMED_DESPAWN, 16000, true);
+                player->SummonCreature(98290, 1171.49f, 3203.69f, 51.3145f, 3.4564f, TEMPSUMMON_TIMED_DESPAWN, 16000, true);
+                player->SummonCreature(98292, 1170.74f, 3204.71f, 51.5426f, 3.36744f, TEMPSUMMON_TIMED_DESPAWN, 16000, true);
+
                 Talk(0);
 
                 // 5s后说第2句话 ... 
@@ -358,13 +368,30 @@ public:
                 {
                     if (Creature* kayn = GetContextCreature())
                         kayn->AI()->Talk(1);
+                }).Schedule(6s, [](TaskContext context)
+                {
+                    if (Creature* kayn = GetContextCreature())
+                    {
+                        kayn->GetMotionMaster()->MovePath(10267107, false);
+
+                        if (Creature* npc = kayn->FindNearestCreature(98228, 10.0f, true))
+                            npc->GetMotionMaster()->MovePath(10267108, false);
+
+                        if (Creature* npc = kayn->FindNearestCreature(98227, 10.0f, true))  // 
+                            npc->GetMotionMaster()->MovePath(10267109, false);
+
+                        if (Creature* npc = kayn->FindNearestCreature(99918, 10.0f, true))
+                            npc->GetMotionMaster()->MovePath(10267110, false);
+
+                        if (Creature* npc = kayn->FindNearestCreature(98292, 10.0f, true))
+                            npc->GetMotionMaster()->MovePath(10267111, false);
+
+                        if (Creature* npc = kayn->FindNearestCreature(98290, 10.0f, true))
+                            npc->GetMotionMaster()->MovePath(10267112, false);
+
+                        kayn->DespawnOrUnsummon(17s);
+                    }
                 });
-                // 召唤出其他的npc...
-                player->SummonCreature(98228, 1182.36f, 3202.91f, 51.6049f, 4.88566f, TEMPSUMMON_MANUAL_DESPAWN, 16000, true);
-                player->SummonCreature(98227, 1177.00f, 3203.07f, 51.3637f, 4.88746f, TEMPSUMMON_MANUAL_DESPAWN, 16000, true);
-                player->SummonCreature(99918, 1172.92f, 3207.82f, 52.3935f, 3.73185f, TEMPSUMMON_MANUAL_DESPAWN, 16000, true);
-                player->SummonCreature(98290, 1171.49f, 3203.69f, 51.3145f, 3.4564f, TEMPSUMMON_MANUAL_DESPAWN, 16000, true);
-                player->SummonCreature(98292, 1170.74f, 3204.71f, 51.5426f, 3.36744f, TEMPSUMMON_MANUAL_DESPAWN, 16000, true);
             }
         }
     };
