@@ -1,10 +1,10 @@
     /*//////////////////////////////////////////////////////////////////////
    //  FunSocietyWoW - SAI DEV                                           //
-  //  Copyright 2018 FunSocietyWoW and Ashamane Core //
- //  All Rights Reserved                                                       //
-//////////////////////////////////////////////////////////////////////////
+  //  Copyright 2018 FunSocietyWoW and Ashamane Core                    //
+ //  All Rights Reserved                                               //
+////////////////////////////////////////////////////////////////////////
 
-/*#############
+#############
 # Mardum Part - 4   #
 #############*/
 

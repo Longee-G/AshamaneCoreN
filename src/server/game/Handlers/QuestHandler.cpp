@@ -116,6 +116,7 @@ void WorldSession::HandleQuestgiverHelloOpcode(WorldPackets::Quest::QuestGiverHe
     creature->GetAI()->sGossipHello(_player);
 }
 
+// Player Accept a quest 
 void WorldSession::HandleQuestgiverAcceptQuestOpcode(WorldPackets::Quest::QuestGiverAcceptQuest& packet)
 {
     TC_LOG_DEBUG("network", "WORLD: Received CMSG_QUESTGIVER_ACCEPT_QUEST %s, quest = %u, startcheat = %u", packet.QuestGiverGUID.ToString().c_str(), packet.QuestID, packet.StartCheat);
@@ -218,6 +219,27 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode(WorldPackets::Quest::QuestG
 
             _player->playerTalkClass->SendCloseGossip();
 
+            if (quest->HasFlag(QUEST_FLAGS_LAUNCH_GOSSIP_ACCEPT))
+            {
+                // test
+                if (Creature* creature = object->ToCreature())
+                {
+                    _player->playerTalkClass->ClearMenus();
+                    _player->PrepareGossipMenu(creature, _player->GetDefaultGossipMenuForSource(creature), true);
+                    _player->SendPreparedGossip(creature);
+                }
+                else if (GameObject* go = object->ToGameObject())
+                {
+                    _player->playerTalkClass->ClearMenus();
+                    _player->PrepareGossipMenu(go, _player->GetDefaultGossipMenuForSource(go), true);
+                    _player->SendPreparedGossip(go);
+                }
+
+
+
+            }
+
+
             if (quest->GetSrcSpell() > 0)
                 _player->CastSpell(_player, quest->GetSrcSpell(), true);
 
@@ -260,7 +282,7 @@ void WorldSession::HandleQuestgiverQueryQuestOpcode(WorldPackets::Quest::QuestGi
 
 void WorldSession::HandleQuestQueryOpcode(WorldPackets::Quest::QueryQuestInfo& packet)
 {
-    TC_LOG_DEBUG("network", "WORLD: Received CMSG_QUEST_QUERY quest = %u", packet.QuestID);
+    TC_LOG_DEBUG("network", "WORLD: Received CMSG_QUEST_QUERY quest = %d", packet.QuestID);
 
     if (Quest const* quest = sObjectMgr->GetQuestTemplate(packet.QuestID))
         _player->playerTalkClass->SendQuestQueryResponse(quest);

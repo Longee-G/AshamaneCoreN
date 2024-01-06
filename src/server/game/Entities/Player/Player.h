@@ -2595,7 +2595,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         QuestSet _weeklyQuests;
         QuestSet _monthlyQuests;
         SeasonalEventQuestMap _seasonalQuests;
-        ObjectGuid _divider;
+        ObjectGuid _divider;    // player who sharing quest
         uint32 _inGameTime;
 
         /*********************************************************/

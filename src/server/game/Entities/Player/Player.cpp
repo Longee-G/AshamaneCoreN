@@ -14665,11 +14665,13 @@ void Player::PrepareGossipMenu(WorldObject* source, uint32 menuId /*= 0*/, bool 
     PlayerMenu* menu = playerTalkClass;
     menu->ClearMenus();
 
+    // rebuild player's gossip menu here ....
     menu->GetGossipMenu().SetMenuId(menuId);
-
+    // 一个menuId可能会关联多个TextId ...
     GossipMenuItemsMapBounds menuItemBounds = sObjectMgr->GetGossipMenuItemsMapBounds(menuId);
 
     // if default menuId and no menu options exist for this, use options from default options
+    // bounds.first == bounds.second means item NOT found.
     if (menuItemBounds.first == menuItemBounds.second && menuId == GetDefaultGossipMenuForSource(source))
         menuItemBounds = sObjectMgr->GetGossipMenuItemsMapBounds(0);
 
@@ -15352,6 +15354,7 @@ void Player::AddQuestAndCheckCompletion(Quest const* quest, Object* questGiver)
     {
     case TYPEID_UNIT:
         sScriptMgr->OnQuestAccept(this, questGiver->ToCreature(), quest);
+        playerTalkClass->ClearMenus();
         questGiver->ToCreature()->AI()->sQuestAccept(this, quest);
         break;
     case TYPEID_ITEM:
@@ -15378,7 +15381,7 @@ void Player::AddQuestAndCheckCompletion(Quest const* quest, Object* questGiver)
     }
     case TYPEID_GAMEOBJECT:
         sScriptMgr->OnQuestAccept(this, questGiver->ToGameObject(), quest);
-        
+        playerTalkClass->ClearMenus();
         questGiver->ToGameObject()->AI()->QuestAccept(this, quest);
         break;
     default:

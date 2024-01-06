@@ -9087,13 +9087,14 @@ void ObjectMgr::LoadGossipMenu()
             TC_LOG_ERROR("sql.sql", "Table gossip_menu: ID %u is using non-existing TextId %u", gMenu.MenuId, gMenu.TextId);
             continue;
         }
-
+        // store in multimap, key = menuId
         _gossipMenusStore.insert(GossipMenusContainer::value_type(gMenu.MenuId, gMenu));
     } while (result->NextRow());
 
     TC_LOG_INFO("server.loading", ">> Loaded %u gossip_menu IDs in %u ms", uint32(_gossipMenusStore.size()), GetMSTimeDiffToNow(oldMSTime));
 }
 
+// 
 void ObjectMgr::LoadGossipMenuItems()
 {
     uint32 oldMSTime = getMSTime();
