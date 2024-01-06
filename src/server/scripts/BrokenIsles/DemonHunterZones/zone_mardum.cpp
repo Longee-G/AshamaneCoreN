@@ -319,10 +319,35 @@ public:
             if (Creature* Sevis = creature->FindNearestCreature({ NPC_Sevis }, 30.f))
                 Sevis->GetMotionMaster()->MoveCharge(&SevisJumpPos);
             */
+
+
+            // TODO: 当接完任务之后，凯恩将带着小队冲进怪区，由于npc是对所有玩家的，因此正确的应该是
+            // 召唤一个clone出来
+            // 召唤可以通过SAI来完成？
+            // player->SummonCreature(93011, creature->GetPosition());
+            // 当player接任务之后，添加新的phase
+
         }
 
         return true;
     }
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_kayn_sunfury_welcomeAI(creature);
+    }
+
+    struct npc_kayn_sunfury_welcomeAI : public ScriptedAI
+    {
+        npc_kayn_sunfury_welcomeAI(Creature* creature) : ScriptedAI(creature) { }
+
+        void IsSummonedBy(Unit* summoner) override
+        {
+
+        }
+    };
+
+
 };
 
 
