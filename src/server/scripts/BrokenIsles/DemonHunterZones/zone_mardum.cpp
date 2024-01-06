@@ -321,12 +321,16 @@ public:
             */
 
 
+
             // TODO: 当接完任务之后，凯恩将带着小队冲进怪区，由于npc是对所有玩家的，因此正确的应该是
             // 召唤一个clone出来
             // 召唤可以通过SAI来完成？
             // player->SummonCreature(93011, creature->GetPosition());
             // 当player接任务之后，添加新的phase
 
+            // 接了任务之后，就不要170相位，这样看不见接任务的npc...
+            player->RemoveAurasDueToSpell(SPELL_PHASE_MARDUM_WELCOME);
+            player->SummonCreature(93011, creature->GetPosition(), TEMPSUMMON_MANUAL_DESPAWN, 17000, 0, true);
         }
 
         return true;
@@ -339,15 +343,31 @@ public:
 
     struct npc_kayn_sunfury_welcomeAI : public ScriptedAI
     {
-        npc_kayn_sunfury_welcomeAI(Creature* creature) : ScriptedAI(creature) { }
-
-        void IsSummonedBy(Unit* summoner) override
+        npc_kayn_sunfury_welcomeAI(Creature* creature) : ScriptedAI(creature)
         {
 
         }
+        void IsSummonedBy(Unit* summoner) override
+        {
+            if (Player* player = summoner->ToPlayer())
+            {
+                Talk(0);
+
+                // 5s后说第2句话 ... 
+                me->GetScheduler().Schedule(5s, [](TaskContext context)
+                {
+                    if (Creature* kayn = GetContextCreature())
+                        kayn->AI()->Talk(1);
+                });
+                // 召唤出其他的npc...
+                player->SummonCreature(98228, 1182.36f, 3202.91f, 51.6049f, 4.88566f, TEMPSUMMON_MANUAL_DESPAWN, 16000, true);
+                player->SummonCreature(98227, 1177.00f, 3203.07f, 51.3637f, 4.88746f, TEMPSUMMON_MANUAL_DESPAWN, 16000, true);
+                player->SummonCreature(99918, 1172.92f, 3207.82f, 52.3935f, 3.73185f, TEMPSUMMON_MANUAL_DESPAWN, 16000, true);
+                player->SummonCreature(98290, 1171.49f, 3203.69f, 51.3145f, 3.4564f, TEMPSUMMON_MANUAL_DESPAWN, 16000, true);
+                player->SummonCreature(98292, 1170.74f, 3204.71f, 51.5426f, 3.36744f, TEMPSUMMON_MANUAL_DESPAWN, 16000, true);
+            }
+        }
     };
-
-
 };
 
 
