@@ -233,9 +233,11 @@ public:
 
 
     // Waypoints system [NYI]
-    //virtual void WaypointStarted(uint32 nodeId, uint32 pathId) {}
-    //virtual void WaypointReached(uint32 nodeId, uint32 pathId) {}
-    //virtual void WaypointPathEnded(uint32 nodeId, uint32 pathId) {}
+    virtual void OnWaypointStarted(uint32 pointId, uint32 pathId) {}
+    // Called When arrived a point in the path
+    virtual void OnWaypointReached(uint32 pointId, uint32 pathId) {}
+    // Called When all points in the path have been reached
+    virtual void OnWaypointPathEnded(uint32 pointId, uint32 pathId) {}
 
 
     /// == Fields =======================================

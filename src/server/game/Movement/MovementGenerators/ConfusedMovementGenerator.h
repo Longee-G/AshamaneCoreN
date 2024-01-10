@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -26,7 +26,7 @@ template<class T>
 class ConfusedMovementGenerator : public MovementGeneratorMedium< T, ConfusedMovementGenerator<T> >
 {
     public:
-        explicit ConfusedMovementGenerator() : i_nextMoveTime(0), i_x(0), i_y(0), i_z(0) { }
+        explicit ConfusedMovementGenerator() : _nextMoveTime(0), i_x(0), i_y(0), i_z(0) { }
 
         void DoInitialize(T*);
         void DoFinalize(T*);
@@ -35,7 +35,7 @@ class ConfusedMovementGenerator : public MovementGeneratorMedium< T, ConfusedMov
 
         MovementGeneratorType GetMovementGeneratorType() const override { return CONFUSED_MOTION_TYPE; }
     private:
-        TimeTracker i_nextMoveTime;
+        TimeTracker _nextMoveTime;
         float i_x, i_y, i_z;
 };
 #endif

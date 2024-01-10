@@ -118,6 +118,12 @@ enum eMisc
     PLAYER_CHOICE_DH_SPEC_SELECTION             = 231,
     PLAYER_CHOICE_DH_SPEC_SELECTION_DEVASTATION = 478,
     PLAYER_CHOICE_DH_SPEC_SELECTION_VENGEANCE   = 479,
+
+    SPELL_VISUAL_KIT_KAYN_GLIDE = 59738,
+    SPELL_VISUAL_KIT_KAYN_WINGS = 59406,
+    SPELL_VISUAL_KIT_KAYN_DOUBLE_JUMP = 58110,
+    SPELL_VISUAL_KIT_KORVAS_JUMP = 63071,
+    SPELL_VISUAL_KIT_WRATH_WARRIOR_DIE = 58476,
 };
 
 
@@ -173,7 +179,6 @@ public:
     {
         
     }
-
 
     void OnSceneComplete(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/) override
     {
@@ -265,7 +270,7 @@ public:
         if (player->getClass() != CLASS_DEMON_HUNTER)
             return;
 
-        if(movieId == 478) // intro movie
+        if(movieId == 469) // intro movie
             SummonKaynSunfuryForStarting(player);
         else if (movieId == 497)
         {
@@ -333,7 +338,10 @@ public:
 
             // 接了任务之后，就不要170相位，这样看不见接任务的npc...
             player->RemoveAurasDueToSpell(SPELL_PHASE_MARDUM_WELCOME);
-            player->SummonCreature(93011, creature->GetPosition(), TEMPSUMMON_MANUAL_DESPAWN, 17000, 0, true);
+            // if (TempSummon* npc =
+            player->SummonCreature(93011, creature->GetPosition().GetPositionX(), creature->GetPosition().GetPositionY(), creature->GetPosition().GetPositionZ(),
+                creature->GetPosition().GetAngle(player) , TEMPSUMMON_MANUAL_DESPAWN, 17000, true);
+                //npc->SetFacingToObject(player);
         }
 
         return true;
@@ -346,6 +354,7 @@ public:
 
     struct npc_kayn_sunfury_welcomeAI : public ScriptedAI
     {
+        const uint32 DespawnTimes = 16000;
         npc_kayn_sunfury_welcomeAI(Creature* creature) : ScriptedAI(creature)
         {
 
@@ -353,45 +362,125 @@ public:
         void IsSummonedBy(Unit* summoner) override
         {
             if (Player* player = summoner->ToPlayer())
-            {   
-                // 召唤出其他的npc...
-                player->SummonCreature(98228, 1182.36f, 3202.91f, 51.6049f, 4.88566f, TEMPSUMMON_TIMED_DESPAWN, 16000, true);
-                player->SummonCreature(98227, 1177.00f, 3203.07f, 51.3637f, 4.88746f, TEMPSUMMON_TIMED_DESPAWN, 16000, true);
-                player->SummonCreature(99918, 1172.92f, 3207.82f, 52.3935f, 3.73185f, TEMPSUMMON_TIMED_DESPAWN, 16000, true);
-                player->SummonCreature(98290, 1171.49f, 3203.69f, 51.3145f, 3.4564f, TEMPSUMMON_TIMED_DESPAWN, 16000, true);
-                player->SummonCreature(98292, 1170.74f, 3204.71f, 51.5426f, 3.36744f, TEMPSUMMON_TIMED_DESPAWN, 16000, true);
-
+            {
                 Talk(0);
+                me->RemoveFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP | UNIT_NPC_FLAG_QUESTGIVER);
+                me->SummonCreature(NPC_Jayce, 1182.36f, 3202.91f, 51.6049f, 4.88566f, TEMPSUMMON_MANUAL_DESPAWN, 16000, true);
+                me->SummonCreature(NPC_Allari, 1177.00f, 3203.07f, 51.3637f, 4.88746f, TEMPSUMMON_MANUAL_DESPAWN, 16000, true);
+                me->SummonCreature(NPC_Sevis, 1172.92f, 3207.82f, 52.3935f, 3.73185f, TEMPSUMMON_MANUAL_DESPAWN, 16000, true);
+                me->SummonCreature(NPC_Cyana, 1171.49f, 3203.69f, 51.3145f, 3.4564f, TEMPSUMMON_MANUAL_DESPAWN, 16000, true);
+                me->SummonCreature(NPC_Korvas, 1170.74f, 3204.71f, 51.5426f, 3.36744f, TEMPSUMMON_MANUAL_DESPAWN, 16000, true);
 
-                // 5s后说第2句话 ... 
-                me->GetScheduler().Schedule(5s, [](TaskContext context)
+                me->GetScheduler().Schedule(5s, [this](TaskContext context)
                 {
-                    if (Creature* kayn = GetContextCreature())
-                        kayn->AI()->Talk(1);
-                }).Schedule(6s, [](TaskContext context)
+                    me->AI()->Talk(1);
+                }).Schedule(11s, [this](TaskContext context)
                 {
-                    if (Creature* kayn = GetContextCreature())
+                    // Kor'vas Yells
+                    if (Creature* npc = me->FindNearestCreature(NPC_Korvas, 10.0f, true))
+                        npc->AI()->Talk(0);
+                }).Schedule(13s, [this, player](TaskContext context)
+                {
+                    me->GetMotionMaster()->MovePath(9301100, false);
+                    me->DespawnOrUnsummon(16s);
+
+                    if (Creature* npc = me->FindNearestCreature(NPC_Jayce, 10.0f, true))
                     {
-                        kayn->GetMotionMaster()->MovePath(10267107, false);
-
-                        if (Creature* npc = kayn->FindNearestCreature(98228, 10.0f, true))
-                            npc->GetMotionMaster()->MovePath(10267108, false);
-
-                        if (Creature* npc = kayn->FindNearestCreature(98227, 10.0f, true))  // 
-                            npc->GetMotionMaster()->MovePath(10267109, false);
-
-                        if (Creature* npc = kayn->FindNearestCreature(99918, 10.0f, true))
-                            npc->GetMotionMaster()->MovePath(10267110, false);
-
-                        if (Creature* npc = kayn->FindNearestCreature(98292, 10.0f, true))
-                            npc->GetMotionMaster()->MovePath(10267111, false);
-
-                        if (Creature* npc = kayn->FindNearestCreature(98290, 10.0f, true))
-                            npc->GetMotionMaster()->MovePath(10267112, false);
-
-                        kayn->DespawnOrUnsummon(17s);
+                        //npc->GetMotionMaster()->MovePath(10267108, false);
+                        npc->DespawnOrUnsummon(16s);
                     }
+                    if (Creature* npc = me->FindNearestCreature(NPC_Allari, 10.0f, true))
+                    {
+                        npc->SetAIAnimKitId(9180);  // DH Run Allari
+                        //npc->GetMotionMaster()->MovePath(10267109, false);
+                        npc->DespawnOrUnsummon(16s);
+                    }
+                    if (Creature* npc = me->FindNearestCreature(NPC_Sevis, 10.0f, true))
+                    {
+                        npc->SetAIAnimKitId(9767);  // DH Run
+                        //npc->GetMotionMaster()->MovePath(10267110, false);
+                        npc->DespawnOrUnsummon(16s);
+                    }
+                    if (Creature* npc = me->FindNearestCreature(NPC_Korvas, 10.0f, true))
+                    {
+                        npc->SetAIAnimKitId(9767);  // DH Run
+                        //npc->GetMotionMaster()->MovePath(10267111, false);
+                        npc->DespawnOrUnsummon(16s);
+                    }
+                    if (Creature* npc = me->FindNearestCreature(NPC_Cyana, 10.0f, true))
+                    {
+                        //npc->GetMotionMaster()->MovePath(10267112, false);
+                        npc->DespawnOrUnsummon(16s);
+                    }                    
                 });
+            }
+        }
+
+
+        void MovementInform(uint32 moveType, uint32 data) override
+        {
+            // 用pointId判断会出现错误，因为需要将path分成两段，两端都有point ...
+            // 因此需要添加新的回调，pathEnd 才能实现 ...
+
+            if (data == EVENT_JUMP) // 跳到空中完成
+            {
+                std::string tmp;
+                tmp.append("jump in the air...moveType:").append(TOSTR(moveType)).append(" data:").append(TOSTR(data));;
+                me->Say(tmp.c_str(), LANG_UNIVERSAL);
+
+                me->GetScheduler().Schedule(3000ms, [this](TaskContext /*context*/)
+                {
+                    me->SetAIAnimKitId(9767);
+                    //me->SetAIAnimKitId(0);
+
+                    //me->GetMotionMaster()->MoveLand(1998, { 1117.65f,3191.72f,35.4776f });
+
+                    // 落地之后，需要移除spell:滑翔的效果
+
+                    //me->RemoveAurasDueToSpell(199303);
+
+
+                    me->SendCancelSpellVisualKit(SPELL_VISUAL_KIT_KAYN_WINGS);
+                    me->SendCancelSpellVisualKit(SPELL_VISUAL_KIT_KAYN_DOUBLE_JUMP);
+
+
+                    me->GetMotionMaster()->MovePath(9301101, false);
+                });
+            }
+        }
+
+        void OnWaypointPathEnded(uint32 pointId, uint32 pathId) override
+        {
+            // 什么时候能收到这个回调？
+            std::string tmp;
+            tmp.append("pointId:").append(TOSTR(pointId)).append(" pathId:").append(TOSTR(pathId));
+            me->Say(tmp.c_str(), LANG_UNIVERSAL);
+
+            if (pathId == 9301100)
+            {
+                //Position jumpPos = { 1131.93f,3194.71f,43.2108f };
+                Position jumpPos = { 1117.65f, 3191.72f, 35.4776f };
+
+                TempSummon* summon = me->ToTempSummon();
+                if (!summon)
+                    return;
+                WorldObject* summoner = summon->GetSummoner();
+                if (!summoner)
+                    return;
+
+                //me->SetAIAnimKitId(0);
+                me->SendPlaySpellVisualKit(SPELL_VISUAL_KIT_KAYN_WINGS, 4, 3000); // DH Wings
+                me->PlayObjectSound(53780, me->GetGUID(), summoner->ToPlayer());  // double jump
+                me->SendPlaySpellVisualKit(SPELL_VISUAL_KIT_KAYN_DOUBLE_JUMP, 0, 0);
+
+                // 恶魔猎手滑翔状态 ...
+                //me->CastSpell(nullptr, 199303, true);   // SPELL_DEMON_HUNTER_GLIDE_STATE
+
+                // EVENT_JUMP被触发的时间不对，预想是在到达目的地触发，实际上开始move的时候就触发了
+
+                // 以跳跃的方式移动，垂直速度越大，跳得越高
+
+                me->GetMotionMaster()->MoveJumpEx(jumpPos, 10.0f, 12.0f, EVENT_JUMP);
             }
         }
     };

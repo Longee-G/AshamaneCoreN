@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -21,9 +21,10 @@
 #include "Define.h"
 #include <vector>
 
+ // binding to table `waypoint_data.move_type`
 enum WaypointMoveType
 {
-    WAYPOINT_MOVE_TYPE_WALK,
+    WAYPOINT_MOVE_TYPE_WALK,        
     WAYPOINT_MOVE_TYPE_RUN,
     WAYPOINT_MOVE_TYPE_LAND,
     WAYPOINT_MOVE_TYPE_TAKEOFF,
@@ -31,6 +32,7 @@ enum WaypointMoveType
     WAYPOINT_MOVE_TYPE_MAX
 };
 
+// binding to table `waypont_data`
 struct WaypointNode
 {
     WaypointNode() : id(0), x(0.f), y(0.f), z(0.f), orientation(0.f), delay(0), eventId(0), moveType(WAYPOINT_MOVE_TYPE_RUN), eventChance(0) { }
@@ -47,12 +49,12 @@ struct WaypointNode
         eventChance = 100;
     }
 
-    uint32 id;
+    uint32 id;          // waypoint_data.point
     float x, y, z, orientation;
     uint32 delay;
-    uint32 eventId;
+    uint32 eventId;     // waypiont_data.action, db field name is wrong
     uint32 moveType;
-    uint8 eventChance;
+    uint8 eventChance;  // waypoint_data.action_change
 };
 
 struct WaypointPath

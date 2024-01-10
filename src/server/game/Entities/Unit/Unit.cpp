@@ -12327,6 +12327,7 @@ void Unit::SendCancelSpellVisualKit(uint32 id)
     SendMessageToSet(cancelSpellVisualKit.Write(), true);
 }
 
+// id is NOT spellId, but VisualKit id
 void Unit::SendPlaySpellVisualKit(uint32 id, uint32 type, uint32 duration) const
 {
     WorldPackets::Spells::PlaySpellVisualKit playSpellVisualKit;

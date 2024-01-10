@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -50,7 +50,7 @@ void TargetedMovementGeneratorMedium<T, D>::_setTargetLocation(T* owner, bool up
 
     float x, y, z;
 
-    if (updateDestination || !i_path)
+    if (updateDestination || !_path)
     {
         if (!i_offset)
         {
@@ -92,21 +92,21 @@ void TargetedMovementGeneratorMedium<T, D>::_setTargetLocation(T* owner, bool up
     else
     {
         // the destination has not changed, we just need to refresh the path (usually speed change)
-        G3D::Vector3 end = i_path->GetEndPosition();
+        G3D::Vector3 end = _path->GetEndPosition();
         x = end.x;
         y = end.y;
         z = end.z;
     }
 
-    if (!i_path)
-        i_path = new PathGenerator(owner);
+    if (!_path)
+        _path = new PathGenerator(owner);
 
     // allow pets to use shortcut if no path found when following their master
     bool forceDest = (owner->GetTypeId() == TYPEID_UNIT && owner->ToCreature()->IsPet()
         && owner->HasUnitState(UNIT_STATE_FOLLOW));
 
-    bool result = i_path->CalculatePath(x, y, z, forceDest);
-    if (!result || (i_path->GetPathType() & PATHFIND_NOPATH))
+    bool result = _path->CalculatePath(x, y, z, forceDest);
+    if (!result || (_path->GetPathType() & PATHFIND_NOPATH))
     {
         // can't reach target
         i_recalculateTravel = true;
@@ -123,7 +123,7 @@ void TargetedMovementGeneratorMedium<T, D>::_setTargetLocation(T* owner, bool up
         owner->ToCreature()->SetCannotReachTarget(false);
 
     Movement::MoveSplineInit init(owner);
-    init.MovebyPath(i_path->GetPath());
+    init.MovebyPath(_path->GetPath());
     init.SetWalk(((D*)this)->EnableWalking());
     // Using the same condition for facing target as the one that is used for SetInFront on movement end
     // - applies to ChaseMovementGenerator mostly

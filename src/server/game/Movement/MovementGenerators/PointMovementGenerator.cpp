@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -69,9 +69,9 @@ bool PointMovementGenerator<T>::DoUpdate(T* unit, uint32 /*diff*/)
 
     unit->AddUnitState(UNIT_STATE_ROAMING_MOVE);
 
-    if (id != EVENT_CHARGE_PREPATH && i_recalculateSpeed && !unit->movespline->Finalized())
+    if (id != EVENT_CHARGE_PREPATH && _isRecalculateSpeed && !unit->movespline->Finalized())
     {
-        i_recalculateSpeed = false;
+        _isRecalculateSpeed = false;
         Movement::MoveSplineInit init(unit);
         init.MoveTo(i_x, i_y, i_z, m_generatePath);
         if (speed > 0.0f) // Default value for point motion type is 0.0, if 0.0 spline will use GetSpeed on unit
@@ -132,13 +132,32 @@ void AssistanceMovementGenerator::Finalize(Unit* unit)
         unit->GetMotionMaster()->MoveSeekAssistanceDistract(sWorld->getIntConfig(CONFIG_CREATURE_FAMILY_ASSISTANCE_DELAY));
 }
 
-bool EffectMovementGenerator::Update(Unit* unit, uint32)
+// 返回false，表示不再更新
+bool EffectMovementGenerator::Update(Unit* unit, uint32 diff)
 {
-    return !unit->movespline->Finalized();
+    if (!_isArrival)
+    {
+        _duration.Update(diff);
+
+        if (_duration.Passed())
+        {
+            _isArrival = true;
+            // FIXME: 不确定是否可以在Update中调用 ...
+        }   
+    }
+
+    //return !unit->movespline->Finalized();
+    if (_isArrival && unit->movespline->Finalized())
+        return false;
+
+    return true;
 }
 
+// Q: 当Finalize被调用，Update函数就不再执行了吗？
+// A: 这个函数是由Update 返回 false来触发的
+
 void EffectMovementGenerator::Finalize(Unit* unit)
-{
+{    
     if (_arrivalSpellId)
     {
         Unit* caster = unit;
@@ -147,7 +166,6 @@ void EffectMovementGenerator::Finalize(Unit* unit)
 
         caster->CastSpell(ObjectAccessor::GetUnit(*unit, _arrivalSpellTargetGuid), _arrivalSpellId, true);
     }
-
     if (unit->GetTypeId() != TYPEID_UNIT)
         return;
 

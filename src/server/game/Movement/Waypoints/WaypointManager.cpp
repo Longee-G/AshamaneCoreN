@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -45,6 +45,7 @@ void WaypointMgr::Load()
 
         uint32 pathId = fields[0].GetUInt32();
         WaypointPath& path = _waypointStore[pathId];
+        path.id = pathId;
 
         float x = fields[2].GetFloat();
         float y = fields[3].GetFloat();

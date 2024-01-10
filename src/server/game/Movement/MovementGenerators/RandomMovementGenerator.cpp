@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -98,13 +98,13 @@ void RandomMovementGenerator<Creature>::_setRandomLocation(Creature* creature)
     }
 
     if (is_air_ok)
-        i_nextMoveTime.Reset(0);
+        _nextMoveTime.Reset(0);
     else
     {
         if (roll_chance_i(50))
-            i_nextMoveTime.Reset(urand(5000, 10000));
+            _nextMoveTime.Reset(urand(5000, 10000));
         else
-            i_nextMoveTime.Reset(urand(50, 400));
+            _nextMoveTime.Reset(urand(50, 400));
     }
 
     creature->AddUnitState(UNIT_STATE_ROAMING_MOVE);
@@ -153,15 +153,15 @@ bool RandomMovementGenerator<Creature>::DoUpdate(Creature* creature, const uint3
 
     if (creature->HasUnitState(UNIT_STATE_ROOT | UNIT_STATE_STUNNED | UNIT_STATE_DISTRACTED))
     {
-        i_nextMoveTime.Reset(0);  // Expire the timer
+        _nextMoveTime.Reset(0);  // Expire the timer
         creature->ClearUnitState(UNIT_STATE_ROAMING_MOVE);
         return true;
     }
 
     if (creature->movespline->Finalized())
     {
-        i_nextMoveTime.Update(diff);
-        if (i_nextMoveTime.Passed())
+        _nextMoveTime.Update(diff);
+        if (_nextMoveTime.Passed())
             _setRandomLocation(creature);
     }
     return true;

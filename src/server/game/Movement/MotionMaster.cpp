@@ -495,8 +495,48 @@ void MotionMaster::MoveJump(float x, float y, float z, float o, float speedXY, f
         arrivalSpellTargetGuid = arrivalCast->Target;
     }
 
+
     Mutate(new EffectMovementGenerator(id, arrivalSpellId, arrivalSpellCasterGuid, arrivalSpellTargetGuid), MOTION_SLOT_CONTROLLED);
 }
+
+void MotionMaster::MoveJumpEx(float x, float y, float z, float o, float speedXY, float speedZ, uint32 id /*= EVENT_JUMP*/, bool hasOrientation /* = false*/,
+    JumpArrivalCastArgs const* arrivalCast /*= nullptr*/, Movement::SpellEffectExtraData const* spellEffectExtraData /*= nullptr*/)
+{
+    TC_LOG_DEBUG("misc", "Unit (%s) jumps to point (X: %f Y: %f Z: %f).", _owner->GetGUID().ToString().c_str(), x, y, z);
+    if (speedXY <= 0.1f)
+        return;
+
+    float moveTimeHalf = speedZ / Movement::gravity;
+    float max_height = -Movement::computeFallElevation(moveTimeHalf, false, -speedZ);
+
+    Movement::MoveSplineInit init(_owner);
+    init.MoveTo(x, y, z, false);
+    init.SetParabolic(max_height, 0);   // 设置抛物线
+    init.SetVelocity(speedXY);
+    if (hasOrientation)
+        init.SetFacing(o);
+    if (spellEffectExtraData)
+        init.SetSpellEffectExtraData(*spellEffectExtraData);
+
+    int32 duration = init.Launch();
+
+    uint32 arrivalSpellId = 0;
+    ObjectGuid arrivalSpellCasterGuid;
+    ObjectGuid arrivalSpellTargetGuid;
+    if (arrivalCast)
+    {
+        arrivalSpellId = arrivalCast->SpellId;
+        arrivalSpellCasterGuid = arrivalCast->Caster;
+        arrivalSpellTargetGuid = arrivalCast->Target;
+    }
+
+    // FIXME: EffectMovementGenerator 触发 MovementInform的时机不对
+    // 我们想要的是在跳到destination的时候触发，而实际上在起跳的时候就触发了...
+
+    Mutate(new EffectMovementGenerator(id, arrivalSpellId, arrivalSpellCasterGuid, arrivalSpellTargetGuid, duration), MOTION_SLOT_CONTROLLED);
+}
+
+
 
 void MotionMaster::MoveCirclePath(float x, float y, float z, float radius, bool clockwise, uint8 stepCount)
 {

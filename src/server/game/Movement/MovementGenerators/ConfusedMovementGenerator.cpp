@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -41,7 +41,7 @@ void ConfusedMovementGenerator<T>::DoInitialize(T* unit)
 template<class T>
 void ConfusedMovementGenerator<T>::DoReset(T* unit)
 {
-    i_nextMoveTime.Reset(0);
+    _nextMoveTime.Reset(0);
 
     if (!unit->IsAlive() || unit->IsStopped())
         return;
@@ -56,19 +56,19 @@ bool ConfusedMovementGenerator<T>::DoUpdate(T* unit, uint32 diff)
     if (unit->HasUnitState(UNIT_STATE_ROOT | UNIT_STATE_STUNNED | UNIT_STATE_DISTRACTED))
         return true;
 
-    if (i_nextMoveTime.Passed())
+    if (_nextMoveTime.Passed())
     {
         // currently moving, update location
         unit->AddUnitState(UNIT_STATE_CONFUSED_MOVE);
 
         if (unit->movespline->Finalized())
-            i_nextMoveTime.Reset(urand(800, 1500));
+            _nextMoveTime.Reset(urand(800, 1500));
     }
     else
     {
         // waiting for next move
-        i_nextMoveTime.Update(diff);
-        if (i_nextMoveTime.Passed())
+        _nextMoveTime.Update(diff);
+        if (_nextMoveTime.Passed())
         {
             // start moving
             unit->AddUnitState(UNIT_STATE_CONFUSED_MOVE);
@@ -84,7 +84,7 @@ bool ConfusedMovementGenerator<T>::DoUpdate(T* unit, uint32 diff)
             bool result = path.CalculatePath(pos.m_positionX, pos.m_positionY, pos.m_positionZ);
             if (!result || (path.GetPathType() & PATHFIND_NOPATH))
             {
-                i_nextMoveTime.Reset(100);
+                _nextMoveTime.Reset(100);
                 return true;
             }
 

@@ -1004,8 +1004,8 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
             // 1. playMovie             `movie.db2`
             // 2. playCinematic         class based
             // 3. playScene             race based
-            if (pCurrChar->getClass() == CLASS_DEMON_HUNTER) /// @todo: find a more generic solution
-                pCurrChar->SendMovieStart(/*469*/478); // 478(intro)->497(escape)
+            if (pCurrChar->getClass() == CLASS_DEMON_HUNTER)
+                pCurrChar->SendMovieStart(469); //
             else if (cEntry->CinematicSequenceID) 
                 pCurrChar->SendCinematicStart(cEntry->CinematicSequenceID);
             else if (ChrRacesEntry const* rEntry = sChrRacesStore.LookupEntry(pCurrChar->getRace()))
@@ -2404,9 +2404,7 @@ void WorldSession::HandleGetUndeleteCooldownStatus(WorldPackets::Character::GetU
 void WorldSession::HandleGetAccountCharacterListOpcode(WorldPackets::Character::GetAccountCharacterList & packet)
 {
     // TODO:[Longee]
-    // 给客户端返回 `SMSG_GET_ACCOUNT_CHARACTER_LIST_RESULT`
-
-
+    // response `SMSG_GET_ACCOUNT_CHARACTER_LIST_RESULT`
 }
 
 void WorldSession::HandleUndeleteCooldownStatusCallback(PreparedQueryResult result)

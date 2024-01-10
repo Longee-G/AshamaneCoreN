@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -39,23 +39,23 @@ class TargetedMovementGeneratorMedium : public MovementGeneratorMedium< T, D >, 
 {
     protected:
         TargetedMovementGeneratorMedium(Unit* target, float offset, float angle) :
-            TargetedMovementGeneratorBase(target), i_path(NULL),
+            TargetedMovementGeneratorBase(target), _path(NULL),
             i_recheckDistance(0), i_offset(offset), i_angle(angle),
             i_recalculateTravel(false), i_targetReached(false)
         {
         }
-        ~TargetedMovementGeneratorMedium() { delete i_path; }
+        ~TargetedMovementGeneratorMedium() { delete _path; }
 
     public:
         bool DoUpdate(T*, uint32);
         Unit* GetTarget() const { return i_target.getTarget(); }
 
         void unitSpeedChanged() override { i_recalculateTravel = true; }
-        bool IsReachable() const { return (i_path) ? (i_path->GetPathType() & PATHFIND_NORMAL) : true; }
+        bool IsReachable() const { return (_path) ? (_path->GetPathType() & PATHFIND_NORMAL) : true; }
     protected:
         void _setTargetLocation(T* owner, bool updateDestination);
 
-        PathGenerator* i_path;
+        PathGenerator* _path;
         TimeTrackerSmall i_recheckDistance;
         float i_offset;
         float i_angle;

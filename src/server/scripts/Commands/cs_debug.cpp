@@ -249,7 +249,7 @@ public:
         }
 
         Unit* unit = handler->getSelectedUnit();
-
+        // FIXME: not a spellId, but visual kit id...
         if (unit)
             unit->SendPlaySpellVisualKit(spellId, 0, 3000);
         else
