@@ -157,8 +157,13 @@ bool WaypointMovementGenerator<Creature>::StartMove(Creature* creature)
             }
 
             // 完成了path中的所有point
-            if (CreatureAI* AI = creature->AI())
-                AI->OnWaypointPathEnded(waypoint.id, _path->id);    // PathEnd 是在最后收到的 ... OnWaypointArrived
+            if (!_isInformDone)
+            {
+                if (CreatureAI* AI = creature->AI())
+                    AI->OnWaypointPathEnded(waypoint.id, _path->id);    // PathEnd 是在最后收到的 ... OnWaypointArrived
+
+                _isInformDone = true;
+            }
 
             return false;
         }
@@ -196,6 +201,7 @@ bool WaypointMovementGenerator<Creature>::StartMove(Creature* creature)
         AI->OnWaypointStarted(wp.id, _path->id);
     }
 
+    _isInformDone = false;
     _isArrivalDone = false;
     _isRecalculateSpeed = false;
 

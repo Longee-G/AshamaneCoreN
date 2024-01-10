@@ -143,17 +143,29 @@ enum eEnums
     NPC_Cyana = 98290,
     NPC_Sevis = 99918,
 
+    PATH_Kayn = 9301100,
+    PATH_Jayce = 9822800,
+    PATH_Allari = 9822700,
+    PATH_Korvas = 9829200,
+    PATH_Cyana = 9829000,
+    PATH_Sevis = 9991800,
 
     // Quest: Set Them Free NPCs
     NPC_Belath = 94400,
     NPC_Mannethrel = 93230,
     NPC_Izal = 93117,
     NPC_Cyana_2 = 94377,
-       
+
     SAY_Belath = 96643,
     SAY_Mannethrel = 96202,
     SAY_Izal = 96644,
-    SAY_Cyana_2 = 95081
+    SAY_Cyana_2 = 95081,
+
+    SPELL_DemonHunterGlideState = 199303,
+
+    ANIM_DH_Wings = 58110,
+    ANIM_DH_Run = 9767,
+    ANIM_DH_RunAllari = 9180,
 };
 
 // starting quest check...
@@ -167,7 +179,6 @@ void SummonKaynSunfuryForStarting(Player* player)
             player->CastSpell(player, SPELL_SCENE_MARDUM_WELCOME, true);
     }
 }
-
 
 // table `scene_template`, sceneId: 1106, ScriptPackageID: 1487
 class scene_mardum_welcome : public SceneScript
@@ -293,7 +304,7 @@ public:
 };
 
 
-Position const WrathWarriorSpawnPosition = { 1081.9166f, 3183.8716f, 26.335993f };
+
 Position const KaynDoubleJumpPosition = { 1094.2384f, 3186.058f, 28.81562f };
 
 Position const KaynJumpPos = { 1172.17f, 3202.55f, 54.3479f };
@@ -303,11 +314,15 @@ Position const KorvasJumpPos = { 1117.89f, 3196.24f, 36.2158f };
 Position const SevisJumpPos = { 1120.74f, 3199.47f, 37.5157f };
 Position const CyanaJumpPos = { 1120.34f, 3194.28f, 36.4321f };
 
+Position const KaynLandPos = { 1117.65f, 3191.72f, 35.4776f };
+Position const JayceLandPos = { 1119.6f, 3202.27f, 37.9456f };
+Position const AllariLandPos = { 1118.68f, 3198.24f, 36.7279f };
+Position const KorvasLandPos = { 1112.27f, 3190.34f, 34.0611f };
+Position const SevisLandPos = { 1119.06f, 3192.96f, 35.9639f };
+Position const CyanaLandPos = { 1100.82f, 3185.39f, 30.8637f };
 
-// npc: 93011 `Kayn SunFury`
-// phaseId: 50/170
 
-// 这个npc是出现在一开始的时候...
+// 93011 - `Kayn SunFury`
 class npc_kayn_sunfury_welcome : public CreatureScript
 {
 public:
@@ -317,19 +332,6 @@ public:
     {
         if (quest->GetQuestId() == QUEST_INVASION_BEGIN)
         {
-            /*
-            if (Creature* Korvas = creature->FindNearestCreature({ NPC_Korvas }, 30.0f))
-                Korvas->GetMotionMaster()->MoveCharge(&KorvasJumpPos);
-
-            if (Creature* Cyana = creature->FindNearestCreature({ NPC_Cyana }, 30.f))
-                Cyana->GetMotionMaster()->MoveCharge(&CyanaJumpPos);
-
-            if (Creature* Sevis = creature->FindNearestCreature({ NPC_Sevis }, 30.f))
-                Sevis->GetMotionMaster()->MoveCharge(&SevisJumpPos);
-            */
-
-
-
             // TODO: 当接完任务之后，凯恩将带着小队冲进怪区，由于npc是对所有玩家的，因此正确的应该是
             // 召唤一个clone出来
             // 召唤可以通过SAI来完成？
@@ -376,91 +378,45 @@ public:
                     me->AI()->Talk(1);
                 }).Schedule(11s, [this](TaskContext context)
                 {
-                    // Kor'vas Yells
                     if (Creature* npc = me->FindNearestCreature(NPC_Korvas, 10.0f, true))
                         npc->AI()->Talk(0);
                 }).Schedule(13s, [this, player](TaskContext context)
                 {
-                    me->GetMotionMaster()->MovePath(9301100, false);
-                    me->DespawnOrUnsummon(16s);
+                    me->GetMotionMaster()->MovePath(PATH_Kayn, false);
 
                     if (Creature* npc = me->FindNearestCreature(NPC_Jayce, 10.0f, true))
-                    {
-                        //npc->GetMotionMaster()->MovePath(10267108, false);
-                        npc->DespawnOrUnsummon(16s);
-                    }
+                        npc->GetMotionMaster()->MovePath(PATH_Jayce, false);
+
                     if (Creature* npc = me->FindNearestCreature(NPC_Allari, 10.0f, true))
-                    {
-                        npc->SetAIAnimKitId(9180);  // DH Run Allari
-                        //npc->GetMotionMaster()->MovePath(10267109, false);
-                        npc->DespawnOrUnsummon(16s);
-                    }
+                        npc->GetMotionMaster()->MovePath(PATH_Allari, false);
+
                     if (Creature* npc = me->FindNearestCreature(NPC_Sevis, 10.0f, true))
-                    {
-                        npc->SetAIAnimKitId(9767);  // DH Run
-                        //npc->GetMotionMaster()->MovePath(10267110, false);
-                        npc->DespawnOrUnsummon(16s);
-                    }
+                        npc->GetMotionMaster()->MovePath(PATH_Sevis, false);
+
                     if (Creature* npc = me->FindNearestCreature(NPC_Korvas, 10.0f, true))
-                    {
-                        npc->SetAIAnimKitId(9767);  // DH Run
-                        //npc->GetMotionMaster()->MovePath(10267111, false);
-                        npc->DespawnOrUnsummon(16s);
-                    }
+                        npc->GetMotionMaster()->MovePath(PATH_Korvas, false);
+
                     if (Creature* npc = me->FindNearestCreature(NPC_Cyana, 10.0f, true))
-                    {
-                        //npc->GetMotionMaster()->MovePath(10267112, false);
-                        npc->DespawnOrUnsummon(16s);
-                    }                    
+                        npc->GetMotionMaster()->MovePath(PATH_Cyana, false);
                 });
             }
         }
 
-
         void MovementInform(uint32 moveType, uint32 data) override
         {
-            // 用pointId判断会出现错误，因为需要将path分成两段，两端都有point ...
-            // 因此需要添加新的回调，pathEnd 才能实现 ...
-
-            if (data == EVENT_JUMP) // 跳到空中完成
-            {
-                std::string tmp;
-                tmp.append("jump in the air...moveType:").append(TOSTR(moveType)).append(" data:").append(TOSTR(data));;
-                me->Say(tmp.c_str(), LANG_UNIVERSAL);
-
-                me->GetScheduler().Schedule(3000ms, [this](TaskContext /*context*/)
-                {
-                    me->SetAIAnimKitId(9767);
-                    //me->SetAIAnimKitId(0);
-
-                    //me->GetMotionMaster()->MoveLand(1998, { 1117.65f,3191.72f,35.4776f });
-
-                    // 落地之后，需要移除spell:滑翔的效果
-
-                    //me->RemoveAurasDueToSpell(199303);
-
-
-                    me->SendCancelSpellVisualKit(SPELL_VISUAL_KIT_KAYN_WINGS);
-                    me->SendCancelSpellVisualKit(SPELL_VISUAL_KIT_KAYN_DOUBLE_JUMP);
-
-
-                    me->GetMotionMaster()->MovePath(9301101, false);
-                });
+            if (data == EVENT_JUMP)
+            {   
+                me->SendCancelSpellVisualKit(SPELL_VISUAL_KIT_KAYN_DOUBLE_JUMP);
+                me->SendCancelSpellVisualKit(SPELL_VISUAL_KIT_KAYN_WINGS);
+                me->SetAIAnimKitId(ANIM_DH_Run);
+                me->GetMotionMaster()->MovePath(PATH_Kayn+1, false);
             }
         }
 
         void OnWaypointPathEnded(uint32 pointId, uint32 pathId) override
-        {
-            // 什么时候能收到这个回调？
-            std::string tmp;
-            tmp.append("pointId:").append(TOSTR(pointId)).append(" pathId:").append(TOSTR(pathId));
-            me->Say(tmp.c_str(), LANG_UNIVERSAL);
-
-            if (pathId == 9301100)
+        { 
+            if (pathId == PATH_Kayn)
             {
-                //Position jumpPos = { 1131.93f,3194.71f,43.2108f };
-                Position jumpPos = { 1117.65f, 3191.72f, 35.4776f };
-
                 TempSummon* summon = me->ToTempSummon();
                 if (!summon)
                     return;
@@ -468,25 +424,159 @@ public:
                 if (!summoner)
                     return;
 
-                //me->SetAIAnimKitId(0);
-                me->SendPlaySpellVisualKit(SPELL_VISUAL_KIT_KAYN_WINGS, 4, 3000); // DH Wings
-                me->PlayObjectSound(53780, me->GetGUID(), summoner->ToPlayer());  // double jump
+                me->PlayObjectSound(53780, me->GetGUID(), summoner->ToPlayer());
                 me->SendPlaySpellVisualKit(SPELL_VISUAL_KIT_KAYN_DOUBLE_JUMP, 0, 0);
+                me->GetScheduler().Schedule(600ms, [this](TaskContext context)
+                {
+                    me->SendPlaySpellVisualKit(SPELL_VISUAL_KIT_KAYN_WINGS, 4, 3000);
+                });
 
-                // 恶魔猎手滑翔状态 ...
-                //me->CastSpell(nullptr, 199303, true);   // SPELL_DEMON_HUNTER_GLIDE_STATE
-
-                // EVENT_JUMP被触发的时间不对，预想是在到达目的地触发，实际上开始move的时候就触发了
-
-                // 以跳跃的方式移动，垂直速度越大，跳得越高
-
-                me->GetMotionMaster()->MoveJumpEx(jumpPos, 10.0f, 12.0f, EVENT_JUMP);
+                me->SetAIAnimKitId(ANIM_DH_Run);
+                me->GetMotionMaster()->MoveJump(KaynLandPos, 10.0f, 10.0f, EVENT_JUMP);
             }
+            else if (pathId == PATH_Kayn + 1)
+                me->DespawnOrUnsummon();
         }
     };
 };
 
+// 98227 - Allari the Souleater
+struct npc_allari_the_souleater_invasion_begins : public ScriptedAI
+{
+    npc_allari_the_souleater_invasion_begins(Creature* creature) : ScriptedAI(creature) {}
+    void OnWaypointPathEnded(uint32 /*pointId*/, uint32 pathId) override
+    {
+        if (pathId == PATH_Allari)
+        {
+            me->CastSpell(nullptr, SPELL_DemonHunterGlideState, true);
+            me->GetScheduler().Schedule(600ms, [this](TaskContext /*context*/)
+            {
+                me->GetMotionMaster()->MoveJump(AllariLandPos, 10.0f, 10.0f, EVENT_JUMP);
+            });
+        }
+        else if (pathId == PATH_Allari + 1)
+            me->DespawnOrUnsummon();
+    }
+    void MovementInform(uint32 type, uint32 data) override
+    {
+        if (type != EFFECT_MOTION_TYPE) // only catch MoveJump Event
+            return;
+        if (data == EVENT_JUMP)
+        {
+            me->RemoveAurasDueToSpell(SPELL_DemonHunterGlideState);
+            me->SetAIAnimKitId(ANIM_DH_RunAllari);
+            me->GetMotionMaster()->MovePath(PATH_Allari + 1, false);
+        }
+    }
+};
 
+// 98228 - Jayce Darkweaver
+struct npc_jayce_darkweaver_invasion_begins : public ScriptedAI
+{
+    npc_jayce_darkweaver_invasion_begins(Creature* creature) : ScriptedAI(creature) {}
+    void OnWaypointPathEnded(uint32 /*pointId*/, uint32 pathId) override
+    {
+        if (pathId == PATH_Jayce)
+        {
+            me->CastSpell(nullptr, SPELL_DemonHunterGlideState, true);
+            me->GetMotionMaster()->MoveJump(JayceLandPos, 10.0f, 10.0f, EVENT_JUMP);
+        }
+        else if (pathId == PATH_Jayce + 1)
+            me->DespawnOrUnsummon();
+    }
+    void MovementInform(uint32 type, uint32 data) override
+    {
+        if (type != EFFECT_MOTION_TYPE)
+            return;
+        if (data == EVENT_JUMP)
+        {
+            me->RemoveAurasDueToSpell(SPELL_DemonHunterGlideState);
+            me->SetAIAnimKitId(ANIM_DH_Run);
+            me->GetMotionMaster()->MovePath(PATH_Jayce + 1, false);
+        }
+    }
+};
+
+// 98292 - Korvas Bloodthorn
+struct npc_korvas_bloodthorn_invasion_begins : public ScriptedAI
+{
+    npc_korvas_bloodthorn_invasion_begins(Creature* creature) : ScriptedAI(creature) {}
+    void OnWaypointPathEnded(uint32 /*pointId*/, uint32 pathId) override
+    {
+        if (pathId == PATH_Korvas)
+        {
+            me->CastSpell(nullptr, SPELL_DemonHunterGlideState, true);
+            me->GetMotionMaster()->MoveJump(KorvasLandPos, 10.0f, 10.0f, EVENT_JUMP);
+        }
+        else if (pathId == PATH_Korvas + 1)
+            me->DespawnOrUnsummon();
+    }
+    void MovementInform(uint32 type, uint32 data) override
+    {
+        if (type != EFFECT_MOTION_TYPE)
+            return;
+        if (data == EVENT_JUMP)
+        {
+            me->RemoveAurasDueToSpell(SPELL_DemonHunterGlideState);
+            me->SetAIAnimKitId(ANIM_DH_Run);
+            me->GetMotionMaster()->MovePath(PATH_Korvas + 1, false);
+        }
+    }
+};
+
+// 99918 - Sevis Brightflame
+struct npc_sevis_brightflame_invasion_begins : public ScriptedAI
+{
+    npc_sevis_brightflame_invasion_begins(Creature* creature) : ScriptedAI(creature) {}
+    void OnWaypointPathEnded(uint32 /*pointId*/, uint32 pathId) override
+    {
+        if (pathId == PATH_Sevis)
+        {
+            me->CastSpell(nullptr, SPELL_DemonHunterGlideState, true);
+            me->GetMotionMaster()->MoveJump(SevisLandPos, 10.0f, 10.0f, EVENT_JUMP);
+        }
+        else if (pathId == PATH_Sevis + 1)
+            me->DespawnOrUnsummon();
+    }
+    void MovementInform(uint32 type, uint32 data) override
+    {
+        if (type != EFFECT_MOTION_TYPE)
+            return;
+        if (data == EVENT_JUMP)
+        {
+            me->RemoveAurasDueToSpell(SPELL_DemonHunterGlideState);
+            me->SetAIAnimKitId(ANIM_DH_Run);
+            me->GetMotionMaster()->MovePath(PATH_Sevis + 1, false);
+        }
+    }
+};
+
+// 98290 - Cyana Nightglaive
+struct npc_cyana_nightglaive_invasion_begins : public ScriptedAI
+{
+    npc_cyana_nightglaive_invasion_begins(Creature* creature) : ScriptedAI(creature) {}
+    void OnWaypointPathEnded(uint32 /*pointId*/, uint32 pathId) override
+    {
+        if (pathId == PATH_Cyana)
+        {
+            me->CastSpell(nullptr, SPELL_DemonHunterGlideState, true);
+            me->GetMotionMaster()->MoveJump(CyanaLandPos, 10.0f, 10.0f, EVENT_JUMP);
+        }
+        else if (pathId == PATH_Cyana + 1)
+            me->DespawnOrUnsummon();
+    }
+    void MovementInform(uint32 type, uint32 data) override
+    {
+        if (type != EFFECT_MOTION_TYPE)
+            return;
+        if (data == EVENT_JUMP)
+        {
+            me->RemoveAurasDueToSpell(SPELL_DemonHunterGlideState);
+            me->SetAIAnimKitId(ANIM_DH_Run);
+            me->GetMotionMaster()->MovePath(PATH_Cyana + 1, false);
+        }
+    }
+};
 // Legion版本使用 `go-244898` 是一个旗子
 
 // 任务目标，激活会烧掉军团的旗帜..
@@ -1432,6 +1522,11 @@ void AddSC_zone_mardum()
     new PlayerScript_mardum_welcome_scene_trigger();
     new scene_mardum_welcome();
     new npc_kayn_sunfury_welcome();
+    RegisterCreatureAI(npc_jayce_darkweaver_invasion_begins);
+    RegisterCreatureAI(npc_allari_the_souleater_invasion_begins);
+    RegisterCreatureAI(npc_korvas_bloodthorn_invasion_begins);
+    RegisterCreatureAI(npc_sevis_brightflame_invasion_begins);
+    RegisterCreatureAI(npc_cyana_nightglaive_invasion_begins);
     new go_mardum_legion_banner_1();
     new go_mardum_portal_ashtongue();
     new scene_mardum_welcome_ashtongue();

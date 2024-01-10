@@ -98,6 +98,9 @@ void MotionMaster::UpdateMotion(uint32 diff)
 
     if (_expireList)
         ClearExpireList();
+
+
+    ResolveDelayedMovements();
 }
 
 void MotionMaster::Clear(bool reset /*= true*/)
@@ -134,6 +137,7 @@ void MotionMaster::ClearExpireList()
 
     _cleanFlag &= ~MMCF_RESET;
 }
+
 
 void MotionMaster::MovementExpired(bool reset /*= true*/)
 {
@@ -477,7 +481,7 @@ void MotionMaster::MoveJump(float x, float y, float z, float o, float speedXY, f
 
     Movement::MoveSplineInit init(_owner);
     init.MoveTo(x, y, z, false);
-    init.SetParabolic(max_height, 0);   // 设置抛物线
+    init.SetParabolic(max_height, 0);
     init.SetVelocity(speedXY);
     if (hasOrientation)
         init.SetFacing(o);
@@ -495,48 +499,8 @@ void MotionMaster::MoveJump(float x, float y, float z, float o, float speedXY, f
         arrivalSpellTargetGuid = arrivalCast->Target;
     }
 
-
-    Mutate(new EffectMovementGenerator(id, arrivalSpellId, arrivalSpellCasterGuid, arrivalSpellTargetGuid), MOTION_SLOT_CONTROLLED);
+    Mutate(new EffectMovementGenerator(id, arrivalSpellId, arrivalSpellCasterGuid, arrivalSpellTargetGuid), MOTION_SLOT_CONTROLLED, true);
 }
-
-void MotionMaster::MoveJumpEx(float x, float y, float z, float o, float speedXY, float speedZ, uint32 id /*= EVENT_JUMP*/, bool hasOrientation /* = false*/,
-    JumpArrivalCastArgs const* arrivalCast /*= nullptr*/, Movement::SpellEffectExtraData const* spellEffectExtraData /*= nullptr*/)
-{
-    TC_LOG_DEBUG("misc", "Unit (%s) jumps to point (X: %f Y: %f Z: %f).", _owner->GetGUID().ToString().c_str(), x, y, z);
-    if (speedXY <= 0.1f)
-        return;
-
-    float moveTimeHalf = speedZ / Movement::gravity;
-    float max_height = -Movement::computeFallElevation(moveTimeHalf, false, -speedZ);
-
-    Movement::MoveSplineInit init(_owner);
-    init.MoveTo(x, y, z, false);
-    init.SetParabolic(max_height, 0);   // 设置抛物线
-    init.SetVelocity(speedXY);
-    if (hasOrientation)
-        init.SetFacing(o);
-    if (spellEffectExtraData)
-        init.SetSpellEffectExtraData(*spellEffectExtraData);
-
-    int32 duration = init.Launch();
-
-    uint32 arrivalSpellId = 0;
-    ObjectGuid arrivalSpellCasterGuid;
-    ObjectGuid arrivalSpellTargetGuid;
-    if (arrivalCast)
-    {
-        arrivalSpellId = arrivalCast->SpellId;
-        arrivalSpellCasterGuid = arrivalCast->Caster;
-        arrivalSpellTargetGuid = arrivalCast->Target;
-    }
-
-    // FIXME: EffectMovementGenerator 触发 MovementInform的时机不对
-    // 我们想要的是在跳到destination的时候触发，而实际上在起跳的时候就触发了...
-
-    Mutate(new EffectMovementGenerator(id, arrivalSpellId, arrivalSpellCasterGuid, arrivalSpellTargetGuid, duration), MOTION_SLOT_CONTROLLED);
-}
-
-
 
 void MotionMaster::MoveCirclePath(float x, float y, float z, float radius, bool clockwise, uint8 stepCount)
 {
@@ -803,7 +767,10 @@ void MotionMaster::InitTop()
     _initialize[_top] = false;
 }
 
-void MotionMaster::Mutate(MovementGenerator *m, MovementSlot slot)
+// 这个函数的意思是啥呢？它会修改 _top 变量，导致出现问题 ...
+// 应该放到下一个update循环中来添加到 _slot 中 ...
+
+void MotionMaster::Mutate(MovementGenerator *m, MovementSlot slot, bool delayed)
 {
     if (MovementGenerator *curr = _slot[slot])
     {
@@ -815,7 +782,17 @@ void MotionMaster::Mutate(MovementGenerator *m, MovementSlot slot)
     }
     else if (_top < slot)
     {
-        _top = slot;
+        // 需要修改当前的_top,不在这个地方修改
+        if (delayed && _top >= 0)
+        {
+            MovementCache mc = { m, slot };
+            _delayedMovements.push_back(mc);
+            return;
+        }
+        else
+        {
+            _top = slot;
+        }
     }
 
     _slot[slot] = m;
@@ -827,6 +804,16 @@ void MotionMaster::Mutate(MovementGenerator *m, MovementSlot slot)
         m->Initialize(_owner);
     }
 }
+
+void MotionMaster::ResolveDelayedMovements()
+{
+    while (!_delayedMovements.empty())
+    {
+        Mutate(_delayedMovements.front().m, _delayedMovements.front().slot, false);
+        _delayedMovements.pop_front();
+    }
+}
+
 
 void MotionMaster::DirectClean(bool reset)
 {

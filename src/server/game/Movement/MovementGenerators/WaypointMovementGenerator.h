@@ -57,10 +57,10 @@ class WaypointMovementGenerator<Creature> : public MovementGeneratorMedium< Crea
 {
     public:
         WaypointMovementGenerator(uint32 path_id = 0, bool repeating = true)
-            : _nextMoveTime(0), _isArrivalDone(false), _pathId(path_id), _isRepeating(repeating), _isLoadedFromDB(true)  { }
+            : _nextMoveTime(0), _isArrivalDone(false), _pathId(path_id), _isRepeating(repeating), _isLoadedFromDB(true), _isInformDone(false) { }
 
         WaypointMovementGenerator(WaypointPath& path, bool repeating = true)
-            : _nextMoveTime(0), _isArrivalDone(false), _pathId(0), _isRepeating(repeating), _isLoadedFromDB(false)
+            : _nextMoveTime(0), _isArrivalDone(false), _pathId(0), _isRepeating(repeating), _isLoadedFromDB(false), _isInformDone(false)
         {
             _path = &path;
         }
@@ -110,7 +110,9 @@ class WaypointMovementGenerator<Creature> : public MovementGeneratorMedium< Crea
         TimeTrackerSmall _nextMoveTime;
         uint32 _pathId;
         bool _isRecalculateSpeed;
-        bool _isArrivalDone;        
+        bool _isArrivalDone;
+        bool _isInformDone;
+
         bool _isRepeating;
         bool _isLoadedFromDB;
 };

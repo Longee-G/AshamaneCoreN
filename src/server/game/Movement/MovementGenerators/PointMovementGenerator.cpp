@@ -135,6 +135,8 @@ void AssistanceMovementGenerator::Finalize(Unit* unit)
 // 返回false，表示不再更新
 bool EffectMovementGenerator::Update(Unit* unit, uint32 diff)
 {
+    /*
+
     if (!_isArrival)
     {
         _duration.Update(diff);
@@ -151,6 +153,8 @@ bool EffectMovementGenerator::Update(Unit* unit, uint32 diff)
         return false;
 
     return true;
+    */
+    return !unit->movespline->Finalized();
 }
 
 // Q: 当Finalize被调用，Update函数就不再执行了吗？
