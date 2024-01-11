@@ -17623,6 +17623,7 @@ int32 Player::GetQuestObjectiveData(uint32 questId, int8 storageIndex) const
     return 0;
 }
 
+// the objectiveId is unique, so we do NOT need  questId
 int32 Player::GetQuestObjectiveCounter(uint32 objectiveId) const
 {
     QuestObjective const* obj = sObjectMgr->GetQuestObjective(objectiveId);
