@@ -72,11 +72,11 @@ enum ePhaseSpells
     SPELL_PHASE_172 = 59087,
     SPELL_PHASE_173 = 54341,
 
-    SPELL_PHASE_175 = 57569,        // ASHTONGUE_FORCES
+    SPELL_PHASE_175 = 57569,        // Ashtongue forces
     SPELL_PHASE_176 = 74789,        // Coilskar forces
     SPELL_PHASE_177 = 64576,        // Shivarra forces
 
-    SPELL_PHASE_179 = 67789,        // 关联到 Felguard Butcher
+    SPELL_PHASE_179 = 67789,        // Felguard Butcher
 
     SPELL_PHASE_180 = 68480,
     SPELL_PHASE_181 = 68481,
@@ -108,8 +108,6 @@ enum ePhases
     SPELL_PHASE_ILLIDARI_OUTPOST_COILSKAR   = SPELL_PHASE_176,      
     SPELL_PHASE_ILLIDARI_OUTPOST_SHIVARRA   = SPELL_PHASE_177,
 
-
-    // 灰舌秘术师，通过相位 180 控制
     PHASE_ASHTONGUE_MYSTIC = SPELL_PHASE_180,
 };
 
@@ -207,8 +205,6 @@ public:
     }
 };
 
-// FIXME: This is a global Script, every player will trigger this script
-// Perhaps other scripts can be used instead
 class PlayerScript_mardum_welcome_scene_trigger : public PlayerScript
 {
 public:
@@ -250,14 +246,8 @@ public:
             // must be in the right area 
             if (player->GetAreaId() != 0 && player->GetAreaId() != ZONE_MARDUM)
                 return;
-
-            player->AddAura(SPELL_PHASE_170);
-
-
             player->RemoveRewardedQuest(quest->ID);
-
-            // Recall Kayn
-            SummonKaynSunfuryForStarting(player);
+            player->AddAura(SPELL_PHASE_MARDUM_WELCOME);
         }
         else if (quest->ID == QUEST_COILSKAR_FORCES)
         {
@@ -298,21 +288,15 @@ public:
         if (player->GetMapId() != MAP_MARDUM || player->GetZoneId() != ZONE_MARDUM)
             return;
 
-        if ( newArea == 0 || newArea == ZONE_MARDUM)
-            SummonKaynSunfuryForStarting(player);
+        if (newArea == 0 || newArea == ZONE_MARDUM)
+        {
+            if (player->GetQuestStatus(STARTING_QUEST) == QUEST_STATUS_NONE
+                && !player->HasAura(SPELL_SCENE_MARDUM_WELCOME))
+                player->AddAura(SPELL_PHASE_MARDUM_WELCOME);
+
+        }
     }
 };
-
-
-
-Position const KaynDoubleJumpPosition = { 1094.2384f, 3186.058f, 28.81562f };
-
-Position const KaynJumpPos = { 1172.17f, 3202.55f, 54.3479f };
-Position const JayceJumpPos = { 1119.24f, 3203.42f, 38.1061f };
-Position const AllariJumpPos = { 1120.08f, 3197.2f, 36.8502f };
-Position const KorvasJumpPos = { 1117.89f, 3196.24f, 36.2158f };
-Position const SevisJumpPos = { 1120.74f, 3199.47f, 37.5157f };
-Position const CyanaJumpPos = { 1120.34f, 3194.28f, 36.4321f };
 
 Position const KaynLandPos = { 1117.65f, 3191.72f, 35.4776f };
 Position const JayceLandPos = { 1119.6f, 3202.27f, 37.9456f };
@@ -320,7 +304,6 @@ Position const AllariLandPos = { 1118.68f, 3198.24f, 36.7279f };
 Position const KorvasLandPos = { 1112.27f, 3190.34f, 34.0611f };
 Position const SevisLandPos = { 1119.06f, 3192.96f, 35.9639f };
 Position const CyanaLandPos = { 1100.82f, 3185.39f, 30.8637f };
-
 
 // 93011 - `Kayn SunFury`
 class npc_kayn_sunfury_welcome : public CreatureScript
@@ -332,18 +315,9 @@ public:
     {
         if (quest->GetQuestId() == QUEST_INVASION_BEGIN)
         {
-            // TODO: 当接完任务之后，凯恩将带着小队冲进怪区，由于npc是对所有玩家的，因此正确的应该是
-            // 召唤一个clone出来
-            // 召唤可以通过SAI来完成？
-            // player->SummonCreature(93011, creature->GetPosition());
-            // 当player接任务之后，添加新的phase
-
-            // 接了任务之后，就不要170相位，这样看不见接任务的npc...
             player->RemoveAurasDueToSpell(SPELL_PHASE_MARDUM_WELCOME);
-            // if (TempSummon* npc =
-            player->SummonCreature(93011, creature->GetPosition().GetPositionX(), creature->GetPosition().GetPositionY(), creature->GetPosition().GetPositionZ(),
+            player->SummonCreature(NPC_Kayn, creature->GetPosition().GetPositionX(), creature->GetPosition().GetPositionY(), creature->GetPosition().GetPositionZ(),
                 creature->GetPosition().GetAngle(player) , TEMPSUMMON_MANUAL_DESPAWN, 17000, true);
-                //npc->SetFacingToObject(player);
         }
 
         return true;
@@ -356,7 +330,6 @@ public:
 
     struct npc_kayn_sunfury_welcomeAI : public ScriptedAI
     {
-        const uint32 DespawnTimes = 16000;
         npc_kayn_sunfury_welcomeAI(Creature* creature) : ScriptedAI(creature)
         {
 
@@ -491,7 +464,8 @@ struct npc_jayce_darkweaver_invasion_begins : public ScriptedAI
         if (data == EVENT_JUMP)
         {
             me->RemoveAurasDueToSpell(SPELL_DemonHunterGlideState);
-            me->SetAIAnimKitId(ANIM_DH_Run);
+            me->SetSheath(SHEATH_STATE_MELEE);  // show weapon
+            me->SetAIAnimKitId(ANIM_DH_Run);            
             me->GetMotionMaster()->MovePath(PATH_Jayce + 1, false);
         }
     }
@@ -572,11 +546,69 @@ struct npc_cyana_nightglaive_invasion_begins : public ScriptedAI
         if (data == EVENT_JUMP)
         {
             me->RemoveAurasDueToSpell(SPELL_DemonHunterGlideState);
-            me->SetAIAnimKitId(ANIM_DH_Run);
+            //me->SetAIAnimKitId(ANIM_DH_Run);
             me->GetMotionMaster()->MovePath(PATH_Cyana + 1, false);
         }
     }
 };
+
+
+// 98459 - Kayn Sunfury
+// 98458 - Jayce Darkweaver
+// 98456 - Allari the Souleater
+// 98460 - Korvas Bloodthorn
+// 99919 - Sevis Brightflame
+// 98457 - Cyana Nightglaive
+struct npc_illidari_fighting_invasion_begins : public ScriptedAI
+{
+    npc_illidari_fighting_invasion_begins(Creature* creature) : ScriptedAI(creature) {}
+    void UpdateAI(uint32 diff) override
+    {
+
+    }
+
+};
+
+
+// 244439/244440/244441 - Legion Communicator
+// 39279 - quest "Asault on Mardum"
+class go_legion_communicator : public GameObjectScript
+{
+public:
+    go_legion_communicator() : GameObjectScript("go_legion_communicator") {}
+
+    bool OnGossipHello(Player* player, GameObject* go) override
+    {
+        if (go->GetEntry() == 244439)   // Legion Communicator #1
+        {
+            UpdateObjective(player, go, 281333, 102223, 558);
+        }
+        else if (go->GetEntry() == 244440) // Legion Communicator #2
+        {
+            UpdateObjective(player, go, 281334, 102224, 583);
+        }
+        else if (go->GetEntry() == 244441) // Legion Communicator #3
+        {
+            // Brood Queen Tyranna says: Whoever this is, you're caught in my web now.
+            UpdateObjective(player, go, 281335, 102225, 583);   // what conversation id?
+        }
+        return false;
+    }
+private:
+    void UpdateObjective(Player* player, GameObject* go, uint32 objectiveId, uint32 killCredit, uint32 conversationId)
+    {
+        if (!player->GetQuestObjectiveCounter(objectiveId))
+        {
+            player->KilledMonsterCredit(killCredit, go->GetGUID());
+            Conversation::CreateConversation(conversationId, player, *player, { player->GetGUID() }, nullptr);
+
+            player->KilledMonsterCredit(go->GetEntry());
+        }
+    }
+};
+
+
+
 // Legion版本使用 `go-244898` 是一个旗子
 
 // 任务目标，激活会烧掉军团的旗帜..
@@ -673,7 +705,7 @@ class spell_learn_felsaber : public SpellScript
 
 // SAI 已经实现了这个功能，不需要这个脚本的支持了
 /*
-struct r : public ScriptedAI
+struct npc_mardum_allari : public ScriptedAI
 {
     npc_mardum_allari(Creature* creature) : ScriptedAI(creature) { }
     // 当靠近npc的时候，完成quest-40378 最后一步，找到阿莱利
@@ -1527,7 +1559,8 @@ void AddSC_zone_mardum()
     RegisterCreatureAI(npc_korvas_bloodthorn_invasion_begins);
     RegisterCreatureAI(npc_sevis_brightflame_invasion_begins);
     RegisterCreatureAI(npc_cyana_nightglaive_invasion_begins);
-    new go_mardum_legion_banner_1();
+    new go_legion_communicator();
+    new go_mardum_legion_banner_1();    
     new go_mardum_portal_ashtongue();
     new scene_mardum_welcome_ashtongue();
     RegisterSpellScript(spell_learn_felsaber);

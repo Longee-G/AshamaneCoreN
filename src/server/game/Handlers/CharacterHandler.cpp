@@ -1192,6 +1192,9 @@ void WorldSession::SendFeatureSystemStatus()
 {
     WorldPackets::System::FeatureSystemStatus features;
 
+    // 用来开启某些功能...
+
+
     /// START OF DUMMY VALUES
     features.ComplaintStatus = 2;
     features.ScrollOfResurrectionRequestsRemaining = 1;
@@ -1213,6 +1216,9 @@ void WorldSession::SendFeatureSystemStatus()
     features.ComplaintStatus = 0;
     features.TutorialsEnabled = true;
     features.NPETutorialsEnabled = true;
+
+    features.Unk67 = true; // 这是啥
+
     /// END OF DUMMY VALUES
 
     features.EuropaTicketSystemStatus->TicketsEnabled = sWorld->getBoolConfig(CONFIG_SUPPORT_TICKETS_ENABLED);

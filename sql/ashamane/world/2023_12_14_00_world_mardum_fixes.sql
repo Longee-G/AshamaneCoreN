@@ -108,6 +108,13 @@ INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `positio
 (@PATH+1,3,1063.56,3173.27,18.7396,0,0,1,0,100,0),
 (@PATH+1,4,1057.57,3168.61,18.2155,0,0,1,0,100,0);
 
+UPDATE `creature_template` SET `ScriptName`='npc_illidari_fighting_invasion_begins' WHERE entry=98459; -- Kayn Sunfury
+UPDATE `creature_template` SET `ScriptName`='npc_illidari_fighting_invasion_begins' WHERE entry=98458; -- Jayce Darkweaver
+UPDATE `creature_template` SET `ScriptName`='npc_illidari_fighting_invasion_begins' WHERE entry=98456; -- Allari the Souleater
+UPDATE `creature_template` SET `ScriptName`='npc_illidari_fighting_invasion_begins' WHERE entry=98460; -- Korvas Bloodthorn
+UPDATE `creature_template` SET `ScriptName`='npc_illidari_fighting_invasion_begins' WHERE entry=99919; -- Sevis Brightflame
+UPDATE `creature_template` SET `ScriptName`='npc_illidari_fighting_invasion_begins' WHERE entry=98457; -- Cyana Nightglaive
+
 -- Remove invalid [aura:195821]
 UPDATE `creature_addon` SET `auras`='' WHERE `auras`='195821' AND `guid` IN (20541317, 20541333, 20541320);
 
@@ -184,3 +191,5 @@ DELETE FROM `creature_text` WHERE `CreatureID`=@ASHTONGUE_MYSTIC ;
 INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `TextRange`, `comment`) VALUES 
 (@ASHTONGUE_MYSTIC , '0', '0', 'I am as good as dead. Do... what must... be done.', '12', '0', '100', '0', '0', '0', '0', '0', 'Ashtongue Mystic');
 
+-- Hellish Imp
+DELETE FROM `creature` WHERE `guid` IN (20540936, 20540937, 20540938);

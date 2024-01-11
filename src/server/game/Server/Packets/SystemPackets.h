@@ -148,6 +148,10 @@ namespace WorldPackets
             int32 TokenRedeemIndex                   = 0;     // NYI
             int64 TokenBalanceAmount                 = 0;     // NYI
             uint32 BpayStoreProductDeliveryDelay     = 0;     // NYI
+            uint32 UnkInt1 = 0; // NYI
+            uint32 UnkInt2 = 0; // NYI
+            uint32 UnkInt3 = 0; // NYI
+            uint32 UnkInt4 = 0; // NYI
         };
         // message of the day ...
         class MOTD final : public ServerPacket

@@ -96,10 +96,19 @@ void WorldSession::SendSetTimeZoneInformation()
 void WorldSession::SendFeatureSystemStatusGlueScreen()
 {
     WorldPackets::System::FeatureSystemStatusGlueScreen features;
-
     features.BpayStoreAvailable = GetBattlepayMgr()->IsAvailable();
     features.BpayStoreEnabled = sWorld->getBoolConfig(CONFIG_FEATURE_SYSTEM_BPAY_STORE_ENABLED);
     features.BpayStoreDisabledByParentalControls = false;
+
+    features.TokenBalanceEnabled = true;
+    features.CommerceSystemEnabled = true;  // 什么作用？
+    features.Unk14 = true;
+    // 以下不知道是啥
+    features.UnkInt1 = 3;
+    features.UnkInt2 = 2;
+    features.UnkInt3 = 5;
+    features.UnkInt4 = 7;
+
 
     features.CharUndeleteEnabled = sWorld->getBoolConfig(CONFIG_FEATURE_SYSTEM_CHARACTER_UNDELETE_ENABLED);
     SendPacket(features.Write());
