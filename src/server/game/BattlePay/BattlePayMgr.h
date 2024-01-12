@@ -1,4 +1,4 @@
-/*
+﻿/*
 * Copyright (C) 2008-2012 TrinityCore <http://www.trinitycore.org/>
 * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
 *
@@ -265,7 +265,7 @@ namespace BattlePay
         Nzd = 30
     };
 
-    // `trinity_string`����û���⼸���ַ�������Ҫ����...TODO:
+    // `trinity_string`表中没有这几个字符串，需要导入...TODO:
     enum String
     {
         AtGoldLimit = 14090,
@@ -330,13 +330,14 @@ namespace BattlePay
         };
     }
 
+    // 产品的卡片显示的样式 .. 
     namespace BattlepayGroupDisplayType
     {
         enum : uint8
         {
             Default = 0,
-            Splash = 1,
-            DoubleWide = 2,
+            Splash = 1,     // 卡片占据1/4?
+            DoubleWide = 2, // 卡片占据了整个窗口
         };
     }
 

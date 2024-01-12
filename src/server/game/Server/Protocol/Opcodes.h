@@ -99,6 +99,7 @@ enum OpcodeClient : uint16
     CMSG_BATTLENET_CHALLENGE_RESPONSE                 = 0x36D2,
     CMSG_BATTLENET_REQUEST                            = 0x36F6,
     CMSG_BATTLENET_REQUEST_REALM_LIST_TICKET          = 0x36F7,
+
     // <WIP> bpay
     CMSG_BATTLE_PAY_ACK_FAILED_RESPONSE               = 0x36CA,
     CMSG_BATTLE_PAY_CONFIRM_PURCHASE_RESPONSE         = 0x36C9,
@@ -899,8 +900,6 @@ enum OpcodeServer : uint16
     SMSG_BATTLE_PAY_VAS_REALM_LIST                    = 0x2831,
     SMSG_BATTLE_PAY_VAS_TRANSFER_QUEUE_STATUS         = 0x2858,
     // <WIP> bpay
-
-    
 
     SMSG_BATTLE_PETS_HEALED                           = 0x2609,
     SMSG_BATTLE_PET_CAGE_DATE_ERROR                   = 0x26A0,
