@@ -75,10 +75,11 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::BattlePayProdu
     data << product.ProductID;
 
     data << product.Type;
-    data << product.Flags;
+    //data << product.Flags;              // 这个可能是错误的，显示在客户端为ItemId
+    data << product.ItemId;
     data << product.UnkInt1;
     data << product.DisplayId;
-    data << product.ItemId;
+    data << product.Flags; // ItemId 修改成Flags？
     data << product.UnkInt4;
     data << product.UnkInt5;
 
@@ -223,6 +224,7 @@ WorldPacket const* WorldPackets::Battlepay::ProductListResponse::Write()
     for (auto const& v : ProductList.ProductInfo)
         _worldPacket << v;
 
+    // 这个是在哪里重载的？
     for (auto const& productData : ProductList.Product)
         _worldPacket << productData;
 

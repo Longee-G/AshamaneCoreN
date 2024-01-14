@@ -144,7 +144,7 @@ void BattlePayDataStoreMgr::LoadProduct()
 {
     TC_LOG_INFO("server.loading", "Loading Battlepay products ...");
     _products.clear();
-
+    //                                            0         1                       2                    3      4           5           6       7               8           9  
     auto result = WorldDatabase.PQuery("SELECT ProductID, NormalPriceFixedPoint, CurrentPriceFixedPoint, Type, WebsiteType, ChoiceType, Flags, DisplayInfoID, ClassMask, ScriptName FROM battlepay_product");
     if (!result)
         return;
@@ -228,7 +228,7 @@ void BattlePayDataStoreMgr::LoadShopEntires()
         shopEntry.Ordering = fields[3].GetInt32();
         shopEntry.VasServiceType = fields[4].GetUInt32();
         shopEntry.StoreDeliveryType = fields[5].GetUInt8();
-        shopEntry.DisplayInfoID = fields[6].GetUInt32();
+        shopEntry.DisplayInfoID = fields[6].GetUInt32();        // 这个变量应
         _shopEntries.push_back(shopEntry);
     } while (result->NextRow());
 

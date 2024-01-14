@@ -471,17 +471,33 @@ void BattlepayManager::SendProductList()
 
         response.ProductList.ProductInfo.emplace_back(pInfo);
 
+        // 设置商店中商品的信息
         WorldPackets::Battlepay::BattlePayProduct pProduct;
         pProduct.ProductID = product.ProductID;
-        pProduct.Flags = product.Flags;
         pProduct.Type = product.Type;
+        if (product.Items.size() == 1)
+        {
+            //pProduct.UnkBit = true;           // 标记player是否已经购买此商品？
+            //pProduct.UnkBits Optional<uint16>;
+            pProduct.UnkBits = 0xFFFF;
+
+            pProduct.ItemId = product.Items[0].ItemID;
+            pProduct.DisplayId = product.Items[0].DisplayInfoID;
+            pProduct.UnkInt1 = product.Items[0].DisplayInfoID;
+            pProduct.Flags = product.Items[0].DisplayInfoID;
+            pProduct.UnkInt4 = product.Items[0].DisplayInfoID;
+            pProduct.UnkInt5 = product.Items[0].DisplayInfoID;
+            //pProduct.UnkString = "";  // 这个不能设置..
+        }            
+
+        //pProduct.ItemId = 54860;        // 在游戏中关联ItemId 
         //pProduct.UnkBits Optional<uint16> ;
-        //pProduct.UnkInt1 = 0;
-        //pProduct.DisplayId = 0;
-        //pProduct.ItemId = 0;
-        //pProduct.UnkInt4 = 0;
-        //pProduct.UnkInt5 = 0;
-        //pProduct.UnkString = "";
+        //pProduct.Flags = 5;
+        //pProduct.UnkInt1 = 1;
+        //pProduct.DisplayId = 2;   // 这个应该不是displayId， 不能是0之外的值
+        //pProduct.UnkInt4 = 3;
+        //pProduct.UnkInt5 = 4;
+        //pProduct.UnkString = "abcdefgh";
         //pProduct.UnkBit = false;
 
         for (auto& item : product.Items)
@@ -490,9 +506,12 @@ void BattlepayManager::SendProductList()
             pItem.ID = item.ID;
             pItem.ItemID = product.Items.size() > 1 ? 0 : item.ItemID; ///< Disable tooltip for packs (client handle only one tooltip).
             pItem.Quantity = item.Quantity;
-            //pItem.UnkInt1 = 0;
+            pItem.UnkByte = item.HasPet;
+            pItem.UnkInt1 = item.DisplayInfoID;
+            pItem.UnkInt2 = item.DisplayInfoID;
+
             //pItem.UnkInt2 = 0;
-            //pItem.UnkByte = 0;
+            
 
             // if the product is already owned disable the buy button
             // also disable the button if we don't show the price for a product

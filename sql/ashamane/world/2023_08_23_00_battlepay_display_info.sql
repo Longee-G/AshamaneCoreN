@@ -21,10 +21,10 @@ CREATE TABLE `battlepay_display_info` (
 -- Records of battlepay_display_info
 -- ----------------------------
 INSERT INTO `battlepay_display_info` VALUES 
-('1', '31992', '0', '0', 'X-53 Touring Rocket', '', '', ''),
+('1', '31992', '1019208', '0', 'X-53型观光火箭', '', '一个人骑着装满高爆地精火箭燃料的巨型汽缸简直是疯了…所以带个朋友来吧。', ''),
 ('2', '17890', '0', '0', 'Peep\'s Whistle', '', '', ''),
 ('3', '15676', '0', '0', 'Black Qiraji Resonating Crystal', '', '', ''),
-('4', '39546', '0', '0', 'Spectral Gryphon', '', '', ''),
+('4', '39546', '537515', '0', '幽灵狮鹫', '', '当你说一个老朋友要回来的时候，这并不是我所期望的。- 布娜拉·云翼', ''),
 ('5', '39547', '0', '0', 'Spectral Wind Rider', '', '', ''),
 ('6', '40568', '0', '0', 'Feldrake', '', '', ''),
 ('7', '48020', '0', '0', 'Armored Bloodwing', '', '', ''),
@@ -76,7 +76,7 @@ INSERT INTO `battlepay_display_info` VALUES
 ('53', '34955', '0', '0', 'Reins of Poseidus', '', '', ''),
 ('54', '35755', '0', '0', 'Reins of the Drake of the South Wind', '', '', ''),
 ('55', '29344', '0', '0', 'Magic Rooster Egg', '', '', ''),
-('56', '46729', '0', '0', 'Swift Windsteed', '', '', ''),
+('56', '46729', '773250', '0', 'Swift Windsteed', '', '潘达利亚最难以捉摸的生物之一，据说能给它的骑手带来好运。', ''),
 ('57', '53774', '0', '0', 'Reins of the Dread Raven', '', '', ''),
 ('58', '17011', '0', '0', 'Swift Shorestrider', '', '', ''),
 ('59', '59746', '0', '0', 'Mudback Riverbeast', '', '', ''),
