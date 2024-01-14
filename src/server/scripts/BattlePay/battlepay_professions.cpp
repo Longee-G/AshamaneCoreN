@@ -22,7 +22,7 @@
 
 
 
-namespace BattlePay
+namespace Battlepay
 {
     namespace ProfessionBookSpells
     {
@@ -72,13 +72,13 @@ class BattlePay_Profession : BattlePayProductScript
 public:
     explicit BattlePay_Profession(std::string scriptName) : BattlePayProductScript(scriptName) {}
 
-    void OnProductDelivery(WorldSession* session, BattlePay::Product const& /*product*/) override
+    void OnProductDelivery(WorldSession* session, Battlepay::Product const& /*product*/) override
     {
         auto player = session->GetPlayer();
         if (!player)
             return;
 
-        auto spellID = BattlePay::SkillLearningSpells[t_SkillID];
+        auto spellID = Battlepay::SkillLearningSpells[t_SkillID];
 
         // 为什么要cast？在这里
         player->CastSpell(player, spellID, true);
@@ -105,40 +105,40 @@ public:
         player->SaveToDB();
     }
 
-    bool CanBuy(WorldSession* session, BattlePay::Product const& /*product*/, std::string& reason) override
+    bool CanBuy(WorldSession* session, Battlepay::Product const& /*product*/, std::string& reason) override
     {
         auto player = session->GetPlayer();
         if (!player)
         {
-            reason = sObjectMgr->GetTrinityString(BattlePay::String::NeedToBeInGame, session->GetSessionDbLocaleIndex());
+            reason = sObjectMgr->GetTrinityString(Battlepay::String::NeedToBeInGame, session->GetSessionDbLocaleIndex());
             return false;
         }
 
-        if (BattlePay::SkillLearningSpells.find(t_SkillID) == BattlePay::SkillLearningSpells.end())
+        if (Battlepay::SkillLearningSpells.find(t_SkillID) == Battlepay::SkillLearningSpells.end())
             return false;
 
         if (player->getLevel() < 90)
         {
-            reason = sObjectMgr->GetTrinityString(BattlePay::String::Level90Required, session->GetSessionDbLocaleIndex());
+            reason = sObjectMgr->GetTrinityString(Battlepay::String::Level90Required, session->GetSessionDbLocaleIndex());
             return false;
         }
 
         if (IsPrimaryProfessionSkill(t_SkillID) && !player->HasSkill(t_SkillID) && player->GetFreePrimaryProfessionPoints() == 0)
         {
-            reason = sObjectMgr->GetTrinityString(BattlePay::String::ReachPrimaryProfessionLimit, session->GetSessionDbLocaleIndex());
+            reason = sObjectMgr->GetTrinityString(Battlepay::String::ReachPrimaryProfessionLimit, session->GetSessionDbLocaleIndex());
             return false;
         }
 
         if (player->HasSkill(t_SkillID) && player->GetSkillValue(t_SkillID) == t_Value)
         {
-            reason = sObjectMgr->GetTrinityString(BattlePay::String::YouAlreadyOwnThat, session->GetSessionDbLocaleIndex());
+            reason = sObjectMgr->GetTrinityString(Battlepay::String::YouAlreadyOwnThat, session->GetSessionDbLocaleIndex());
             return false;
         }
 
         return true;
     }
 
-    std::string GetCustomData(BattlePay::Product const& /*product*/) override
+    std::string GetCustomData(Battlepay::Product const& /*product*/) override
     {
         return R"({\"skill_id\": )" + std::to_string(t_SkillID) + "}";
     }

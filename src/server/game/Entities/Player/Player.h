@@ -2554,6 +2554,10 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
 
         bool MeetPlayerCondition(uint32 conditionId) const;
 
+        // Battlepay
+        bool ChangeTokenCount(uint8 tokenType, int64 change, uint8 buyType, uint64 productId);
+        int64 GetTokenBalance(uint8 tokenType) const;
+
     protected:
         // Gamemaster whisper whitelist
         GuidList _whisperList;

@@ -27,15 +27,13 @@
 
 #define ITEM_HEARTHSTONE 6948
 
-// 学习怎么编写AI Script...
-
 template<uint32 t_Level>
 class BattlePay_Level : BattlePayProductScript
 {
 public:
     explicit BattlePay_Level(std::string scriptName) : BattlePayProductScript(scriptName) {}
 
-    void OnProductDelivery(WorldSession* session, BattlePay::Product const& /*product*/) override
+    void OnProductDelivery(WorldSession* session, Battlepay::Product const& /*product*/) override
     {
         auto player = session->GetPlayer();
         if (!player)
@@ -154,19 +152,19 @@ public:
         player->SaveToDB();
     }
 
-    // 检查player是否可以购买BattlePay的东西...
-    bool CanBuy(WorldSession* session, BattlePay::Product const& /*product*/, std::string& reason) override
+    // 检查player是否可以购买Battlepay的东西...
+    bool CanBuy(WorldSession* session, Battlepay::Product const& /*product*/, std::string& reason) override
     {
         auto player = session->GetPlayer();
         if (!player)
         {
-            reason = sObjectMgr->GetTrinityString(BattlePay::String::NeedToBeInGame, session->GetSessionDbLocaleIndex());
+            reason = sObjectMgr->GetTrinityString(Battlepay::String::NeedToBeInGame, session->GetSessionDbLocaleIndex());
             return false;
         }
 
         if (t_Level <= player->getLevel())
         {
-            reason = sObjectMgr->GetTrinityString(BattlePay::String::TooHighLevel, session->GetSessionDbLocaleIndex());
+            reason = sObjectMgr->GetTrinityString(Battlepay::String::TooHighLevel, session->GetSessionDbLocaleIndex());
             return false;
         }
 
@@ -290,12 +288,12 @@ template <uint32 t_AccountServiceFlag> class BattlePay_AccountService : BattlePa
 public:
     explicit BattlePay_AccountService(std::string scriptName) : BattlePayProductScript(scriptName) {}
 
-    void OnProductDelivery(WorldSession* /*session*/, BattlePay::Product const& /*product*/) override
+    void OnProductDelivery(WorldSession* /*session*/, Battlepay::Product const& /*product*/) override
     {
         //session->SetServiceFlags(t_AccountServiceFlag);
     }
 
-    bool CanBuy(WorldSession* /*session*/, BattlePay::Product const& /*product*/, std::string& reason) override
+    bool CanBuy(WorldSession* /*session*/, Battlepay::Product const& /*product*/, std::string& reason) override
     {
 
         return true;

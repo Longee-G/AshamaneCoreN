@@ -298,8 +298,9 @@ void WorldSession::SendPacket(WorldPacket const* packet, bool forced /*= false*/
     sScriptMgr->OnPacketSend(this, *packet);
 
     // FIXME:
-    if(packet->GetOpcode() != SMSG_EMOTE)
-        TC_LOG_TRACE("network.opcode", "S->C: %s %s", GetPlayerInfo().c_str(), GetOpcodeNameForLogging(static_cast<OpcodeServer>(packet->GetOpcode())).c_str());
+    uint16 opcode = packet->GetOpcode();
+    if(opcode != SMSG_EMOTE && opcode != SMSG_PONG && opcode != SMSG_UI_TIME)
+        TC_LOG_TRACE("network.opcode", "S->C: %s %s", GetOpcodeNameForLogging(static_cast<OpcodeServer>(packet->GetOpcode())).c_str(), GetPlayerInfo().c_str());
 
     _socket[conIdx]->SendPacket(*packet);
 }
@@ -1069,6 +1070,8 @@ void WorldSession::InitializeSessionCallback(SQLQueryHolder* realmHolder, SQLQue
     SendClientCacheVersion(sWorld->getIntConfig(CONFIG_CLIENTCACHE_VERSION));
     SendAvailableHotfixes(int32(sWorld->getIntConfig(CONFIG_HOTFIX_CACHE_VERSION)));
     SendTutorialsData();
+    SendDisplayPromo();
+
 
     if (PreparedQueryResult characterCountsResult = holder->GetPreparedResult(AccountInfoQueryHolder::GLOBAL_REALM_CHARACTER_COUNTS))
     {

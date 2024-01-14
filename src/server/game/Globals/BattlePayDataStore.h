@@ -32,7 +32,7 @@ struct BattlePayDisplayInfoLocale
     StringVector Name4;
 };
 
-// BattlePay load from Database NOT from .db2 file
+// Battlepay load from Database NOT from .db2 file
 class BattlePayDataStoreMgr
 {
     BattlePayDataStoreMgr();
@@ -42,19 +42,19 @@ public:
     static BattlePayDataStoreMgr* instance();
 
     void Initialize();
-    std::vector<BattlePay::ProductGroup> const& GetProductGroups() const;
-    std::vector<BattlePay::ShopEntry> const& GetShopEntries() const;
+    std::vector<Battlepay::ProductGroup> const& GetProductGroups() const;
+    std::vector<Battlepay::ShopEntry> const& GetShopEntries() const;
     uint32 GetProductGroupId(uint32 productId) const;
-    std::map<uint32, BattlePay::Product> const& GetProducts() const;
+    std::map<uint32, Battlepay::Product> const& GetProducts() const;
     bool ProductExist(uint32 productID) const;
-    BattlePay::Product const& GetProduct(uint32 productID) const;
-    BattlePay::DisplayInfo const* GetDisplayInfo(uint32 id) const;
-    std::vector<WorldPackets::BattlePay::ProductDisplayVisualData> const* GetDisplayInfoVisuals(uint32 id) const;
-    BattlePay::ProductGroupLocale const* GetProductGroupLocale(uint32 entry) const;
+    Battlepay::Product const& GetProduct(uint32 productID) const;
+    Battlepay::DisplayInfo const* GetDisplayInfo(uint32 id) const;
+    std::vector<WorldPackets::Battlepay::ProductDisplayVisualData> const* GetDisplayInfoVisuals(uint32 id) const;
+    Battlepay::ProductGroupLocale const* GetProductGroupLocale(uint32 entry) const;
     BattlePayDisplayInfoLocale const* GetDisplayInfoLocale(uint32 entry) const;
-    BattlePay::ProductGroup* GetProductGroup(uint32 groupID) const;
-    BattlePay::ProductGroup* GetProductGroupForProductId(uint32 productID) const;
-    std::unordered_map<uint8, BattlePay::TokenType>& GetTokenTypes();
+    Battlepay::ProductGroup* GetProductGroup(uint32 groupID) const;
+    Battlepay::ProductGroup* GetProductGroupForProductId(uint32 productID) const;
+    std::unordered_map<uint8, Battlepay::TokenType>& GetTokenTypes();
 
 private:
     void LoadProductGroups();
@@ -66,7 +66,7 @@ private:
     void LoadDisplayInfoLocales();
     void LoadTokenTypes();
 
-    BattlePay::Product _temp = {};
+    Battlepay::Product _temp = {};
 };
 
 #define sBattlePayDataStore BattlePayDataStoreMgr::instance()

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -2132,6 +2132,10 @@ void World::SetInitialWorldSettings()
     ///- Initilize static helper structures
     AIRegistry::Initialize();
 
+    // [Longee]
+    TC_LOG_INFO("server.loading", "Loading battlepay data...");
+    sBattlePayDataStore->Initialize();
+
     ///- Initialize MapManager
     TC_LOG_INFO("server.loading", "Starting Map System");
     sMapMgr->Initialize();
@@ -2225,9 +2229,7 @@ void World::SetInitialWorldSettings()
     TC_LOG_INFO("server.loading", "Loading active world quests...");
     sWorldQuestMgr->LoadActiveWorldQuests();
 
-    // [Longee]
-    TC_LOG_INFO("server.loading", "Loading battle pay data...");
-    sBattlePayDataStore->Initialize();
+
 
 
     // Preload all cells, if required for the base maps

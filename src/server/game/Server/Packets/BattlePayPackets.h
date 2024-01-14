@@ -25,9 +25,9 @@
 namespace WorldPackets
 {
     // BattleNet Pay Service ...
-    namespace BattlePay
+    namespace Battlepay
     {
-        // TODO: 这个消息是和BattlePay相关的消息，客户端请求消费所用的代币的信息
+        // TODO: 这个消息是和Battlepay相关的消息，客户端请求消费所用的代币的信息
         class RequestConsumptionConversionInfo final : public ClientPacket
         {
         public:
@@ -517,9 +517,9 @@ namespace WorldPackets
     }
 }
 
-ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::BattlePay::ProductDisplayInfo const& displayInfo);
-ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::BattlePay::BattlePayProduct const& product);
-ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::BattlePay::BattlePayDistributionObject const& object);
-ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::BattlePay::BattlePayPurchase const& purchase);
+ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::ProductDisplayInfo const& displayInfo);
+ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::BattlePayProduct const& product);
+ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::BattlePayDistributionObject const& object);
+ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::BattlePayPurchase const& purchase);
 
 #endif // BattlePayPackets_h__

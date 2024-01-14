@@ -1886,7 +1886,7 @@ ZoneScript* ScriptMgr::GetZoneScript(uint32 scriptId)
 }
 
 // what is `Battle Pay`
-std::string ScriptMgr::BattlePayGetCustomData(BattlePay::Product const & product)
+std::string ScriptMgr::BattlePayGetCustomData(Battlepay::Product const & product)
 {
     // TODO:
     GET_SCRIPT_RET(BattlePayProductScript, sObjectMgr->GetScriptId(product.ScriptName.c_str()), tmpscript, nullptr);
@@ -1894,7 +1894,7 @@ std::string ScriptMgr::BattlePayGetCustomData(BattlePay::Product const & product
 }
 
 // deal with pay service ...
-void ScriptMgr::OnBattlePayProductDelivery(WorldSession * session, BattlePay::Product const & product)
+void ScriptMgr::OnBattlePayProductDelivery(WorldSession * session, Battlepay::Product const & product)
 {
     ASSERT(session);
     GET_SCRIPT(BattlePayProductScript, sObjectMgr->GetScriptId(product.ScriptName.c_str()), tmpscript);
@@ -1902,7 +1902,7 @@ void ScriptMgr::OnBattlePayProductDelivery(WorldSession * session, BattlePay::Pr
 }
 
 // 检查指定的付费服务是否可用 ...
-bool ScriptMgr::BattlePayCanBuy(WorldSession * session, BattlePay::Product const & product, std::string & reason)
+bool ScriptMgr::BattlePayCanBuy(WorldSession * session, Battlepay::Product const & product, std::string & reason)
 {
     ASSERT(session);
 

@@ -33,7 +33,7 @@
 #include "SpellMgr.h"
 #include "SpellInfo.h"
 
-using namespace BattlePay;
+using namespace Battlepay;
 
 
 namespace Tools
@@ -95,8 +95,8 @@ BattlePayCurrency BattlepayManager::GetShopCurrency() const
 
 bool BattlepayManager::IsAvailable() const
 {
-    //if (AccountMgr::IsModeratorAccount(_session->GetSecurity()))
-    //    return true;
+    if (AccountMgr::IsModeratorAccount(_session->GetSecurity()))
+        return true;
 
     return sWorld->getBoolConfig(CONFIG_FEATURE_SYSTEM_BPAY_STORE_ENABLED);
 }
@@ -146,12 +146,12 @@ void BattlepayManager::ProcessDelivery(Purchase* purchase)
     auto const& product = sBattlePayDataStore->GetProduct(purchase->ProductID);
     switch (product.WebsiteType)
     {
-    case BattlePay::Item:
+    case Battlepay::Item:
         for (auto const& itr : product.Items)
             if (player)
                 player->AddItem(itr.ItemID, itr.Quantity);
         break;
-    case BattlePay::BattlePet:
+    case Battlepay::BattlePet:
         if (player)
             for (auto const& itr : product.Items)
                 player->AddBattlePetByCreatureId(itr.ItemID, true, true);
@@ -189,7 +189,7 @@ void BattlepayManager::ProcessDelivery(Purchase* purchase)
 
     //case Category:
     //    break;
-    //case BattlePay::Spell:
+    //case Battlepay::Spell:
     //    break;
     //case Currency:
     //    break;
@@ -267,16 +267,16 @@ auto BattlepayManager::ProductFilter(Product product) -> bool
     {
         switch (product.WebsiteType)
         {
-        case BattlePay::BattlePet:
+        case BattlePet:
         case Rename:
         case Faction:
         case DeletedCharacter:
         case Customization:
         case Race:
-        case CharacterBoost:
+        case CharacterBoost:        
             //case Category:
             //    break;
-            //case BattlePay::Spell:
+            //case Battlepay::Spell:
             //    break;
             //case Currency:
             //    break;
@@ -314,6 +314,7 @@ auto BattlepayManager::ProductFilter(Product product) -> bool
             //    break;
             //case CategoryGold:
             //    break;
+        case Battlepay::Item:
             return true;
         default:
             return false;
@@ -363,7 +364,7 @@ auto BattlepayManager::ProductFilter(Product product) -> bool
 
 void BattlepayManager::SendProductList()
 {
-    WorldPackets::BattlePay::ProductListResponse response;
+    WorldPackets::Battlepay::ProductListResponse response;
     if (!IsAvailable())
     {
         response.Result = ProductListResult::LockUnk1;
@@ -385,7 +386,7 @@ void BattlepayManager::SendProductList()
         if (itr.OwnsTokensOnly  && GetBalance(itr.TokenType) <= 0)
             continue;
 
-        WorldPackets::BattlePay::BattlePayProductGroup pGroup;
+        WorldPackets::Battlepay::BattlePayProductGroup pGroup;
         pGroup.GroupID = itr.GroupID;
         pGroup.IconFileDataID = itr.IconFileDataID;
         pGroup.Ordering = itr.Ordering;
@@ -402,7 +403,7 @@ void BattlepayManager::SendProductList()
 
     for (auto const& itr : sBattlePayDataStore->GetShopEntries())
     {
-        BattlePay::ProductGroup* productGroup = sBattlePayDataStore->GetProductGroup(itr.GroupID);
+        Battlepay::ProductGroup* productGroup = sBattlePayDataStore->GetProductGroup(itr.GroupID);
         if (!productGroup)
             continue;
 
@@ -412,13 +413,13 @@ void BattlepayManager::SendProductList()
         if (productGroup->OwnsTokensOnly && GetBalance(productGroup->TokenType) <= 0)
             continue;
 
-        WorldPackets::BattlePay::BattlePayShopEntry sEntry;
+        WorldPackets::Battlepay::BattlePayShopEntry sEntry;
         sEntry.EntryID = itr.EntryID;
         sEntry.GroupID = itr.GroupID;
         sEntry.ProductID = itr.ProductID;
         sEntry.Ordering = itr.Ordering;
-        sEntry.VasServiceType = itr.Flags;
-        sEntry.StoreDeliveryType = itr.BannerType;
+        sEntry.VasServiceType = itr.VasServiceType;
+        sEntry.StoreDeliveryType = itr.StoreDeliveryType;
 
         auto data = WriteDisplayInfo(itr.DisplayInfoID, localeIndex);
         if (std::get<0>(data))
@@ -436,7 +437,7 @@ void BattlepayManager::SendProductList()
         if (!ProductFilter(product))
             continue;
 
-        BattlePay::ProductGroup* productGroup = sBattlePayDataStore->GetProductGroupForProductId(product.ProductID);
+        Battlepay::ProductGroup* productGroup = sBattlePayDataStore->GetProductGroupForProductId(product.ProductID);
         if (!productGroup)
             continue;
 
@@ -447,7 +448,7 @@ void BattlepayManager::SendProductList()
         if (productGroup->OwnsTokensOnly && tokenBalance <= 0)
             continue;
 
-        WorldPackets::BattlePay::ProductInfoStruct pInfo;
+        WorldPackets::Battlepay::ProductInfoStruct pInfo;
         pInfo.NormalPriceFixedPoint = product.NormalPriceFixedPoint * g_CurrencyPrecision;
         pInfo.CurrentPriceFixedPoint = product.CurrentPriceFixedPoint * g_CurrencyPrecision;
         pInfo.ProductID = product.ProductID;
@@ -470,7 +471,7 @@ void BattlepayManager::SendProductList()
 
         response.ProductList.ProductInfo.emplace_back(pInfo);
 
-        WorldPackets::BattlePay::BattlePayProduct pProduct;
+        WorldPackets::Battlepay::BattlePayProduct pProduct;
         pProduct.ProductID = product.ProductID;
         pProduct.Flags = product.Flags;
         pProduct.Type = product.Type;
@@ -485,7 +486,7 @@ void BattlepayManager::SendProductList()
 
         for (auto& item : product.Items)
         {
-            WorldPackets::BattlePay::ProductItem pItem;
+            WorldPackets::Battlepay::ProductItem pItem;
             pItem.ID = item.ID;
             pItem.ItemID = product.Items.size() > 1 ? 0 : item.ItemID; ///< Disable tooltip for packs (client handle only one tooltip).
             pItem.Quantity = item.Quantity;
@@ -522,7 +523,7 @@ void BattlepayManager::SendProductList()
     _session->SendPacket(response.Write());
 }
 
-std::tuple<bool, WorldPackets::BattlePay::ProductDisplayInfo> BattlepayManager::WriteDisplayInfo(uint32 displayInfoID, LocaleConstant localeIndex, uint32 productId /*= 0*/)
+std::tuple<bool, WorldPackets::Battlepay::ProductDisplayInfo> BattlepayManager::WriteDisplayInfo(uint32 displayInfoID, LocaleConstant localeIndex, uint32 productId /*= 0*/)
 {
     auto GeneratePackDescription = [localeIndex](Product const& product) -> std::string
     {
@@ -558,7 +559,7 @@ std::tuple<bool, WorldPackets::BattlePay::ProductDisplayInfo> BattlepayManager::
         return res;
     };
 
-    auto info = WorldPackets::BattlePay::ProductDisplayInfo();
+    auto info = WorldPackets::Battlepay::ProductDisplayInfo();
     if (!displayInfoID)
         return std::make_tuple(false, info);
 
@@ -601,7 +602,7 @@ std::tuple<bool, WorldPackets::BattlePay::ProductDisplayInfo> BattlepayManager::
 
             for (auto const& itr : *visuals)
             {
-                WorldPackets::BattlePay::ProductDisplayVisualData visual;
+                WorldPackets::Battlepay::ProductDisplayVisualData visual;
                 visual.DisplayId = itr.DisplayId;
                 visual.VisualId = itr.VisualId;
                 visual.ProductName = itr.ProductName;
@@ -638,7 +639,7 @@ void BattlepayManager::SendPointsBalance()
 
 void BattlepayManager::SendBattlePayDistribution(uint32 productId, uint8 status, uint64 distributionId, ObjectGuid targetGuid)
 {
-    WorldPackets::BattlePay::DistributionUpdate distributionBattlePay;
+    WorldPackets::Battlepay::DistributionUpdate distributionBattlePay;
     auto product = sBattlePayDataStore->GetProduct(productId);
     if (!product.ProductID)
         return;
@@ -656,11 +657,11 @@ void BattlepayManager::SendBattlePayDistribution(uint32 productId, uint8 status,
         distributionBattlePay.DistributionObject.TargetNativeRealm = GetVirtualRealmAddress();
     }
 
-    WorldPackets::BattlePay::BattlePayProduct productData;
+    WorldPackets::Battlepay::BattlePayProduct productData;
 
     for (auto const& item : product.Items)
     {
-        WorldPackets::BattlePay::ProductItem productItem;
+        WorldPackets::Battlepay::ProductItem productItem;
 
         auto dataP = WriteDisplayInfo(item.DisplayInfoID, localeIndex);
         if (std::get<0>(dataP))
@@ -705,11 +706,11 @@ void BattlepayManager::SendBattlePayDistribution(uint32 productId, uint8 status,
 
 void BattlepayManager::AssignDistributionToCharacter(ObjectGuid const& targetCharGuid, uint64 distributionId, uint32 productId, uint16 specId, uint16 choiceId)
 {
-    WorldPackets::BattlePay::UpgradeStarted upgrade;
+    WorldPackets::Battlepay::UpgradeStarted upgrade;
     upgrade.CharacterGUID = targetCharGuid;
     _session->SendPacket(upgrade.Write());
 
-    WorldPackets::BattlePay::BattlePayStartDistributionAssignToTargetResponse assignResponse;
+    WorldPackets::Battlepay::BattlePayStartDistributionAssignToTargetResponse assignResponse;
     assignResponse.DistributionID = distributionId;
     assignResponse.unkint1 = 0;
     assignResponse.unkint2 = 0;
@@ -741,7 +742,7 @@ void BattlepayManager::Update(uint32 diff)
             if (!player)
                 break;
 
-            WorldPackets::BattlePay::BattlePayCharacterUpgradeQueued responseQueued;
+            WorldPackets::Battlepay::BattlePayCharacterUpgradeQueued responseQueued;
             //responseQueued.EquipmentItems = sDB2Manager.GetItemLoadOutItemsByClassID(player->getClass(), 3)[0];
             // 从CharacterLoadout数据中获取直升服务给角色的物品  purpose = 3 ?
             
@@ -798,8 +799,8 @@ void BattlepayManager::Update(uint32 diff)
 // 获取代币的数量...
 uint64 BattlepayManager::GetBalance(uint8 tokenType)
 {
-    // TODO:
-    return 0;
+    // TODO: 返回0会导致商品显示不出来...
+    return 1;
 }
 
 // 获取Player加载的物品列表... 通过player的职业，种族来筛选...

@@ -63,11 +63,3 @@ void WorldSession::HandleChallengeModeStart(WorldPackets::ChallengeMode::StartRe
     // Blizzard do not delete the key at challenge start, will require mort research
     _player->DestroyItem(start.Bag, start.Slot, true);
 }
-
-// 请求代币信息？
-void WorldSession::HandleRequestConsumptionConversionInfo(WorldPackets::BattlePay::RequestConsumptionConversionInfo & packet)
-{
-    // TODO: response SMSG_CONSUMPTION_CONVERSION_INFO_RESPONSE or SMSG_CONSUMPTION_CONVERSION_RESULT
-
-
-}

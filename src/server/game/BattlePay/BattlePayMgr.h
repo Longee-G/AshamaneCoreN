@@ -140,7 +140,7 @@ sub_79B9DA(&a1, st7_0, "VasError", "BoostedTooRecently", 117);
 */
 
 // `BattleNet` Pay Service ...
-namespace BattlePay
+namespace Battlepay
 {
     const float g_CurrencyPrecision = 10000.0f;
 
@@ -221,7 +221,7 @@ namespace BattlePay
         };
     }
 
-    /// Result of SMSG_BATTLE_PAY_GET_PRODUCT_LIST_RESPONSE see @BattlePay::SendProductList
+    /// Result of SMSG_BATTLE_PAY_GET_PRODUCT_LIST_RESPONSE see @Battlepay::SendProductList
     namespace ProductListResult
     {
         enum
@@ -233,7 +233,7 @@ namespace BattlePay
         };
     }
 
-    /// Update status of SMSG_BATTLE_PAY_PURCHASE_UPDATE see @BattlePay::SendPurchaseUpdate
+    /// Update status of SMSG_BATTLE_PAY_PURCHASE_UPDATE see @Battlepay::SendPurchaseUpdate
     namespace UpdateStatus
     {
         enum
@@ -400,10 +400,10 @@ namespace BattlePay
         uint32 EntryID;
         uint32 GroupID;
         uint32 ProductID;
-        uint32 Flags;
+        int32 Ordering;        
         uint32 DisplayInfoID;
-        int32 Ordering;
-        uint8 BannerType;
+        uint32 VasServiceType;           // VasServiceType
+        uint8 StoreDeliveryType;        // StoreDeliveryType
     };
 
     struct Purchase
@@ -442,8 +442,8 @@ namespace BattlePay
 // BattleNet Pay Service Manager
 class BattlepayManager
 {
-    BattlePay::Purchase _actualTransaction;
-    std::map<uint32, BattlePay::Product> _existProducts;
+    Battlepay::Purchase _actualTransaction;
+    std::map<uint32, Battlepay::Product> _existProducts;
 
     WorldSession* _session;
     uint64 _purchaseIDCount;
@@ -453,17 +453,17 @@ public:
     explicit BattlepayManager(WorldSession* session);
     ~BattlepayManager();
 
-    BattlePay::BattlePayCurrency GetShopCurrency() const;
+    Battlepay::BattlePayCurrency GetShopCurrency() const;
     bool IsAvailable() const;
     bool AlreadyOwnProduct(uint32 itemId) const;
-    void ProcessDelivery(BattlePay::Purchase* purchase);
-    void RegisterStartPurchase(BattlePay::Purchase purchase);
+    void ProcessDelivery(Battlepay::Purchase* purchase);
+    void RegisterStartPurchase(Battlepay::Purchase purchase);
     uint64 GenerateNewPurchaseID();
     uint64 GenerateNewDistributionId();
-    BattlePay::Purchase* GetPurchase();
+    Battlepay::Purchase* GetPurchase();
     std::string const& GetDefaultWalletName() const;
-    std::tuple<bool, WorldPackets::BattlePay::ProductDisplayInfo> WriteDisplayInfo(uint32 displayInfoID, LocaleConstant localeIndex, uint32 productId = 0);
-    auto ProductFilter(BattlePay::Product product) -> bool;
+    std::tuple<bool, WorldPackets::Battlepay::ProductDisplayInfo> WriteDisplayInfo(uint32 displayInfoID, LocaleConstant localeIndex, uint32 productId = 0);
+    auto ProductFilter(Battlepay::Product product) -> bool;
     void SendProductList();
     void SendPointsBalance();
     void SendBattlePayDistribution(uint32 productId, uint8 status, uint64 distributionId, ObjectGuid targetGuid = ObjectGuid::Empty);

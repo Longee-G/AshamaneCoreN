@@ -1006,21 +1006,21 @@ class TC_GAME_API QuestScript : public ScriptObject
 };
 
 
-namespace BattlePay
+namespace Battlepay
 {
     struct Product;
 }
 
-// script for BattlePay
+// script for Battlepay
 class TC_GAME_API BattlePayProductScript : public ScriptObject
 {
 protected:
     explicit BattlePayProductScript(std::string scriptName);
 public:
-    virtual void OnProductDelivery(WorldSession* /*session*/, BattlePay::Product const& /*product*/) { }
-    virtual bool CanShow(WorldSession* /*session*/, BattlePay::Product const& /*product*/) { return true; }
-    virtual bool CanBuy(WorldSession* /*session*/, BattlePay::Product const& /*product*/, std::string& /*reason*/) { return true; }
-    virtual std::string GetCustomData(BattlePay::Product const& /*product*/) { return ""; }
+    virtual void OnProductDelivery(WorldSession* /*session*/, Battlepay::Product const& /*product*/) { }
+    virtual bool CanShow(WorldSession* /*session*/, Battlepay::Product const& /*product*/) { return true; }
+    virtual bool CanBuy(WorldSession* /*session*/, Battlepay::Product const& /*product*/, std::string& /*reason*/) { return true; }
+    virtual std::string GetCustomData(Battlepay::Product const& /*product*/) { return ""; }
 };
 
 
@@ -1357,9 +1357,9 @@ class TC_GAME_API ScriptMgr
 
     public: /* BattlePayProductScript */
         // TODO:
-        std::string BattlePayGetCustomData(BattlePay::Product const& product);
-        void OnBattlePayProductDelivery(WorldSession* session, BattlePay::Product const& product);
-        bool BattlePayCanBuy(WorldSession* session, BattlePay::Product const& product, std::string& reason);
+        std::string BattlePayGetCustomData(Battlepay::Product const& product);
+        void OnBattlePayProductDelivery(WorldSession* session, Battlepay::Product const& product);
+        bool BattlePayCanBuy(WorldSession* session, Battlepay::Product const& product, std::string& reason);
 
     private:
         uint32 _scriptCount;

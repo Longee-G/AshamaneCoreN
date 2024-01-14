@@ -35,9 +35,12 @@ void WorldSession::HandleRequestWowTokenMarketPrice(WorldPackets::Token::Request
 
     /// @todo: 6.x fix implementation
     response.CurrentMarketPrice = 300000000;
+    
+    response.Result = /*TOKEN_RESULT_SUCCESS*/TOKEN_RESULT_ERROR_DISABLED;
+
     response.UnkInt = requestWowTokenMarketPrice.UnkInt;
-    response.Result = TOKEN_RESULT_SUCCESS;
-    response.AuctionDuration = 10000;   //packet.ReadUInt32("UnkInt32");
+    response.AuctionDuration = 14400;   //packet.ReadUInt32("UnkInt32");
+
 
     SendPacket(response.Write());
 }

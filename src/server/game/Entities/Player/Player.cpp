@@ -28898,6 +28898,19 @@ bool Player::MeetPlayerCondition(uint32 conditionId) const
     return true;
 }
 
+bool Player::ChangeTokenCount(uint8 tokenType, int64 change, uint8 buyType, uint64 productId)
+{
+    // TODO: 
+
+	return true;
+}
+
+int64 Player::GetTokenBalance(uint8 tokenType) const
+{
+    // TODO: <WIP>
+    return 1000;
+}
+
 float Player::GetCollisionHeight(bool mounted) const
 {
     if (mounted)
