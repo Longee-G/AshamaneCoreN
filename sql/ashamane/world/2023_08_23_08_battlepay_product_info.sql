@@ -17,3 +17,4 @@ CREATE TABLE `battlepay_product_info` (
 -- Records of battlepay_product_info
 -- ----------------------------
 INSERT INTO `battlepay_product_info` VALUES ('50', '555000', '555000', '47', '2', '260', null);
+

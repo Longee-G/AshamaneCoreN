@@ -1,7 +1,10 @@
+SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS `battlepay_display_info`;
+DROP TABLE IF EXISTS `battlepay_product_display_info`;
+SET FOREIGN_KEY_CHECKS = 1;
 -- ----------------------------
 -- Table structure for battlepay_display_info
 -- ----------------------------
-DROP TABLE IF EXISTS `battlepay_display_info`;
 CREATE TABLE `battlepay_display_info` (
   `DisplayInfoId` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `CreatureDisplayInfoID` int(11) unsigned NOT NULL DEFAULT '0',
@@ -17,856 +20,858 @@ CREATE TABLE `battlepay_display_info` (
 -- ----------------------------
 -- Records of battlepay_display_info
 -- ----------------------------
-INSERT INTO `battlepay_display_info` VALUES ('1', '31992', '0', '0', 'X-53 Touring Rocket', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('2', '17890', '0', '0', 'Peep\'s Whistle', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('3', '15676', '0', '0', 'Black Qiraji Resonating Crystal', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('4', '39546', '0', '0', 'Spectral Gryphon', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('5', '39547', '0', '0', 'Spectral Wind Rider', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('6', '40568', '0', '0', 'Feldrake', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('7', '48020', '0', '0', 'Armored Bloodwing', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('8', '39530', '0', '0', 'Tyrael\'s Charger', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('9', '40029', '0', '0', 'Heart of the Aspects', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('10', '31803', '0', '0', 'Blazing Hippogryph', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('11', '38972', '0', '0', 'Corrupted Hippogryph', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('12', '37800', '0', '0', 'Amani Dragonhawk', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('13', '37159', '0', '0', 'Reins of the Spectral Wolf', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('14', '43695', '0', '0', 'Reins of the Heavenly Jade Cloud Serpent', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('15', '38785', '0', '0', 'Voidtalon of the Dark Star', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('16', '55907', '0', '0', 'Grinning Reaver', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('17', '43697', '0', '0', 'Reins of the Heavenly Azure Cloud Serpent', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('18', '48014', '0', '0', 'Ghastly Charger\'s Skull', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('19', '35553', '0', '0', 'Reins of the Drake of the North Wind', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('20', '37231', '0', '0', 'Mottled Drake', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('21', '37160', '0', '0', 'Reins of the Spectral Steed', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('22', '28954', '0', '0', 'Reins of the Rusted Proto-Drake', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('23', '21974', '0', '0', 'Reins of the Swift Spectral Tiger', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('24', '27567', '0', '0', 'Big Blizzard Bear', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('25', '28042', '0', '0', 'Reins of the Plagued Proto-Drake', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('26', '28040', '0', '0', 'Reins of the Black Proto-Drake', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('27', '28890', '0', '0', 'Mimiron\'s Head', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('28', '30346', '0', '0', 'Reins of the Onyxian Drake', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('29', '31803', '0', '0', 'Blazing Hippogryph', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('30', '31958', '0', '0', 'Celestial Steed', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('31', '24725', '0', '0', 'Vengeful Nether Drake', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('32', '22620', '0', '0', 'Merciless Nether Drake', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('33', '27507', '0', '0', 'Brutal Nether Drake', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('34', '38757', '0', '0', 'Cataclysmic Gladiator\'s Twilight Drake', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('35', '53038', '0', '0', 'Iron Skyreaver', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('36', '31047', '0', '0', 'Wrathful Gladiator\'s Frost Wyrm', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('37', '38756', '0', '0', 'Vicious Gladiator\'s Twilight Drake', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('38', '42498', '0', '0', 'Heart of the Nightwing', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('39', '25511', '0', '0', 'Deadly Gladiator\'s Frost Wyrm', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('40', '29794', '0', '0', 'Relentless Gladiator\'s Frost Wyrm', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('41', '35740', '0', '0', 'Reins of the Phosphorescent Stone Drake', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('42', '25593', '0', '0', 'Furious Gladiator\'s Frost Wyrm', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('43', '20344', '0', '0', 'Swift Nether Drake', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('44', '38260', '0', '0', 'Winged Guardian', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('45', '30989', '0', '0', 'Big Love Rocket', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('46', '17158', '0', '0', 'Riding Turtle', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('47', '59324', '0', '0', 'Tundra Icehoof', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('48', '59752', '0', '0', 'Warsong Direfang', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('49', '48714', '0', '0', 'Enchanted Fey Dragon', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('50', '48931', '0', '0', 'Hearthsteed', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('51', '17158', '0', '0', 'Lucky Riding Turtle', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('52', '59346', '0', '0', 'Armored Razorback', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('53', '34955', '0', '0', 'Reins of Poseidus', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('54', '35755', '0', '0', 'Reins of the Drake of the South Wind', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('55', '29344', '0', '0', 'Magic Rooster Egg', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('56', '46729', '0', '0', 'Swift Windsteed', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('57', '53774', '0', '0', 'Reins of the Dread Raven', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('58', '17011', '0', '0', 'Swift Shorestrider', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('59', '59746', '0', '0', 'Mudback Riverbeast', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('60', '51488', '0', '0', 'Reins of the Thundering Onyx Cloud Serpent', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('61', '62148', '0', '0', 'Mystic Runesaber', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('62', '21473', '0', '0', 'Reins of the Raven Lord', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('63', '55896', '0', '0', 'Warforged Nightmare', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('64', '51993', '0', '0', 'Emerald Hippogryph', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('65', '61363', '0', '0', 'Cindermane Charger', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('66', '23647', '0', '0', 'X-51 Nether-Rocket X-TREME', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('67', '58772', '0', '0', 'Core Hound Chain', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('68', '38048', '0', '0', 'Savage Raptor', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('69', '35135', '0', '0', 'Reins of the Grey Riding Camel', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('70', '19303', '0', '0', 'Reins of the Dark War Talbuk', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('71', '60208', '0', '0', 'Warlord\'s Deathwheel', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('72', '60207', '0', '0', 'Champion\'s Treadblade', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('73', '43562', '0', '0', 'Reins of the Thundering Jade Cloud Serpent', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('74', '29937', '0', '0', 'Crusader\'s White Warhorse', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('75', '29283', '0', '0', 'Swift Horde Wolf', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('76', '2787', '0', '0', 'Frost Ram', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('77', '22464', '0', '0', 'Amani War Bear', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('78', '1166', '0', '0', 'Horn of the Arctic Wolf', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('79', '28428', '0', '0', 'Reins of the White Polar Bear', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('80', '25335', '0', '0', 'Big Battle Bear', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('81', '28888', '0', '0', 'Quel\'dorei Steed', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('82', '23647', '0', '0', 'X-51 Nether-Rocket X-TREME', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('83', '24745', '0', '0', 'Swift Zhevra', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('84', '29284', '0', '0', 'Swift Alliance Steed', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('85', '29938', '0', '0', 'Crusader\'s Black Warhorse', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('86', '17697', '0', '0', 'Golden Gryphon', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('87', '23656', '0', '0', 'X-51 Nether-Rocket', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('88', '2408', '0', '0', 'Palomino Bridle', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('89', '15290', '0', '0', 'Swift Zulian Tiger', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('90', '17694', '0', '0', 'Ebon Gryphon', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('91', '37204', '0', '0', 'White Riding Camel', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('92', '29161', '0', '0', 'Sea Turtle', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('93', '43254', '0', '0', 'Imperial Quilen', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('94', '1281', '0', '0', 'Swift Forest Strider', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('95', '12242', '0', '0', 'Teal Kodo', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('96', '22719', '0', '0', 'Flying Machine', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('97', '43713', '0', '0', 'Reins of the Crimson Water Strider', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('98', '17701', '0', '0', 'Green Wind Rider', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('99', '17700', '0', '0', 'Blue Wind Rider', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('100', '17699', '0', '0', 'Tawny Wind Rider', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('101', '17696', '0', '0', 'Snowy Gryphon', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('102', '37145', '0', '0', 'Reins of the Dark Phoenix', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('103', '0', '133789', '0', '1.000 golds', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('104', '0', '133789', '0', '5.000 golds', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('105', '0', '133789', '0', '10.000 golds', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('106', '0', '133787', '0', '30.000 golds', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('107', '0', '133784', '0', '80.000 golds', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('108', '0', '133785', '0', '150.000 golds', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('109', '0', '1033987', '0', 'Level 100 Character Boost', '', 'There comes a time in every hero’s quest when they need a little boost to help get them over the hump and back into the action. With a Level 100 Character Boost, you can grant one character a one-time boost to level 90. Bring your hero up to speed and join the fight on the front lines.', '');
-INSERT INTO `battlepay_display_info` VALUES ('110', '0', '614740', '0', 'Level 90 Character Boost', '', 'There comes a time in every hero’s quest when they need a little boost to help get them over the hump and back into the action. With a Level 90 Character Boost, you can grant one character a one-time boost to level 90. Bring your hero up to speed and join the fight on the front lines.', '');
-INSERT INTO `battlepay_display_info` VALUES ('111', '0', '614740', '0', 'Name Change', '', 'The name you originally chose for your hero doesn’t have to be his name for all eternity. Maybe you have become a little too famous (or notorious), or maybe you just thought of something better; either way, you can change your name and start anew today!', '');
-INSERT INTO `battlepay_display_info` VALUES ('112', '0', '614740', '0', 'Faction Change', '', '‘Traitor’ is such a harsh word… sure, your allies may not be thrilled to see you leave, but what have they ever done for you, really? Maybe it’s time you saw what the other side has to offer. Maybe there are already friends waiting for you to join them. Maybe the epics really are purpler on the other side, as the saying goes. Changing factions also includes a free race change so you will fit right in with your new allies!', '');
-INSERT INTO `battlepay_display_info` VALUES ('113', '0', '614740', '0', 'Race Change', '', 'It ain’t easy being green… or blue… or purplish-pink with pointy ears…. Sometimes a simple touch up of your character’s looks isn’t enough; sometimes you want to go all the way and change which race you belong to! With a race change, you can do just that.', '');
-INSERT INTO `battlepay_display_info` VALUES ('114', '0', '614740', '0', 'Appearance Change', '', 'Things change, people change, hairstyles change, interest rates fluctuate… if you’re tired of always wearing a full plate helmet to hide your original character appearance choices, then appearance change is for you! Think of it like the kind of simple do-over people wished existed in real life. Appearance change lets you redo the look and even the gender of one of your characters.', '');
-INSERT INTO `battlepay_display_info` VALUES ('115', '0', '1033988', '0', 'Premade character level 100', '', 'Buying a premade character include :\r\n- ilevel 600 PvP gear.\r\n- ilevel 610 weapons\r\n- ilevel 610 trinkets and cloak\r\n- 10 000 golds\r\n- Instant level 100', '');
-INSERT INTO `battlepay_display_info` VALUES ('116', '0', '136240', '0', 'Alchemy - 700', '', 'Learn Alchemy 700 with all recipes until Mists of Pandaria included.', '');
-INSERT INTO `battlepay_display_info` VALUES ('117', '0', '441139', '0', 'Archeology - 700', '', 'Learn Archeology 700 with all recipes until Mists of Pandaria included.', '');
-INSERT INTO `battlepay_display_info` VALUES ('118', '0', '136241', '0', 'Blacksmithing - 700', '', 'Learn Blacksmithing 700 with all recipes until Mists of Pandaria included.', '');
-INSERT INTO `battlepay_display_info` VALUES ('119', '0', '571695', '0', 'Cooking - 700', '', 'Learn Cooking 700 with all recipes until Mists of Pandaria included.', '');
-INSERT INTO `battlepay_display_info` VALUES ('120', '0', '136244', '0', 'Enchanting - 700', '', 'Learn Enchanting 700 with all recipes until Mists of Pandaria included.', '');
-INSERT INTO `battlepay_display_info` VALUES ('121', '0', '136243', '0', 'Engineering - 700', '', 'Learn Engineering 700 with all recipes until Mists of Pandaria included.', '');
-INSERT INTO `battlepay_display_info` VALUES ('122', '0', '1014021', '0', 'First aid - 700', '', 'Learn First Aid 700 with all recipes until Mists of Pandaria included.', '');
-INSERT INTO `battlepay_display_info` VALUES ('123', '0', '136245', '0', 'Fishing - 700', '', 'Learn Fishing 700 with all recipes until Mists of Pandaria included.', '');
-INSERT INTO `battlepay_display_info` VALUES ('124', '0', '136246', '0', 'Herbalist - 700', '', 'Learn Herbalist 700 with all recipes until Mists of Pandaria included.', '');
-INSERT INTO `battlepay_display_info` VALUES ('125', '0', '237171', '0', 'Inscription - 700', '', 'Learn Inscription 700 with all recipes until Mists of Pandaria included.', '');
-INSERT INTO `battlepay_display_info` VALUES ('126', '0', '134071', '0', 'Jewelcrafting - 700', '', 'Learn Jewelcrafting 700 with all recipes until Mists of Pandaria included.', '');
-INSERT INTO `battlepay_display_info` VALUES ('127', '0', '134366', '0', 'Skinning - 700', '', 'Learn Skinning 700 with all recipes until Mists of Pandaria included.', '');
-INSERT INTO `battlepay_display_info` VALUES ('128', '0', '136249', '0', 'Tailoring - 700', '', 'Learn Tailoring 700 with all recipes until Mists of Pandaria included.', '');
-INSERT INTO `battlepay_display_info` VALUES ('129', '0', '136248', '0', 'Mining - 700', '', 'Learn Mining 700 with all recipes until Mists of Pandaria included.', '');
-INSERT INTO `battlepay_display_info` VALUES ('130', '0', '136247', '0', 'Leatherworking - 700', '', 'Learn Leatherworking 700 with all recipes until Mists of Pandaria included.', '');
-INSERT INTO `battlepay_display_info` VALUES ('131', '28946', '0', '0', 'Argent Squire', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('132', '17723', '0', '0', 'Netherwhelp\'s Collar', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('133', '15369', '0', '0', 'Blue Murloc Egg', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('134', '10992', '0', '0', 'Diablo Stone', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('135', '10990', '0', '0', 'Panda Collar', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('136', '42299', '0', '0', 'Goblin Weather Machine - Prototype 01-B', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('137', '22966', '0', '0', 'Dragon Kite', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('138', '30356', '0', '0', 'Onyxian Whelpling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('139', '16943', '0', '0', 'Hippogryph Hatchling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('140', '25002', '0', '0', 'Soul-Trader Beacon', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('141', '38614', '0', '0', 'Lil\' Tarecgosa', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('142', '40019', '0', '0', 'Soul of the Aspects', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('143', '15984', '0', '0', 'Pink Murloc Egg', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('144', '30157', '0', '0', 'Tuskarr Kite', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('145', '24393', '0', '0', 'Gold Medallion', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('146', '30462', '0', '0', 'Core Hound Pup', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('147', '26452', '0', '0', 'Unhatched Mr. Chilly', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('148', '29348', '0', '0', 'Heavy Murloc Egg', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('149', '29279', '0', '0', 'Warbot Ignition Key', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('150', '28734', '0', '0', 'Murkimus\' Little Spear', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('151', '28456', '0', '0', 'Frosty\'s Collar', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('152', '42299', '0', '0', 'Landro\'s Pet Box', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('153', '30409', '0', '0', 'Spectral Tiger Cub', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('154', '22903', '0', '0', 'Rocket Chicken', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('155', '21362', '0', '0', 'Banana Charm', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('156', '39380', '0', '0', 'Fetish Shaman\'s Spear', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('157', '15398', '0', '0', 'Lurky\'s Egg', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('158', '46896', '0', '0', 'Blighted Spore', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('159', '46720', '0', '0', 'Cinder Kitten', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('160', '36896', '0', '0', 'Smoldering Murloc Egg', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('161', '16943', '0', '0', 'Cenarion Hatchling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('162', '37541', '0', '0', 'Lil\' Ragnaros', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('163', '37526', '0', '0', 'Moonkin Hatchling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('164', '37527', '0', '0', 'Moonkin Hatchling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('165', '45527', '0', '0', 'Baneling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('166', '30507', '0', '0', 'Landro\'s Lichling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('167', '38359', '0', '0', 'Guardian Cub', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('168', '60441', '0', '0', 'Hatespark the Tiny', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('169', '32031', '0', '0', 'Landro\'s Lil\' XT', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('170', '35338', '0', '0', 'Lil\' Deathwing', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('171', '48662', '0', '0', 'Satyr Charm', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('172', '48856', '0', '0', 'Netherspace Portal-Stone', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('173', '18269', '0', '0', 'Magical Crawdad Box', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('174', '47348', '0', '0', 'Gusting Grimoire', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('175', '46909', '0', '0', 'Jewel of Maddening Whispers', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('176', '46922', '0', '0', 'Anubisath Idol', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('177', '10993', '0', '0', 'Zergling Leash', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('178', '29819', '0', '0', 'Enchanted Onyx', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('179', '30402', '0', '0', 'Enchanted Purple Jade', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('180', '16259', '0', '0', 'Turtle Box', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('181', '61128', '0', '0', 'Argi', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('182', '28482', '0', '0', 'Teldrassil Sproutling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('183', '29189', '0', '0', 'Sen\'jin Fetish', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('184', '31073', '0', '0', 'Toxic Wasteling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('185', '16189', '0', '0', 'Baby Blizzard Bear', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('186', '28539', '0', '0', 'Mechanopeep', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('187', '61127', '0', '0', 'Grommloc', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('188', '27627', '0', '0', 'Giant Sewer Rat', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('189', '7920', '0', '0', 'Mechanical Chicken', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('190', '48934', '0', '0', 'Blossoming Ancient', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('191', '40538', '0', '0', 'Eye of the Legion', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('192', '38919', '0', '0', 'Grell Moss', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('193', '31722', '0', '0', 'Ice Chip', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('194', '43255', '0', '0', 'Lucky Quilen Cub', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('195', '28084', '0', '0', 'Cobra Hatchling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('196', '51990', '0', '0', 'Murkalot\'s Flail', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('197', '28217', '0', '0', 'Proto-Drake Whelp', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('198', '14938', '0', '0', 'A Jubling\'s Tiny Home', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('199', '39694', '0', '0', 'Sand Scarab', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('200', '45880', '0', '0', 'Strand Crawler', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('201', '6294', '0', '0', 'Sprite Darter Egg', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('202', '5448', '0', '0', 'Cat Carrier (Black Tabby)', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('203', '32670', '0', '0', 'Mini Thor', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('204', '6192', '0', '0', 'Parrot Cage (Hyacinth Macaw)', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('205', '6288', '0', '0', 'Dark Whelpling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('206', '23574', '0', '0', 'Phoenix Hatchling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('207', '6293', '0', '0', 'Azure Whelpling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('208', '30412', '0', '0', 'Gryphon Hatchling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('209', '30414', '0', '0', 'Pandaren Monk', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('210', '30507', '0', '0', 'Lil\' Phylactery', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('211', '29806', '0', '0', 'Razzashi Hatchling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('212', '29807', '0', '0', 'Deviate Hatchling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('213', '29803', '0', '0', 'Gundrak Hatchling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('214', '5207', '0', '0', 'Parrot Cage (Green Wing Macaw)', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('215', '20042', '0', '0', 'Captured Firefly', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('216', '32031', '0', '0', 'Lil\' XT', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('217', '38803', '0', '0', 'Murky\'s Little Soulstone', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('218', '38777', '0', '0', 'Purple Puffer', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('219', '21328', '0', '0', 'Fortune Coin', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('220', '30413', '0', '0', 'Wind Rider Cub', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('221', '25900', '0', '0', 'Tyrael\'s Hilt', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('222', '38359', '0', '0', 'Guardian Cub', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('223', '6291', '0', '0', 'Emerald Whelpling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('224', '15595', '0', '0', 'Baby Shark', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('225', '6290', '0', '0', 'Tiny Crimson Whelpling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('226', '23506', '0', '0', 'Chuck\'s Bucket', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('227', '29805', '0', '0', 'Darting Hatchling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('228', '29802', '0', '0', 'Leaping Hatchling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('229', '28734', '0', '0', 'Murkimus\' Tiny Spear', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('230', '23507', '0', '0', 'Snarly\'s Bucket', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('231', '22459', '0', '0', 'Mojo', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('232', '29810', '0', '0', 'Ravasaur Hatchling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('233', '38539', '0', '0', 'Feline Familiar', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('234', '39109', '0', '0', 'Sea Pony', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('235', '27718', '0', '0', 'Smolderweb Egg', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('236', '45878', '0', '0', 'Elementium Geode', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('237', '53719', '0', '0', 'Dread Hatchling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('238', '51994', '0', '0', 'Treasure Goblin\'s Pack', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('239', '51272', '0', '0', 'Ominous Flame', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('240', '51988', '0', '0', 'Alterac Brandy', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('241', '16257', '0', '0', 'Piglet\'s Collar', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('242', '37846', '0', '0', 'Nightsaber Cub', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('243', '29808', '0', '0', 'Razormaw Hatchling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('244', '45939', '0', '0', 'Lump of Coal', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('245', '44655', '0', '0', 'Terrible Turnip', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('246', '22388', '0', '0', 'Toothy\'s Bucket', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('247', '28502', '0', '0', 'Mulgore Hatchling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('248', '16205', '0', '0', 'Elwynn Lamb', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('249', '15470', '0', '0', 'Durotar Scorpion', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('250', '25173', '0', '0', 'Curious Oracle Hatchling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('251', '28489', '0', '0', 'Dun Morogh Cub', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('252', '16587', '0', '0', 'Captured Flame', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('253', '4732', '0', '0', 'Tirisfal Batling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('254', '22776', '0', '0', 'Clockwork Rocket Bot', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('255', '15992', '0', '0', 'Truesilver Shafted Arrow', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('256', '22778', '0', '0', 'Blue Clockwork Rocket Bot', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('257', '25384', '0', '0', 'Curious Wolvar Pup', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('258', '45960', '0', '0', 'Enchanted Broom', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('259', '304', '0', '0', 'Chicken Egg', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('260', '22629', '0', '0', 'Pint-Sized Pink Pachyderm', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('261', '28215', '0', '0', 'White Tickbird Hatchling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('262', '29809', '0', '0', 'Obsidian Hatchling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('263', '901', '0', '0', 'Wood Frog Box', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('264', '6295', '0', '0', 'Tree Frog Box', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('265', '22389', '0', '0', 'Muckbreath\'s Bucket', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('266', '11709', '0', '0', 'Cat Carrier (Calico Cat)', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('267', '5585', '0', '0', 'Cat Carrier (Siamese)', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('268', '45919', '0', '0', 'Tickbird Hatchling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('269', '29404', '0', '0', 'Macabre Marionette', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('270', '38455', '0', '0', 'Hyjal Bear Cub', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('271', '38429', '0', '0', 'Crimson Lasher', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('272', '29372', '0', '0', 'Shimmering Wyrmling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('273', '29372', '0', '0', 'Shimmering Wyrmling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('274', '15436', '0', '0', 'Disgusting Oozeling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('275', '4185', '0', '0', 'Vampiric Batling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('276', '31174', '0', '0', 'Perky Pug', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('277', '25457', '0', '0', 'Nether Ray Fry', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('278', '19600', '0', '0', 'Mana Wyrmling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('279', '2176', '0', '0', 'Rat Cage', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('280', '28493', '0', '0', 'Ammen Vale Lashling', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('281', '0', '514340', '0', 'Blazing Wings', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('282', '0', '236415', '0', 'Demon Hunter\'s Aspect', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('283', '0', '134169', '0', 'Murloc Costume', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('284', '0', '840662', '0', 'Jewel of the Firelord', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('285', '0', '134230', '0', 'Carved Ogre Idol', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('286', '0', '134519', '0', 'Goblin Weather Machine - Prototype 01-B', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('287', '0', '841875', '0', 'Hood of Hungering Darkness', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('288', '0', '841140', '0', 'Crown of Eternal Winter', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('289', '0', '237284', '0', 'Decahedral Dwarven Dice', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('290', '0', '134112', '0', 'Fool\'s Gold', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('291', '0', '249182', '0', 'Shado-Pan Geyser Gun', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('292', '0', '134372', '0', 'Papa Hummel\'s Old-Fashioned Pet Biscuit', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('293', '0', '133639', '0', 'Sack of Starfish', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('294', '0', '454069', '0', 'Spurious Sarcophagus', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('295', '0', '134335', '0', 'Mini Mana Bomb', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('296', '0', '132484', '0', 'The Flag of Ownership', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('297', '0', '134472', '0', 'Tabard of Frost', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('298', '0', '134334', '0', 'Orb of Deception', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('299', '0', '134334', '0', 'Orb of the Sin\'dorei', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('300', '0', '132930', '0', 'Fishing Chair', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('301', '0', '133836', '0', 'D.I.S.C.O.', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('302', '0', '236222', '0', 'Ethereal Portal', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('303', '0', '135028', '0', 'Epic Purple Shirt', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('304', '0', '306868', '0', 'Ogre Pinata', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('305', '0', '132594', '0', 'Picnic Basket', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('306', '0', '133884', '0', 'Eye of Arachnida', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('307', '0', '135463', '0', 'Dartol\'s Rod of Transformation', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('308', '0', '134911', '0', 'Time-Lost Figurine', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('309', '0', '255139', '0', 'Gnomeregan Pride', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('310', '0', '255145', '0', 'Darkspear Pride', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('311', '0', '134335', '0', 'Super Simian Sphere', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('312', '0', '135026', '0', 'Tabard of Fury', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('313', '0', '134473', '0', 'Tabard of Flame', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('314', '0', '135026', '0', 'Tabard of Brilliance', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('315', '0', '135026', '0', 'Tabard of the Void', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('316', '0', '135026', '0', 'Tabard of the Arcane', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('317', '0', '135026', '0', 'Tabard of Nature', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('318', '0', '135026', '0', 'Tabard of the Defender', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('319', '0', '135794', '0', 'Path of Illidan', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('320', '0', '134152', '0', 'Wind-Up Train Wrecker', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('321', '0', '134284', '0', 'Perpetual Purple Firework', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('322', '0', '132261', '0', 'War Party Hitching Post', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('323', '0', '134230', '0', 'Magical Ogre Idol', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('324', '0', '425951', '0', 'Grim Campfire', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('325', '0', '442743', '0', 'Warning Sign', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('326', '0', '132719', '0', 'Ruthers\' Harness', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('327', '0', '133980', '0', 'The Golden Banana', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('328', '0', '801002', '0', 'Whole-Body Shrinka\'', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('329', '0', '973201', '0', 'Primal Combatant\'s Touch of Defeat', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('330', '0', '975803', '0', 'Primal Combatant\'s Battle Staff', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('331', '0', '971077', '0', 'Primal Combatant\'s Staff', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('332', '0', '979589', '0', 'Primal Combatant\'s Energy Staff', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('333', '0', '975803', '0', 'Primal Combatant\'s Battle Staff', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('334', '0', '971077', '0', 'Primal Combatant\'s Staff', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('335', '0', '971435', '0', 'Primal Combatant\'s Greatsword', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('336', '0', '971435', '0', 'Primal Combatant\'s Greatsword', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('337', '0', '942251', '0', 'Primal Combatant\'s Slicer', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('338', '0', '0', '0', 'Primal Combatant\'s Mageblade', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('339', '0', '942251', '0', 'Primal Combatant\'s Quickblade', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('340', '0', '942251', '0', 'Primal Combatant\'s Slicer', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('341', '0', '0', '0', 'Primal Combatant\'s Mageblade', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('342', '0', '979589', '0', 'Primal Combatant\'s Energy Staff', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('343', '0', '976063', '0', 'Primal Combatant\'s Ripper', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('344', '0', '973201', '0', 'Primal Combatant\'s Baton of Light', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('345', '0', '973201', '0', 'Primal Combatant\'s Touch of Defeat', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('346', '0', '973201', '0', 'Primal Combatant\'s Baton of Light', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('347', '0', '0', '0', 'Primal Combatant\'s Heavy Crossbow', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('348', '0', '0', '0', 'Primal Combatant\'s Heavy Crossbow', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('349', '0', '976963', '0', 'Primal Combatant\'s Spellblade', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('350', '0', '978218', '0', 'Primal Combatant\'s Shanker', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('351', '0', '976963', '0', 'Primal Combatant\'s Spellblade', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('352', '0', '978218', '0', 'Primal Combatant\'s Shanker', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('353', '0', '976063', '0', 'Primal Combatant\'s Render', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('354', '0', '976063', '0', 'Primal Combatant\'s Ripper', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('355', '0', '976063', '0', 'Primal Combatant\'s Render', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('356', '0', '942251', '0', 'Primal Combatant\'s Quickblade', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('357', '0', '974957', '0', 'Primal Combatant\'s Pike', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('358', '0', '978471', '0', 'Primal Combatant\'s Decapitator', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('359', '0', '976057', '0', 'Primal Combatant\'s Hacker', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('360', '0', '976057', '0', 'Primal Combatant\'s Cleaver', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('361', '0', '976057', '0', 'Primal Combatant\'s Hacker', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('362', '0', '976057', '0', 'Primal Combatant\'s Cleaver', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('363', '0', '979589', '0', 'Imperator\'s Warstaff', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('364', '0', '974957', '0', 'Polearm of Expulsion', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('365', '0', '975498', '0', 'Shield-Shatter Longbow', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('366', '0', '971435', '0', 'Magic-Breaker Greatsword', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('367', '0', '976963', '0', 'Dagger of Enfeeblement', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('368', '0', '974893', '0', 'Shard of Crystalline Fury', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('369', '0', '976057', '0', 'Butcher\'s Cruel Chopper', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('370', '0', '978471', '0', 'Primal Combatant\'s Decapitator', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('371', '0', '975498', '0', 'Primal Combatant\'s Longbow', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('372', '0', '974957', '0', 'Primal Combatant\'s Pike', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('373', '0', '971557', '0', 'Primal Combatant\'s Bonegrinder', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('374', '0', '971557', '0', 'Primal Combatant\'s Bonegrinder', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('375', '0', '978219', '0', 'Primal Combatant\'s Bonecracker', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('376', '0', '974893', '0', 'Primal Combatant\'s Gavel', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('377', '0', '978219', '0', 'Primal Combatant\'s Pummeler', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('378', '0', '978219', '0', 'Primal Combatant\'s Bonecracker', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('379', '0', '974893', '0', 'Primal Combatant\'s Gavel', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('380', '0', '978219', '0', 'Primal Combatant\'s Pummeler', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('381', '0', '969944', '0', 'Primal Combatant\'s Rifle', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('382', '0', '969944', '0', 'Primal Combatant\'s Rifle', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('383', '0', '975498', '0', 'Primal Combatant\'s Longbow', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('384', '0', '976063', '0', 'Blade Dancer\'s Claws', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('385', '0', '1017537', '0', 'Primal Combatant\'s Leather Gloves', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('386', '0', '1017538', '0', 'Primal Combatant\'s Leather Helm', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('387', '0', '1017539', '0', 'Primal Combatant\'s Leather Legguards', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('388', '0', '1017540', '0', 'Primal Combatant\'s Leather Spaulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('389', '0', '1017536', '0', 'Primal Combatant\'s Tunic', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('390', '0', '1017537', '0', 'Primal Combatant\'s Gloves', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('391', '0', '1017538', '0', 'Primal Combatant\'s Helm', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('392', '0', '1017539', '0', 'Primal Combatant\'s Legguards', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('393', '0', '1017536', '0', 'Primal Combatant\'s Leather Tunic', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('394', '0', '1017533', '0', 'Primal Combatant\'s Boots of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('395', '0', '1017534', '0', 'Primal Combatant\'s Bindings of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('396', '0', '1017534', '0', 'Primal Combatant\'s Bindings of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('397', '0', '1017537', '0', 'Primal Combatant\'s Ironskin Gloves', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('398', '0', '1017538', '0', 'Primal Combatant\'s Ironskin Helm', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('399', '0', '1017539', '0', 'Primal Combatant\'s Ironskin Legguards', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('400', '0', '1017540', '0', 'Primal Combatant\'s Ironskin Spaulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('401', '0', '1017536', '0', 'Primal Combatant\'s Ironskin Tunic', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('402', '0', '1017533', '0', 'Primal Combatant\'s Boots of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('403', '0', '1017540', '0', 'Primal Combatant\'s Spaulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('404', '0', '1033155', '0', 'Primal Combatant\'s Ringmail Armor', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('405', '0', '1033156', '0', 'Primal Combatant\'s Ringmail Gauntlets', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('406', '0', '1033150', '0', 'Primal Combatant\'s Ringmail Helm', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('407', '0', '1033157', '0', 'Primal Combatant\'s Ringmail Leggings', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('408', '0', '1033149', '0', 'Primal Combatant\'s Ringmail Spaulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('409', '0', '1033155', '0', 'Primal Combatant\'s Armor', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('410', '0', '1033156', '0', 'Primal Combatant\'s Gauntlets', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('411', '0', '1033150', '0', 'Primal Combatant\'s Helm', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('412', '0', '1033154', '0', 'Primal Combatant\'s Armbands of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('413', '0', '1033154', '0', 'Primal Combatant\'s Armbands of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('414', '0', '1033153', '0', 'Primal Combatant\'s Footguards of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('415', '0', '1033155', '0', 'Primal Combatant\'s Chain Armor', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('416', '0', '1033156', '0', 'Primal Combatant\'s Chain Gauntlets', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('417', '0', '1033150', '0', 'Primal Combatant\'s Chain Helm', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('418', '0', '1033157', '0', 'Primal Combatant\'s Chain Leggings', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('419', '0', '1033149', '0', 'Primal Combatant\'s Chain Spaulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('420', '0', '1033148', '0', 'Primal Combatant\'s Waistguard of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('421', '0', '1033148', '0', 'Primal Combatant\'s Waistguard of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('422', '0', '1033153', '0', 'Primal Combatant\'s Footguards of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('423', '0', '1033157', '0', 'Primal Combatant\'s Leggings', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('424', '0', '1017535', '0', 'Primal Combatant\'s Belt of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('425', '0', '1017540', '0', 'Primal Combatant\'s Dragonhide Spaulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('426', '0', '1017535', '0', 'Primal Combatant\'s Belt of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('427', '0', '1017535', '0', 'Primal Combatant\'s Belt of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('428', '0', '1017533', '0', 'Primal Combatant\'s Boots of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('429', '0', '1017533', '0', 'Primal Combatant\'s Boots of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('430', '0', '1017534', '0', 'Primal Combatant\'s Bindings of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('431', '0', '1017534', '0', 'Primal Combatant\'s Bindings of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('432', '0', '1017538', '0', 'Primal Combatant\'s Ironskin Helm', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('433', '0', '1017536', '0', 'Primal Combatant\'s Dragonhide Tunic', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('434', '0', '1017539', '0', 'Primal Combatant\'s Dragonhide Legguards', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('435', '0', '1035543', '0', 'Primal Combatant\'s Satin Mantle', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('436', '0', '1035540', '0', 'Primal Combatant\'s Felweave Handguards', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('437', '0', '1035541', '0', 'Primal Combatant\'s Felweave Cowl', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('438', '0', '1035542', '0', 'Primal Combatant\'s Felweave Trousers', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('439', '0', '1035539', '0', 'Primal Combatant\'s Felweave Raiment', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('440', '0', '1035543', '0', 'Primal Combatant\'s Felweave Amice', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('441', '0', '1017537', '0', 'Primal Combatant\'s Dragonhide Gloves', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('442', '0', '1017538', '0', 'Primal Combatant\'s Dragonhide Helm', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('443', '0', '1017539', '0', 'Primal Combatant\'s Ironskin Legguards', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('444', '0', '1017540', '0', 'Primal Combatant\'s Ironskin Spaulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('445', '0', '1017539', '0', 'Primal Combatant\'s Legguards', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('446', '0', '1017540', '0', 'Primal Combatant\'s Spaulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('447', '0', '1017537', '0', 'Primal Combatant\'s Dragonhide Gloves', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('448', '0', '1017538', '0', 'Primal Combatant\'s Dragonhide Helm', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('449', '0', '1017539', '0', 'Primal Combatant\'s Dragonhide Legguards', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('450', '0', '1017536', '0', 'Primal Combatant\'s Dragonhide Robes', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('451', '0', '1017540', '0', 'Primal Combatant\'s Dragonhide Spaulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('452', '0', '1017535', '0', 'Primal Combatant\'s Belt of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('453', '0', '1017538', '0', 'Primal Combatant\'s Helm', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('454', '0', '1017537', '0', 'Primal Combatant\'s Ironskin Gloves', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('455', '0', '1017536', '0', 'Primal Combatant\'s Ironskin Tunic', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('456', '0', '1017536', '0', 'Primal Combatant\'s Leather Tunic', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('457', '0', '1017537', '0', 'Primal Combatant\'s Leather Gloves', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('458', '0', '1017538', '0', 'Primal Combatant\'s Leather Helm', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('459', '0', '1017539', '0', 'Primal Combatant\'s Leather Legguards', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('460', '0', '1017540', '0', 'Primal Combatant\'s Leather Spaulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('461', '0', '1017536', '0', 'Primal Combatant\'s Tunic', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('462', '0', '1017537', '0', 'Primal Combatant\'s Gloves', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('463', '0', '1035539', '0', 'Primal Combatant\'s Satin Robe', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('464', '0', '1033149', '0', 'Primal Combatant\'s Spaulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('465', '0', '1033154', '0', 'Primal Combatant\'s Armbands of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('466', '0', '1026782', '0', 'Primal Combatant\'s Girdle of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('467', '0', '1026782', '0', 'Primal Combatant\'s Girdle of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('468', '0', '1026789', '0', 'Primal Combatant\'s Scaled Shoulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('469', '0', '1026787', '0', 'Primal Combatant\'s Scaled Legguards', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('470', '0', '1026786', '0', 'Primal Combatant\'s Scaled Helm', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('471', '0', '1044439', '0', 'Primal Combatant\'s Scaled Gauntlets', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('472', '0', '1026785', '0', 'Primal Combatant\'s Scaled Chestpiece', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('473', '0', '1026789', '0', 'Primal Combatant\'s Dreadplate Shoulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('474', '0', '1026787', '0', 'Primal Combatant\'s Dreadplate Legguards', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('475', '0', '1026786', '0', 'Primal Combatant\'s Dreadplate Helm', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('476', '0', '1044439', '0', 'Primal Combatant\'s Dreadplate Gauntlets', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('477', '0', '1026785', '0', 'Primal Combatant\'s Dreadplate Chestpiece', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('478', '0', '1026789', '0', 'Primal Combatant\'s Plate Shoulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('479', '0', '1026787', '0', 'Primal Combatant\'s Plate Legguards', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('480', '0', '1026786', '0', 'Primal Combatant\'s Plate Helm', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('481', '0', '1044439', '0', 'Primal Combatant\'s Plate Gauntlets', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('482', '0', '1026785', '0', 'Primal Combatant\'s Plate Chestpiece', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('483', '0', '1026783', '0', 'Primal Combatant\'s Warboots of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('484', '0', '1026783', '0', 'Primal Combatant\'s Warboots of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('485', '0', '1026784', '0', 'Primal Combatant\'s Armplates of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('486', '0', '976064', '0', 'Primal Combatant\'s Shield Wall', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('487', '0', '975286', '0', 'Primal Combatant\'s Barrier', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('488', '0', '975286', '0', 'Primal Combatant\'s Redoubt', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('489', '0', '976064', '0', 'Primal Combatant\'s Shield Wall', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('490', '0', '975286', '0', 'Primal Combatant\'s Barrier', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('491', '0', '975286', '0', 'Primal Combatant\'s Redoubt', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('492', '0', '1026789', '0', 'Primal Combatant\'s Plate Shoulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('493', '0', '1026787', '0', 'Primal Combatant\'s Plate Legguards', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('494', '0', '1026786', '0', 'Primal Combatant\'s Plate Helm', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('495', '0', '1044439', '0', 'Primal Combatant\'s Plate Gauntlets', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('496', '0', '1026785', '0', 'Primal Combatant\'s Plate Chestpiece', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('497', '0', '1026789', '0', 'Primal Combatant\'s Shoulderplates', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('498', '0', '1026787', '0', 'Primal Combatant\'s Legplates', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('499', '0', '1026786', '0', 'Primal Combatant\'s Plate Helmet', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('500', '0', '1044439', '0', 'Primal Combatant\'s Plate Gloves', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('501', '0', '1026785', '0', 'Primal Combatant\'s Plate Breastplate', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('502', '0', '1026784', '0', 'Primal Combatant\'s Armplates of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('503', '0', '1026789', '0', 'Primal Combatant\'s Shoulderplates', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('504', '0', '1026787', '0', 'Primal Combatant\'s Legplates', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('505', '0', '1026786', '0', 'Primal Combatant\'s Plate Helmet', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('506', '0', '1033150', '0', 'Primal Combatant\'s Helm', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('507', '0', '1033156', '0', 'Primal Combatant\'s Gauntlets', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('508', '0', '1033155', '0', 'Primal Combatant\'s Armor', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('509', '0', '1033149', '0', 'Primal Combatant\'s Ringmail Spaulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('510', '0', '1033157', '0', 'Primal Combatant\'s Ringmail Leggings', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('511', '0', '1033150', '0', 'Primal Combatant\'s Ringmail Helm', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('512', '0', '1033156', '0', 'Primal Combatant\'s Ringmail Gauntlets', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('513', '0', '1033155', '0', 'Primal Combatant\'s Ringmail Armor', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('514', '0', '1033154', '0', 'Primal Combatant\'s Armbands of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('515', '0', '1033153', '0', 'Primal Combatant\'s Footguards of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('516', '0', '1033153', '0', 'Primal Combatant\'s Footguards of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('517', '0', '1033148', '0', 'Primal Combatant\'s Waistguard of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('518', '0', '1033148', '0', 'Primal Combatant\'s Waistguard of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('519', '0', '1033149', '0', 'Primal Combatant\'s Chain Spaulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('520', '0', '1033157', '0', 'Primal Combatant\'s Chain Leggings', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('521', '0', '1033150', '0', 'Primal Combatant\'s Chain Helm', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('522', '0', '1033156', '0', 'Primal Combatant\'s Chain Gauntlets', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('523', '0', '1033157', '0', 'Primal Combatant\'s Leggings', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('524', '0', '1033149', '0', 'Primal Combatant\'s Spaulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('525', '0', '1026785', '0', 'Primal Combatant\'s Dreadplate Chestpiece', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('526', '0', '1044439', '0', 'Primal Combatant\'s Plate Gloves', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('527', '0', '1026785', '0', 'Primal Combatant\'s Plate Breastplate', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('528', '0', '1026784', '0', 'Primal Combatant\'s Armplates of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('529', '0', '1026784', '0', 'Primal Combatant\'s Armplates of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('530', '0', '1026783', '0', 'Primal Combatant\'s Warboots of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('531', '0', '1026783', '0', 'Primal Combatant\'s Warboots of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('532', '0', '1026782', '0', 'Primal Combatant\'s Girdle of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('533', '0', '1026782', '0', 'Primal Combatant\'s Girdle of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('534', '0', '1026789', '0', 'Primal Combatant\'s Scaled Shoulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('535', '0', '1026787', '0', 'Primal Combatant\'s Scaled Legguards', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('536', '0', '1026786', '0', 'Primal Combatant\'s Scaled Helm', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('537', '0', '1044439', '0', 'Primal Combatant\'s Scaled Gauntlets', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('538', '0', '1026785', '0', 'Primal Combatant\'s Scaled Chestpiece', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('539', '0', '1026789', '0', 'Primal Combatant\'s Dreadplate Shoulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('540', '0', '1026787', '0', 'Primal Combatant\'s Dreadplate Legguards', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('541', '0', '1026786', '0', 'Primal Combatant\'s Dreadplate Helm', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('542', '0', '1044439', '0', 'Primal Combatant\'s Dreadplate Gauntlets', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('543', '0', '1033155', '0', 'Primal Combatant\'s Chain Armor', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('544', '0', '1035542', '0', 'Primal Combatant\'s Satin Leggings', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('545', '0', '1035871', '0', 'Greatcloak of Impactful Pulses', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('546', '0', '1043943', '0', 'Primal Combatant\'s Cloak of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('547', '0', '1043943', '0', 'Primal Combatant\'s Cloak of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('548', '0', '1043941', '0', 'Primal Combatant\'s Cape of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('549', '0', '1043940', '0', 'Primal Combatant\'s Cape of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('550', '0', '1032578', '0', 'Primal Combatant\'s Drape of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('551', '0', '1032578', '0', 'Primal Combatant\'s Drape of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('552', '0', '1034144', '0', 'Primal Combatant\'s Drape of Meditation', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('553', '0', '1034144', '0', 'Primal Combatant\'s Drape of Contemplation', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('554', '0', '1043903', '0', 'Primal Combatant\'s Cloak of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('555', '0', '1034142', '0', 'Primal Combatant\'s Drape of Contemplation', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('556', '0', '1034142', '0', 'Primal Combatant\'s Drape of Meditation', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('557', '0', '1052546', '0', 'Fleshhook Cloak', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('558', '0', '1035870', '0', 'Flamescarred Drape', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('559', '0', '975286', '0', 'Shield of Violent Upheaval', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('560', '0', '978472', '0', 'Captured Arcane Fragment', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('561', '0', '976064', '0', 'Mirrorshield of Arcane Fortification', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('562', '0', '1043940', '0', 'Primal Combatant\'s Cape of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('563', '0', '1043940', '0', 'Primal Combatant\'s Cape of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('564', '0', '1032576', '0', 'Primal Combatant\'s Drape of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('565', '0', '1032576', '0', 'Primal Combatant\'s Drape of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('566', '0', '1043903', '0', 'Primal Combatant\'s Cloak of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('567', '0', '973927', '0', 'Primal Combatant\'s Endgame', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('568', '0', '978472', '0', 'Primal Combatant\'s Reprieve', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('569', '0', '133452', '0', 'Primal Combatant\'s Medallion of Meditation', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('570', '0', '1029000', '0', 'Primal Combatant\'s Badge of Victory', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('571', '0', '1028996', '0', 'Primal Combatant\'s Insignia of Victory', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('572', '0', '135884', '0', 'Primal Combatant\'s Badge of Adaptation', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('573', '0', '1029002', '0', 'Primal Combatant\'s Badge of Conquest', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('574', '0', '1028998', '0', 'Primal Combatant\'s Insignia of Conquest', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('575', '0', '1028994', '0', 'Primal Combatant\'s Emblem of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('576', '0', '1028992', '0', 'Primal Combatant\'s Emblem of Tenacity', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('577', '0', '1028993', '0', 'Primal Combatant\'s Emblem of Meditation', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('578', '0', '133452', '0', 'Primal Combatant\'s Medallion of Tenacity', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('579', '0', '133452', '0', 'Primal Combatant\'s Medallion of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('580', '0', '973927', '0', 'Primal Combatant\'s Endgame', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('581', '0', '978472', '0', 'Primal Combatant\'s Reprieve', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('582', '0', '1029002', '0', 'Primal Combatant\'s Badge of Conquest', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('583', '0', '1028998', '0', 'Primal Combatant\'s Insignia of Conquest', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('584', '0', '1028994', '0', 'Primal Combatant\'s Emblem of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('585', '0', '1028992', '0', 'Primal Combatant\'s Emblem of Tenacity', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('586', '0', '1028993', '0', 'Primal Combatant\'s Emblem of Meditation', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('587', '0', '1029001', '0', 'Primal Combatant\'s Badge of Dominance', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('588', '0', '1028997', '0', 'Primal Combatant\'s Insignia of Dominance', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('589', '0', '1029001', '0', 'Primal Combatant\'s Badge of Dominance', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('590', '0', '968992', '0', 'Fel-Flame Coronet', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('591', '0', '969319', '0', 'Bracer of Amputation', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('592', '0', '969324', '0', 'Legguards of Ravenous Assault', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('593', '0', '973886', '0', 'Firewalker\'s Treads', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('594', '0', '973930', '0', 'Warmage\'s Legwraps', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('595', '0', '973895', '0', 'Carnage Breath Gauntlets', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('596', '0', '973889', '0', 'Spine-Ripper Bracers', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('597', '0', '973892', '0', 'Chestwrap of Violent Upheaval', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('598', '0', '973934', '0', 'Shoulderguards of the Shepherd', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('599', '0', '973898', '0', 'Alloy-Inlaid Cap', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('600', '0', '969321', '0', 'Crackle-Proof Chestguard', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('601', '0', '969325', '0', 'Shoulderguards of Perpetually Exploding Fungus', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('602', '0', '969003', '0', 'Twin-Gaze Spaulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('603', '0', '968991', '0', 'Sterilized Handwraps', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('604', '0', '1006673', '0', 'Rotmonger Bracers', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('605', '0', '969002', '0', 'Mountainslide Robes', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('606', '0', '968993', '0', 'High Arcanist Leggings', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('607', '0', '968989', '0', 'Spectator\'s Sandals of Carnage', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('608', '0', '969322', '0', 'Pulverizing Grips', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('609', '0', '960037', '0', 'Bonebreaker Boots', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('610', '0', '969323', '0', 'Gorian Royal Crown', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('611', '0', '968995', '0', 'Ogre-Eater Treads', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('612', '0', '968999', '0', 'Legplates of Arcanic Absorbtion', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('613', '0', '968997', '0', 'Grips of Burning Infusion', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('614', '0', '1027813', '0', 'Fire-Blind Necklace', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('615', '0', '1013265', '0', 'Chain of the Unbroken Lineage', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('616', '0', '1027806', '0', 'Tide-Caller\'s Gorget', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('617', '0', '973914', '0', 'Bloodmaw\'s Tooth', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('618', '0', '538039', '0', 'Emblem of Gushing Wounds', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('619', '0', '571318', '0', 'Immaculate Living Mushroom', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('620', '0', '973923', '0', 'Mote of the Mountain', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('621', '0', '973917', '0', 'Idol of Suppression', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('622', '0', '1044806', '0', 'Rotmelter Mosscloak', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('623', '0', '1016815', '0', 'Cratermaker Choker', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('624', '0', '1016812', '0', 'Necklace of Volatile Anomalies', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('625', '0', '969001', '0', 'Bracers of Cursed Cries', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('626', '0', '968996', '0', 'Chestplate of Destructive Resonance', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('627', '0', '969000', '0', 'Iron Bomb Spaulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('628', '0', '968998', '0', 'Crown of the Crags', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('629', '0', '1028563', '0', 'Frostcap Band', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('630', '0', '1011899', '0', 'Seal of Arcane Wrath', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('631', '0', '1011900', '0', 'Bloodstone Seal', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('632', '0', '1022197', '0', 'Grunt\'s Rusty Ring', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('633', '0', '1022176', '0', 'Ring of Enfeebling Accusations', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('634', '0', '1031666', '0', 'Cloak of Overflowing Energies', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('635', '0', '1028997', '0', 'Primal Combatant\'s Insignia of Dominance', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('636', '0', '1043910', '0', 'Primal Combatant\'s Signet of Ruthlessness', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('637', '0', '1035540', '0', 'Primal Combatant\'s Silk Handguards', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('638', '0', '1035541', '0', 'Primal Combatant\'s Silk Cowl', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('639', '0', '1035542', '0', 'Primal Combatant\'s Silk Trousers', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('640', '0', '1035539', '0', 'Primal Combatant\'s Silk Robe', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('641', '0', '1035543', '0', 'Primal Combatant\'s Silk Amice', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('642', '0', '1035540', '0', 'Primal Combatant\'s Satin Gloves', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('643', '0', '1035541', '0', 'Primal Combatant\'s Satin Hood', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('644', '0', '1035542', '0', 'Primal Combatant\'s Satin Leggings', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('645', '0', '1035539', '0', 'Primal Combatant\'s Satin Robe', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('646', '0', '1035538', '0', 'Primal Combatant\'s Cuffs of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('647', '0', '1035538', '0', 'Primal Combatant\'s Cuffs of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('648', '0', '1035540', '0', 'Primal Combatant\'s Gloves of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('649', '0', '1035541', '0', 'Primal Combatant\'s Hood of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('650', '0', '1035542', '0', 'Primal Combatant\'s Leggings of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('651', '0', '1035539', '0', 'Primal Combatant\'s Robes of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('652', '0', '1035543', '0', 'Primal Combatant\'s Amice of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('653', '0', '1035536', '0', 'Primal Combatant\'s Cord of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('654', '0', '1035536', '0', 'Primal Combatant\'s Cord of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('655', '0', '1035537', '0', 'Primal Combatant\'s Treads of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('656', '0', '1035537', '0', 'Primal Combatant\'s Treads of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('657', '0', '1035543', '0', 'Primal Combatant\'s Satin Mantle', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('658', '0', '1035540', '0', 'Primal Combatant\'s Felweave Handguards', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('659', '0', '1035541', '0', 'Primal Combatant\'s Felweave Cowl', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('660', '0', '1035537', '0', 'Primal Combatant\'s Treads of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('661', '0', '1035538', '0', 'Primal Combatant\'s Cuffs of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('662', '0', '1035538', '0', 'Primal Combatant\'s Cuffs of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('663', '0', '1035540', '0', 'Primal Combatant\'s Silk Handguards', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('664', '0', '1035541', '0', 'Primal Combatant\'s Silk Cowl', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('665', '0', '1035542', '0', 'Primal Combatant\'s Silk Trousers', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('666', '0', '1035539', '0', 'Primal Combatant\'s Silk Robe', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('667', '0', '1035543', '0', 'Primal Combatant\'s Silk Amice', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('668', '0', '1035540', '0', 'Primal Combatant\'s Satin Gloves', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('669', '0', '1035537', '0', 'Primal Combatant\'s Treads of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('670', '0', '1035536', '0', 'Primal Combatant\'s Cord of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('671', '0', '1035542', '0', 'Primal Combatant\'s Felweave Trousers', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('672', '0', '1035539', '0', 'Primal Combatant\'s Felweave Raiment', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('673', '0', '1035543', '0', 'Primal Combatant\'s Felweave Amice', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('674', '0', '1035540', '0', 'Primal Combatant\'s Gloves of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('675', '0', '1035541', '0', 'Primal Combatant\'s Hood of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('676', '0', '1035542', '0', 'Primal Combatant\'s Leggings of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('677', '0', '1035539', '0', 'Primal Combatant\'s Robes of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('678', '0', '1035543', '0', 'Primal Combatant\'s Amice of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('679', '0', '1035536', '0', 'Primal Combatant\'s Cord of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('680', '0', '1035541', '0', 'Primal Combatant\'s Satin Hood', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('681', '0', '133453', '0', 'Primal Combatant\'s Medallion of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('682', '0', '1028986', '0', 'Primal Combatant\'s Pendant of Meditation', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('683', '0', '1028987', '0', 'Primal Combatant\'s Pendant of Contemplation', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('684', '0', '1028984', '0', 'Primal Combatant\'s Choker of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('685', '0', '1028985', '0', 'Primal Combatant\'s Choker of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('686', '0', '1028980', '0', 'Primal Combatant\'s Necklace of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('687', '0', '1028981', '0', 'Primal Combatant\'s Necklace of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('688', '0', '1028980', '0', 'Primal Combatant\'s Pendant of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('689', '0', '1028981', '0', 'Primal Combatant\'s Pendant of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('690', '0', '1028982', '0', 'Primal Combatant\'s Pendant of Meditation', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('691', '0', '1028985', '0', 'Primal Combatant\'s Pendant of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('692', '0', '1028984', '0', 'Primal Combatant\'s Pendant of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('693', '0', '133453', '0', 'Primal Combatant\'s Medallion of Tenacity', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('694', '0', '133453', '0', 'Primal Combatant\'s Medallion of Meditation', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('695', '0', '1029000', '0', 'Primal Combatant\'s Badge of Victory', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('696', '0', '1028996', '0', 'Primal Combatant\'s Insignia of Victory', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('697', '0', '1028991', '0', 'Primal Combatant\'s Badge of Adaptation', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('698', '0', '133452', '0', 'Primal Combatant\'s Medallion of Adaptation', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('699', '0', '133453', '0', 'Primal Combatant\'s Medallion of Adaptation', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('700', '0', '1028984', '0', 'Primal Combatant\'s Necklace of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('701', '0', '1028985', '0', 'Primal Combatant\'s Necklace of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('702', '0', '1028983', '0', 'Primal Combatant\'s Pendant of Contemplation', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('703', '0', '1028980', '0', 'Primal Combatant\'s Choker of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('704', '0', '1028981', '0', 'Primal Combatant\'s Choker of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('705', '0', '1043919', '0', 'Primal Combatant\'s Ring of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('706', '0', '1043921', '0', 'Primal Combatant\'s Ring of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('707', '0', '1043911', '0', 'Primal Combatant\'s Band of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('708', '0', '1043913', '0', 'Primal Combatant\'s Band of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('709', '0', '1043914', '0', 'Primal Combatant\'s Band of Victory', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('710', '0', '1043915', '0', 'Primal Combatant\'s Band of Meditation', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('711', '0', '1043917', '0', 'Primal Combatant\'s Band of Contemplation', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('712', '0', '1043904', '0', 'Primal Combatant\'s Signet of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('713', '0', '1043905', '0', 'Primal Combatant\'s Signet of Accuracy', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('714', '0', '1043910', '0', 'Primal Combatant\'s Signet of Ruthlessness', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('715', '0', '1043922', '0', 'Primal Combatant\'s Ring of Triumph', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('716', '0', '1043920', '0', 'Primal Combatant\'s Ring of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('717', '0', '1043921', '0', 'Primal Combatant\'s Ring of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('718', '0', '1043911', '0', 'Primal Combatant\'s Band of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('719', '0', '1043913', '0', 'Primal Combatant\'s Band of Prowess', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('720', '0', '1043914', '0', 'Primal Combatant\'s Band of Victory', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('721', '0', '1043916', '0', 'Primal Combatant\'s Band of Meditation', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('722', '0', '1043917', '0', 'Primal Combatant\'s Band of Contemplation', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('723', '0', '1043909', '0', 'Primal Combatant\'s Signet of Cruelty', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('724', '0', '1043905', '0', 'Primal Combatant\'s Signet of Accuracy', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('725', '0', '1043922', '0', 'Primal Combatant\'s Ring of Triumph', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('726', '0', '413585', '0', 'Champion\'s Honor', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('727', '0', '901747', '0', 'Enduring Elixir of Wisdom (x5)', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('728', '0', '236884', '0', 'Flask of the Honorbound (x5)', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('729', '0', '236884', '0', 'Flask of Conquest (x5)', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('730', '0', '236884', '0', 'Elixir of Ancient Knowledge (x5)', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('731', '0', '236883', '0', 'Elixir of the Rapid Mind (x5)', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('732', '0', '236884', '0', 'Elixir of Ancient Knowledge', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('733', '0', '132764', '0', '36 slots bag', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('734', '0', '134430', '0', 'Portable Hole', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('735', '0', '133646', '0', 'Pack of Endless Pockets', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('736', '0', '133877', '0', 'Titanium Toolbox', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('737', '0', '133649', '0', 'Mammoth Mining Bag', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('738', '0', '133654', '0', 'Trapper\'s Traveling Pack', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('739', '0', '133651', '0', 'Emerald Bag', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('740', '0', '133650', '0', 'Mysterious Bag', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('741', '0', '898350', '0', 'Hellscream\'s Warbow', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('742', '0', '898068', '0', 'Hellscream\'s Pig Sticker', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('743', '0', '902177', '0', 'Hellscream\'s Barrier', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('744', '0', '898247', '0', 'Hellscream\'s Tome of Destruction', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('745', '0', '902177', '0', 'Hellscream\'s Shield Wall', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('746', '0', '902178', '0', 'Hellscream\'s War Staff', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('747', '0', '897831', '0', 'Hellscream\'s Decapitator', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('748', '0', '898066', '0', 'Hellscream\'s Cleaver', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('749', '0', '898067', '0', 'Hellscream\'s Warmace', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('750', '0', '898069', '0', 'Hellscream\'s Doomblade', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('751', '0', '897179', '0', 'Hellscream\'s Razor', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('752', '0', '134959', '0', 'Weathered Observer\'s Shield', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('753', '0', '134966', '0', 'Flamescarred Draconian Deflector', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('754', '0', '133442', '0', 'Inherited Mark of Tyranny', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('755', '0', '133452', '0', 'Bequeathed Insignia of the Alliance', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('756', '0', '133453', '0', 'Bequeathed Insignia of the Horde', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('757', '0', '133441', '0', 'Piercing Eye of the Beast', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('758', '0', '133434', '0', 'Forceful Hand of Justice', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('759', '0', '135032', '0', 'Wild Feralheart Spaulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('760', '0', '135055', '0', 'Superior Stormshroud Shoulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('761', '0', '135060', '0', 'Awakened Pauldrons of Elements', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('762', '0', '132633', '0', 'Awakened Vest of Elements', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('763', '0', '135041', '0', 'Adorned Beastmaster\'s Mantle', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('764', '0', '135032', '0', 'Grand Champion Herod\'s Shoulder', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('765', '0', '132629', '0', 'Furious Deathdealer Breastplate', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('766', '0', '135060', '0', 'Venerated Pauldrons of The Five Thunders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('767', '0', '135061', '0', 'Gleaming Spaulders of Valor', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('768', '0', '132738', '0', 'Gleaming Breastplate of Valor', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('769', '0', '132751', '0', 'Brushed Breastplate of Might', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('770', '0', '135046', '0', 'Brushed Pauldrons of Might', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('771', '0', '135041', '0', 'Immaculate Lightforge Spaulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('772', '0', '135051', '0', 'Reinforced Stockade Pauldrons', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('773', '0', '132721', '0', 'Majestic Ironfeather Breastplate', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('774', '0', '133741', '0', 'Musty Tome of the Lost', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('775', '0', '135032', '0', 'Lasting Feralheart Spaulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('776', '0', '134588', '0', 'Tattered Dreadmist Leggings', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('777', '0', '133773', '0', 'Worn Stoneskin Gargoyle Cape', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('778', '0', '133772', '0', 'Inherited Cape of the Black Baron', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('779', '0', '133760', '0', 'Ancient Bloodmoon Cloak', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('780', '0', '133077', '0', 'Burnished Helm of Might', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('781', '0', '134584', '0', 'Burnished Legplates of Might', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('782', '0', '133759', '0', 'Ripped Sandstorm Cloak', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('783', '0', '132751', '0', 'Burnished Breastplate of Might', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('784', '0', '135046', '0', 'Burnished Pauldrons of Might', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('785', '0', '134628', '0', 'Preened Wildfeather Leggings', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('786', '0', '134582', '0', 'Stained Shadowcraft Pants', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('787', '0', '133070', '0', 'Polished Helm of Valor', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('788', '0', '133127', '0', 'Tarnished Raging Berserker\'s Helm', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('789', '0', '133072', '0', 'Mystical Coif of Elements', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('790', '0', '133143', '0', 'Stained Shadowcraft Cap', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('791', '0', '133126', '0', 'Preened Tribal War Feathers', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('792', '0', '133131', '0', 'Tattered Dreadmist Mask', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('793', '0', '134584', '0', 'Polished Legplates of Valor', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('794', '0', '134583', '0', 'Tarnished Leggings of Destruction', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('795', '0', '134583', '0', 'Mystical Kilt of Elements', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('796', '0', '135302', '0', 'Bloodsoaked Skullforge Reaver', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('797', '0', '135496', '0', 'Charmed Ancient Bone Bow', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('798', '0', '133441', '0', 'Discerning Eye of the Beast', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('799', '0', '133453', '0', 'Inherited Insignia of the Horde', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('800', '0', '133452', '0', 'Inherited Insignia of the Alliance', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('801', '0', '133381', '0', 'Dread Pirate Ring', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('802', '0', '135038', '0', 'Stained Shadowcraft Spaulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('803', '0', '135037', '0', 'Preened Ironfeather Shoulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('804', '0', '135055', '0', 'Exceptional Stormshroud Shoulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('805', '0', '132741', '0', 'Stained Shadowcraft Tunic', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('806', '0', '135041', '0', 'Prized Beastmaster\'s Mantle', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('807', '0', '135032', '0', 'Champion Herod\'s Shoulder', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('808', '0', '135060', '0', 'Aged Pauldrons of The Five Thunders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('809', '0', '132629', '0', 'Champion\'s Deathdealer Breastplate', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('810', '0', '133434', '0', 'Swift Hand of Justice', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('811', '0', '132996', '0', 'Repurposed Lava Dredger', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('812', '0', '135618', '0', 'Upgraded Dwarven Hand Cannon', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('813', '0', '135315', '0', 'Balanced Heartseeker', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('814', '0', '135639', '0', 'Sharpened Scarlet Kris', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('815', '0', '135346', '0', 'Battleworn Thrash Blade', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('816', '0', '133054', '0', 'Venerable Mass of McGowan', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('817', '0', '135353', '0', 'Venerable Dal\'Rend\'s Sacred Charge', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('818', '0', '133042', '0', 'Devout Aurastone Hammer', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('819', '0', '133044', '0', 'The Blessed Hammer of Grace', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('820', '0', '132400', '0', 'Bloodied Arcanite Reaper', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('821', '0', '133445', '0', 'Dignified Headmaster\'s Charge', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('822', '0', '135326', '0', 'Reforged Truesilver Champion', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('823', '0', '135150', '0', 'Grand Staff of Jordan', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('824', '0', '132633', '0', 'Mystical Vest of Elements', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('825', '0', '135061', '0', 'Polished Spaulders of Valor', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('826', '0', '135326', '0', 'Battle-Forged Truesilver Champion', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('827', '0', '135639', '0', 'Deadly Scarlet Kris', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('828', '0', '133042', '0', 'Pious Aurastone Hammer', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('829', '0', '135496', '0', 'War-Torn Ancient Bone Bow', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('830', '0', '135353', '0', 'Noble Dal\'Rend\'s Sacred Charge', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('831', '0', '135315', '0', 'Vengeful Heartseeker', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('832', '0', '237499', '0', 'Brawler\'s Bladed Claws', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('833', '0', '133732', '0', 'Bloodstained Dreadmist Mantle', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('834', '0', '132690', '0', 'Bloodstained Dreadmist Robe', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('835', '0', '135033', '0', 'Prestigious Sunderseer Mantle', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('836', '0', '135038', '0', 'Supple Shadowcraft Spaulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('837', '0', '132741', '0', 'Supple Shadowcraft Tunic', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('838', '0', '133044', '0', 'The Sanctified Hammer of Grace', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('839', '0', '135150', '0', 'Elder Staff of Jordan', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('840', '0', '135041', '0', 'Pristine Lightforge Spaulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('841', '0', '132738', '0', 'Polished Breastplate of Valor', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('842', '0', '133732', '0', 'Tattered Dreadmist Mantle', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('843', '0', '135033', '0', 'Exquisite Sunderseer Mantle', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('844', '0', '132690', '0', 'Tattered Dreadmist Robe', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('845', '0', '135618', '0', 'Smoothbore Dwarven Hand Cannon', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('846', '0', '132400', '0', 'Hardened Arcanite Reaper', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('847', '0', '135166', '0', 'Refinished Warden Staff', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('848', '0', '135302', '0', 'Gore-Steeped Skullforge Reaver', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('849', '0', '132996', '0', 'Re-Engineered Lava Dredger', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('850', '0', '133054', '0', 'Crushing Mass of McGowan', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('851', '0', '135346', '0', 'Battle-Hardened Thrash Blade', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('852', '0', '135037', '0', 'Majestic Ironfeather Shoulders', '', '', '');
-INSERT INTO `battlepay_display_info` VALUES ('853', '0', '135349', '0', 'Thunderfury, Blessed Blade of the Windseeker', '', '', '');
+INSERT INTO `battlepay_display_info` VALUES 
+('1', '31992', '0', '0', 'X-53 Touring Rocket', '', '', ''),
+('2', '17890', '0', '0', 'Peep\'s Whistle', '', '', ''),
+('3', '15676', '0', '0', 'Black Qiraji Resonating Crystal', '', '', ''),
+('4', '39546', '0', '0', 'Spectral Gryphon', '', '', ''),
+('5', '39547', '0', '0', 'Spectral Wind Rider', '', '', ''),
+('6', '40568', '0', '0', 'Feldrake', '', '', ''),
+('7', '48020', '0', '0', 'Armored Bloodwing', '', '', ''),
+('8', '39530', '0', '0', 'Tyrael\'s Charger', '', '', ''),
+('9', '40029', '0', '0', 'Heart of the Aspects', '', '', ''),
+('10', '31803', '0', '0', 'Blazing Hippogryph', '', '', ''),
+('11', '38972', '0', '0', 'Corrupted Hippogryph', '', '', ''),
+('12', '37800', '0', '0', 'Amani Dragonhawk', '', '', ''),
+('13', '37159', '0', '0', 'Reins of the Spectral Wolf', '', '', ''),
+('14', '43695', '0', '0', 'Reins of the Heavenly Jade Cloud Serpent', '', '', ''),
+('15', '38785', '0', '0', 'Voidtalon of the Dark Star', '', '', ''),
+('16', '55907', '0', '0', 'Grinning Reaver', '', '', ''),
+('17', '43697', '0', '0', 'Reins of the Heavenly Azure Cloud Serpent', '', '', ''),
+('18', '48014', '0', '0', 'Ghastly Charger\'s Skull', '', '', ''),
+('19', '35553', '0', '0', 'Reins of the Drake of the North Wind', '', '', ''),
+('20', '37231', '0', '0', 'Mottled Drake', '', '', ''),
+('21', '37160', '0', '0', 'Reins of the Spectral Steed', '', '', ''),
+('22', '28954', '0', '0', 'Reins of the Rusted Proto-Drake', '', '', ''),
+('23', '21974', '0', '0', 'Reins of the Swift Spectral Tiger', '', '', ''),
+('24', '27567', '0', '0', 'Big Blizzard Bear', '', '', ''),
+('25', '28042', '0', '0', 'Reins of the Plagued Proto-Drake', '', '', ''),
+('26', '28040', '0', '0', 'Reins of the Black Proto-Drake', '', '', ''),
+('27', '28890', '0', '0', 'Mimiron\'s Head', '', '', ''),
+('28', '30346', '0', '0', 'Reins of the Onyxian Drake', '', '', ''),
+('29', '31803', '0', '0', 'Blazing Hippogryph', '', '', ''),
+('30', '31958', '0', '0', 'Celestial Steed', '', '', ''),
+('31', '24725', '0', '0', 'Vengeful Nether Drake', '', '', ''),
+('32', '22620', '0', '0', 'Merciless Nether Drake', '', '', ''),
+('33', '27507', '0', '0', 'Brutal Nether Drake', '', '', ''),
+('34', '38757', '0', '0', 'Cataclysmic Gladiator\'s Twilight Drake', '', '', ''),
+('35', '53038', '0', '0', 'Iron Skyreaver', '', '', ''),
+('36', '31047', '0', '0', 'Wrathful Gladiator\'s Frost Wyrm', '', '', ''),
+('37', '38756', '0', '0', 'Vicious Gladiator\'s Twilight Drake', '', '', ''),
+('38', '42498', '0', '0', 'Heart of the Nightwing', '', '', ''),
+('39', '25511', '0', '0', 'Deadly Gladiator\'s Frost Wyrm', '', '', ''),
+('40', '29794', '0', '0', 'Relentless Gladiator\'s Frost Wyrm', '', '', ''),
+('41', '35740', '0', '0', 'Reins of the Phosphorescent Stone Drake', '', '', ''),
+('42', '25593', '0', '0', 'Furious Gladiator\'s Frost Wyrm', '', '', ''),
+('43', '20344', '0', '0', 'Swift Nether Drake', '', '', ''),
+('44', '38260', '0', '0', 'Winged Guardian', '', '', ''),
+('45', '30989', '0', '0', 'Big Love Rocket', '', '', ''),
+('46', '17158', '0', '0', 'Riding Turtle', '', '', ''),
+('47', '59324', '0', '0', 'Tundra Icehoof', '', '', ''),
+('48', '59752', '0', '0', 'Warsong Direfang', '', '', ''),
+('49', '48714', '0', '0', 'Enchanted Fey Dragon', '', '', ''),
+('50', '48931', '0', '0', 'Hearthsteed', '', '', ''),
+('51', '17158', '0', '0', 'Lucky Riding Turtle', '', '', ''),
+('52', '59346', '0', '0', 'Armored Razorback', '', '', ''),
+('53', '34955', '0', '0', 'Reins of Poseidus', '', '', ''),
+('54', '35755', '0', '0', 'Reins of the Drake of the South Wind', '', '', ''),
+('55', '29344', '0', '0', 'Magic Rooster Egg', '', '', ''),
+('56', '46729', '0', '0', 'Swift Windsteed', '', '', ''),
+('57', '53774', '0', '0', 'Reins of the Dread Raven', '', '', ''),
+('58', '17011', '0', '0', 'Swift Shorestrider', '', '', ''),
+('59', '59746', '0', '0', 'Mudback Riverbeast', '', '', ''),
+('60', '51488', '0', '0', 'Reins of the Thundering Onyx Cloud Serpent', '', '', ''),
+('61', '62148', '0', '0', 'Mystic Runesaber', '', '', ''),
+('62', '21473', '0', '0', 'Reins of the Raven Lord', '', '', ''),
+('63', '55896', '0', '0', 'Warforged Nightmare', '', '', ''),
+('64', '51993', '0', '0', 'Emerald Hippogryph', '', '', ''),
+('65', '61363', '0', '0', 'Cindermane Charger', '', '', ''),
+('66', '23647', '0', '0', 'X-51 Nether-Rocket X-TREME', '', '', ''),
+('67', '58772', '0', '0', 'Core Hound Chain', '', '', ''),
+('68', '38048', '0', '0', 'Savage Raptor', '', '', ''),
+('69', '35135', '0', '0', 'Reins of the Grey Riding Camel', '', '', ''),
+('70', '19303', '0', '0', 'Reins of the Dark War Talbuk', '', '', ''),
+('71', '60208', '0', '0', 'Warlord\'s Deathwheel', '', '', ''),
+('72', '60207', '0', '0', 'Champion\'s Treadblade', '', '', ''),
+('73', '43562', '0', '0', 'Reins of the Thundering Jade Cloud Serpent', '', '', ''),
+('74', '29937', '0', '0', 'Crusader\'s White Warhorse', '', '', ''),
+('75', '29283', '0', '0', 'Swift Horde Wolf', '', '', ''),
+('76', '2787', '0', '0', 'Frost Ram', '', '', ''),
+('77', '22464', '0', '0', 'Amani War Bear', '', '', ''),
+('78', '1166', '0', '0', 'Horn of the Arctic Wolf', '', '', ''),
+('79', '28428', '0', '0', 'Reins of the White Polar Bear', '', '', ''),
+('80', '25335', '0', '0', 'Big Battle Bear', '', '', ''),
+('81', '28888', '0', '0', 'Quel\'dorei Steed', '', '', ''),
+('82', '23647', '0', '0', 'X-51 Nether-Rocket X-TREME', '', '', ''),
+('83', '24745', '0', '0', 'Swift Zhevra', '', '', ''),
+('84', '29284', '0', '0', 'Swift Alliance Steed', '', '', ''),
+('85', '29938', '0', '0', 'Crusader\'s Black Warhorse', '', '', ''),
+('86', '17697', '0', '0', 'Golden Gryphon', '', '', ''),
+('87', '23656', '0', '0', 'X-51 Nether-Rocket', '', '', ''),
+('88', '2408', '0', '0', 'Palomino Bridle', '', '', ''),
+('89', '15290', '0', '0', 'Swift Zulian Tiger', '', '', ''),
+('90', '17694', '0', '0', 'Ebon Gryphon', '', '', ''),
+('91', '37204', '0', '0', 'White Riding Camel', '', '', ''),
+('92', '29161', '0', '0', 'Sea Turtle', '', '', ''),
+('93', '43254', '0', '0', 'Imperial Quilen', '', '', ''),
+('94', '1281', '0', '0', 'Swift Forest Strider', '', '', ''),
+('95', '12242', '0', '0', 'Teal Kodo', '', '', ''),
+('96', '22719', '0', '0', 'Flying Machine', '', '', ''),
+('97', '43713', '0', '0', 'Reins of the Crimson Water Strider', '', '', ''),
+('98', '17701', '0', '0', 'Green Wind Rider', '', '', ''),
+('99', '17700', '0', '0', 'Blue Wind Rider', '', '', ''),
+('100', '17699', '0', '0', 'Tawny Wind Rider', '', '', ''),
+('101', '17696', '0', '0', 'Snowy Gryphon', '', '', ''),
+('102', '37145', '0', '0', 'Reins of the Dark Phoenix', '', '', ''),
+('103', '0', '133789', '0', '1.000 golds', '', '', ''),
+('104', '0', '133789', '0', '5.000 golds', '', '', ''),
+('105', '0', '133789', '0', '10.000 golds', '', '', ''),
+('106', '0', '133787', '0', '30.000 golds', '', '', ''),
+('107', '0', '133784', '0', '80.000 golds', '', '', ''),
+('108', '0', '133785', '0', '150.000 golds', '', '', ''),
+('109', '0', '1033987', '0', 'Level 100 Character Boost', '', 'There comes a time in every hero’s quest when they need a little boost to help get them over the hump and back into the action. With a Level 100 Character Boost, you can grant one character a one-time boost to level 90. Bring your hero up to speed and join the fight on the front lines.', ''),
+('110', '0', '614740', '0', 'Level 90 Character Boost', '', 'There comes a time in every hero’s quest when they need a little boost to help get them over the hump and back into the action. With a Level 90 Character Boost, you can grant one character a one-time boost to level 90. Bring your hero up to speed and join the fight on the front lines.', ''),
+('111', '0', '614740', '0', 'Name Change', '', 'The name you originally chose for your hero doesn’t have to be his name for all eternity. Maybe you have become a little too famous (or notorious), or maybe you just thought of something better; either way, you can change your name and start anew today!', ''),
+('112', '0', '614740', '0', 'Faction Change', '', '‘Traitor’ is such a harsh word… sure, your allies may not be thrilled to see you leave, but what have they ever done for you, really? Maybe it’s time you saw what the other side has to offer. Maybe there are already friends waiting for you to join them. Maybe the epics really are purpler on the other side, as the saying goes. Changing factions also includes a free race change so you will fit right in with your new allies!', ''),
+('113', '0', '614740', '0', 'Race Change', '', 'It ain’t easy being green… or blue… or purplish-pink with pointy ears…. Sometimes a simple touch up of your character’s looks isn’t enough; sometimes you want to go all the way and change which race you belong to! With a race change, you can do just that.', ''),
+('114', '0', '614740', '0', 'Appearance Change', '', 'Things change, people change, hairstyles change, interest rates fluctuate… if you’re tired of always wearing a full plate helmet to hide your original character appearance choices, then appearance change is for you! Think of it like the kind of simple do-over people wished existed in real life. Appearance change lets you redo the look and even the gender of one of your characters.', ''),
+('115', '0', '1033988', '0', 'Premade character level 100', '', 'Buying a premade character include :\r\n- ilevel 600 PvP gear.\r\n- ilevel 610 weapons\r\n- ilevel 610 trinkets and cloak\r\n- 10 000 golds\r\n- Instant level 100', ''),
+('116', '0', '136240', '0', 'Alchemy - 700', '', 'Learn Alchemy 700 with all recipes until Mists of Pandaria included.', ''),
+('117', '0', '441139', '0', 'Archeology - 700', '', 'Learn Archeology 700 with all recipes until Mists of Pandaria included.', ''),
+('118', '0', '136241', '0', 'Blacksmithing - 700', '', 'Learn Blacksmithing 700 with all recipes until Mists of Pandaria included.', ''),
+('119', '0', '571695', '0', 'Cooking - 700', '', 'Learn Cooking 700 with all recipes until Mists of Pandaria included.', ''),
+('120', '0', '136244', '0', 'Enchanting - 700', '', 'Learn Enchanting 700 with all recipes until Mists of Pandaria included.', ''),
+('121', '0', '136243', '0', 'Engineering - 700', '', 'Learn Engineering 700 with all recipes until Mists of Pandaria included.', ''),
+('122', '0', '1014021', '0', 'First aid - 700', '', 'Learn First Aid 700 with all recipes until Mists of Pandaria included.', ''),
+('123', '0', '136245', '0', 'Fishing - 700', '', 'Learn Fishing 700 with all recipes until Mists of Pandaria included.', ''),
+('124', '0', '136246', '0', 'Herbalist - 700', '', 'Learn Herbalist 700 with all recipes until Mists of Pandaria included.', ''),
+('125', '0', '237171', '0', 'Inscription - 700', '', 'Learn Inscription 700 with all recipes until Mists of Pandaria included.', ''),
+('126', '0', '134071', '0', 'Jewelcrafting - 700', '', 'Learn Jewelcrafting 700 with all recipes until Mists of Pandaria included.', ''),
+('127', '0', '134366', '0', 'Skinning - 700', '', 'Learn Skinning 700 with all recipes until Mists of Pandaria included.', ''),
+('128', '0', '136249', '0', 'Tailoring - 700', '', 'Learn Tailoring 700 with all recipes until Mists of Pandaria included.', ''),
+('129', '0', '136248', '0', 'Mining - 700', '', 'Learn Mining 700 with all recipes until Mists of Pandaria included.', ''),
+('130', '0', '136247', '0', 'Leatherworking - 700', '', 'Learn Leatherworking 700 with all recipes until Mists of Pandaria included.', ''),
+('131', '28946', '0', '0', 'Argent Squire', '', '', ''),
+('132', '17723', '0', '0', 'Netherwhelp\'s Collar', '', '', ''),
+('133', '15369', '0', '0', 'Blue Murloc Egg', '', '', ''),
+('134', '10992', '0', '0', 'Diablo Stone', '', '', ''),
+('135', '10990', '0', '0', 'Panda Collar', '', '', ''),
+('136', '42299', '0', '0', 'Goblin Weather Machine - Prototype 01-B', '', '', ''),
+('137', '22966', '0', '0', 'Dragon Kite', '', '', ''),
+('138', '30356', '0', '0', 'Onyxian Whelpling', '', '', ''),
+('139', '16943', '0', '0', 'Hippogryph Hatchling', '', '', ''),
+('140', '25002', '0', '0', 'Soul-Trader Beacon', '', '', ''),
+('141', '38614', '0', '0', 'Lil\' Tarecgosa', '', '', ''),
+('142', '40019', '0', '0', 'Soul of the Aspects', '', '', ''),
+('143', '15984', '0', '0', 'Pink Murloc Egg', '', '', ''),
+('144', '30157', '0', '0', 'Tuskarr Kite', '', '', ''),
+('145', '24393', '0', '0', 'Gold Medallion', '', '', ''),
+('146', '30462', '0', '0', 'Core Hound Pup', '', '', ''),
+('147', '26452', '0', '0', 'Unhatched Mr. Chilly', '', '', ''),
+('148', '29348', '0', '0', 'Heavy Murloc Egg', '', '', ''),
+('149', '29279', '0', '0', 'Warbot Ignition Key', '', '', ''),
+('150', '28734', '0', '0', 'Murkimus\' Little Spear', '', '', ''),
+('151', '28456', '0', '0', 'Frosty\'s Collar', '', '', ''),
+('152', '42299', '0', '0', 'Landro\'s Pet Box', '', '', ''),
+('153', '30409', '0', '0', 'Spectral Tiger Cub', '', '', ''),
+('154', '22903', '0', '0', 'Rocket Chicken', '', '', ''),
+('155', '21362', '0', '0', 'Banana Charm', '', '', ''),
+('156', '39380', '0', '0', 'Fetish Shaman\'s Spear', '', '', ''),
+('157', '15398', '0', '0', 'Lurky\'s Egg', '', '', ''),
+('158', '46896', '0', '0', 'Blighted Spore', '', '', ''),
+('159', '46720', '0', '0', 'Cinder Kitten', '', '', ''),
+('160', '36896', '0', '0', 'Smoldering Murloc Egg', '', '', ''),
+('161', '16943', '0', '0', 'Cenarion Hatchling', '', '', ''),
+('162', '37541', '0', '0', 'Lil\' Ragnaros', '', '', ''),
+('163', '37526', '0', '0', 'Moonkin Hatchling', '', '', ''),
+('164', '37527', '0', '0', 'Moonkin Hatchling', '', '', ''),
+('165', '45527', '0', '0', 'Baneling', '', '', ''),
+('166', '30507', '0', '0', 'Landro\'s Lichling', '', '', ''),
+('167', '38359', '0', '0', 'Guardian Cub', '', '', ''),
+('168', '60441', '0', '0', 'Hatespark the Tiny', '', '', ''),
+('169', '32031', '0', '0', 'Landro\'s Lil\' XT', '', '', ''),
+('170', '35338', '0', '0', 'Lil\' Deathwing', '', '', ''),
+('171', '48662', '0', '0', 'Satyr Charm', '', '', ''),
+('172', '48856', '0', '0', 'Netherspace Portal-Stone', '', '', ''),
+('173', '18269', '0', '0', 'Magical Crawdad Box', '', '', ''),
+('174', '47348', '0', '0', 'Gusting Grimoire', '', '', ''),
+('175', '46909', '0', '0', 'Jewel of Maddening Whispers', '', '', ''),
+('176', '46922', '0', '0', 'Anubisath Idol', '', '', ''),
+('177', '10993', '0', '0', 'Zergling Leash', '', '', ''),
+('178', '29819', '0', '0', 'Enchanted Onyx', '', '', ''),
+('179', '30402', '0', '0', 'Enchanted Purple Jade', '', '', ''),
+('180', '16259', '0', '0', 'Turtle Box', '', '', ''),
+('181', '61128', '0', '0', 'Argi', '', '', ''),
+('182', '28482', '0', '0', 'Teldrassil Sproutling', '', '', ''),
+('183', '29189', '0', '0', 'Sen\'jin Fetish', '', '', ''),
+('184', '31073', '0', '0', 'Toxic Wasteling', '', '', ''),
+('185', '16189', '0', '0', 'Baby Blizzard Bear', '', '', ''),
+('186', '28539', '0', '0', 'Mechanopeep', '', '', ''),
+('187', '61127', '0', '0', 'Grommloc', '', '', ''),
+('188', '27627', '0', '0', 'Giant Sewer Rat', '', '', ''),
+('189', '7920', '0', '0', 'Mechanical Chicken', '', '', ''),
+('190', '48934', '0', '0', 'Blossoming Ancient', '', '', ''),
+('191', '40538', '0', '0', 'Eye of the Legion', '', '', ''),
+('192', '38919', '0', '0', 'Grell Moss', '', '', ''),
+('193', '31722', '0', '0', 'Ice Chip', '', '', ''),
+('194', '43255', '0', '0', 'Lucky Quilen Cub', '', '', ''),
+('195', '28084', '0', '0', 'Cobra Hatchling', '', '', ''),
+('196', '51990', '0', '0', 'Murkalot\'s Flail', '', '', ''),
+('197', '28217', '0', '0', 'Proto-Drake Whelp', '', '', ''),
+('198', '14938', '0', '0', 'A Jubling\'s Tiny Home', '', '', ''),
+('199', '39694', '0', '0', 'Sand Scarab', '', '', ''),
+('200', '45880', '0', '0', 'Strand Crawler', '', '', ''),
+('201', '6294', '0', '0', 'Sprite Darter Egg', '', '', ''),
+('202', '5448', '0', '0', 'Cat Carrier (Black Tabby)', '', '', ''),
+('203', '32670', '0', '0', 'Mini Thor', '', '', ''),
+('204', '6192', '0', '0', 'Parrot Cage (Hyacinth Macaw)', '', '', ''),
+('205', '6288', '0', '0', 'Dark Whelpling', '', '', ''),
+('206', '23574', '0', '0', 'Phoenix Hatchling', '', '', ''),
+('207', '6293', '0', '0', 'Azure Whelpling', '', '', ''),
+('208', '30412', '0', '0', 'Gryphon Hatchling', '', '', ''),
+('209', '30414', '0', '0', 'Pandaren Monk', '', '', ''),
+('210', '30507', '0', '0', 'Lil\' Phylactery', '', '', ''),
+('211', '29806', '0', '0', 'Razzashi Hatchling', '', '', ''),
+('212', '29807', '0', '0', 'Deviate Hatchling', '', '', ''),
+('213', '29803', '0', '0', 'Gundrak Hatchling', '', '', ''),
+('214', '5207', '0', '0', 'Parrot Cage (Green Wing Macaw)', '', '', ''),
+('215', '20042', '0', '0', 'Captured Firefly', '', '', ''),
+('216', '32031', '0', '0', 'Lil\' XT', '', '', ''),
+('217', '38803', '0', '0', 'Murky\'s Little Soulstone', '', '', ''),
+('218', '38777', '0', '0', 'Purple Puffer', '', '', ''),
+('219', '21328', '0', '0', 'Fortune Coin', '', '', ''),
+('220', '30413', '0', '0', 'Wind Rider Cub', '', '', ''),
+('221', '25900', '0', '0', 'Tyrael\'s Hilt', '', '', ''),
+('222', '38359', '0', '0', 'Guardian Cub', '', '', ''),
+('223', '6291', '0', '0', 'Emerald Whelpling', '', '', ''),
+('224', '15595', '0', '0', 'Baby Shark', '', '', ''),
+('225', '6290', '0', '0', 'Tiny Crimson Whelpling', '', '', ''),
+('226', '23506', '0', '0', 'Chuck\'s Bucket', '', '', ''),
+('227', '29805', '0', '0', 'Darting Hatchling', '', '', ''),
+('228', '29802', '0', '0', 'Leaping Hatchling', '', '', ''),
+('229', '28734', '0', '0', 'Murkimus\' Tiny Spear', '', '', ''),
+('230', '23507', '0', '0', 'Snarly\'s Bucket', '', '', ''),
+('231', '22459', '0', '0', 'Mojo', '', '', ''),
+('232', '29810', '0', '0', 'Ravasaur Hatchling', '', '', ''),
+('233', '38539', '0', '0', 'Feline Familiar', '', '', ''),
+('234', '39109', '0', '0', 'Sea Pony', '', '', ''),
+('235', '27718', '0', '0', 'Smolderweb Egg', '', '', ''),
+('236', '45878', '0', '0', 'Elementium Geode', '', '', ''),
+('237', '53719', '0', '0', 'Dread Hatchling', '', '', ''),
+('238', '51994', '0', '0', 'Treasure Goblin\'s Pack', '', '', ''),
+('239', '51272', '0', '0', 'Ominous Flame', '', '', ''),
+('240', '51988', '0', '0', 'Alterac Brandy', '', '', ''),
+('241', '16257', '0', '0', 'Piglet\'s Collar', '', '', ''),
+('242', '37846', '0', '0', 'Nightsaber Cub', '', '', ''),
+('243', '29808', '0', '0', 'Razormaw Hatchling', '', '', ''),
+('244', '45939', '0', '0', 'Lump of Coal', '', '', ''),
+('245', '44655', '0', '0', 'Terrible Turnip', '', '', ''),
+('246', '22388', '0', '0', 'Toothy\'s Bucket', '', '', ''),
+('247', '28502', '0', '0', 'Mulgore Hatchling', '', '', ''),
+('248', '16205', '0', '0', 'Elwynn Lamb', '', '', ''),
+('249', '15470', '0', '0', 'Durotar Scorpion', '', '', ''),
+('250', '25173', '0', '0', 'Curious Oracle Hatchling', '', '', ''),
+('251', '28489', '0', '0', 'Dun Morogh Cub', '', '', ''),
+('252', '16587', '0', '0', 'Captured Flame', '', '', ''),
+('253', '4732', '0', '0', 'Tirisfal Batling', '', '', ''),
+('254', '22776', '0', '0', 'Clockwork Rocket Bot', '', '', ''),
+('255', '15992', '0', '0', 'Truesilver Shafted Arrow', '', '', ''),
+('256', '22778', '0', '0', 'Blue Clockwork Rocket Bot', '', '', ''),
+('257', '25384', '0', '0', 'Curious Wolvar Pup', '', '', ''),
+('258', '45960', '0', '0', 'Enchanted Broom', '', '', ''),
+('259', '304', '0', '0', 'Chicken Egg', '', '', ''),
+('260', '22629', '0', '0', 'Pint-Sized Pink Pachyderm', '', '', ''),
+('261', '28215', '0', '0', 'White Tickbird Hatchling', '', '', ''),
+('262', '29809', '0', '0', 'Obsidian Hatchling', '', '', ''),
+('263', '901', '0', '0', 'Wood Frog Box', '', '', ''),
+('264', '6295', '0', '0', 'Tree Frog Box', '', '', ''),
+('265', '22389', '0', '0', 'Muckbreath\'s Bucket', '', '', ''),
+('266', '11709', '0', '0', 'Cat Carrier (Calico Cat)', '', '', ''),
+('267', '5585', '0', '0', 'Cat Carrier (Siamese)', '', '', ''),
+('268', '45919', '0', '0', 'Tickbird Hatchling', '', '', ''),
+('269', '29404', '0', '0', 'Macabre Marionette', '', '', ''),
+('270', '38455', '0', '0', 'Hyjal Bear Cub', '', '', ''),
+('271', '38429', '0', '0', 'Crimson Lasher', '', '', ''),
+('272', '29372', '0', '0', 'Shimmering Wyrmling', '', '', ''),
+('273', '29372', '0', '0', 'Shimmering Wyrmling', '', '', ''),
+('274', '15436', '0', '0', 'Disgusting Oozeling', '', '', ''),
+('275', '4185', '0', '0', 'Vampiric Batling', '', '', ''),
+('276', '31174', '0', '0', 'Perky Pug', '', '', ''),
+('277', '25457', '0', '0', 'Nether Ray Fry', '', '', ''),
+('278', '19600', '0', '0', 'Mana Wyrmling', '', '', ''),
+('279', '2176', '0', '0', 'Rat Cage', '', '', ''),
+('280', '28493', '0', '0', 'Ammen Vale Lashling', '', '', ''),
+('281', '0', '514340', '0', 'Blazing Wings', '', '', ''),
+('282', '0', '236415', '0', 'Demon Hunter\'s Aspect', '', '', ''),
+('283', '0', '134169', '0', 'Murloc Costume', '', '', ''),
+('284', '0', '840662', '0', 'Jewel of the Firelord', '', '', ''),
+('285', '0', '134230', '0', 'Carved Ogre Idol', '', '', ''),
+('286', '0', '134519', '0', 'Goblin Weather Machine - Prototype 01-B', '', '', ''),
+('287', '0', '841875', '0', 'Hood of Hungering Darkness', '', '', ''),
+('288', '0', '841140', '0', 'Crown of Eternal Winter', '', '', ''),
+('289', '0', '237284', '0', 'Decahedral Dwarven Dice', '', '', ''),
+('290', '0', '134112', '0', 'Fool\'s Gold', '', '', ''),
+('291', '0', '249182', '0', 'Shado-Pan Geyser Gun', '', '', ''),
+('292', '0', '134372', '0', 'Papa Hummel\'s Old-Fashioned Pet Biscuit', '', '', ''),
+('293', '0', '133639', '0', 'Sack of Starfish', '', '', ''),
+('294', '0', '454069', '0', 'Spurious Sarcophagus', '', '', ''),
+('295', '0', '134335', '0', 'Mini Mana Bomb', '', '', ''),
+('296', '0', '132484', '0', 'The Flag of Ownership', '', '', ''),
+('297', '0', '134472', '0', 'Tabard of Frost', '', '', ''),
+('298', '0', '134334', '0', 'Orb of Deception', '', '', ''),
+('299', '0', '134334', '0', 'Orb of the Sin\'dorei', '', '', ''),
+('300', '0', '132930', '0', 'Fishing Chair', '', '', ''),
+('301', '0', '133836', '0', 'D.I.S.C.O.', '', '', ''),
+('302', '0', '236222', '0', 'Ethereal Portal', '', '', ''),
+('303', '0', '135028', '0', 'Epic Purple Shirt', '', '', ''),
+('304', '0', '306868', '0', 'Ogre Pinata', '', '', ''),
+('305', '0', '132594', '0', 'Picnic Basket', '', '', ''),
+('306', '0', '133884', '0', 'Eye of Arachnida', '', '', ''),
+('307', '0', '135463', '0', 'Dartol\'s Rod of Transformation', '', '', ''),
+('308', '0', '134911', '0', 'Time-Lost Figurine', '', '', ''),
+('309', '0', '255139', '0', 'Gnomeregan Pride', '', '', ''),
+('310', '0', '255145', '0', 'Darkspear Pride', '', '', ''),
+('311', '0', '134335', '0', 'Super Simian Sphere', '', '', ''),
+('312', '0', '135026', '0', 'Tabard of Fury', '', '', ''),
+('313', '0', '134473', '0', 'Tabard of Flame', '', '', ''),
+('314', '0', '135026', '0', 'Tabard of Brilliance', '', '', ''),
+('315', '0', '135026', '0', 'Tabard of the Void', '', '', ''),
+('316', '0', '135026', '0', 'Tabard of the Arcane', '', '', ''),
+('317', '0', '135026', '0', 'Tabard of Nature', '', '', ''),
+('318', '0', '135026', '0', 'Tabard of the Defender', '', '', ''),
+('319', '0', '135794', '0', 'Path of Illidan', '', '', ''),
+('320', '0', '134152', '0', 'Wind-Up Train Wrecker', '', '', ''),
+('321', '0', '134284', '0', 'Perpetual Purple Firework', '', '', ''),
+('322', '0', '132261', '0', 'War Party Hitching Post', '', '', ''),
+('323', '0', '134230', '0', 'Magical Ogre Idol', '', '', ''),
+('324', '0', '425951', '0', 'Grim Campfire', '', '', ''),
+('325', '0', '442743', '0', 'Warning Sign', '', '', ''),
+('326', '0', '132719', '0', 'Ruthers\' Harness', '', '', ''),
+('327', '0', '133980', '0', 'The Golden Banana', '', '', ''),
+('328', '0', '801002', '0', 'Whole-Body Shrinka\'', '', '', ''),
+('329', '0', '973201', '0', 'Primal Combatant\'s Touch of Defeat', '', '', ''),
+('330', '0', '975803', '0', 'Primal Combatant\'s Battle Staff', '', '', ''),
+('331', '0', '971077', '0', 'Primal Combatant\'s Staff', '', '', ''),
+('332', '0', '979589', '0', 'Primal Combatant\'s Energy Staff', '', '', ''),
+('333', '0', '975803', '0', 'Primal Combatant\'s Battle Staff', '', '', ''),
+('334', '0', '971077', '0', 'Primal Combatant\'s Staff', '', '', ''),
+('335', '0', '971435', '0', 'Primal Combatant\'s Greatsword', '', '', ''),
+('336', '0', '971435', '0', 'Primal Combatant\'s Greatsword', '', '', ''),
+('337', '0', '942251', '0', 'Primal Combatant\'s Slicer', '', '', ''),
+('338', '0', '0', '0', 'Primal Combatant\'s Mageblade', '', '', ''),
+('339', '0', '942251', '0', 'Primal Combatant\'s Quickblade', '', '', ''),
+('340', '0', '942251', '0', 'Primal Combatant\'s Slicer', '', '', ''),
+('341', '0', '0', '0', 'Primal Combatant\'s Mageblade', '', '', ''),
+('342', '0', '979589', '0', 'Primal Combatant\'s Energy Staff', '', '', ''),
+('343', '0', '976063', '0', 'Primal Combatant\'s Ripper', '', '', ''),
+('344', '0', '973201', '0', 'Primal Combatant\'s Baton of Light', '', '', ''),
+('345', '0', '973201', '0', 'Primal Combatant\'s Touch of Defeat', '', '', ''),
+('346', '0', '973201', '0', 'Primal Combatant\'s Baton of Light', '', '', ''),
+('347', '0', '0', '0', 'Primal Combatant\'s Heavy Crossbow', '', '', ''),
+('348', '0', '0', '0', 'Primal Combatant\'s Heavy Crossbow', '', '', ''),
+('349', '0', '976963', '0', 'Primal Combatant\'s Spellblade', '', '', ''),
+('350', '0', '978218', '0', 'Primal Combatant\'s Shanker', '', '', ''),
+('351', '0', '976963', '0', 'Primal Combatant\'s Spellblade', '', '', ''),
+('352', '0', '978218', '0', 'Primal Combatant\'s Shanker', '', '', ''),
+('353', '0', '976063', '0', 'Primal Combatant\'s Render', '', '', ''),
+('354', '0', '976063', '0', 'Primal Combatant\'s Ripper', '', '', ''),
+('355', '0', '976063', '0', 'Primal Combatant\'s Render', '', '', ''),
+('356', '0', '942251', '0', 'Primal Combatant\'s Quickblade', '', '', ''),
+('357', '0', '974957', '0', 'Primal Combatant\'s Pike', '', '', ''),
+('358', '0', '978471', '0', 'Primal Combatant\'s Decapitator', '', '', ''),
+('359', '0', '976057', '0', 'Primal Combatant\'s Hacker', '', '', ''),
+('360', '0', '976057', '0', 'Primal Combatant\'s Cleaver', '', '', ''),
+('361', '0', '976057', '0', 'Primal Combatant\'s Hacker', '', '', ''),
+('362', '0', '976057', '0', 'Primal Combatant\'s Cleaver', '', '', ''),
+('363', '0', '979589', '0', 'Imperator\'s Warstaff', '', '', ''),
+('364', '0', '974957', '0', 'Polearm of Expulsion', '', '', ''),
+('365', '0', '975498', '0', 'Shield-Shatter Longbow', '', '', ''),
+('366', '0', '971435', '0', 'Magic-Breaker Greatsword', '', '', ''),
+('367', '0', '976963', '0', 'Dagger of Enfeeblement', '', '', ''),
+('368', '0', '974893', '0', 'Shard of Crystalline Fury', '', '', ''),
+('369', '0', '976057', '0', 'Butcher\'s Cruel Chopper', '', '', ''),
+('370', '0', '978471', '0', 'Primal Combatant\'s Decapitator', '', '', ''),
+('371', '0', '975498', '0', 'Primal Combatant\'s Longbow', '', '', ''),
+('372', '0', '974957', '0', 'Primal Combatant\'s Pike', '', '', ''),
+('373', '0', '971557', '0', 'Primal Combatant\'s Bonegrinder', '', '', ''),
+('374', '0', '971557', '0', 'Primal Combatant\'s Bonegrinder', '', '', ''),
+('375', '0', '978219', '0', 'Primal Combatant\'s Bonecracker', '', '', ''),
+('376', '0', '974893', '0', 'Primal Combatant\'s Gavel', '', '', ''),
+('377', '0', '978219', '0', 'Primal Combatant\'s Pummeler', '', '', ''),
+('378', '0', '978219', '0', 'Primal Combatant\'s Bonecracker', '', '', ''),
+('379', '0', '974893', '0', 'Primal Combatant\'s Gavel', '', '', ''),
+('380', '0', '978219', '0', 'Primal Combatant\'s Pummeler', '', '', ''),
+('381', '0', '969944', '0', 'Primal Combatant\'s Rifle', '', '', ''),
+('382', '0', '969944', '0', 'Primal Combatant\'s Rifle', '', '', ''),
+('383', '0', '975498', '0', 'Primal Combatant\'s Longbow', '', '', ''),
+('384', '0', '976063', '0', 'Blade Dancer\'s Claws', '', '', ''),
+('385', '0', '1017537', '0', 'Primal Combatant\'s Leather Gloves', '', '', ''),
+('386', '0', '1017538', '0', 'Primal Combatant\'s Leather Helm', '', '', ''),
+('387', '0', '1017539', '0', 'Primal Combatant\'s Leather Legguards', '', '', ''),
+('388', '0', '1017540', '0', 'Primal Combatant\'s Leather Spaulders', '', '', ''),
+('389', '0', '1017536', '0', 'Primal Combatant\'s Tunic', '', '', ''),
+('390', '0', '1017537', '0', 'Primal Combatant\'s Gloves', '', '', ''),
+('391', '0', '1017538', '0', 'Primal Combatant\'s Helm', '', '', ''),
+('392', '0', '1017539', '0', 'Primal Combatant\'s Legguards', '', '', ''),
+('393', '0', '1017536', '0', 'Primal Combatant\'s Leather Tunic', '', '', ''),
+('394', '0', '1017533', '0', 'Primal Combatant\'s Boots of Prowess', '', '', ''),
+('395', '0', '1017534', '0', 'Primal Combatant\'s Bindings of Cruelty', '', '', ''),
+('396', '0', '1017534', '0', 'Primal Combatant\'s Bindings of Prowess', '', '', ''),
+('397', '0', '1017537', '0', 'Primal Combatant\'s Ironskin Gloves', '', '', ''),
+('398', '0', '1017538', '0', 'Primal Combatant\'s Ironskin Helm', '', '', ''),
+('399', '0', '1017539', '0', 'Primal Combatant\'s Ironskin Legguards', '', '', ''),
+('400', '0', '1017540', '0', 'Primal Combatant\'s Ironskin Spaulders', '', '', ''),
+('401', '0', '1017536', '0', 'Primal Combatant\'s Ironskin Tunic', '', '', ''),
+('402', '0', '1017533', '0', 'Primal Combatant\'s Boots of Cruelty', '', '', ''),
+('403', '0', '1017540', '0', 'Primal Combatant\'s Spaulders', '', '', ''),
+('404', '0', '1033155', '0', 'Primal Combatant\'s Ringmail Armor', '', '', ''),
+('405', '0', '1033156', '0', 'Primal Combatant\'s Ringmail Gauntlets', '', '', ''),
+('406', '0', '1033150', '0', 'Primal Combatant\'s Ringmail Helm', '', '', ''),
+('407', '0', '1033157', '0', 'Primal Combatant\'s Ringmail Leggings', '', '', ''),
+('408', '0', '1033149', '0', 'Primal Combatant\'s Ringmail Spaulders', '', '', ''),
+('409', '0', '1033155', '0', 'Primal Combatant\'s Armor', '', '', ''),
+('410', '0', '1033156', '0', 'Primal Combatant\'s Gauntlets', '', '', ''),
+('411', '0', '1033150', '0', 'Primal Combatant\'s Helm', '', '', ''),
+('412', '0', '1033154', '0', 'Primal Combatant\'s Armbands of Cruelty', '', '', ''),
+('413', '0', '1033154', '0', 'Primal Combatant\'s Armbands of Prowess', '', '', ''),
+('414', '0', '1033153', '0', 'Primal Combatant\'s Footguards of Prowess', '', '', ''),
+('415', '0', '1033155', '0', 'Primal Combatant\'s Chain Armor', '', '', ''),
+('416', '0', '1033156', '0', 'Primal Combatant\'s Chain Gauntlets', '', '', ''),
+('417', '0', '1033150', '0', 'Primal Combatant\'s Chain Helm', '', '', ''),
+('418', '0', '1033157', '0', 'Primal Combatant\'s Chain Leggings', '', '', ''),
+('419', '0', '1033149', '0', 'Primal Combatant\'s Chain Spaulders', '', '', ''),
+('420', '0', '1033148', '0', 'Primal Combatant\'s Waistguard of Cruelty', '', '', ''),
+('421', '0', '1033148', '0', 'Primal Combatant\'s Waistguard of Prowess', '', '', ''),
+('422', '0', '1033153', '0', 'Primal Combatant\'s Footguards of Cruelty', '', '', ''),
+('423', '0', '1033157', '0', 'Primal Combatant\'s Leggings', '', '', ''),
+('424', '0', '1017535', '0', 'Primal Combatant\'s Belt of Cruelty', '', '', ''),
+('425', '0', '1017540', '0', 'Primal Combatant\'s Dragonhide Spaulders', '', '', ''),
+('426', '0', '1017535', '0', 'Primal Combatant\'s Belt of Prowess', '', '', ''),
+('427', '0', '1017535', '0', 'Primal Combatant\'s Belt of Cruelty', '', '', ''),
+('428', '0', '1017533', '0', 'Primal Combatant\'s Boots of Cruelty', '', '', ''),
+('429', '0', '1017533', '0', 'Primal Combatant\'s Boots of Prowess', '', '', ''),
+('430', '0', '1017534', '0', 'Primal Combatant\'s Bindings of Cruelty', '', '', ''),
+('431', '0', '1017534', '0', 'Primal Combatant\'s Bindings of Prowess', '', '', ''),
+('432', '0', '1017538', '0', 'Primal Combatant\'s Ironskin Helm', '', '', ''),
+('433', '0', '1017536', '0', 'Primal Combatant\'s Dragonhide Tunic', '', '', ''),
+('434', '0', '1017539', '0', 'Primal Combatant\'s Dragonhide Legguards', '', '', ''),
+('435', '0', '1035543', '0', 'Primal Combatant\'s Satin Mantle', '', '', ''),
+('436', '0', '1035540', '0', 'Primal Combatant\'s Felweave Handguards', '', '', ''),
+('437', '0', '1035541', '0', 'Primal Combatant\'s Felweave Cowl', '', '', ''),
+('438', '0', '1035542', '0', 'Primal Combatant\'s Felweave Trousers', '', '', ''),
+('439', '0', '1035539', '0', 'Primal Combatant\'s Felweave Raiment', '', '', ''),
+('440', '0', '1035543', '0', 'Primal Combatant\'s Felweave Amice', '', '', ''),
+('441', '0', '1017537', '0', 'Primal Combatant\'s Dragonhide Gloves', '', '', ''),
+('442', '0', '1017538', '0', 'Primal Combatant\'s Dragonhide Helm', '', '', ''),
+('443', '0', '1017539', '0', 'Primal Combatant\'s Ironskin Legguards', '', '', ''),
+('444', '0', '1017540', '0', 'Primal Combatant\'s Ironskin Spaulders', '', '', ''),
+('445', '0', '1017539', '0', 'Primal Combatant\'s Legguards', '', '', ''),
+('446', '0', '1017540', '0', 'Primal Combatant\'s Spaulders', '', '', ''),
+('447', '0', '1017537', '0', 'Primal Combatant\'s Dragonhide Gloves', '', '', ''),
+('448', '0', '1017538', '0', 'Primal Combatant\'s Dragonhide Helm', '', '', ''),
+('449', '0', '1017539', '0', 'Primal Combatant\'s Dragonhide Legguards', '', '', ''),
+('450', '0', '1017536', '0', 'Primal Combatant\'s Dragonhide Robes', '', '', ''),
+('451', '0', '1017540', '0', 'Primal Combatant\'s Dragonhide Spaulders', '', '', ''),
+('452', '0', '1017535', '0', 'Primal Combatant\'s Belt of Prowess', '', '', ''),
+('453', '0', '1017538', '0', 'Primal Combatant\'s Helm', '', '', ''),
+('454', '0', '1017537', '0', 'Primal Combatant\'s Ironskin Gloves', '', '', ''),
+('455', '0', '1017536', '0', 'Primal Combatant\'s Ironskin Tunic', '', '', ''),
+('456', '0', '1017536', '0', 'Primal Combatant\'s Leather Tunic', '', '', ''),
+('457', '0', '1017537', '0', 'Primal Combatant\'s Leather Gloves', '', '', ''),
+('458', '0', '1017538', '0', 'Primal Combatant\'s Leather Helm', '', '', ''),
+('459', '0', '1017539', '0', 'Primal Combatant\'s Leather Legguards', '', '', ''),
+('460', '0', '1017540', '0', 'Primal Combatant\'s Leather Spaulders', '', '', ''),
+('461', '0', '1017536', '0', 'Primal Combatant\'s Tunic', '', '', ''),
+('462', '0', '1017537', '0', 'Primal Combatant\'s Gloves', '', '', ''),
+('463', '0', '1035539', '0', 'Primal Combatant\'s Satin Robe', '', '', ''),
+('464', '0', '1033149', '0', 'Primal Combatant\'s Spaulders', '', '', ''),
+('465', '0', '1033154', '0', 'Primal Combatant\'s Armbands of Cruelty', '', '', ''),
+('466', '0', '1026782', '0', 'Primal Combatant\'s Girdle of Prowess', '', '', ''),
+('467', '0', '1026782', '0', 'Primal Combatant\'s Girdle of Cruelty', '', '', ''),
+('468', '0', '1026789', '0', 'Primal Combatant\'s Scaled Shoulders', '', '', ''),
+('469', '0', '1026787', '0', 'Primal Combatant\'s Scaled Legguards', '', '', ''),
+('470', '0', '1026786', '0', 'Primal Combatant\'s Scaled Helm', '', '', ''),
+('471', '0', '1044439', '0', 'Primal Combatant\'s Scaled Gauntlets', '', '', ''),
+('472', '0', '1026785', '0', 'Primal Combatant\'s Scaled Chestpiece', '', '', ''),
+('473', '0', '1026789', '0', 'Primal Combatant\'s Dreadplate Shoulders', '', '', ''),
+('474', '0', '1026787', '0', 'Primal Combatant\'s Dreadplate Legguards', '', '', ''),
+('475', '0', '1026786', '0', 'Primal Combatant\'s Dreadplate Helm', '', '', ''),
+('476', '0', '1044439', '0', 'Primal Combatant\'s Dreadplate Gauntlets', '', '', ''),
+('477', '0', '1026785', '0', 'Primal Combatant\'s Dreadplate Chestpiece', '', '', ''),
+('478', '0', '1026789', '0', 'Primal Combatant\'s Plate Shoulders', '', '', ''),
+('479', '0', '1026787', '0', 'Primal Combatant\'s Plate Legguards', '', '', ''),
+('480', '0', '1026786', '0', 'Primal Combatant\'s Plate Helm', '', '', ''),
+('481', '0', '1044439', '0', 'Primal Combatant\'s Plate Gauntlets', '', '', ''),
+('482', '0', '1026785', '0', 'Primal Combatant\'s Plate Chestpiece', '', '', ''),
+('483', '0', '1026783', '0', 'Primal Combatant\'s Warboots of Cruelty', '', '', ''),
+('484', '0', '1026783', '0', 'Primal Combatant\'s Warboots of Prowess', '', '', ''),
+('485', '0', '1026784', '0', 'Primal Combatant\'s Armplates of Cruelty', '', '', ''),
+('486', '0', '976064', '0', 'Primal Combatant\'s Shield Wall', '', '', ''),
+('487', '0', '975286', '0', 'Primal Combatant\'s Barrier', '', '', ''),
+('488', '0', '975286', '0', 'Primal Combatant\'s Redoubt', '', '', ''),
+('489', '0', '976064', '0', 'Primal Combatant\'s Shield Wall', '', '', ''),
+('490', '0', '975286', '0', 'Primal Combatant\'s Barrier', '', '', ''),
+('491', '0', '975286', '0', 'Primal Combatant\'s Redoubt', '', '', ''),
+('492', '0', '1026789', '0', 'Primal Combatant\'s Plate Shoulders', '', '', ''),
+('493', '0', '1026787', '0', 'Primal Combatant\'s Plate Legguards', '', '', ''),
+('494', '0', '1026786', '0', 'Primal Combatant\'s Plate Helm', '', '', ''),
+('495', '0', '1044439', '0', 'Primal Combatant\'s Plate Gauntlets', '', '', ''),
+('496', '0', '1026785', '0', 'Primal Combatant\'s Plate Chestpiece', '', '', ''),
+('497', '0', '1026789', '0', 'Primal Combatant\'s Shoulderplates', '', '', ''),
+('498', '0', '1026787', '0', 'Primal Combatant\'s Legplates', '', '', ''),
+('499', '0', '1026786', '0', 'Primal Combatant\'s Plate Helmet', '', '', ''),
+('500', '0', '1044439', '0', 'Primal Combatant\'s Plate Gloves', '', '', ''),
+('501', '0', '1026785', '0', 'Primal Combatant\'s Plate Breastplate', '', '', ''),
+('502', '0', '1026784', '0', 'Primal Combatant\'s Armplates of Prowess', '', '', ''),
+('503', '0', '1026789', '0', 'Primal Combatant\'s Shoulderplates', '', '', ''),
+('504', '0', '1026787', '0', 'Primal Combatant\'s Legplates', '', '', ''),
+('505', '0', '1026786', '0', 'Primal Combatant\'s Plate Helmet', '', '', ''),
+('506', '0', '1033150', '0', 'Primal Combatant\'s Helm', '', '', ''),
+('507', '0', '1033156', '0', 'Primal Combatant\'s Gauntlets', '', '', ''),
+('508', '0', '1033155', '0', 'Primal Combatant\'s Armor', '', '', ''),
+('509', '0', '1033149', '0', 'Primal Combatant\'s Ringmail Spaulders', '', '', ''),
+('510', '0', '1033157', '0', 'Primal Combatant\'s Ringmail Leggings', '', '', ''),
+('511', '0', '1033150', '0', 'Primal Combatant\'s Ringmail Helm', '', '', ''),
+('512', '0', '1033156', '0', 'Primal Combatant\'s Ringmail Gauntlets', '', '', ''),
+('513', '0', '1033155', '0', 'Primal Combatant\'s Ringmail Armor', '', '', ''),
+('514', '0', '1033154', '0', 'Primal Combatant\'s Armbands of Prowess', '', '', ''),
+('515', '0', '1033153', '0', 'Primal Combatant\'s Footguards of Prowess', '', '', ''),
+('516', '0', '1033153', '0', 'Primal Combatant\'s Footguards of Cruelty', '', '', ''),
+('517', '0', '1033148', '0', 'Primal Combatant\'s Waistguard of Prowess', '', '', ''),
+('518', '0', '1033148', '0', 'Primal Combatant\'s Waistguard of Cruelty', '', '', ''),
+('519', '0', '1033149', '0', 'Primal Combatant\'s Chain Spaulders', '', '', ''),
+('520', '0', '1033157', '0', 'Primal Combatant\'s Chain Leggings', '', '', ''),
+('521', '0', '1033150', '0', 'Primal Combatant\'s Chain Helm', '', '', ''),
+('522', '0', '1033156', '0', 'Primal Combatant\'s Chain Gauntlets', '', '', ''),
+('523', '0', '1033157', '0', 'Primal Combatant\'s Leggings', '', '', ''),
+('524', '0', '1033149', '0', 'Primal Combatant\'s Spaulders', '', '', ''),
+('525', '0', '1026785', '0', 'Primal Combatant\'s Dreadplate Chestpiece', '', '', ''),
+('526', '0', '1044439', '0', 'Primal Combatant\'s Plate Gloves', '', '', ''),
+('527', '0', '1026785', '0', 'Primal Combatant\'s Plate Breastplate', '', '', ''),
+('528', '0', '1026784', '0', 'Primal Combatant\'s Armplates of Prowess', '', '', ''),
+('529', '0', '1026784', '0', 'Primal Combatant\'s Armplates of Cruelty', '', '', ''),
+('530', '0', '1026783', '0', 'Primal Combatant\'s Warboots of Prowess', '', '', ''),
+('531', '0', '1026783', '0', 'Primal Combatant\'s Warboots of Cruelty', '', '', ''),
+('532', '0', '1026782', '0', 'Primal Combatant\'s Girdle of Prowess', '', '', ''),
+('533', '0', '1026782', '0', 'Primal Combatant\'s Girdle of Cruelty', '', '', ''),
+('534', '0', '1026789', '0', 'Primal Combatant\'s Scaled Shoulders', '', '', ''),
+('535', '0', '1026787', '0', 'Primal Combatant\'s Scaled Legguards', '', '', ''),
+('536', '0', '1026786', '0', 'Primal Combatant\'s Scaled Helm', '', '', ''),
+('537', '0', '1044439', '0', 'Primal Combatant\'s Scaled Gauntlets', '', '', ''),
+('538', '0', '1026785', '0', 'Primal Combatant\'s Scaled Chestpiece', '', '', ''),
+('539', '0', '1026789', '0', 'Primal Combatant\'s Dreadplate Shoulders', '', '', ''),
+('540', '0', '1026787', '0', 'Primal Combatant\'s Dreadplate Legguards', '', '', ''),
+('541', '0', '1026786', '0', 'Primal Combatant\'s Dreadplate Helm', '', '', ''),
+('542', '0', '1044439', '0', 'Primal Combatant\'s Dreadplate Gauntlets', '', '', ''),
+('543', '0', '1033155', '0', 'Primal Combatant\'s Chain Armor', '', '', ''),
+('544', '0', '1035542', '0', 'Primal Combatant\'s Satin Leggings', '', '', ''),
+('545', '0', '1035871', '0', 'Greatcloak of Impactful Pulses', '', '', ''),
+('546', '0', '1043943', '0', 'Primal Combatant\'s Cloak of Cruelty', '', '', ''),
+('547', '0', '1043943', '0', 'Primal Combatant\'s Cloak of Prowess', '', '', ''),
+('548', '0', '1043941', '0', 'Primal Combatant\'s Cape of Cruelty', '', '', ''),
+('549', '0', '1043940', '0', 'Primal Combatant\'s Cape of Prowess', '', '', ''),
+('550', '0', '1032578', '0', 'Primal Combatant\'s Drape of Cruelty', '', '', ''),
+('551', '0', '1032578', '0', 'Primal Combatant\'s Drape of Prowess', '', '', ''),
+('552', '0', '1034144', '0', 'Primal Combatant\'s Drape of Meditation', '', '', ''),
+('553', '0', '1034144', '0', 'Primal Combatant\'s Drape of Contemplation', '', '', ''),
+('554', '0', '1043903', '0', 'Primal Combatant\'s Cloak of Cruelty', '', '', ''),
+('555', '0', '1034142', '0', 'Primal Combatant\'s Drape of Contemplation', '', '', ''),
+('556', '0', '1034142', '0', 'Primal Combatant\'s Drape of Meditation', '', '', ''),
+('557', '0', '1052546', '0', 'Fleshhook Cloak', '', '', ''),
+('558', '0', '1035870', '0', 'Flamescarred Drape', '', '', ''),
+('559', '0', '975286', '0', 'Shield of Violent Upheaval', '', '', ''),
+('560', '0', '978472', '0', 'Captured Arcane Fragment', '', '', ''),
+('561', '0', '976064', '0', 'Mirrorshield of Arcane Fortification', '', '', ''),
+('562', '0', '1043940', '0', 'Primal Combatant\'s Cape of Cruelty', '', '', ''),
+('563', '0', '1043940', '0', 'Primal Combatant\'s Cape of Prowess', '', '', ''),
+('564', '0', '1032576', '0', 'Primal Combatant\'s Drape of Cruelty', '', '', ''),
+('565', '0', '1032576', '0', 'Primal Combatant\'s Drape of Prowess', '', '', ''),
+('566', '0', '1043903', '0', 'Primal Combatant\'s Cloak of Prowess', '', '', ''),
+('567', '0', '973927', '0', 'Primal Combatant\'s Endgame', '', '', ''),
+('568', '0', '978472', '0', 'Primal Combatant\'s Reprieve', '', '', ''),
+('569', '0', '133452', '0', 'Primal Combatant\'s Medallion of Meditation', '', '', ''),
+('570', '0', '1029000', '0', 'Primal Combatant\'s Badge of Victory', '', '', ''),
+('571', '0', '1028996', '0', 'Primal Combatant\'s Insignia of Victory', '', '', ''),
+('572', '0', '135884', '0', 'Primal Combatant\'s Badge of Adaptation', '', '', ''),
+('573', '0', '1029002', '0', 'Primal Combatant\'s Badge of Conquest', '', '', ''),
+('574', '0', '1028998', '0', 'Primal Combatant\'s Insignia of Conquest', '', '', ''),
+('575', '0', '1028994', '0', 'Primal Combatant\'s Emblem of Cruelty', '', '', ''),
+('576', '0', '1028992', '0', 'Primal Combatant\'s Emblem of Tenacity', '', '', ''),
+('577', '0', '1028993', '0', 'Primal Combatant\'s Emblem of Meditation', '', '', ''),
+('578', '0', '133452', '0', 'Primal Combatant\'s Medallion of Tenacity', '', '', ''),
+('579', '0', '133452', '0', 'Primal Combatant\'s Medallion of Cruelty', '', '', ''),
+('580', '0', '973927', '0', 'Primal Combatant\'s Endgame', '', '', ''),
+('581', '0', '978472', '0', 'Primal Combatant\'s Reprieve', '', '', ''),
+('582', '0', '1029002', '0', 'Primal Combatant\'s Badge of Conquest', '', '', ''),
+('583', '0', '1028998', '0', 'Primal Combatant\'s Insignia of Conquest', '', '', ''),
+('584', '0', '1028994', '0', 'Primal Combatant\'s Emblem of Cruelty', '', '', ''),
+('585', '0', '1028992', '0', 'Primal Combatant\'s Emblem of Tenacity', '', '', ''),
+('586', '0', '1028993', '0', 'Primal Combatant\'s Emblem of Meditation', '', '', ''),
+('587', '0', '1029001', '0', 'Primal Combatant\'s Badge of Dominance', '', '', ''),
+('588', '0', '1028997', '0', 'Primal Combatant\'s Insignia of Dominance', '', '', ''),
+('589', '0', '1029001', '0', 'Primal Combatant\'s Badge of Dominance', '', '', ''),
+('590', '0', '968992', '0', 'Fel-Flame Coronet', '', '', ''),
+('591', '0', '969319', '0', 'Bracer of Amputation', '', '', ''),
+('592', '0', '969324', '0', 'Legguards of Ravenous Assault', '', '', ''),
+('593', '0', '973886', '0', 'Firewalker\'s Treads', '', '', ''),
+('594', '0', '973930', '0', 'Warmage\'s Legwraps', '', '', ''),
+('595', '0', '973895', '0', 'Carnage Breath Gauntlets', '', '', ''),
+('596', '0', '973889', '0', 'Spine-Ripper Bracers', '', '', ''),
+('597', '0', '973892', '0', 'Chestwrap of Violent Upheaval', '', '', ''),
+('598', '0', '973934', '0', 'Shoulderguards of the Shepherd', '', '', ''),
+('599', '0', '973898', '0', 'Alloy-Inlaid Cap', '', '', ''),
+('600', '0', '969321', '0', 'Crackle-Proof Chestguard', '', '', ''),
+('601', '0', '969325', '0', 'Shoulderguards of Perpetually Exploding Fungus', '', '', ''),
+('602', '0', '969003', '0', 'Twin-Gaze Spaulders', '', '', ''),
+('603', '0', '968991', '0', 'Sterilized Handwraps', '', '', ''),
+('604', '0', '1006673', '0', 'Rotmonger Bracers', '', '', ''),
+('605', '0', '969002', '0', 'Mountainslide Robes', '', '', ''),
+('606', '0', '968993', '0', 'High Arcanist Leggings', '', '', ''),
+('607', '0', '968989', '0', 'Spectator\'s Sandals of Carnage', '', '', ''),
+('608', '0', '969322', '0', 'Pulverizing Grips', '', '', ''),
+('609', '0', '960037', '0', 'Bonebreaker Boots', '', '', ''),
+('610', '0', '969323', '0', 'Gorian Royal Crown', '', '', ''),
+('611', '0', '968995', '0', 'Ogre-Eater Treads', '', '', ''),
+('612', '0', '968999', '0', 'Legplates of Arcanic Absorbtion', '', '', ''),
+('613', '0', '968997', '0', 'Grips of Burning Infusion', '', '', ''),
+('614', '0', '1027813', '0', 'Fire-Blind Necklace', '', '', ''),
+('615', '0', '1013265', '0', 'Chain of the Unbroken Lineage', '', '', ''),
+('616', '0', '1027806', '0', 'Tide-Caller\'s Gorget', '', '', ''),
+('617', '0', '973914', '0', 'Bloodmaw\'s Tooth', '', '', ''),
+('618', '0', '538039', '0', 'Emblem of Gushing Wounds', '', '', ''),
+('619', '0', '571318', '0', 'Immaculate Living Mushroom', '', '', ''),
+('620', '0', '973923', '0', 'Mote of the Mountain', '', '', ''),
+('621', '0', '973917', '0', 'Idol of Suppression', '', '', ''),
+('622', '0', '1044806', '0', 'Rotmelter Mosscloak', '', '', ''),
+('623', '0', '1016815', '0', 'Cratermaker Choker', '', '', ''),
+('624', '0', '1016812', '0', 'Necklace of Volatile Anomalies', '', '', ''),
+('625', '0', '969001', '0', 'Bracers of Cursed Cries', '', '', ''),
+('626', '0', '968996', '0', 'Chestplate of Destructive Resonance', '', '', ''),
+('627', '0', '969000', '0', 'Iron Bomb Spaulders', '', '', ''),
+('628', '0', '968998', '0', 'Crown of the Crags', '', '', ''),
+('629', '0', '1028563', '0', 'Frostcap Band', '', '', ''),
+('630', '0', '1011899', '0', 'Seal of Arcane Wrath', '', '', ''),
+('631', '0', '1011900', '0', 'Bloodstone Seal', '', '', ''),
+('632', '0', '1022197', '0', 'Grunt\'s Rusty Ring', '', '', ''),
+('633', '0', '1022176', '0', 'Ring of Enfeebling Accusations', '', '', ''),
+('634', '0', '1031666', '0', 'Cloak of Overflowing Energies', '', '', ''),
+('635', '0', '1028997', '0', 'Primal Combatant\'s Insignia of Dominance', '', '', ''),
+('636', '0', '1043910', '0', 'Primal Combatant\'s Signet of Ruthlessness', '', '', ''),
+('637', '0', '1035540', '0', 'Primal Combatant\'s Silk Handguards', '', '', ''),
+('638', '0', '1035541', '0', 'Primal Combatant\'s Silk Cowl', '', '', ''),
+('639', '0', '1035542', '0', 'Primal Combatant\'s Silk Trousers', '', '', ''),
+('640', '0', '1035539', '0', 'Primal Combatant\'s Silk Robe', '', '', ''),
+('641', '0', '1035543', '0', 'Primal Combatant\'s Silk Amice', '', '', ''),
+('642', '0', '1035540', '0', 'Primal Combatant\'s Satin Gloves', '', '', ''),
+('643', '0', '1035541', '0', 'Primal Combatant\'s Satin Hood', '', '', ''),
+('644', '0', '1035542', '0', 'Primal Combatant\'s Satin Leggings', '', '', ''),
+('645', '0', '1035539', '0', 'Primal Combatant\'s Satin Robe', '', '', ''),
+('646', '0', '1035538', '0', 'Primal Combatant\'s Cuffs of Cruelty', '', '', ''),
+('647', '0', '1035538', '0', 'Primal Combatant\'s Cuffs of Prowess', '', '', ''),
+('648', '0', '1035540', '0', 'Primal Combatant\'s Gloves of Prowess', '', '', ''),
+('649', '0', '1035541', '0', 'Primal Combatant\'s Hood of Prowess', '', '', ''),
+('650', '0', '1035542', '0', 'Primal Combatant\'s Leggings of Prowess', '', '', ''),
+('651', '0', '1035539', '0', 'Primal Combatant\'s Robes of Prowess', '', '', ''),
+('652', '0', '1035543', '0', 'Primal Combatant\'s Amice of Prowess', '', '', ''),
+('653', '0', '1035536', '0', 'Primal Combatant\'s Cord of Cruelty', '', '', ''),
+('654', '0', '1035536', '0', 'Primal Combatant\'s Cord of Prowess', '', '', ''),
+('655', '0', '1035537', '0', 'Primal Combatant\'s Treads of Cruelty', '', '', ''),
+('656', '0', '1035537', '0', 'Primal Combatant\'s Treads of Prowess', '', '', ''),
+('657', '0', '1035543', '0', 'Primal Combatant\'s Satin Mantle', '', '', ''),
+('658', '0', '1035540', '0', 'Primal Combatant\'s Felweave Handguards', '', '', ''),
+('659', '0', '1035541', '0', 'Primal Combatant\'s Felweave Cowl', '', '', ''),
+('660', '0', '1035537', '0', 'Primal Combatant\'s Treads of Prowess', '', '', ''),
+('661', '0', '1035538', '0', 'Primal Combatant\'s Cuffs of Prowess', '', '', ''),
+('662', '0', '1035538', '0', 'Primal Combatant\'s Cuffs of Cruelty', '', '', ''),
+('663', '0', '1035540', '0', 'Primal Combatant\'s Silk Handguards', '', '', ''),
+('664', '0', '1035541', '0', 'Primal Combatant\'s Silk Cowl', '', '', ''),
+('665', '0', '1035542', '0', 'Primal Combatant\'s Silk Trousers', '', '', ''),
+('666', '0', '1035539', '0', 'Primal Combatant\'s Silk Robe', '', '', ''),
+('667', '0', '1035543', '0', 'Primal Combatant\'s Silk Amice', '', '', ''),
+('668', '0', '1035540', '0', 'Primal Combatant\'s Satin Gloves', '', '', ''),
+('669', '0', '1035537', '0', 'Primal Combatant\'s Treads of Cruelty', '', '', ''),
+('670', '0', '1035536', '0', 'Primal Combatant\'s Cord of Prowess', '', '', ''),
+('671', '0', '1035542', '0', 'Primal Combatant\'s Felweave Trousers', '', '', ''),
+('672', '0', '1035539', '0', 'Primal Combatant\'s Felweave Raiment', '', '', ''),
+('673', '0', '1035543', '0', 'Primal Combatant\'s Felweave Amice', '', '', ''),
+('674', '0', '1035540', '0', 'Primal Combatant\'s Gloves of Prowess', '', '', ''),
+('675', '0', '1035541', '0', 'Primal Combatant\'s Hood of Prowess', '', '', ''),
+('676', '0', '1035542', '0', 'Primal Combatant\'s Leggings of Prowess', '', '', ''),
+('677', '0', '1035539', '0', 'Primal Combatant\'s Robes of Prowess', '', '', ''),
+('678', '0', '1035543', '0', 'Primal Combatant\'s Amice of Prowess', '', '', ''),
+('679', '0', '1035536', '0', 'Primal Combatant\'s Cord of Cruelty', '', '', ''),
+('680', '0', '1035541', '0', 'Primal Combatant\'s Satin Hood', '', '', ''),
+('681', '0', '133453', '0', 'Primal Combatant\'s Medallion of Cruelty', '', '', ''),
+('682', '0', '1028986', '0', 'Primal Combatant\'s Pendant of Meditation', '', '', ''),
+('683', '0', '1028987', '0', 'Primal Combatant\'s Pendant of Contemplation', '', '', ''),
+('684', '0', '1028984', '0', 'Primal Combatant\'s Choker of Cruelty', '', '', ''),
+('685', '0', '1028985', '0', 'Primal Combatant\'s Choker of Prowess', '', '', ''),
+('686', '0', '1028980', '0', 'Primal Combatant\'s Necklace of Cruelty', '', '', ''),
+('687', '0', '1028981', '0', 'Primal Combatant\'s Necklace of Prowess', '', '', ''),
+('688', '0', '1028980', '0', 'Primal Combatant\'s Pendant of Cruelty', '', '', ''),
+('689', '0', '1028981', '0', 'Primal Combatant\'s Pendant of Prowess', '', '', ''),
+('690', '0', '1028982', '0', 'Primal Combatant\'s Pendant of Meditation', '', '', ''),
+('691', '0', '1028985', '0', 'Primal Combatant\'s Pendant of Prowess', '', '', ''),
+('692', '0', '1028984', '0', 'Primal Combatant\'s Pendant of Cruelty', '', '', ''),
+('693', '0', '133453', '0', 'Primal Combatant\'s Medallion of Tenacity', '', '', ''),
+('694', '0', '133453', '0', 'Primal Combatant\'s Medallion of Meditation', '', '', ''),
+('695', '0', '1029000', '0', 'Primal Combatant\'s Badge of Victory', '', '', ''),
+('696', '0', '1028996', '0', 'Primal Combatant\'s Insignia of Victory', '', '', ''),
+('697', '0', '1028991', '0', 'Primal Combatant\'s Badge of Adaptation', '', '', ''),
+('698', '0', '133452', '0', 'Primal Combatant\'s Medallion of Adaptation', '', '', ''),
+('699', '0', '133453', '0', 'Primal Combatant\'s Medallion of Adaptation', '', '', ''),
+('700', '0', '1028984', '0', 'Primal Combatant\'s Necklace of Cruelty', '', '', ''),
+('701', '0', '1028985', '0', 'Primal Combatant\'s Necklace of Prowess', '', '', ''),
+('702', '0', '1028983', '0', 'Primal Combatant\'s Pendant of Contemplation', '', '', ''),
+('703', '0', '1028980', '0', 'Primal Combatant\'s Choker of Cruelty', '', '', ''),
+('704', '0', '1028981', '0', 'Primal Combatant\'s Choker of Prowess', '', '', ''),
+('705', '0', '1043919', '0', 'Primal Combatant\'s Ring of Cruelty', '', '', ''),
+('706', '0', '1043921', '0', 'Primal Combatant\'s Ring of Prowess', '', '', ''),
+('707', '0', '1043911', '0', 'Primal Combatant\'s Band of Cruelty', '', '', ''),
+('708', '0', '1043913', '0', 'Primal Combatant\'s Band of Prowess', '', '', ''),
+('709', '0', '1043914', '0', 'Primal Combatant\'s Band of Victory', '', '', ''),
+('710', '0', '1043915', '0', 'Primal Combatant\'s Band of Meditation', '', '', ''),
+('711', '0', '1043917', '0', 'Primal Combatant\'s Band of Contemplation', '', '', ''),
+('712', '0', '1043904', '0', 'Primal Combatant\'s Signet of Cruelty', '', '', ''),
+('713', '0', '1043905', '0', 'Primal Combatant\'s Signet of Accuracy', '', '', ''),
+('714', '0', '1043910', '0', 'Primal Combatant\'s Signet of Ruthlessness', '', '', ''),
+('715', '0', '1043922', '0', 'Primal Combatant\'s Ring of Triumph', '', '', ''),
+('716', '0', '1043920', '0', 'Primal Combatant\'s Ring of Cruelty', '', '', ''),
+('717', '0', '1043921', '0', 'Primal Combatant\'s Ring of Prowess', '', '', ''),
+('718', '0', '1043911', '0', 'Primal Combatant\'s Band of Cruelty', '', '', ''),
+('719', '0', '1043913', '0', 'Primal Combatant\'s Band of Prowess', '', '', ''),
+('720', '0', '1043914', '0', 'Primal Combatant\'s Band of Victory', '', '', ''),
+('721', '0', '1043916', '0', 'Primal Combatant\'s Band of Meditation', '', '', ''),
+('722', '0', '1043917', '0', 'Primal Combatant\'s Band of Contemplation', '', '', ''),
+('723', '0', '1043909', '0', 'Primal Combatant\'s Signet of Cruelty', '', '', ''),
+('724', '0', '1043905', '0', 'Primal Combatant\'s Signet of Accuracy', '', '', ''),
+('725', '0', '1043922', '0', 'Primal Combatant\'s Ring of Triumph', '', '', ''),
+('726', '0', '413585', '0', 'Champion\'s Honor', '', '', ''),
+('727', '0', '901747', '0', 'Enduring Elixir of Wisdom (x5)', '', '', ''),
+('728', '0', '236884', '0', 'Flask of the Honorbound (x5)', '', '', ''),
+('729', '0', '236884', '0', 'Flask of Conquest (x5)', '', '', ''),
+('730', '0', '236884', '0', 'Elixir of Ancient Knowledge (x5)', '', '', ''),
+('731', '0', '236883', '0', 'Elixir of the Rapid Mind (x5)', '', '', ''),
+('732', '0', '236884', '0', 'Elixir of Ancient Knowledge', '', '', ''),
+('733', '0', '132764', '0', '36 slots bag', '', '', ''),
+('734', '0', '134430', '0', 'Portable Hole', '', '', ''),
+('735', '0', '133646', '0', 'Pack of Endless Pockets', '', '', ''),
+('736', '0', '133877', '0', 'Titanium Toolbox', '', '', ''),
+('737', '0', '133649', '0', 'Mammoth Mining Bag', '', '', ''),
+('738', '0', '133654', '0', 'Trapper\'s Traveling Pack', '', '', ''),
+('739', '0', '133651', '0', 'Emerald Bag', '', '', ''),
+('740', '0', '133650', '0', 'Mysterious Bag', '', '', ''),
+('741', '0', '898350', '0', 'Hellscream\'s Warbow', '', '', ''),
+('742', '0', '898068', '0', 'Hellscream\'s Pig Sticker', '', '', ''),
+('743', '0', '902177', '0', 'Hellscream\'s Barrier', '', '', ''),
+('744', '0', '898247', '0', 'Hellscream\'s Tome of Destruction', '', '', ''),
+('745', '0', '902177', '0', 'Hellscream\'s Shield Wall', '', '', ''),
+('746', '0', '902178', '0', 'Hellscream\'s War Staff', '', '', ''),
+('747', '0', '897831', '0', 'Hellscream\'s Decapitator', '', '', ''),
+('748', '0', '898066', '0', 'Hellscream\'s Cleaver', '', '', ''),
+('749', '0', '898067', '0', 'Hellscream\'s Warmace', '', '', ''),
+('750', '0', '898069', '0', 'Hellscream\'s Doomblade', '', '', ''),
+('751', '0', '897179', '0', 'Hellscream\'s Razor', '', '', ''),
+('752', '0', '134959', '0', 'Weathered Observer\'s Shield', '', '', ''),
+('753', '0', '134966', '0', 'Flamescarred Draconian Deflector', '', '', ''),
+('754', '0', '133442', '0', 'Inherited Mark of Tyranny', '', '', ''),
+('755', '0', '133452', '0', 'Bequeathed Insignia of the Alliance', '', '', ''),
+('756', '0', '133453', '0', 'Bequeathed Insignia of the Horde', '', '', ''),
+('757', '0', '133441', '0', 'Piercing Eye of the Beast', '', '', ''),
+('758', '0', '133434', '0', 'Forceful Hand of Justice', '', '', ''),
+('759', '0', '135032', '0', 'Wild Feralheart Spaulders', '', '', ''),
+('760', '0', '135055', '0', 'Superior Stormshroud Shoulders', '', '', ''),
+('761', '0', '135060', '0', 'Awakened Pauldrons of Elements', '', '', ''),
+('762', '0', '132633', '0', 'Awakened Vest of Elements', '', '', ''),
+('763', '0', '135041', '0', 'Adorned Beastmaster\'s Mantle', '', '', ''),
+('764', '0', '135032', '0', 'Grand Champion Herod\'s Shoulder', '', '', ''),
+('765', '0', '132629', '0', 'Furious Deathdealer Breastplate', '', '', ''),
+('766', '0', '135060', '0', 'Venerated Pauldrons of The Five Thunders', '', '', ''),
+('767', '0', '135061', '0', 'Gleaming Spaulders of Valor', '', '', ''),
+('768', '0', '132738', '0', 'Gleaming Breastplate of Valor', '', '', ''),
+('769', '0', '132751', '0', 'Brushed Breastplate of Might', '', '', ''),
+('770', '0', '135046', '0', 'Brushed Pauldrons of Might', '', '', ''),
+('771', '0', '135041', '0', 'Immaculate Lightforge Spaulders', '', '', ''),
+('772', '0', '135051', '0', 'Reinforced Stockade Pauldrons', '', '', ''),
+('773', '0', '132721', '0', 'Majestic Ironfeather Breastplate', '', '', ''),
+('774', '0', '133741', '0', 'Musty Tome of the Lost', '', '', ''),
+('775', '0', '135032', '0', 'Lasting Feralheart Spaulders', '', '', ''),
+('776', '0', '134588', '0', 'Tattered Dreadmist Leggings', '', '', ''),
+('777', '0', '133773', '0', 'Worn Stoneskin Gargoyle Cape', '', '', ''),
+('778', '0', '133772', '0', 'Inherited Cape of the Black Baron', '', '', ''),
+('779', '0', '133760', '0', 'Ancient Bloodmoon Cloak', '', '', ''),
+('780', '0', '133077', '0', 'Burnished Helm of Might', '', '', ''),
+('781', '0', '134584', '0', 'Burnished Legplates of Might', '', '', ''),
+('782', '0', '133759', '0', 'Ripped Sandstorm Cloak', '', '', ''),
+('783', '0', '132751', '0', 'Burnished Breastplate of Might', '', '', ''),
+('784', '0', '135046', '0', 'Burnished Pauldrons of Might', '', '', ''),
+('785', '0', '134628', '0', 'Preened Wildfeather Leggings', '', '', ''),
+('786', '0', '134582', '0', 'Stained Shadowcraft Pants', '', '', ''),
+('787', '0', '133070', '0', 'Polished Helm of Valor', '', '', ''),
+('788', '0', '133127', '0', 'Tarnished Raging Berserker\'s Helm', '', '', ''),
+('789', '0', '133072', '0', 'Mystical Coif of Elements', '', '', ''),
+('790', '0', '133143', '0', 'Stained Shadowcraft Cap', '', '', ''),
+('791', '0', '133126', '0', 'Preened Tribal War Feathers', '', '', ''),
+('792', '0', '133131', '0', 'Tattered Dreadmist Mask', '', '', ''),
+('793', '0', '134584', '0', 'Polished Legplates of Valor', '', '', ''),
+('794', '0', '134583', '0', 'Tarnished Leggings of Destruction', '', '', ''),
+('795', '0', '134583', '0', 'Mystical Kilt of Elements', '', '', ''),
+('796', '0', '135302', '0', 'Bloodsoaked Skullforge Reaver', '', '', ''),
+('797', '0', '135496', '0', 'Charmed Ancient Bone Bow', '', '', ''),
+('798', '0', '133441', '0', 'Discerning Eye of the Beast', '', '', ''),
+('799', '0', '133453', '0', 'Inherited Insignia of the Horde', '', '', ''),
+('800', '0', '133452', '0', 'Inherited Insignia of the Alliance', '', '', ''),
+('801', '0', '133381', '0', 'Dread Pirate Ring', '', '', ''),
+('802', '0', '135038', '0', 'Stained Shadowcraft Spaulders', '', '', ''),
+('803', '0', '135037', '0', 'Preened Ironfeather Shoulders', '', '', ''),
+('804', '0', '135055', '0', 'Exceptional Stormshroud Shoulders', '', '', ''),
+('805', '0', '132741', '0', 'Stained Shadowcraft Tunic', '', '', ''),
+('806', '0', '135041', '0', 'Prized Beastmaster\'s Mantle', '', '', ''),
+('807', '0', '135032', '0', 'Champion Herod\'s Shoulder', '', '', ''),
+('808', '0', '135060', '0', 'Aged Pauldrons of The Five Thunders', '', '', ''),
+('809', '0', '132629', '0', 'Champion\'s Deathdealer Breastplate', '', '', ''),
+('810', '0', '133434', '0', 'Swift Hand of Justice', '', '', ''),
+('811', '0', '132996', '0', 'Repurposed Lava Dredger', '', '', ''),
+('812', '0', '135618', '0', 'Upgraded Dwarven Hand Cannon', '', '', ''),
+('813', '0', '135315', '0', 'Balanced Heartseeker', '', '', ''),
+('814', '0', '135639', '0', 'Sharpened Scarlet Kris', '', '', ''),
+('815', '0', '135346', '0', 'Battleworn Thrash Blade', '', '', ''),
+('816', '0', '133054', '0', 'Venerable Mass of McGowan', '', '', ''),
+('817', '0', '135353', '0', 'Venerable Dal\'Rend\'s Sacred Charge', '', '', ''),
+('818', '0', '133042', '0', 'Devout Aurastone Hammer', '', '', ''),
+('819', '0', '133044', '0', 'The Blessed Hammer of Grace', '', '', ''),
+('820', '0', '132400', '0', 'Bloodied Arcanite Reaper', '', '', ''),
+('821', '0', '133445', '0', 'Dignified Headmaster\'s Charge', '', '', ''),
+('822', '0', '135326', '0', 'Reforged Truesilver Champion', '', '', ''),
+('823', '0', '135150', '0', 'Grand Staff of Jordan', '', '', ''),
+('824', '0', '132633', '0', 'Mystical Vest of Elements', '', '', ''),
+('825', '0', '135061', '0', 'Polished Spaulders of Valor', '', '', ''),
+('826', '0', '135326', '0', 'Battle-Forged Truesilver Champion', '', '', ''),
+('827', '0', '135639', '0', 'Deadly Scarlet Kris', '', '', ''),
+('828', '0', '133042', '0', 'Pious Aurastone Hammer', '', '', ''),
+('829', '0', '135496', '0', 'War-Torn Ancient Bone Bow', '', '', ''),
+('830', '0', '135353', '0', 'Noble Dal\'Rend\'s Sacred Charge', '', '', ''),
+('831', '0', '135315', '0', 'Vengeful Heartseeker', '', '', ''),
+('832', '0', '237499', '0', 'Brawler\'s Bladed Claws', '', '', ''),
+('833', '0', '133732', '0', 'Bloodstained Dreadmist Mantle', '', '', ''),
+('834', '0', '132690', '0', 'Bloodstained Dreadmist Robe', '', '', ''),
+('835', '0', '135033', '0', 'Prestigious Sunderseer Mantle', '', '', ''),
+('836', '0', '135038', '0', 'Supple Shadowcraft Spaulders', '', '', ''),
+('837', '0', '132741', '0', 'Supple Shadowcraft Tunic', '', '', ''),
+('838', '0', '133044', '0', 'The Sanctified Hammer of Grace', '', '', ''),
+('839', '0', '135150', '0', 'Elder Staff of Jordan', '', '', ''),
+('840', '0', '135041', '0', 'Pristine Lightforge Spaulders', '', '', ''),
+('841', '0', '132738', '0', 'Polished Breastplate of Valor', '', '', ''),
+('842', '0', '133732', '0', 'Tattered Dreadmist Mantle', '', '', ''),
+('843', '0', '135033', '0', 'Exquisite Sunderseer Mantle', '', '', ''),
+('844', '0', '132690', '0', 'Tattered Dreadmist Robe', '', '', ''),
+('845', '0', '135618', '0', 'Smoothbore Dwarven Hand Cannon', '', '', ''),
+('846', '0', '132400', '0', 'Hardened Arcanite Reaper', '', '', ''),
+('847', '0', '135166', '0', 'Refinished Warden Staff', '', '', ''),
+('848', '0', '135302', '0', 'Gore-Steeped Skullforge Reaver', '', '', ''),
+('849', '0', '132996', '0', 'Re-Engineered Lava Dredger', '', '', ''),
+('850', '0', '133054', '0', 'Crushing Mass of McGowan', '', '', ''),
+('851', '0', '135346', '0', 'Battle-Hardened Thrash Blade', '', '', ''),
+('852', '0', '135037', '0', 'Majestic Ironfeather Shoulders', '', '', ''),
+('853', '0', '135349', '0', 'Thunderfury, Blessed Blade of the Windseeker', '', '', '');
+

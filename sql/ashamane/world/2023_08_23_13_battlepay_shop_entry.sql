@@ -7,8 +7,8 @@ CREATE TABLE `battlepay_shop_entry` (
   `GroupID` int(11) unsigned NOT NULL,
   `ProductID` int(11) unsigned NOT NULL,
   `Ordering` int(11) NOT NULL,
-  `Flags` int(11) unsigned NOT NULL DEFAULT '0',
-  `BannerType` tinyint(3) unsigned NOT NULL,
+  `VasServiceType` int(11) unsigned NOT NULL DEFAULT '0',
+  `StoreDeliveryType` tinyint(3) unsigned NOT NULL,
   `DisplayInfoID` int(11) unsigned NOT NULL,
   PRIMARY KEY (`EntryID`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=902 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
