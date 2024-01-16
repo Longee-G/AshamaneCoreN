@@ -20,7 +20,7 @@
 ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::ProductDisplayInfo const& displayInfo)
 {
     data.WriteBit(displayInfo.CreatureDisplayInfoID.is_initialized());
-    data.WriteBit(displayInfo.VisualsId.is_initialized());
+    data.WriteBit(displayInfo.IconFileID.is_initialized());
 
     data.WriteBits(displayInfo.Name1.length(), 10);
     data.WriteBits(displayInfo.Name2.length(), 10);
@@ -35,11 +35,11 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::ProductDisplay
 
     data << static_cast<uint32>(displayInfo.Visuals.size());
 
+    if (displayInfo.IconFileID)
+        data << *displayInfo.IconFileID;
+
     if (displayInfo.CreatureDisplayInfoID)
         data << *displayInfo.CreatureDisplayInfoID;
-
-    if (displayInfo.VisualsId)
-        data << *displayInfo.VisualsId;
 
     data.WriteString(displayInfo.Name1);
     data.WriteString(displayInfo.Name2);
@@ -47,7 +47,7 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::ProductDisplay
     data.WriteString(displayInfo.Name4);
 
     if (displayInfo.Flags)
-        data << *displayInfo.Flags;
+        data << *displayInfo.Flags;     // 这个位置是正确的，客户端读取了
 
     if (displayInfo.UnkInt1)
         data << *displayInfo.UnkInt1;
@@ -58,6 +58,7 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::ProductDisplay
     if (displayInfo.UnkInt3)
         data << *displayInfo.UnkInt3;
 
+    // 有没有一种可能，模型的显示是在这个数据上的？
     for (auto const& itr : displayInfo.Visuals)
     {
         data.WriteBits(itr.ProductName.length(), 10);
@@ -66,37 +67,80 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::ProductDisplay
         data << itr.VisualId;
         data.WriteString(itr.ProductName);
     }
+    return data;
+}
+
+// product info 的数据来自哪里？ 和product数据有什么不同？
+// 来自 `battlepay_product`表
+
+ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::ProductInfoStruct const& info)
+{
+    uint32 cnt = 0;
+    uint32 cnt2 = 0;
+
+    data << info.ProductID;
+    data << info.NormalPriceFixedPoint;
+    data << info.CurrentPriceFixedPoint;
+
+    data << uint32(info.ProductIDs.size());         // 确定了，这个是一个count，需要在之后输出count 个 uint32 ...
+    data << info.UnkInt2;                           // 47 ？ Flags ？ 填 0 会导致显示不出商城内容 ..
+    data << uint32(info.UnkInts.size());            // info.UnkInt2      也确定了这个需要输出count 个 uint32 
+    
+
+    // 输出的这个值用在 角色界面，当鼠标移动到卡片的Icon上面的时候显示的Tips
+    // 如果填写了非0值，会导致在游戏中，无法显示tooltip ..
+    // 如果填写了ItemId，会导致无法显示 tooltips, 不管是填0还是itemId，都会导致无法显示tooltips...
+    for (auto z1 : info.ProductIDs)  // 这个数据来自哪里？    
+        data << uint32(z1);
+
+    // 这个Id不明白是什么
+    for (auto z2 : info.UnkInts)
+        data << uint32(z2);
+
+
+    // 前面的数据是确定了... 
+    data.WriteBits(info.ChoiceType, 7);             // 这个位置是正确的？ 写入的值是 2
+
+    // 如果不写入
+    data.WriteBit(info.DisplayInfo.is_initialized());
+
+
+    data.FlushBits();
+
+    if (info.DisplayInfo)
+        data << *info.DisplayInfo;
+
 
     return data;
 }
 
+
+// 这个实际上应该是 ProductItem 的数据 ...
 ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::BattlePayProduct const& product)
 {
     data << product.ProductID;
-
     data << product.Type;
-    //data << product.Flags;              // 这个可能是错误的，显示在客户端为ItemId
-    data << product.ItemId;
+    data << product.UnkInt0;              // 如果设置了具体的itemId，当鼠标移动到图标上的时候，会显示物品的Tips, 设置成0，就只显示product的tip
     data << product.UnkInt1;
     data << product.DisplayId;
-    data << product.Flags; // ItemId 修改成Flags？
-    data << product.UnkInt4;
+    data << product.UnkInt3;
+    data << product.UnkInt4;            // Maybe CreatureID?
     data << product.UnkInt5;
 
-    data.WriteBits(product.UnkString.size(), 8);
+    data.WriteBits(product.UnkString.size(), 8);        // 这个长度不确定是什么，需要在后面输出size()个字节数据，最长255
     data.WriteBit(product.UnkBit);
     data.WriteBit(product.UnkBits.is_initialized());
     data.WriteBits(product.Items.size(), 7);
     data.WriteBit(product.DisplayInfo.is_initialized());
-
     if (product.UnkBits)
         data.WriteBits(*product.UnkBits, 4);
 
     data.FlushBits();
 
+ 
     for (auto const& productItem : product.Items)
     {
-        data << productItem.ID;
+        data << productItem.Entry;
         data << productItem.UnkByte;
         data << productItem.ItemID;
         data << productItem.Quantity;
@@ -115,6 +159,8 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::BattlePayProdu
         if (productItem.DisplayInfo)
             data << *productItem.DisplayInfo;
     }
+
+    data.WriteString(product.UnkString);
 
     if (product.DisplayInfo)
         data << *product.DisplayInfo;
@@ -188,28 +234,57 @@ WorldPacket const* WorldPackets::Battlepay::DistributionUpdate::Write()
     return &_worldPacket;
 }
 
-ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::ProductInfoStruct const& info)
+// 进行测试 [Longee]
+std::vector<uint8> hardCodedProductListResponse =
 {
-    data << info.ProductID;
-    data << info.NormalPriceFixedPoint;
-    data << info.CurrentPriceFixedPoint;
-    data << static_cast<uint32>(info.ProductIDs.size());
-    data << info.UnkInt2;
-    data << static_cast<uint32>(info.UnkInts.size());
+    0, 0, 0, 0, 3, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 5, 0, 0, 0,
+    1, 0, 0, 0, 109, 0, 0, 0, 64, 66, 15, 0, 0, 0, 0, 0, 64, 66, 15, 0,
+    0, 0, 0, 0, 1, 0, 0, 0, 47, 0, 0, 0, 0, 0, 0, 0, 109, 0, 0, 0,
+    5, 129, 128, 0, 35, 224, 0, 0, 0, 0, 0, 0, 84, 97, 9, 0, 76, 101, 118, 101,
+    108, 32, 57, 48, 32, 67, 104, 97, 114, 97, 99, 116, 101, 114, 32, 66, 111, 111, 115, 116,
+    84, 104, 101, 114, 101, 32, 99, 111, 109, 101, 115, 32, 97, 32, 116, 105, 109, 101, 32, 105,
+    110, 32, 101, 118, 101, 114, 121, 32, 104, 101, 114, 111, 226, 128, 153, 115, 32, 113, 117, 101,
+    115, 116, 32, 119, 104, 101, 110, 32, 116, 104, 101, 121, 32, 110, 101, 101, 100, 32, 97, 32,
+    108, 105, 116, 116, 108, 101, 32, 98, 111, 111, 115, 116, 32, 116, 111, 32, 104, 101, 108, 112,
+    32, 103, 101, 116, 32, 116, 104, 101, 109, 32, 111, 118, 101, 114, 32, 116, 104, 101, 32, 104,
+    117, 109, 112, 32, 97, 110, 100, 32, 98, 97, 99, 107, 32, 105, 110, 116, 111, 32, 116, 104,
+    101, 32, 97, 99, 116, 105, 111, 110, 46, 32, 87, 105, 116, 104, 32, 97, 32, 76, 101, 118,
+    101, 108, 32, 57, 48, 32, 67, 104, 97, 114, 97, 99, 116, 101, 114, 32, 66, 111, 111, 115,
+    116, 44, 32, 121, 111, 117, 32, 99, 97, 110, 32, 103, 114, 97, 110, 116, 32, 111, 110, 101,
+    32, 99, 104, 97, 114, 97, 99, 116, 101, 114, 32, 97, 32, 111, 110, 101, 45, 116, 105, 109,
+    101, 32, 98, 111, 111, 115, 116, 32, 116, 111, 32, 108, 101, 118, 101, 108, 32, 57, 48, 46,
+    32, 66, 114, 105, 110, 103, 32, 121, 111, 117, 114, 32, 104, 101, 114, 111, 32, 117, 112, 32,
+    116, 111, 32, 115, 112, 101, 101, 100, 32, 97, 110, 100, 32, 106, 111, 105, 110, 32, 116, 104,
+    101, 32, 102, 105, 103, 104, 116, 32, 111, 110, 32, 116, 104, 101, 32, 102, 114, 111, 110, 116,
+    32, 108, 105, 110, 101, 115, 46, 109, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 129,
+    128, 0, 35, 224, 0, 0, 0, 0, 0, 0, 84, 97, 9, 0, 76, 101, 118, 101, 108, 32,
+    57, 48, 32, 67, 104, 97, 114, 97, 99, 116, 101, 114, 32, 66, 111, 111, 115, 116, 84, 104,
+    101, 114, 101, 32, 99, 111, 109, 101, 115, 32, 97, 32, 116, 105, 109, 101, 32, 105, 110, 32,
+    101, 118, 101, 114, 121, 32, 104, 101, 114, 111, 226, 128, 153, 115, 32, 113, 117, 101, 115, 116,
+    32, 119, 104, 101, 110, 32, 116, 104, 101, 121, 32, 110, 101, 101, 100, 32, 97, 32, 108, 105,
+    116, 116, 108, 101, 32, 98, 111, 111, 115, 116, 32, 116, 111, 32, 104, 101, 108, 112, 32, 103,
+    101, 116, 32, 116, 104, 101, 109, 32, 111, 118, 101, 114, 32, 116, 104, 101, 32, 104, 117, 109,
+    112, 32, 97, 110, 100, 32, 98, 97, 99, 107, 32, 105, 110, 116, 111, 32, 116, 104, 101, 32,
+    97, 99, 116, 105, 111, 110, 46, 32, 87, 105, 116, 104, 32, 97, 32, 76, 101, 118, 101, 108,
+    32, 57, 48, 32, 67, 104, 97, 114, 97, 99, 116, 101, 114, 32, 66, 111, 111, 115, 116, 44,
+    32, 121, 111, 117, 32, 99, 97, 110, 32, 103, 114, 97, 110, 116, 32, 111, 110, 101, 32, 99,
+    104, 97, 114, 97, 99, 116, 101, 114, 32, 97, 32, 111, 110, 101, 45, 116, 105, 109, 101, 32,
+    98, 111, 111, 115, 116, 32, 116, 111, 32, 108, 101, 118, 101, 108, 32, 57, 48, 46, 32, 66,
+    114, 105, 110, 103, 32, 121, 111, 117, 114, 32, 104, 101, 114, 111, 32, 117, 112, 32, 116, 111,
+    32, 115, 112, 101, 101, 100, 32, 97, 110, 100, 32, 106, 111, 105, 110, 32, 116, 104, 101, 32,
+    102, 105, 103, 104, 116, 32, 111, 110, 32, 116, 104, 101, 32, 102, 114, 111, 110, 116, 32, 108,
+    105, 110, 101, 115, 46, 1, 0, 0, 0, 165, 4, 2, 0, 0, 1, 0, 0, 0, 0, 0,
+    0, 0, 5, 0, 0, 1, 77, 111, 117, 110, 116, 2, 0, 0, 0, 16, 211, 9, 0, 0,
+    2, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 1, 80, 101, 116, 115, 3, 0, 0, 0,
+    183, 48, 17, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 1, 83, 101, 114,
+    118, 105, 99, 101, 115, 10, 0, 0, 0, 4, 199, 15, 0, 0, 11, 0, 0, 0, 0, 0,
+    0, 0, 6, 0, 0, 1, 66, 111, 111, 115, 116, 115, 12, 0, 0, 0, 9, 192, 16, 0,
+    0, 8, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 1, 72, 101, 105, 114, 108, 111, 111,
+    109, 115, 109, 0, 0, 0, 3, 0, 0, 0, 109, 0, 0, 0, 5, 0, 0, 0, 0, 0,
+    0, 0, 0, 0
+};
 
-    for (auto z : info.ProductIDs)
-        data << z;
-
-    for (auto z : info.UnkInts)
-        data << z;
-
-    data.WriteBits(info.ChoiceType, 7);
-    data.WriteBit(info.DisplayInfo.is_initialized());
-    if (info.DisplayInfo)
-        data << *info.DisplayInfo;
-
-    return data;
-}
 
 WorldPacket const* WorldPackets::Battlepay::ProductListResponse::Write()
 {
@@ -221,13 +296,15 @@ WorldPacket const* WorldPackets::Battlepay::ProductListResponse::Write()
     _worldPacket << static_cast<uint32>(ProductList.ProductGroup.size());
     _worldPacket << static_cast<uint32>(ProductList.Shop.size());
 
+    // product info ... 
     for (auto const& v : ProductList.ProductInfo)
         _worldPacket << v;
 
-    // 这个是在哪里重载的？
+    // product Item ...
     for (auto const& productData : ProductList.Product)
         _worldPacket << productData;
 
+    // product group 
     for (auto const& productGroupData : ProductList.ProductGroup)
     {
         _worldPacket << productGroupData.GroupID;
@@ -243,6 +320,7 @@ WorldPacket const* WorldPackets::Battlepay::ProductListResponse::Write()
             _worldPacket.WriteString(productGroupData.IsAvailableDescription);
     }
 
+    // shop entry ...
     for (BattlePayShopEntry const& shopData : ProductList.Shop)
     {
         _worldPacket << shopData.EntryID;
@@ -252,10 +330,13 @@ WorldPacket const* WorldPackets::Battlepay::ProductListResponse::Write()
         _worldPacket << shopData.VasServiceType;
         _worldPacket << shopData.StoreDeliveryType;
 
+        // 这个数据是错误的，或者是displayInfo 的结构是错误的 ...
         if (_worldPacket.WriteBit(shopData.DisplayInfo.is_initialized()))
-            _worldPacket << *shopData.DisplayInfo;
+        {
+            _worldPacket.FlushBits();
 
-        _worldPacket.FlushBits();
+            _worldPacket << *shopData.DisplayInfo;
+        }
     }
 
     return &_worldPacket;

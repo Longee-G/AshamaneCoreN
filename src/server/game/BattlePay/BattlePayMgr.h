@@ -49,17 +49,18 @@ class WorldSession;
 //    };
 //};
 //
-//namespace BattlepayDisplayFlag
-//{
-//    enum : uint8
-//    {
-//        None = 0x00,
-//        CardDoesNotShowModel = 0x02,
-//        CardAlwaysShowsTexture = 0x04,
-//        HiddenPrice = 0x08,
-//        UseHorizontalLayoutForFullCard = 0x10,
-//    };
-//};
+namespace BattlepayDisplayFlag
+{
+    enum : uint8
+    {
+        None = 0x00,
+        CardDoesNotShowModel = 0x02,            // 卡片不显示模型
+        CardAlwaysShowsTexture = 0x04,          // 卡片也是不显示模型
+        HiddenPrice = 0x08,                     // 标记成已经拥有该商品... 并且隐藏了价格..
+        UseHorizontalLayoutForFullCard = 0x10,  // 没看出什么区别...
+    };
+};
+
 //
 //namespace StoreDeliveryType
 //{
@@ -336,8 +337,8 @@ namespace Battlepay
         enum : uint8
         {
             Default = 0,
-            Splash = 1,     // 卡片占据1/4?
-            DoubleWide = 2, // 卡片占据了整个窗口
+            Splash = 1,
+            DoubleWide = 2,
         };
     }
 
@@ -356,9 +357,9 @@ namespace Battlepay
 
     struct DisplayInfo
     {
-        uint32 CreatureDisplayInfoID;
-        uint32 VisualsId;
-        uint32 Flags;
+        uint32 CreatureDisplayInfoID;       // model id ?
+        uint32 IconFileID;
+        uint32 Flags;       // BattlepayDisplayFlag
         std::string Name1;
         std::string Name2;
         std::string Name3;
@@ -378,7 +379,7 @@ namespace Battlepay
     struct Product
     {
         /// Databases fields
-        std::vector<ProductItem> Items;
+        std::vector<ProductItem> Items;     // 一个商品可能关联多个Item吗？
         uint64 NormalPriceFixedPoint;
         uint64 CurrentPriceFixedPoint;
         uint32 ProductID;

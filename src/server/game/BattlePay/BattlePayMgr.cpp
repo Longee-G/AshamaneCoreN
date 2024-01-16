@@ -90,7 +90,7 @@ std::string const& BattlepayManager::GetDefaultWalletName() const
 BattlePayCurrency BattlepayManager::GetShopCurrency() const
 {
     /// @TODO: Move that to config files
-    return Krw;
+    return Usd;
 }
 
 bool BattlepayManager::IsAvailable() const
@@ -101,6 +101,7 @@ bool BattlepayManager::IsAvailable() const
     return sWorld->getBoolConfig(CONFIG_FEATURE_SYSTEM_BPAY_STORE_ENABLED);
 }
 
+// Q: 这个接口用在什么地方？
 std::string Product::Serialize() const
 {
     std::string res;
@@ -374,6 +375,7 @@ void BattlepayManager::SendProductList()
 
     auto const& player = _session->GetPlayer();
     auto const& localeIndex = _session->GetSessionDbLocaleIndex();
+    bool hasPlayer = player != nullptr;
 
     response.Result = ProductListResult::Available;
     response.ProductList.CurrencyID = GetShopCurrency();
@@ -421,15 +423,19 @@ void BattlepayManager::SendProductList()
         sEntry.VasServiceType = itr.VasServiceType;
         sEntry.StoreDeliveryType = itr.StoreDeliveryType;
 
+        // <confirmed>
+        // 这个信息会覆盖 product 中的 displayInfo
         auto data = WriteDisplayInfo(itr.DisplayInfoID, localeIndex);
         if (std::get<0>(data))
         {
             sEntry.DisplayInfo = boost::in_place();
             sEntry.DisplayInfo = std::get<1>(data);
         }
-
+        
         response.ProductList.Shop.emplace_back(sEntry);
     }
+
+    uint8 test = 0;
 
     for (auto const& itr : sBattlePayDataStore->GetProducts())
     {
@@ -453,64 +459,98 @@ void BattlepayManager::SendProductList()
         pInfo.CurrentPriceFixedPoint = product.CurrentPriceFixedPoint * g_CurrencyPrecision;
         pInfo.ProductID = product.ProductID;
         pInfo.ChoiceType = product.ChoiceType;
-        pInfo.ProductIDs.emplace_back(product.ProductID);
-        //std::vector<uint32> UnkInts;
-        pInfo.UnkInt2 = 47; // 2 ?
 
+
+        // 但是如果不填写这个变量，会导致商城的信息在角色界面和游戏中都显示不出来
+        // 1. 如果填写了itemId or 0，在角色界面不会出错误，但是游戏中Icon不显示Tooltips
+        // 2. 如果不填入内容
+
+        // 3. 如果填入ProductId，才可以通过  WorldPackets::Battlepay::BattlePayProduct.UnkInt0 来设置tooltips的itemId ...
+        //    但是这个tips只能在游戏内才能用，还会导致游戏外界面出现lua crash ...
+
+        // FIXME: 有可能游戏内和游戏外需要给不一样的数据 ...
+        if(hasPlayer)
+            for(auto v : product.Items)
+                pInfo.ProductIDs.emplace_back(product.ProductID);
+
+        //std::vector<uint32> UnkInts;
+        // 1. 填入displayInfoId，没有发现问题.. 但是 Item Tips 显示不出来 ..
+        // 2. 填入ItemId ..，也没有发现问题 ...
+        // 3. 填入ProductItemId 也没有问题 ...
+        // 4. 如果填入 ProductId，
+        // 无法分析出是什么...
+
+        for (auto v2 : product.Items)
+            pInfo.UnkInts.emplace_back(v2.ItemID);
+
+        // Flags: 分析
+        // 0x00     商城中不显示商品 ...
+        // 0x01     游戏外显示product
+        // 0x02     商品显示不出来 , Unk
+        // 0x04     游戏内显示Product
+        // 0x08     Unk
+        // 0x10     Unk
+        // 0x20     Unk
+        //pInfo.UnkInt2 = 47; //          battlepay_product.Flags
+        pInfo.UnkInt2 = 0x10 | 0x01 | 0x04;
+
+        // 进行测试，检查display Info是在这个数据上设置的？
+        // 经过测试，这个数据是用来显示卡片内容的 ... 游戏内外都是 ...
+
+        // 测试不在这个地方设置displayInfo
+        // 这个地方的displayInfo 不能少 ..
         auto dataPI = WriteDisplayInfo(product.DisplayInfoID, localeIndex);
         if (std::get<0>(dataPI))
         {
+            //ProductInfoStruct.DisplayInfo
             pInfo.DisplayInfo = boost::in_place();
             pInfo.DisplayInfo = std::get<1>(dataPI);
         }
 
         bool hideProductPrice = false;
+        bool hasEnoughTokens = false;
+
         if (pInfo.DisplayInfo.is_initialized() && pInfo.DisplayInfo->Flags.is_initialized())
             hideProductPrice = pInfo.DisplayInfo->Flags.get() & BattlepayDisplayInfoFlag::HidePrice;
-        bool hasEnoughTokens = tokenBalance >= product.CurrentPriceFixedPoint;
+        hasEnoughTokens = tokenBalance >= product.CurrentPriceFixedPoint;
 
         response.ProductList.ProductInfo.emplace_back(pInfo);
 
         // 设置商店中商品的信息
         WorldPackets::Battlepay::BattlePayProduct pProduct;
         pProduct.ProductID = product.ProductID;
-        pProduct.Type = product.Type;
-        if (product.Items.size() == 1)
-        {
-            //pProduct.UnkBit = true;           // 标记player是否已经购买此商品？
-            //pProduct.UnkBits Optional<uint16>;
-            pProduct.UnkBits = 0xFFFF;
+        pProduct.UnkBit = false;           // 标记player是否已经购买此商品？
+        //pProduct.UnkBits Optional<uint16>;
 
-            pProduct.ItemId = product.Items[0].ItemID;
-            pProduct.DisplayId = product.Items[0].DisplayInfoID;
-            pProduct.UnkInt1 = product.Items[0].DisplayInfoID;
-            pProduct.Flags = product.Items[0].DisplayInfoID;
-            pProduct.UnkInt4 = product.Items[0].DisplayInfoID;
-            pProduct.UnkInt5 = product.Items[0].DisplayInfoID;
-            //pProduct.UnkString = "";  // 这个不能设置..
-        }            
 
-        //pProduct.ItemId = 54860;        // 在游戏中关联ItemId 
-        //pProduct.UnkBits Optional<uint16> ;
-        //pProduct.Flags = 5;
-        //pProduct.UnkInt1 = 1;
-        //pProduct.DisplayId = 2;   // 这个应该不是displayId， 不能是0之外的值
-        //pProduct.UnkInt4 = 3;
-        //pProduct.UnkInt5 = 4;
-        //pProduct.UnkString = "abcdefgh";
-        //pProduct.UnkBit = false;
+        uint32 itemId = product.Items.size() > 0 ? product.Items[0].ItemID : 0;
+
+
+
+
+        pProduct.Type = product.Type;           // 这个type数据从哪来的？ 来自`battlepay_product.Type`，都是 0，未知含义
+        pProduct.UnkBits = 0;  // is Flags 
+        pProduct.UnkInt0 = itemId;                 //     product.Items[0].ItemID
+        pProduct.UnkInt1 = 10992;
+        pProduct.DisplayId = 10992;
+        pProduct.UnkInt3 = 10992;
+        pProduct.UnkInt4 = 10992;
+        pProduct.UnkInt5 = 10992;
+        pProduct.UnkString = "1";  //  未知字符串，长度不能超过255个字节...
+
 
         for (auto& item : product.Items)
         {
             WorldPackets::Battlepay::ProductItem pItem;
-            pItem.ID = item.ID;
+
+            pItem.Entry = item.ID;
             pItem.ItemID = product.Items.size() > 1 ? 0 : item.ItemID; ///< Disable tooltip for packs (client handle only one tooltip).
             pItem.Quantity = item.Quantity;
-            pItem.UnkByte = item.HasPet;
-            pItem.UnkInt1 = item.DisplayInfoID;
-            pItem.UnkInt2 = item.DisplayInfoID;
 
-            //pItem.UnkInt2 = 0;
+            pItem.UnkByte = 1;          // Flag ?
+            pItem.UnkInt1 = 10992;     // 测试
+            pItem.UnkInt2 = 10992;
+
             
 
             // if the product is already owned disable the buy button
@@ -519,6 +559,9 @@ void BattlepayManager::SendProductList()
             pItem.HasPet = AlreadyOwnProduct(item.ItemID) || (hideProductPrice && !hasEnoughTokens);
             pItem.PetResult = item.PetResult;
 
+            // 测试这个地方如果有数据的情况 ...
+            // 有没有数据好像不影响 ...
+            // 卡片的信息不从这个数据获取 ...            
             auto dataP = WriteDisplayInfo(item.DisplayInfoID, localeIndex);
             if (std::get<0>(dataP))
             {
@@ -528,6 +571,13 @@ void BattlepayManager::SendProductList()
 
             pProduct.Items.emplace_back(pItem);
         }
+
+
+
+        // 显示信息...
+        // [Longee] ...
+        // 1. 不设置这个信息，不影响显示
+        // 2. 设置其他信息，也不影响显示 ...
 
         auto dataP = WriteDisplayInfo(product.DisplayInfoID, localeIndex);
         if (std::get<0>(dataP))
@@ -541,6 +591,9 @@ void BattlepayManager::SendProductList()
 
     _session->SendPacket(response.Write());
 }
+
+// 这个可能是product预览用的数据..
+// 只是其中包含了预览的信息 ... 这是一个显示卡片信息
 
 std::tuple<bool, WorldPackets::Battlepay::ProductDisplayInfo> BattlepayManager::WriteDisplayInfo(uint32 displayInfoID, LocaleConstant localeIndex, uint32 productId /*= 0*/)
 {
@@ -582,6 +635,7 @@ std::tuple<bool, WorldPackets::Battlepay::ProductDisplayInfo> BattlepayManager::
     if (!displayInfoID)
         return std::make_tuple(false, info);
 
+
     auto displayInfo = sBattlePayDataStore->GetDisplayInfo(displayInfoID);
     if (!displayInfo)
         return std::make_tuple(false, info);
@@ -610,32 +664,35 @@ std::tuple<bool, WorldPackets::Battlepay::ProductDisplayInfo> BattlepayManager::
     if (displayLocale)
         ObjectMgr::GetLocaleString(displayLocale->Name4, localeIndex, info.Name4);
 
-    if (displayInfo->CreatureDisplayInfoID != 0)
-        info.CreatureDisplayInfoID = displayInfo->CreatureDisplayInfoID;
 
-    if (auto visualsId = displayInfo->VisualsId)
+        info.CreatureDisplayInfoID = displayInfo->CreatureDisplayInfoID;
+        info.IconFileID = displayInfo->IconFileID;
+
+
+    if(displayInfo->Flags)
+        info.Flags = displayInfo->Flags;        // BattlepayDisplayFlag
+
+    //info.UnkInt1 = 0xFF0000;          // Name1 Color
+    //info.UnkInt2 = 0;
+    //info.UnkInt3 = 0;
+
+
+    if (displayInfo->CreatureDisplayInfoID)  // 使用了模型方式来显示卡片
     {
         if (auto visuals = sBattlePayDataStore->GetDisplayInfoVisuals(displayInfoID))
         {
-            info.VisualsId = displayInfo->VisualsId;
-
+            // 如果关联了有效的VisualData 那么就会在卡片的左上角出现一个预览的小图标，点击后弹出新的窗口
+            // 也就是说Visuals是用来显示preview的吗？
             for (auto const& itr : *visuals)
-            {
+            {              
                 WorldPackets::Battlepay::ProductDisplayVisualData visual;
-                visual.DisplayId = itr.DisplayId;
+                visual.DisplayId = itr.DisplayId;       
                 visual.VisualId = itr.VisualId;
                 visual.ProductName = itr.ProductName;
                 info.Visuals.emplace_back(visual);
             }
         }
     }
-
-    if (displayInfo->Flags != 0)
-        info.Flags = displayInfo->Flags;
-
-    //Optional<uint32> UnkInt1;
-    //Optional<uint32> UnkInt2;
-    //Optional<uint32> UnkInt3;
 
     return std::make_tuple(true, info);
 }
@@ -690,7 +747,7 @@ void BattlepayManager::SendBattlePayDistribution(uint32 productId, uint8 status,
         }
 
         productItem.PetResult = item.PetResult;
-        productItem.ID = item.ID;
+        productItem.Entry = item.ID;
         productItem.ItemID = item.ItemID;
         productItem.Quantity = item.Quantity;
         productItem.UnkInt1 = item.DisplayInfoID;
@@ -707,16 +764,18 @@ void BattlepayManager::SendBattlePayDistribution(uint32 productId, uint8 status,
         productData.DisplayInfo = std::get<1>(dataP);
     }
 
+    // 这个消息的作用是什么？ 是在角色界面用的？
+
     //productData.UnkBits       Optional<uint16> ;
     productData.ProductID = product.ProductID;
-    productData.Flags = product.Flags;
-    productData.UnkInt1 = 0;
-    productData.DisplayId = product.DisplayInfoID;
-    productData.ItemId = 0;
+    productData.Type = 0;               
+    productData.UnkInt0 = product.Flags;  // 关联tips itemId
+    productData.UnkInt1 = 0;   
+    productData.DisplayId = product.DisplayInfoID; // 这个填写非0会crash...
+    productData.UnkInt3 = 0;
     productData.UnkInt4 = 0;
     productData.UnkInt5 = 0;
-    productData.UnkString = "";
-    productData.Type = 0;
+    productData.UnkString = "";    
     productData.UnkBit = false;
 
     distributionBattlePay.DistributionObject.Product = std::move(productData);
@@ -819,7 +878,7 @@ void BattlepayManager::Update(uint32 diff)
 uint64 BattlepayManager::GetBalance(uint8 tokenType)
 {
     // TODO: 返回0会导致商品显示不出来...
-    return 1;
+    return 100000000;
 }
 
 // 获取Player加载的物品列表... 通过player的职业，种族来筛选...

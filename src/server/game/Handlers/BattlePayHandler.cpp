@@ -315,7 +315,7 @@ void WorldSession::HandleBattlePayConfirmPurchase(WorldPackets::Battlepay::Confi
 
     SendPurchaseUpdate(this, *purchase, Battlepay::Error::Other);
 
-    if (player->ChangeTokenCount(group->TokenType, -purchase->CurrentPrice, Battlepay::BattlepayCustomType::BattlePayShop, purchase->ProductID))
+    if (player->ChangeTokenCount(group->TokenType, -int64(purchase->CurrentPrice), Battlepay::BattlepayCustomType::BattlePayShop, purchase->ProductID))
         GetBattlepayMgr()->ProcessDelivery(purchase);
 }
 

@@ -721,7 +721,7 @@ void OpcodeTable::Initialize()
     DEFINE_HANDLER(CMSG_REQUEST_CATEGORY_COOLDOWNS,                         STATUS_LOGGEDIN,  PROCESS_INPLACE,      &WorldSession::HandleRequestCategoryCooldowns);
     DEFINE_HANDLER(CMSG_REQUEST_CEMETERY_LIST,                              STATUS_LOGGEDIN,  PROCESS_INPLACE,      &WorldSession::HandleRequestCemeteryList);
     DEFINE_HANDLER(CMSG_REQUEST_CONQUEST_FORMULA_CONSTANTS, STATUS_LOGGEDIN, PROCESS_THREADUNSAFE, &WorldSession::HandlePersonalRatedInfoRequest);
-    DEFINE_HANDLER(CMSG_REQUEST_CONSUMPTION_CONVERSION_INFO, STATUS_LOGGEDIN,    PROCESS_THREADUNSAFE, &WorldSession::HandleRequestConsumptionConversionInfo);
+    DEFINE_HANDLER(CMSG_REQUEST_CONSUMPTION_CONVERSION_INFO, STATUS_AUTHED,    PROCESS_THREADUNSAFE, &WorldSession::HandleRequestConsumptionConversionInfo);
     DEFINE_HANDLER(CMSG_REQUEST_CROWD_CONTROL_SPELL,                        STATUS_UNHANDLED, PROCESS_THREADUNSAFE, &WorldSession::Handle_NULL);
     DEFINE_HANDLER(CMSG_REQUEST_FORCED_REACTIONS,                           STATUS_LOGGEDIN,  PROCESS_THREADUNSAFE, &WorldSession::HandleRequestForcedReactionsOpcode);
     DEFINE_HANDLER(CMSG_REQUEST_GUILD_PARTY_STATE,                          STATUS_LOGGEDIN,  PROCESS_THREADUNSAFE, &WorldSession::HandleGuildRequestPartyState);

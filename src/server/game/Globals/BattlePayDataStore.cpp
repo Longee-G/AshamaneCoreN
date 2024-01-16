@@ -60,24 +60,33 @@ void BattlePayDataStoreMgr::LoadDisplayInfos()
 {
     TC_LOG_INFO("server.loading", "Loading Battlepay display info ...");
     _displayInfos.clear();
+    //                                          0               1                       2
     auto result = WorldDatabase.PQuery("SELECT DisplayInfoId, CreatureDisplayInfoID, FileDataID, Flags, Name1, Name2, Name3, Name4 FROM battlepay_display_info");
     if (!result)
         return;
 
     auto oldMsTime = getMSTime();
 
+
+    int shift = 0;
+
     do
     {
         auto fields = result->Fetch();
 
         Battlepay::DisplayInfo displaInfo;
-        displaInfo.CreatureDisplayInfoID = fields[1].GetUInt32();
-        displaInfo.VisualsId = fields[2].GetInt32();
+        displaInfo.CreatureDisplayInfoID = fields[1].GetUInt32();   // 关联到 `creature_template.modelid1`
+        displaInfo.IconFileID = fields[2].GetInt32();                // 关联到 IconFileId ...
         displaInfo.Flags = fields[3].GetUInt32();
-        displaInfo.Name1 = fields[4].GetString();
+        displaInfo.Name1 = fields[4].GetString();                   // Product Name
         displaInfo.Name2 = fields[5].GetString();
-        displaInfo.Name3 = fields[6].GetString();
+        displaInfo.Name3 = fields[6].GetString();                   // Product Description
         displaInfo.Name4 = fields[7].GetString();
+
+        // Flags 某个值会标记某个商品已经拥有...
+        //displaInfo.Flags = 1 << (shift++);
+        //if (shift > 16) shift = 0;
+
         _displayInfos.insert(std::make_pair(fields[0].GetUInt32(), displaInfo));
     } while (result->NextRow());
 
@@ -176,6 +185,7 @@ void BattlePayDataStoreMgr::LoadProduct()
         _products.insert(std::make_pair(product.ProductID, product));
     } while (result->NextRow());
 
+    // 和商城中的商品关联的Item的Id...
     result = WorldDatabase.PQuery("SELECT ID, ProductID, ItemID, Quantity, DisplayID, PetResult FROM battlepay_product_item");
     if (!result)
         return;
@@ -201,7 +211,17 @@ void BattlePayDataStoreMgr::LoadProduct()
         productItem.Quantity = fields[3].GetUInt32();
         productItem.PetResult = fields[5].GetUInt8();
         _products[productID].Items.push_back(productItem);
+
+        if (_products[productID].Items.size() > 1)
+        {
+            TC_LOG_INFO("server.loading", ">> one bpay_product has more than one item ...");
+        }
+
+
     } while (result->NextRow());
+
+    
+
 
     TC_LOG_INFO("server.loading", ">> Loaded %lu Battlepay products in %u ms", uint64(_products.size()), GetMSTimeDiffToNow(oldMsTime));
 }

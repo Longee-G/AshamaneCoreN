@@ -73,45 +73,45 @@ namespace WorldPackets
         {
             std::vector<ProductDisplayVisualData> Visuals;
             Optional<uint32> CreatureDisplayInfoID;
-            Optional<uint32> VisualsId;
+            Optional<uint32> IconFileID;            // IconFileID
             Optional<uint32> Flags;
-            Optional<uint32> UnkInt1;
+            Optional<uint32> UnkInt1;               // Name1 Color - 0xFFFFFF
             Optional<uint32> UnkInt2;
             Optional<uint32> UnkInt3;
-            std::string Name1;
+            std::string Name1;                      // Product Name
             std::string Name2;
-            std::string Name3;
+            std::string Name3;                      // Product Descript
             std::string Name4;
         };
 
         struct ProductItem
         {
-            Optional<ProductDisplayInfo> DisplayInfo;
-            Optional<uint16> PetResult;
-            uint32 ID = 0;
+            uint32 Entry = 0;          // entry ..
+            uint8 UnkByte = 0;
             uint32 ItemID = 0;
             uint32 Quantity = 0;
             uint32 UnkInt1 = 0;
             uint32 UnkInt2 = 0;
-            uint8 UnkByte = 0;
             bool HasPet = false;
+            Optional<ProductDisplayInfo> DisplayInfo;
+            Optional<uint16> PetResult;
         };
 
         struct BattlePayProduct
         {
             std::vector<ProductItem> Items;
-            Optional<ProductDisplayInfo> DisplayInfo;
+            Optional<ProductDisplayInfo> DisplayInfo;           // 关联 battlepay_product_item.DisplayID
             Optional<uint16> UnkBits;
             uint32 ProductID = 0;
-            uint32 Flags = 0;
+            uint32 UnkInt0 = 0;
             uint32 UnkInt1 = 0;
             uint32 DisplayId = 0;
-            uint32 ItemId = 0;
+            uint32 UnkInt3 = 0;
             uint32 UnkInt4 = 0;
             uint32 UnkInt5 = 0;
-            std::string UnkString;
+            std::string UnkString;         // size [0, 255]
             uint8 Type = 0;
-            bool UnkBit = false;
+            bool UnkBit = false;                // 
         };
 
         struct BattlePayDistributionObject
@@ -197,11 +197,11 @@ namespace WorldPackets
         {
             std::vector<uint32> ProductIDs;
             std::vector<uint32> UnkInts;
-            Optional<ProductDisplayInfo> DisplayInfo;
+            Optional<ProductDisplayInfo> DisplayInfo;   // 关联了battlepay_product.DisplayInfoID
             uint64 NormalPriceFixedPoint = 0;
             uint64 CurrentPriceFixedPoint = 0;
             uint32 ProductID = 0;
-            uint32 UnkInt2 = 0;
+            uint32 UnkInt2 = 0;     // Display Flags 
             uint32 ChoiceType = 0;
         };
 
