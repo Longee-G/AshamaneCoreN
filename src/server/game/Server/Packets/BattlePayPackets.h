@@ -15,8 +15,8 @@
 * with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef BattlePayPackets_h__
-#define BattlePayPackets_h__
+#ifndef BattlepayPackets_h__
+#define BattlepayPackets_h__
 
 #include "Packet.h"
 #include "Packets/ItemPackets.h"
@@ -74,10 +74,10 @@ namespace WorldPackets
             std::vector<ProductDisplayVisualData> Visuals;
             Optional<uint32> CreatureDisplayInfoID;
             Optional<uint32> IconFileID;            // IconFileID
-            Optional<uint32> Flags;
+            Optional<uint32> Flags;                 // enum BattlepayDisplayFlag
             Optional<uint32> UnkInt1;               // Name1 Color - 0xFFFFFF
-            Optional<uint32> UnkInt2;
-            Optional<uint32> UnkInt3;
+            Optional<uint32> UnkInt2;               // Replace Card's IconFileID
+            Optional<uint32> UnkInt3;               // Replace Card's BackgroundFileID
             std::string Name1;                      // Product Name
             std::string Name2;
             std::string Name3;                      // Product Descript
@@ -97,7 +97,7 @@ namespace WorldPackets
             Optional<uint16> PetResult;
         };
 
-        struct BattlePayProduct
+        struct BattlepayProductItem
         {
             std::vector<ProductItem> Items;
             Optional<ProductDisplayInfo> DisplayInfo;           // 关联 battlepay_product_item.DisplayID
@@ -109,14 +109,14 @@ namespace WorldPackets
             uint32 UnkInt3 = 0;
             uint32 UnkInt4 = 0;
             uint32 UnkInt5 = 0;
-            std::string UnkString;         // size [0, 255]
+            std::string UnkString;              // size [0, 255]
             uint8 Type = 0;
-            bool UnkBit = false;                // 
+            bool UnkBit = false;                // mark whether player owns this product
         };
 
-        struct BattlePayDistributionObject
+        struct BattlepayDistributionObject
         {
-            Optional<BattlePayProduct> Product;
+            Optional<BattlepayProductItem> Product;         // item bind to product 
             ObjectGuid TargetPlayer;
             uint64 DistributionID = 0;
             uint64 PurchaseID = 0;
@@ -127,7 +127,7 @@ namespace WorldPackets
             bool Revoked = false;
         };
 
-        struct BattlePayPurchase
+        struct BattlepayPurchase
         {
             uint64 PurchaseID = 0;
             uint64 UnkLong = 0;
@@ -147,7 +147,7 @@ namespace WorldPackets
             WorldPacket const* Write() override;
 
             uint32 Result = 0;
-            std::vector<BattlePayPurchase> Purchase;
+            std::vector<BattlepayPurchase> Purchase;
         };
 
         class DistributionListResponse final : public ServerPacket
@@ -158,7 +158,7 @@ namespace WorldPackets
             WorldPacket const* Write() override;
 
             uint32 Result = 0;
-            std::vector<BattlePayDistributionObject> DistributionObject;
+            std::vector<BattlepayDistributionObject> DistributionObject;
         };
 
         class DistributionUpdate final : public ServerPacket
@@ -168,10 +168,10 @@ namespace WorldPackets
 
             WorldPacket const* Write() override;
 
-            BattlePayDistributionObject DistributionObject;
+            BattlepayDistributionObject DistributionObject;
         };
 
-        struct BattlePayProductGroup
+        struct BattlepayProductGroup
         {
             uint32 GroupID = 0;
             uint32 IconFileDataID = 0;
@@ -182,7 +182,7 @@ namespace WorldPackets
             uint8 DisplayType = 0;
         };
 
-        struct BattlePayShopEntry
+        struct BattlepayShopEntry
         {
             Optional<ProductDisplayInfo> DisplayInfo;
             uint32 EntryID = 0;
@@ -193,7 +193,7 @@ namespace WorldPackets
             uint8 StoreDeliveryType = 0;
         };
 
-        struct ProductInfoStruct
+        struct BattlepayProduct
         {
             std::vector<uint32> ProductIDs;
             std::vector<uint32> UnkInts;
@@ -207,10 +207,10 @@ namespace WorldPackets
 
         struct ProductListData
         {
-            std::vector<ProductInfoStruct> ProductInfo;
-            std::vector<BattlePayProduct> Product;
-            std::vector<BattlePayProductGroup> ProductGroup;
-            std::vector<BattlePayShopEntry> Shop;
+            std::vector<ProductInfoStruct> ProductInfo;             // Product
+            std::vector<BattlepayProductItem> Product;                  // ItemList ...
+            std::vector<BattlepayProductGroup> ProductGroup;
+            std::vector<BattlepayShopEntry> Shop;
             uint32 CurrencyID = 0;
         };
 
@@ -263,10 +263,10 @@ namespace WorldPackets
             uint32 PurchaseResult = 0;
         };
 
-        class BattlePayAckFailed final : public ServerPacket
+        class BattlepayAckFailed final : public ServerPacket
         {
         public:
-            BattlePayAckFailed() : ServerPacket(SMSG_BATTLE_PAY_ACK_FAILED, 16) { }
+            BattlepayAckFailed() : ServerPacket(SMSG_BATTLE_PAY_ACK_FAILED, 16) { }
 
             WorldPacket const* Write() override;
 
@@ -282,7 +282,7 @@ namespace WorldPackets
 
             WorldPacket const* Write() override;
 
-            std::vector<BattlePayPurchase> Purchase;
+            std::vector<BattlepayPurchase> Purchase;
         };
 
         class ConfirmPurchase final : public ServerPacket
@@ -308,10 +308,10 @@ namespace WorldPackets
             bool ConfirmPurchase = false;
         };
 
-        class BattlePayAckFailedResponse final : public ClientPacket
+        class BattlepayAckFailedResponse final : public ClientPacket
         {
         public:
-            BattlePayAckFailedResponse(WorldPacket&& packet) : ClientPacket(CMSG_BATTLE_PAY_ACK_FAILED_RESPONSE, std::move(packet)) { }
+            BattlepayAckFailedResponse(WorldPacket&& packet) : ClientPacket(CMSG_BATTLE_PAY_ACK_FAILED_RESPONSE, std::move(packet)) { }
 
             void Read() override;
 
@@ -329,10 +329,10 @@ namespace WorldPackets
             uint64 DistributionID = 0;
         };
 
-        class BattlePayDeliveryStarted final : public ServerPacket
+        class BattlepayDeliveryStarted final : public ServerPacket
         {
         public:
-            BattlePayDeliveryStarted() : ServerPacket(SMSG_BATTLE_PAY_DELIVERY_STARTED, 8) { }
+            BattlepayDeliveryStarted() : ServerPacket(SMSG_BATTLE_PAY_DELIVERY_STARTED, 8) { }
 
             WorldPacket const* Write() override;
 
@@ -373,10 +373,10 @@ namespace WorldPackets
             uint32 UnkInt2 = 0;
         };
 
-        class BattlePayVasPurchaseStarted final : public ServerPacket
+        class BattlepayVasPurchaseStarted final : public ServerPacket
         {
         public:
-            BattlePayVasPurchaseStarted() : ServerPacket(SMSG_BATTLE_PAY_VAS_PURCHASE_STARTED, 4 + 4 + 16 + 8 + 4 + 4) { }
+            BattlepayVasPurchaseStarted() : ServerPacket(SMSG_BATTLE_PAY_VAS_PURCHASE_STARTED, 4 + 4 + 16 + 8 + 4 + 4) { }
 
             WorldPacket const* Write() override;
 
@@ -394,18 +394,18 @@ namespace WorldPackets
             uint32 Result = 0;
         };
 
-        class BattlePayQueryClassTrialResult final : public ClientPacket
+        class BattlepayQueryClassTrialResult final : public ClientPacket
         {
         public:
-            BattlePayQueryClassTrialResult(WorldPacket&& packet) : ClientPacket(CMSG_BATTLE_PAY_QUERY_CLASS_TRIAL_BOOST_RESULT, std::move(packet)) { }
+            BattlepayQueryClassTrialResult(WorldPacket&& packet) : ClientPacket(CMSG_BATTLE_PAY_QUERY_CLASS_TRIAL_BOOST_RESULT, std::move(packet)) { }
 
             void Read() override { }
         };
 
-        class BattlePayCharacterUpgradeQueued final : public ServerPacket
+        class BattlepayCharacterUpgradeQueued final : public ServerPacket
         {
         public:
-            BattlePayCharacterUpgradeQueued() : ServerPacket(SMSG_CHARACTER_UPGRADE_QUEUED, 4 + 16) { }
+            BattlepayCharacterUpgradeQueued() : ServerPacket(SMSG_CHARACTER_UPGRADE_QUEUED, 4 + 16) { }
 
             WorldPacket const* Write() override;
 
@@ -413,10 +413,10 @@ namespace WorldPackets
             ObjectGuid Character;
         };
 
-        class BattlePayTrialBoostCharacter final : public ClientPacket
+        class BattlepayTrialBoostCharacter final : public ClientPacket
         {
         public:
-            BattlePayTrialBoostCharacter(WorldPacket&& packet) : ClientPacket(CMSG_BATTLE_PAY_TRIAL_BOOST_CHARACTER, std::move(packet)) { }
+            BattlepayTrialBoostCharacter(WorldPacket&& packet) : ClientPacket(CMSG_BATTLE_PAY_TRIAL_BOOST_CHARACTER, std::move(packet)) { }
 
             void Read() override;
 
@@ -424,20 +424,20 @@ namespace WorldPackets
             uint32 SpecializationID = 0;
         };
 
-        class BattlePayVasPurchaseList final : public ServerPacket
+        class BattlepayVasPurchaseList final : public ServerPacket
         {
         public:
-            BattlePayVasPurchaseList() : ServerPacket(SMSG_BATTLE_PAY_VAS_PURCHASE_LIST, 4) { }
+            BattlepayVasPurchaseList() : ServerPacket(SMSG_BATTLE_PAY_VAS_PURCHASE_LIST, 4) { }
 
             WorldPacket const* Write() override;
 
             std::vector<VasPurchaseData> VasPurchase;
         };
 
-        class BattlePayPurchaseDetails final : public ServerPacket
+        class BattlepayPurchaseDetails final : public ServerPacket
         {
         public:
-            BattlePayPurchaseDetails() : ServerPacket(SMSG_BATTLE_PAY_PURCHASE_DETAILS, 20) { }
+            BattlepayPurchaseDetails() : ServerPacket(SMSG_BATTLE_PAY_PURCHASE_DETAILS, 20) { }
 
             WorldPacket const* Write() override;
 
@@ -448,10 +448,10 @@ namespace WorldPackets
             std::string Key2;
         };
 
-        class BattlePayPurchaseUnk final : public ServerPacket
+        class BattlepayPurchaseUnk final : public ServerPacket
         {
         public:
-            BattlePayPurchaseUnk() : ServerPacket(SMSG_BATTLE_PAY_PURCHASE_UNK, 20) { }
+            BattlepayPurchaseUnk() : ServerPacket(SMSG_BATTLE_PAY_PURCHASE_UNK, 20) { }
 
             WorldPacket const* Write() override;
 
@@ -460,10 +460,10 @@ namespace WorldPackets
             uint8 UnkByte = 0;
         };
 
-        class BattlePayBattlePetDelivered final : public ServerPacket
+        class BattlepayBattlePetDelivered final : public ServerPacket
         {
         public:
-            BattlePayBattlePetDelivered(ObjectGuid guid, uint32 id) : ServerPacket(SMSG_BATTLE_PAY_BATTLE_PET_DELIVERED, 20), BattlePetGuid(guid), DisplayID(id) { }
+            BattlepayBattlePetDelivered(ObjectGuid guid, uint32 id) : ServerPacket(SMSG_BATTLE_PAY_BATTLE_PET_DELIVERED, 20), BattlePetGuid(guid), DisplayID(id) { }
 
             WorldPacket const* Write() override;
 
@@ -471,20 +471,20 @@ namespace WorldPackets
             uint32 DisplayID = 0;
         };
 
-        class BattlePayPurchaseDetailsResponse final : public ClientPacket
+        class BattlepayPurchaseDetailsResponse final : public ClientPacket
         {
         public:
-            BattlePayPurchaseDetailsResponse(WorldPacket&& packet) : ClientPacket(CMSG_BATTLE_PAY_PURCHASE_DETAILS_RESPONSE, std::move(packet)) { }
+            BattlepayPurchaseDetailsResponse(WorldPacket&& packet) : ClientPacket(CMSG_BATTLE_PAY_PURCHASE_DETAILS_RESPONSE, std::move(packet)) { }
 
             void Read() override;
 
             uint8 UnkByte = 0;
         };
 
-        class BattlePayPurchaseUnkResponse final : public ClientPacket
+        class BattlepayPurchaseUnkResponse final : public ClientPacket
         {
         public:
-            BattlePayPurchaseUnkResponse(WorldPacket&& packet) : ClientPacket(CMSG_BATTLE_PAY_PURCHASE_UNK_RESPONSE, std::move(packet)) { }
+            BattlepayPurchaseUnkResponse(WorldPacket&& packet) : ClientPacket(CMSG_BATTLE_PAY_PURCHASE_UNK_RESPONSE, std::move(packet)) { }
 
             void Read() override;
 
@@ -503,10 +503,10 @@ namespace WorldPackets
         };
 
 
-        class BattlePayStartDistributionAssignToTargetResponse final : public ServerPacket
+        class BattlepayStartDistributionAssignToTargetResponse final : public ServerPacket
         {
         public:
-            BattlePayStartDistributionAssignToTargetResponse() : ServerPacket(SMSG_BATTLE_PAY_START_DISTRIBUTION_ASSIGN_TO_TARGET_RESPONSE, 16) { }
+            BattlepayStartDistributionAssignToTargetResponse() : ServerPacket(SMSG_BATTLE_PAY_START_DISTRIBUTION_ASSIGN_TO_TARGET_RESPONSE, 16) { }
 
             WorldPacket const* Write() override;
 
@@ -518,8 +518,8 @@ namespace WorldPackets
 }
 
 ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::ProductDisplayInfo const& displayInfo);
-ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::BattlePayProduct const& product);
-ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::BattlePayDistributionObject const& object);
-ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::BattlePayPurchase const& purchase);
+ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::BattlepayProductItem const& productItem);
+ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::BattlepayDistributionObject const& object);
+ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::BattlepayPurchase const& purchase);
 
-#endif // BattlePayPackets_h__
+#endif // BattlepayPackets_h__

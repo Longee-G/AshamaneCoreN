@@ -15,6 +15,3 @@ CREATE TABLE `battlepay_product_visuals` (
 -- ----------------------------
 INSERT INTO `battlepay_product_visuals` VALUES ('50', '30507', '76', "Koro\'Tyshka");
 
-
-
-DROP TABLE IF EXISTS `battlepay_product_info`;

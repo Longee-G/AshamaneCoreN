@@ -52,7 +52,7 @@
 #include "WardenWin.h"
 #include "World.h"
 #include "WorldSocket.h"
-#include "BattlePayMgr.h"
+#include "BattlepayMgr.h"
 
 namespace {
 

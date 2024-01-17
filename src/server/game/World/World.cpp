@@ -93,7 +93,7 @@
 #include "WorldQuestMgr.h"
 #include "WorldSession.h"
 #include "WorldSocket.h"
-#include "BattlePayDataStore.h"
+#include "BattlepayDataStore.h"
 
 #include <boost/algorithm/string.hpp>
 
@@ -2134,7 +2134,7 @@ void World::SetInitialWorldSettings()
 
     // [Longee]
     TC_LOG_INFO("server.loading", "Loading battlepay data...");
-    sBattlePayDataStore->Initialize();
+    sBattlepayDataStore->Initialize();
 
     ///- Initialize MapManager
     TC_LOG_INFO("server.loading", "Starting Map System");

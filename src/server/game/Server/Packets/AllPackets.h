@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -83,6 +83,6 @@
 #include "WardenPackets.h"
 #include "WhoPackets.h"
 #include "WorldStatePackets.h"
-#include "BattlePayPackets.h"
+#include "BattlepayPackets.h"
 
 #endif // AllPackets_h__

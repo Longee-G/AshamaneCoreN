@@ -19,12 +19,12 @@
 #ifndef _BATTLE_PAY_DATA_STORE_H
 #define _BATTLE_PAY_DATA_STORE_H
 
-#include "BattlePayPackets.h"
-#include "BattlePayMgr.h"
+#include "BattlepayPackets.h"
+#include "BattlepayMgr.h"
 
 
 
-struct BattlePayDisplayInfoLocale
+struct BattlepayDisplayInfoLocale
 {
     StringVector Name1;
     StringVector Name2;
@@ -33,13 +33,13 @@ struct BattlePayDisplayInfoLocale
 };
 
 // Battlepay load from Database NOT from .db2 file
-class BattlePayDataStoreMgr
+class BattlepayDataStoreMgr
 {
-    BattlePayDataStoreMgr();
-    ~BattlePayDataStoreMgr();
+    BattlepayDataStoreMgr();
+    ~BattlepayDataStoreMgr();
 
 public:
-    static BattlePayDataStoreMgr* instance();
+    static BattlepayDataStoreMgr* instance();
 
     void Initialize();
     std::vector<Battlepay::ProductGroup> const& GetProductGroups() const;
@@ -51,7 +51,7 @@ public:
     Battlepay::DisplayInfo const* GetDisplayInfo(uint32 id) const;
     std::vector<WorldPackets::Battlepay::ProductDisplayVisualData> const* GetDisplayInfoVisuals(uint32 id) const;
     Battlepay::ProductGroupLocale const* GetProductGroupLocale(uint32 entry) const;
-    BattlePayDisplayInfoLocale const* GetDisplayInfoLocale(uint32 entry) const;
+    BattlepayDisplayInfoLocale const* GetDisplayInfoLocale(uint32 entry) const;
     Battlepay::ProductGroup* GetProductGroup(uint32 groupID) const;
     Battlepay::ProductGroup* GetProductGroupForProductId(uint32 productID) const;
     std::unordered_map<uint8, Battlepay::TokenType>& GetTokenTypes();
@@ -69,6 +69,6 @@ private:
     Battlepay::Product _temp = {};
 };
 
-#define sBattlePayDataStore BattlePayDataStoreMgr::instance()
+#define sBattlepayDataStore BattlepayDataStoreMgr::instance()
 
 #endif

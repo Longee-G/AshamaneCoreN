@@ -18,10 +18,10 @@
 
 #include "Common.h"
 #include "ObjectMgr.h"
-#include "BattlePayMgr.h"
+#include "BattlepayMgr.h"
 #include "WorldSession.h"
 #include "Player.h"
-#include "BattlePayDataStore.h"
+#include "BattlepayDataStore.h"
 #include "DatabaseEnv.h"
 #include "ScriptMgr.h"
 #include "AccountMgr.h"
@@ -87,7 +87,7 @@ std::string const& BattlepayManager::GetDefaultWalletName() const
     return _walletName;
 }
 
-BattlePayCurrency BattlepayManager::GetShopCurrency() const
+BattlepayCurrency BattlepayManager::GetShopCurrency() const
 {
     /// @TODO: Move that to config files
     return Usd;
@@ -109,7 +109,7 @@ std::string Product::Serialize() const
     res += ", Type: " + std::to_string(WebsiteType);
     res += ", Quantity: " + std::to_string(1);
     res += ", IngameShop: " + std::to_string(1);
-    res += ", CustomData: " + sScriptMgr->BattlePayGetCustomData(*this);
+    res += ", CustomData: " + sScriptMgr->BattlepayGetCustomData(*this);
 
     uint32 idx = 0;
     for (auto const& itr : Items)
@@ -144,7 +144,7 @@ void BattlepayManager::ProcessDelivery(Purchase* purchase)
     // _existProducts.insert
     auto player = _session->GetPlayer(); // atm only ingame shop -_-
 
-    auto const& product = sBattlePayDataStore->GetProduct(purchase->ProductID);
+    auto const& product = sBattlepayDataStore->GetProduct(purchase->ProductID);
     switch (product.WebsiteType)
     {
     case Battlepay::Item:
@@ -181,7 +181,7 @@ void BattlepayManager::ProcessDelivery(Purchase* purchase)
         //if (_session->HasAuthFlag(AT_AUTH_FLAG_90_LVL_UP)) //@send error?
         //    break;
 
-        //SendBattlePayDistribution(purchase->ProductID, DistributionStatus::BATTLE_PAY_DIST_STATUS_AVAILABLE, 1);
+        //SendBattlepayDistribution(purchase->ProductID, DistributionStatus::BATTLE_PAY_DIST_STATUS_AVAILABLE, 1);
 
         //if (player)
         //    sCharacterService->Boost(player);
@@ -233,7 +233,7 @@ void BattlepayManager::ProcessDelivery(Purchase* purchase)
     }
 
     if (!product.ScriptName.empty())
-        sScriptMgr->OnBattlePayProductDelivery(_session, product);
+        sScriptMgr->OnBattlepayProductDelivery(_session, product);
 }
 
 bool BattlepayManager::AlreadyOwnProduct(uint32 itemId) const
@@ -380,7 +380,7 @@ void BattlepayManager::SendProductList()
     response.Result = ProductListResult::Available;
     response.ProductList.CurrencyID = GetShopCurrency();
 
-    for (auto& itr : sBattlePayDataStore->GetProductGroups())
+    for (auto& itr : sBattlepayDataStore->GetProductGroups())
     {
         if (!player && itr.IngameOnly)
             continue;
@@ -388,7 +388,7 @@ void BattlepayManager::SendProductList()
         if (itr.OwnsTokensOnly  && GetBalance(itr.TokenType) <= 0)
             continue;
 
-        WorldPackets::Battlepay::BattlePayProductGroup pGroup;
+        WorldPackets::Battlepay::BattlepayProductGroup pGroup;
         pGroup.GroupID = itr.GroupID;
         pGroup.IconFileDataID = itr.IconFileDataID;
         pGroup.Ordering = itr.Ordering;
@@ -397,15 +397,16 @@ void BattlepayManager::SendProductList()
         pGroup.DisplayType = itr.DisplayType;
 
         auto name = itr.Name;
-        if (auto productLocale = sBattlePayDataStore->GetProductGroupLocale(itr.GroupID))
+        if (auto productLocale = sBattlepayDataStore->GetProductGroupLocale(itr.GroupID))
             ObjectMgr::GetLocaleString(productLocale->Name, localeIndex, name);
         pGroup.Name = name;
         response.ProductList.ProductGroup.emplace_back(pGroup);
     }
 
-    for (auto const& itr : sBattlePayDataStore->GetShopEntries())
+    // shop list ...
+    for (auto const& itr : sBattlepayDataStore->GetShopEntries())
     {
-        Battlepay::ProductGroup* productGroup = sBattlePayDataStore->GetProductGroup(itr.GroupID);
+        Battlepay::ProductGroup* productGroup = sBattlepayDataStore->GetProductGroup(itr.GroupID);
         if (!productGroup)
             continue;
 
@@ -415,7 +416,7 @@ void BattlepayManager::SendProductList()
         if (productGroup->OwnsTokensOnly && GetBalance(productGroup->TokenType) <= 0)
             continue;
 
-        WorldPackets::Battlepay::BattlePayShopEntry sEntry;
+        WorldPackets::Battlepay::BattlepayShopEntry sEntry;
         sEntry.EntryID = itr.EntryID;
         sEntry.GroupID = itr.GroupID;
         sEntry.ProductID = itr.ProductID;
@@ -437,13 +438,15 @@ void BattlepayManager::SendProductList()
 
     uint8 test = 0;
 
-    for (auto const& itr : sBattlePayDataStore->GetProducts())
+    uint32 testFlags = urand(1, 256);
+
+    for (auto const& itr : sBattlepayDataStore->GetProducts())
     {
         auto const& product = itr.second;
         if (!ProductFilter(product))
             continue;
 
-        Battlepay::ProductGroup* productGroup = sBattlePayDataStore->GetProductGroupForProductId(product.ProductID);
+        Battlepay::ProductGroup* productGroup = sBattlepayDataStore->GetProductGroupForProductId(product.ProductID);
         if (!productGroup)
             continue;
 
@@ -461,17 +464,32 @@ void BattlepayManager::SendProductList()
         pInfo.ChoiceType = product.ChoiceType;
 
 
-        // 但是如果不填写这个变量，会导致商城的信息在角色界面和游戏中都显示不出来
         // 1. 如果填写了itemId or 0，在角色界面不会出错误，但是游戏中Icon不显示Tooltips
-        // 2. 如果不填入内容
+        // 2. 如果不填入内容， 也不显示tips
 
-        // 3. 如果填入ProductId，才可以通过  WorldPackets::Battlepay::BattlePayProduct.UnkInt0 来设置tooltips的itemId ...
+        // 3. 如果填入ProductId，才可以通过  WorldPackets::Battlepay::BattlepayProductItem.UnkInt0 来设置tooltips的itemId ...
         //    但是这个tips只能在游戏内才能用，还会导致游戏外界面出现lua crash ...
 
         // FIXME: 有可能游戏内和游戏外需要给不一样的数据 ...
-        if(hasPlayer)
-            for(auto v : product.Items)
-                pInfo.ProductIDs.emplace_back(product.ProductID);
+        
+            for (auto v : product.Items)
+            {
+                // 尝试填入多份数据看看 .
+                if (hasPlayer)
+                {
+                    pInfo.ProductIDs.emplace_back(product.ProductID);
+                    //pInfo.UnkInts.emplace_back(product.ProductID);
+                }
+                else
+                {
+                    pInfo.UnkInts.emplace_back(product.DisplayInfoID);
+                }
+                //pInfo.ProductIDs.emplace_back(product.ProductID+1);
+                //pInfo.ProductIDs.emplace_back(product.ProductID+2);
+                //pInfo.ProductIDs.emplace_back(product.ProductID+3);
+            }
+
+                
 
         //std::vector<uint32> UnkInts;
         // 1. 填入displayInfoId，没有发现问题.. 但是 Item Tips 显示不出来 ..
@@ -480,8 +498,8 @@ void BattlepayManager::SendProductList()
         // 4. 如果填入 ProductId，
         // 无法分析出是什么...
 
-        for (auto v2 : product.Items)
-            pInfo.UnkInts.emplace_back(v2.ItemID);
+        //for (auto v2 : product.Items)
+        //    pInfo.UnkInts.emplace_back(v2.ItemID);
 
         // Flags: 分析
         // 0x00     商城中不显示商品 ...
@@ -491,8 +509,11 @@ void BattlepayManager::SendProductList()
         // 0x08     Unk
         // 0x10     Unk
         // 0x20     Unk
-        //pInfo.UnkInt2 = 47; //          battlepay_product.Flags
-        pInfo.UnkInt2 = 0x10 | 0x01 | 0x04;
+
+        //pInfo.UnkInt2 = product.Flags;  //          battlepay_product.Flags default=47
+        pInfo.UnkInt2 = 0x01 | 0x04 | testFlags;
+        testFlags++;
+        //pInfo.UnkInt2 |= 0x08;
 
         // 进行测试，检查display Info是在这个数据上设置的？
         // 经过测试，这个数据是用来显示卡片内容的 ... 游戏内外都是 ...
@@ -517,26 +538,33 @@ void BattlepayManager::SendProductList()
         response.ProductList.ProductInfo.emplace_back(pInfo);
 
         // 设置商店中商品的信息
-        WorldPackets::Battlepay::BattlePayProduct pProduct;
+        WorldPackets::Battlepay::BattlepayProductItem pProduct;
         pProduct.ProductID = product.ProductID;
         pProduct.UnkBit = false;           // 标记player是否已经购买此商品？
         //pProduct.UnkBits Optional<uint16>;
+        // 测试 pProduct.UnkBits
+        // 填满4个位 ... 
+        pProduct.UnkBits = 0x0F;
+
 
 
         uint32 itemId = product.Items.size() > 0 ? product.Items[0].ItemID : 0;
 
 
 
+        // Type =0 缺省
+        // Type =1 会在ICon的右下角出现一个向上的绿色箭头图标 ...游戏内才能看到？
+        // 其他的值不清除 ....
+        pProduct.Type = product.Type;
 
-        pProduct.Type = product.Type;           // 这个type数据从哪来的？ 来自`battlepay_product.Type`，都是 0，未知含义
-        pProduct.UnkBits = 0;  // is Flags 
+        //pProduct.UnkBits = 0;  // is Flags 
         pProduct.UnkInt0 = itemId;                 //     product.Items[0].ItemID
         pProduct.UnkInt1 = 10992;
         pProduct.DisplayId = 10992;
         pProduct.UnkInt3 = 10992;
         pProduct.UnkInt4 = 10992;
         pProduct.UnkInt5 = 10992;
-        pProduct.UnkString = "1";  //  未知字符串，长度不能超过255个字节...
+        pProduct.UnkString = "";  //  未知字符串，长度不能超过255个字节...
 
 
         for (auto& item : product.Items)
@@ -547,16 +575,15 @@ void BattlepayManager::SendProductList()
             pItem.ItemID = product.Items.size() > 1 ? 0 : item.ItemID; ///< Disable tooltip for packs (client handle only one tooltip).
             pItem.Quantity = item.Quantity;
 
-            pItem.UnkByte = 1;          // Flag ?
-            pItem.UnkInt1 = 10992;     // 测试
-            pItem.UnkInt2 = 10992;
-
-            
+            //pItem.UnkByte = 1;          // Flag ?
+            //pItem.UnkInt1 = 10992;     // 测试
+            //pItem.UnkInt2 = 10992;
 
             // if the product is already owned disable the buy button
             // also disable the button if we don't show the price for a product
             // and the player does not have enough tokens to pay for the product
             pItem.HasPet = AlreadyOwnProduct(item.ItemID) || (hideProductPrice && !hasEnoughTokens);
+
             pItem.PetResult = item.PetResult;
 
             // 测试这个地方如果有数据的情况 ...
@@ -603,24 +630,24 @@ std::tuple<bool, WorldPackets::Battlepay::ProductDisplayInfo> BattlepayManager::
         {
             switch (quality)
             {
-            case ITEM_QUALITY_POOR:
-                return "|cff9d9d9d";
-            case ITEM_QUALITY_NORMAL:
-                return "|cffffffff";
-            case ITEM_QUALITY_UNCOMMON:
-                return "|cff1eff00";
-            case ITEM_QUALITY_RARE:
-                return "|cff0070dd";
-            case ITEM_QUALITY_EPIC:
-                return "|cffa335ee";
-            case ITEM_QUALITY_LEGENDARY:
-                return "|cffff8000";
-            case ITEM_QUALITY_ARTIFACT:
-                return "|cffe5cc80";
-            case ITEM_QUALITY_HEIRLOOM:
-                return "|cffe5cc80";
-            default:
-                return "|cffe5cc80";
+                case ITEM_QUALITY_POOR:
+                    return "|cff9d9d9d";
+                case ITEM_QUALITY_NORMAL:
+                    return "|cffffffff";
+                case ITEM_QUALITY_UNCOMMON:
+                    return "|cff1eff00";
+                case ITEM_QUALITY_RARE:
+                    return "|cff0070dd";
+                case ITEM_QUALITY_EPIC:
+                    return "|cffa335ee";
+                case ITEM_QUALITY_LEGENDARY:
+                    return "|cffff8000";
+                case ITEM_QUALITY_ARTIFACT:
+                    return "|cffe5cc80";
+                case ITEM_QUALITY_HEIRLOOM:
+                    return "|cffe5cc80";
+                default:
+                    return "|cffe5cc80";
             }
         };
 
@@ -636,11 +663,11 @@ std::tuple<bool, WorldPackets::Battlepay::ProductDisplayInfo> BattlepayManager::
         return std::make_tuple(false, info);
 
 
-    auto displayInfo = sBattlePayDataStore->GetDisplayInfo(displayInfoID);
+    auto displayInfo = sBattlepayDataStore->GetDisplayInfo(displayInfoID);
     if (!displayInfo)
         return std::make_tuple(false, info);
 
-    auto displayLocale = sBattlePayDataStore->GetDisplayInfoLocale(displayInfoID);
+    auto displayLocale = sBattlepayDataStore->GetDisplayInfoLocale(displayInfoID);
 
     info.Name1 = displayInfo->Name1;
     if (displayLocale)
@@ -653,7 +680,7 @@ std::tuple<bool, WorldPackets::Battlepay::ProductDisplayInfo> BattlepayManager::
     info.Name3 = displayInfo->Name3;
     if (productId)
     {
-        auto product = sBattlePayDataStore->GetProduct(productId);
+        auto product = sBattlepayDataStore->GetProduct(productId);
         if (!product.Items.empty())
             info.Name3 = GeneratePackDescription(product);
     }
@@ -664,30 +691,41 @@ std::tuple<bool, WorldPackets::Battlepay::ProductDisplayInfo> BattlepayManager::
     if (displayLocale)
         ObjectMgr::GetLocaleString(displayLocale->Name4, localeIndex, info.Name4);
 
-
+    
+    if (displayInfo->CreatureDisplayInfoID)
         info.CreatureDisplayInfoID = displayInfo->CreatureDisplayInfoID;
+
+    if(displayInfo->IconFileID)
         info.IconFileID = displayInfo->IconFileID;
 
 
-    if(displayInfo->Flags)
+    if (displayInfo->Flags)
+    {
         info.Flags = displayInfo->Flags;        // BattlepayDisplayFlag
+    }
+    // 测试
+    info.Flags = 0xFFFFFFFF & ~(0x02 | 0x04 | 0x08 );
+
+        
 
     //info.UnkInt1 = 0xFF0000;          // Name1 Color
-    //info.UnkInt2 = 0;
-    //info.UnkInt3 = 0;
+    //info.UnkInt2 = 5448;            // Replace Card's IconFileID
+    //info.UnkInt3 = 5448;          // Replace Card's BackgroundFileID
 
 
     if (displayInfo->CreatureDisplayInfoID)  // 使用了模型方式来显示卡片
     {
-        if (auto visuals = sBattlePayDataStore->GetDisplayInfoVisuals(displayInfoID))
+        if (auto visuals = sBattlepayDataStore->GetDisplayInfoVisuals(displayInfoID))
         {
             // 如果关联了有效的VisualData 那么就会在卡片的左上角出现一个预览的小图标，点击后弹出新的窗口
             // 也就是说Visuals是用来显示preview的吗？
             for (auto const& itr : *visuals)
             {              
                 WorldPackets::Battlepay::ProductDisplayVisualData visual;
-                visual.DisplayId = itr.DisplayId;       
-                visual.VisualId = itr.VisualId;
+                //visual.DisplayId = itr.DisplayId;
+                //visual.VisualId = itr.VisualId;
+                visual.DisplayId = 76 ;
+                visual.VisualId = 134514;
                 visual.ProductName = itr.ProductName;
                 info.Visuals.emplace_back(visual);
             }
@@ -705,7 +743,7 @@ void BattlepayManager::SendPointsBalance()
 
     chatHandler.PSendSysMessage("Account name: %s", _session->GetAccountName());
 
-    for (auto& tokenType : sBattlePayDataStore->GetTokenTypes())
+    for (auto& tokenType : sBattlepayDataStore->GetTokenTypes())
     {
         int64 balance = GetBalance(tokenType.first);
         if (balance || tokenType.second.listIfNone)
@@ -713,27 +751,27 @@ void BattlepayManager::SendPointsBalance()
     }
 }
 
-void BattlepayManager::SendBattlePayDistribution(uint32 productId, uint8 status, uint64 distributionId, ObjectGuid targetGuid)
+void BattlepayManager::SendBattlepayDistribution(uint32 productId, uint8 status, uint64 distributionId, ObjectGuid targetGuid)
 {
-    WorldPackets::Battlepay::DistributionUpdate distributionBattlePay;
-    auto product = sBattlePayDataStore->GetProduct(productId);
+    WorldPackets::Battlepay::DistributionUpdate distributionBattlepay;
+    auto product = sBattlepayDataStore->GetProduct(productId);
     if (!product.ProductID)
         return;
 
     auto const& localeIndex = _session->GetSessionDbLocaleIndex();
-    distributionBattlePay.DistributionObject.DistributionID = distributionId;
-    distributionBattlePay.DistributionObject.Status = status;
-    distributionBattlePay.DistributionObject.ProductID = productId;
-    distributionBattlePay.DistributionObject.Revoked = false; // not needed for us
+    distributionBattlepay.DistributionObject.DistributionID = distributionId;
+    distributionBattlepay.DistributionObject.Status = status;
+    distributionBattlepay.DistributionObject.ProductID = productId;
+    distributionBattlepay.DistributionObject.Revoked = false; // not needed for us
 
     if (!targetGuid.IsEmpty())
     {
-        distributionBattlePay.DistributionObject.TargetPlayer = targetGuid;
-        distributionBattlePay.DistributionObject.TargetVirtualRealm = GetVirtualRealmAddress();
-        distributionBattlePay.DistributionObject.TargetNativeRealm = GetVirtualRealmAddress();
+        distributionBattlepay.DistributionObject.TargetPlayer = targetGuid;
+        distributionBattlepay.DistributionObject.TargetVirtualRealm = GetVirtualRealmAddress();
+        distributionBattlepay.DistributionObject.TargetNativeRealm = GetVirtualRealmAddress();
     }
 
-    WorldPackets::Battlepay::BattlePayProduct productData;
+    WorldPackets::Battlepay::BattlepayProductItem productData;
 
     for (auto const& item : product.Items)
     {
@@ -778,8 +816,8 @@ void BattlepayManager::SendBattlePayDistribution(uint32 productId, uint8 status,
     productData.UnkString = "";    
     productData.UnkBit = false;
 
-    distributionBattlePay.DistributionObject.Product = std::move(productData);
-    _session->SendPacket(distributionBattlePay.Write());
+    distributionBattlepay.DistributionObject.Product = std::move(productData);
+    _session->SendPacket(distributionBattlepay.Write());
 }
 
 void BattlepayManager::AssignDistributionToCharacter(ObjectGuid const& targetCharGuid, uint64 distributionId, uint32 productId, uint16 specId, uint16 choiceId)
@@ -788,7 +826,7 @@ void BattlepayManager::AssignDistributionToCharacter(ObjectGuid const& targetCha
     upgrade.CharacterGUID = targetCharGuid;
     _session->SendPacket(upgrade.Write());
 
-    WorldPackets::Battlepay::BattlePayStartDistributionAssignToTargetResponse assignResponse;
+    WorldPackets::Battlepay::BattlepayStartDistributionAssignToTargetResponse assignResponse;
     assignResponse.DistributionID = distributionId;
     assignResponse.unkint1 = 0;
     assignResponse.unkint2 = 0;
@@ -797,7 +835,7 @@ void BattlepayManager::AssignDistributionToCharacter(ObjectGuid const& targetCha
     auto purchase = GetPurchase();
     purchase->Status = DistributionStatus::BATTLE_PAY_DIST_STATUS_ADD_TO_PROCESS;
 
-    SendBattlePayDistribution(productId, purchase->Status, distributionId, targetCharGuid);
+    SendBattlepayDistribution(productId, purchase->Status, distributionId, targetCharGuid);
 }
 
 
@@ -805,7 +843,7 @@ void BattlepayManager::AssignDistributionToCharacter(ObjectGuid const& targetCha
 void BattlepayManager::Update(uint32 diff)
 {
     auto& data = _actualTransaction;
-    auto& product = sBattlePayDataStore->GetProduct(data.ProductID);
+    auto& product = sBattlepayDataStore->GetProduct(data.ProductID);
 
     switch (data.Status)
     {
@@ -820,7 +858,7 @@ void BattlepayManager::Update(uint32 diff)
             if (!player)
                 break;
 
-            WorldPackets::Battlepay::BattlePayCharacterUpgradeQueued responseQueued;
+            WorldPackets::Battlepay::BattlepayCharacterUpgradeQueued responseQueued;
             //responseQueued.EquipmentItems = sDB2Manager.GetItemLoadOutItemsByClassID(player->getClass(), 3)[0];
             // 从CharacterLoadout数据中获取直升服务给角色的物品  purpose = 3 ?
             
@@ -832,7 +870,7 @@ void BattlepayManager::Update(uint32 diff)
             _session->SendPacket(responseQueued.Write());
 
             data.Status = DistributionStatus::BATTLE_PAY_DIST_STATUS_PROCESS_COMPLETE;
-            SendBattlePayDistribution(data.ProductID, data.Status, data.DistributionId, data.TargetCharacter);
+            SendBattlepayDistribution(data.ProductID, data.Status, data.DistributionId, data.TargetCharacter);
             break;
         }
         default:
@@ -847,7 +885,7 @@ void BattlepayManager::Update(uint32 diff)
         case CharacterBoost:
         {
             data.Status = DistributionStatus::BATTLE_PAY_DIST_STATUS_FINISHED;
-            SendBattlePayDistribution(data.ProductID, data.Status, data.DistributionId, data.TargetCharacter);
+            SendBattlepayDistribution(data.ProductID, data.Status, data.DistributionId, data.TargetCharacter);
             break;
         }
         default:
@@ -860,7 +898,7 @@ void BattlepayManager::Update(uint32 diff)
         switch (product.WebsiteType)
         {
         case CharacterBoost:
-            SendBattlePayDistribution(data.ProductID, data.Status, data.DistributionId, data.TargetCharacter);
+            SendBattlepayDistribution(data.ProductID, data.Status, data.DistributionId, data.TargetCharacter);
             break;
         default:
             break;

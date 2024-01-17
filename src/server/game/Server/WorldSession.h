@@ -837,11 +837,11 @@ namespace WorldPackets
         class GetProductList;
         class GetPurchaseListQuery;
         class UpdateVasPurchaseStates;
-        class BattlePayAckFailedResponse;
-        class BattlePayQueryClassTrialResult;
-        class BattlePayTrialBoostCharacter;
-        class BattlePayPurchaseDetailsResponse;
-        class BattlePayPurchaseUnkResponse;
+        class BattlepayAckFailedResponse;
+        class BattlepayQueryClassTrialResult;
+        class BattlepayTrialBoostCharacter;
+        class BattlepayPurchaseDetailsResponse;
+        class BattlepayPurchaseUnkResponse;
         class RequestConsumptionConversionInfo;
     }
 
@@ -1881,17 +1881,17 @@ class TC_GAME_API WorldSession
         // battlepay...
         void HandleRequestConsumptionConversionInfo(WorldPackets::Battlepay::RequestConsumptionConversionInfo& packet);
         void HandleGetPurchaseListQuery(WorldPackets::Battlepay::GetPurchaseListQuery& packet);
-        void HandleBattlePayQueryClassTrialResult(WorldPackets::Battlepay::BattlePayQueryClassTrialResult& packet);
-        void HandleBattlePayTrialBoostCharacter(WorldPackets::Battlepay::BattlePayTrialBoostCharacter& packet);
-        void HandleBattlePayPurchaseUnkResponse(WorldPackets::Battlepay::BattlePayPurchaseUnkResponse& packet);
-        void HandleBattlePayPurchaseDetailsResponse(WorldPackets::Battlepay::BattlePayPurchaseDetailsResponse& packet);
+        void HandleBattlepayQueryClassTrialResult(WorldPackets::Battlepay::BattlepayQueryClassTrialResult& packet);
+        void HandleBattlepayTrialBoostCharacter(WorldPackets::Battlepay::BattlepayTrialBoostCharacter& packet);
+        void HandleBattlepayPurchaseUnkResponse(WorldPackets::Battlepay::BattlepayPurchaseUnkResponse& packet);
+        void HandleBattlepayPurchaseDetailsResponse(WorldPackets::Battlepay::BattlepayPurchaseDetailsResponse& packet);
         void HandleUpdateVasPurchaseStates(WorldPackets::Battlepay::UpdateVasPurchaseStates& packet);
         void HandleGetProductList(WorldPackets::Battlepay::GetProductList& packet);
-        void HandleBattlePayDistributionAssign(WorldPackets::Battlepay::DistributionAssignToTarget& packet);
-        void HandleBattlePayStartPurchase(WorldPackets::Battlepay::StartPurchase& packet);
-        void HandleBattlePayPurchaseProduct(WorldPackets::Battlepay::PurchaseProduct& packet);
-        void HandleBattlePayConfirmPurchase(WorldPackets::Battlepay::ConfirmPurchaseResponse& packet);
-        void HandleBattlePayAckFailedResponse(WorldPackets::Battlepay::BattlePayAckFailedResponse& packet);
+        void HandleBattlepayDistributionAssign(WorldPackets::Battlepay::DistributionAssignToTarget& packet);
+        void HandleBattlepayStartPurchase(WorldPackets::Battlepay::StartPurchase& packet);
+        void HandleBattlepayPurchaseProduct(WorldPackets::Battlepay::PurchaseProduct& packet);
+        void HandleBattlepayConfirmPurchase(WorldPackets::Battlepay::ConfirmPurchaseResponse& packet);
+        void HandleBattlepayAckFailedResponse(WorldPackets::Battlepay::BattlepayAckFailedResponse& packet);
 
         void SendDisplayPromo(int32 promotionID = 0);
 

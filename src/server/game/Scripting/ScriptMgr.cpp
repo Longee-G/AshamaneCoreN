@@ -49,7 +49,7 @@
 #include "Weather.h"
 #include "WorldPacket.h"
 #include "ZoneScript.h"
-#include "BattlePayMgr.h"
+#include "BattlepayMgr.h"
 #include <unordered_map>
 
 // Trait which indicates whether this script type
@@ -136,7 +136,7 @@ struct is_script_database_bound<ZoneScript>
 
 // TODO:
 template<>
-struct is_script_database_bound<BattlePayProductScript>
+struct is_script_database_bound<BattlepayProductScript>
     : std::true_type {};
 
 
@@ -680,10 +680,10 @@ template<typename Base>
 class ScriptRegistrySwapHooks<GarrisonScript, Base>
     : public UnsupportedScriptRegistrySwapHooks<Base> { };
 
-/// This hook is responsible for swapping BattlePayProductScript's
+/// This hook is responsible for swapping BattlepayProductScript's
 /// TODO:
 template<typename Base>
-class ScriptRegistrySwapHooks<BattlePayProductScript, Base>
+class ScriptRegistrySwapHooks<BattlepayProductScript, Base>
     : public UnsupportedScriptRegistrySwapHooks<Base> { };
 
 /// This hook is responsible for swapping OutdoorPvP's
@@ -1886,27 +1886,27 @@ ZoneScript* ScriptMgr::GetZoneScript(uint32 scriptId)
 }
 
 // what is `Battle Pay`
-std::string ScriptMgr::BattlePayGetCustomData(Battlepay::Product const & product)
+std::string ScriptMgr::BattlepayGetCustomData(Battlepay::Product const & product)
 {
     // TODO:
-    GET_SCRIPT_RET(BattlePayProductScript, sObjectMgr->GetScriptId(product.ScriptName.c_str()), tmpscript, nullptr);
+    GET_SCRIPT_RET(BattlepayProductScript, sObjectMgr->GetScriptId(product.ScriptName.c_str()), tmpscript, nullptr);
     return tmpscript->GetCustomData(product);
 }
 
 // deal with pay service ...
-void ScriptMgr::OnBattlePayProductDelivery(WorldSession * session, Battlepay::Product const & product)
+void ScriptMgr::OnBattlepayProductDelivery(WorldSession * session, Battlepay::Product const & product)
 {
     ASSERT(session);
-    GET_SCRIPT(BattlePayProductScript, sObjectMgr->GetScriptId(product.ScriptName.c_str()), tmpscript);
+    GET_SCRIPT(BattlepayProductScript, sObjectMgr->GetScriptId(product.ScriptName.c_str()), tmpscript);
     tmpscript->OnProductDelivery(session, product);
 }
 
 // 检查指定的付费服务是否可用 ...
-bool ScriptMgr::BattlePayCanBuy(WorldSession * session, Battlepay::Product const & product, std::string & reason)
+bool ScriptMgr::BattlepayCanBuy(WorldSession * session, Battlepay::Product const & product, std::string & reason)
 {
     ASSERT(session);
 
-    GET_SCRIPT_RET(BattlePayProductScript, sObjectMgr->GetScriptId(product.ScriptName.c_str()), tmpscript, false);
+    GET_SCRIPT_RET(BattlepayProductScript, sObjectMgr->GetScriptId(product.ScriptName.c_str()), tmpscript, false);
     return tmpscript->CanBuy(session, product, reason);
 }
 
@@ -2966,11 +2966,11 @@ ZoneScript::ZoneScript(const char* name)
     ScriptRegistry<ZoneScript>::Instance()->AddScript(this);
 }
 
-// implement `BattlePayProductScript`
-BattlePayProductScript::BattlePayProductScript(std::string scriptName)
+// implement `BattlepayProductScript`
+BattlepayProductScript::BattlepayProductScript(std::string scriptName)
     : ScriptObject(scriptName.c_str())
 {
-    ScriptRegistry<BattlePayProductScript>::Instance()->AddScript(this);
+    ScriptRegistry<BattlepayProductScript>::Instance()->AddScript(this);
 }
 
 // Specialize for each script type class like so:
@@ -3007,7 +3007,7 @@ template class TC_GAME_API ScriptRegistry<ConversationScript>;
 template class TC_GAME_API ScriptRegistry<SceneScript>;
 template class TC_GAME_API ScriptRegistry<QuestScript>;
 template class TC_GAME_API ScriptRegistry<ZoneScript>;
-template class TC_GAME_API ScriptRegistry<BattlePayProductScript>;
+template class TC_GAME_API ScriptRegistry<BattlepayProductScript>;
 
 
 

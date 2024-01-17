@@ -59,7 +59,7 @@
 #include "SystemPackets.h"
 #include "Util.h"
 #include "World.h"
-#include "BattlePayMgr.h"
+#include "BattlepayMgr.h"
 
 class LoginQueryHolder : public SQLQueryHolder
 {

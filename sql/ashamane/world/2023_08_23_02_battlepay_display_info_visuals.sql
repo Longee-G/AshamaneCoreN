@@ -13,3 +13,4 @@ CREATE TABLE `battlepay_display_info_visuals` (
 -- ----------------------------
 -- Records of battlepay_display_info_visuals
 -- ----------------------------
+-- ...

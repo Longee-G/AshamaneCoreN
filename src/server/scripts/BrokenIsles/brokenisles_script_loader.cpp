@@ -178,7 +178,7 @@ void AddSC_boss_sisters_of_moon();
 void AddSC_tomb_of_sargeras();
 void AddSC_instance_tomb_of_sargeras();
 
-void AddBattlePayScripts()
+void AddBattlepayScripts()
 {
     // TODO: NYI
 }

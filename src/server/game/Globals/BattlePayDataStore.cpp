@@ -16,19 +16,19 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "BattlePayDataStore.h"
+#include "BattlepayDataStore.h"
 #include "DatabaseEnv.h"
-#include "BattlePayMgr.h"
+#include "BattlepayMgr.h"
 #include "ObjectMgr.h"
 #include "Containers.h"
 
-BattlePayDataStoreMgr::BattlePayDataStoreMgr() = default;
+BattlepayDataStoreMgr::BattlepayDataStoreMgr() = default;
 
-BattlePayDataStoreMgr::~BattlePayDataStoreMgr() = default;
+BattlepayDataStoreMgr::~BattlepayDataStoreMgr() = default;
 
-BattlePayDataStoreMgr* BattlePayDataStoreMgr::instance()
+BattlepayDataStoreMgr* BattlepayDataStoreMgr::instance()
 {
-    static BattlePayDataStoreMgr instance;
+    static BattlepayDataStoreMgr instance;
     return &instance;
 }
 
@@ -39,12 +39,12 @@ namespace
     std::map<uint32, Battlepay::Product> _products;
     std::map<uint32, Battlepay::DisplayInfo> _displayInfos;
     std::map<uint32, Battlepay::ProductGroupLocale> _productGroupLocales;
-    std::map<uint32, BattlePayDisplayInfoLocale> _displayInfoLocales;
+    std::map<uint32, BattlepayDisplayInfoLocale> _displayInfoLocales;
     std::map<uint32, std::vector<WorldPackets::Battlepay::ProductDisplayVisualData>> _visuals;
     std::unordered_map<uint8, Battlepay::TokenType> _tokenTypes;
 }
 
-void BattlePayDataStoreMgr::Initialize()
+void BattlepayDataStoreMgr::Initialize()
 {
     LoadDisplayInfos();
     LoadDisplayInfoVisuals();
@@ -56,7 +56,7 @@ void BattlePayDataStoreMgr::Initialize()
     LoadTokenTypes();
 }
 
-void BattlePayDataStoreMgr::LoadDisplayInfos()
+void BattlepayDataStoreMgr::LoadDisplayInfos()
 {
     TC_LOG_INFO("server.loading", "Loading Battlepay display info ...");
     _displayInfos.clear();
@@ -93,7 +93,7 @@ void BattlePayDataStoreMgr::LoadDisplayInfos()
     TC_LOG_INFO("server.loading", ">> Loaded %lu Battlepay display info in %u ms.", uint64(_displayInfos.size()), GetMSTimeDiffToNow(oldMsTime));
 }
 
-void BattlePayDataStoreMgr::LoadDisplayInfoVisuals()
+void BattlepayDataStoreMgr::LoadDisplayInfoVisuals()
 {
     TC_LOG_INFO("server.loading", "Loading Battlepay display info visuals ...");
     _visuals.clear();
@@ -118,7 +118,7 @@ void BattlePayDataStoreMgr::LoadDisplayInfoVisuals()
     TC_LOG_INFO("server.loading", ">> Loaded %lu Battlepay display info visuals in %u ms.", uint64(_visuals.size()), GetMSTimeDiffToNow(oldMsTime));
 }
 
-void BattlePayDataStoreMgr::LoadProductGroups()
+void BattlepayDataStoreMgr::LoadProductGroups()
 {
     TC_LOG_INFO("server.loading", "Loading Battlepay product groups ...");
     _productGroups.clear();
@@ -149,7 +149,7 @@ void BattlePayDataStoreMgr::LoadProductGroups()
     TC_LOG_INFO("server.loading", ">> Loaded %lu Battlepay product groups in %u ms", uint64(_productGroups.size()), GetMSTimeDiffToNow(oldMsTime));
 }
 
-void BattlePayDataStoreMgr::LoadProduct()
+void BattlepayDataStoreMgr::LoadProduct()
 {
     TC_LOG_INFO("server.loading", "Loading Battlepay products ...");
     _products.clear();
@@ -169,7 +169,7 @@ void BattlePayDataStoreMgr::LoadProduct()
         product.WebsiteType = fields[4].GetUInt8();
         if (product.WebsiteType >= Battlepay::MaxWebsiteType)
         {
-            TC_LOG_ERROR("server.loading", "BattlePayDataStoreMgr: battlepay_product websiteType >= max types - skip loading: type %u; productId: %u ", product.WebsiteType, product.ProductID);
+            TC_LOG_ERROR("server.loading", "BattlepayDataStoreMgr: battlepay_product websiteType >= max types - skip loading: type %u; productId: %u ", product.WebsiteType, product.ProductID);
             continue;
         }
 
@@ -226,7 +226,7 @@ void BattlePayDataStoreMgr::LoadProduct()
     TC_LOG_INFO("server.loading", ">> Loaded %lu Battlepay products in %u ms", uint64(_products.size()), GetMSTimeDiffToNow(oldMsTime));
 }
 
-void BattlePayDataStoreMgr::LoadShopEntires()
+void BattlepayDataStoreMgr::LoadShopEntires()
 {
     TC_LOG_INFO("server.loading", "Loading Battlepay shop entries ...");
     _shopEntries.clear();
@@ -255,7 +255,7 @@ void BattlePayDataStoreMgr::LoadShopEntires()
     TC_LOG_INFO("server.loading", ">> Loaded %lu Battlepay shop entries in %u ms", uint64(_shopEntries.size()), GetMSTimeDiffToNow(oldMsTime));
 }
 
-void BattlePayDataStoreMgr::LoadProductGroupLocales()
+void BattlepayDataStoreMgr::LoadProductGroupLocales()
 {
     TC_LOG_INFO("server.loading", "Loading Battlepay product group locales ...");
 
@@ -282,7 +282,7 @@ void BattlePayDataStoreMgr::LoadProductGroupLocales()
     TC_LOG_INFO("server.loading", ">> Loaded %lu Battlepay product group locales strings in %u ms", uint64(_productGroupLocales.size()), GetMSTimeDiffToNow(oldMsTime));
 }
 
-void BattlePayDataStoreMgr::LoadDisplayInfoLocales()
+void BattlepayDataStoreMgr::LoadDisplayInfoLocales()
 {
     TC_LOG_INFO("server.loading", "Loading Battlepay display info locales ...");
 
@@ -312,7 +312,7 @@ void BattlePayDataStoreMgr::LoadDisplayInfoLocales()
     TC_LOG_INFO("server.loading", ">> Loaded %lu Battlepay display info locales strings in %u ms", uint64(_displayInfoLocales.size()), GetMSTimeDiffToNow(oldMsTime));
 }
 
-void BattlePayDataStoreMgr::LoadTokenTypes()
+void BattlepayDataStoreMgr::LoadTokenTypes()
 {
     TC_LOG_INFO("server.loading", "Loading Battlepay token types ...");
 
@@ -345,17 +345,17 @@ void BattlePayDataStoreMgr::LoadTokenTypes()
     TC_LOG_INFO("server.loading", ">> Loaded %lu Battlepay token types in %u ms", uint64(_tokenTypes.size()), GetMSTimeDiffToNow(oldMsTime));
 }
 
-std::vector<Battlepay::ProductGroup> const& BattlePayDataStoreMgr::GetProductGroups() const
+std::vector<Battlepay::ProductGroup> const& BattlepayDataStoreMgr::GetProductGroups() const
 {
     return _productGroups;
 }
 
-std::vector<Battlepay::ShopEntry> const& BattlePayDataStoreMgr::GetShopEntries() const
+std::vector<Battlepay::ShopEntry> const& BattlepayDataStoreMgr::GetShopEntries() const
 {
     return _shopEntries;
 }
 
-uint32 BattlePayDataStoreMgr::GetProductGroupId(uint32 productId) const
+uint32 BattlepayDataStoreMgr::GetProductGroupId(uint32 productId) const
 {
     for (auto const& shop : _shopEntries)
         if (shop.ProductID == productId)
@@ -363,24 +363,24 @@ uint32 BattlePayDataStoreMgr::GetProductGroupId(uint32 productId) const
     return 0;
 }
 
-std::map<uint32, Battlepay::Product> const& BattlePayDataStoreMgr::GetProducts() const
+std::map<uint32, Battlepay::Product> const& BattlepayDataStoreMgr::GetProducts() const
 {
     return _products;
 }
 
-bool BattlePayDataStoreMgr::ProductExist(uint32 productID) const
+bool BattlepayDataStoreMgr::ProductExist(uint32 productID) const
 {
     return _products.find(productID) != _products.end();
 }
 
-Battlepay::Product const& BattlePayDataStoreMgr::GetProduct(uint32 productID) const
+Battlepay::Product const& BattlepayDataStoreMgr::GetProduct(uint32 productID) const
 {
     if (ProductExist(productID))
         return _products.at(productID);
     return _temp;
 }
 
-Battlepay::DisplayInfo const* BattlePayDataStoreMgr::GetDisplayInfo(uint32 id) const
+Battlepay::DisplayInfo const* BattlepayDataStoreMgr::GetDisplayInfo(uint32 id) const
 {
     if (_displayInfos.find(id) == _displayInfos.end())
         return nullptr;
@@ -388,7 +388,7 @@ Battlepay::DisplayInfo const* BattlePayDataStoreMgr::GetDisplayInfo(uint32 id) c
     return &_displayInfos.at(id);
 }
 
-std::vector<WorldPackets::Battlepay::ProductDisplayVisualData> const* BattlePayDataStoreMgr::GetDisplayInfoVisuals(uint32 id) const
+std::vector<WorldPackets::Battlepay::ProductDisplayVisualData> const* BattlepayDataStoreMgr::GetDisplayInfoVisuals(uint32 id) const
 {
     if (_visuals.find(id) == _visuals.end())
         return nullptr;
@@ -396,23 +396,23 @@ std::vector<WorldPackets::Battlepay::ProductDisplayVisualData> const* BattlePayD
     return &_visuals.at(id);
 }
 
-Battlepay::ProductGroupLocale const* BattlePayDataStoreMgr::GetProductGroupLocale(uint32 entry) const
+Battlepay::ProductGroupLocale const* BattlepayDataStoreMgr::GetProductGroupLocale(uint32 entry) const
 {
     return Trinity::Containers::MapGetValuePtr(_productGroupLocales, entry);
 }
 
-BattlePayDisplayInfoLocale const* BattlePayDataStoreMgr::GetDisplayInfoLocale(uint32 entry) const
+BattlepayDisplayInfoLocale const* BattlepayDataStoreMgr::GetDisplayInfoLocale(uint32 entry) const
 {
     return Trinity::Containers::MapGetValuePtr(_displayInfoLocales, entry);
 }
 
-Battlepay::ProductGroup* BattlePayDataStoreMgr::GetProductGroupForProductId(uint32 productID) const
+Battlepay::ProductGroup* BattlepayDataStoreMgr::GetProductGroupForProductId(uint32 productID) const
 {
     uint32 groupId = GetProductGroupId(productID);
     return GetProductGroup(groupId);
 }
 
-Battlepay::ProductGroup* BattlePayDataStoreMgr::GetProductGroup(uint32 groupId) const
+Battlepay::ProductGroup* BattlepayDataStoreMgr::GetProductGroup(uint32 groupId) const
 {
     for (auto& group : _productGroups)
         if (group.GroupID == groupId)
@@ -421,7 +421,7 @@ Battlepay::ProductGroup* BattlePayDataStoreMgr::GetProductGroup(uint32 groupId) 
     return NULL;
 }
 
-std::unordered_map<uint8, Battlepay::TokenType>& BattlePayDataStoreMgr::GetTokenTypes()
+std::unordered_map<uint8, Battlepay::TokenType>& BattlepayDataStoreMgr::GetTokenTypes()
 {
     return _tokenTypes;
 }

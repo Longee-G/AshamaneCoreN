@@ -25,7 +25,7 @@
 #include "Realm.h"
 #include "SystemPackets.h"
 #include "World.h"
-#include "BattlePayMgr.h"
+#include "BattlepayMgr.h"
 
 void WorldSession::SendAuthResponse(uint32 code, bool queued, uint32 queuePos)
 {

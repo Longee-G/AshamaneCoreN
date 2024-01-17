@@ -1012,10 +1012,10 @@ namespace Battlepay
 }
 
 // script for Battlepay
-class TC_GAME_API BattlePayProductScript : public ScriptObject
+class TC_GAME_API BattlepayProductScript : public ScriptObject
 {
 protected:
-    explicit BattlePayProductScript(std::string scriptName);
+    explicit BattlepayProductScript(std::string scriptName);
 public:
     virtual void OnProductDelivery(WorldSession* /*session*/, Battlepay::Product const& /*product*/) { }
     virtual bool CanShow(WorldSession* /*session*/, Battlepay::Product const& /*product*/) { return true; }
@@ -1355,11 +1355,11 @@ class TC_GAME_API ScriptMgr
         ZoneScript* GetZoneScript(uint32 scriptId);
 
 
-    public: /* BattlePayProductScript */
+    public: /* BattlepayProductScript */
         // TODO:
-        std::string BattlePayGetCustomData(Battlepay::Product const& product);
-        void OnBattlePayProductDelivery(WorldSession* session, Battlepay::Product const& product);
-        bool BattlePayCanBuy(WorldSession* session, Battlepay::Product const& product, std::string& reason);
+        std::string BattlepayGetCustomData(Battlepay::Product const& product);
+        void OnBattlepayProductDelivery(WorldSession* session, Battlepay::Product const& product);
+        bool BattlepayCanBuy(WorldSession* session, Battlepay::Product const& product, std::string& reason);
 
     private:
         uint32 _scriptCount;

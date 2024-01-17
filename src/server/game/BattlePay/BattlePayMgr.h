@@ -19,7 +19,7 @@
 #ifndef __TRINITY_BATTLEPAYMGR_H
 #define __TRINITY_BATTLEPAYMGR_H
 
-#include "Packets/BattlePayPackets.h"
+#include "Packets/BattlepayPackets.h"
 #include "Common.h"
 
 class LoginQueryHolder;
@@ -149,7 +149,7 @@ namespace Battlepay
     {
         enum : uint8
         {
-            BattlePayShop,
+            BattlepayShop,
             VendorBuyCurrency,
             VendorBuyItem,
         };
@@ -245,7 +245,7 @@ namespace Battlepay
         };
     }
 
-    enum BattlePayCurrency
+    enum BattlepayCurrency
     {
         Unknow = 0,
         Usd = 1,
@@ -454,7 +454,7 @@ public:
     explicit BattlepayManager(WorldSession* session);
     ~BattlepayManager();
 
-    Battlepay::BattlePayCurrency GetShopCurrency() const;
+    Battlepay::BattlepayCurrency GetShopCurrency() const;
     bool IsAvailable() const;
     bool AlreadyOwnProduct(uint32 itemId) const;
     void ProcessDelivery(Battlepay::Purchase* purchase);
@@ -467,7 +467,7 @@ public:
     auto ProductFilter(Battlepay::Product product) -> bool;
     void SendProductList();
     void SendPointsBalance();
-    void SendBattlePayDistribution(uint32 productId, uint8 status, uint64 distributionId, ObjectGuid targetGuid = ObjectGuid::Empty);
+    void SendBattlepayDistribution(uint32 productId, uint8 status, uint64 distributionId, ObjectGuid targetGuid = ObjectGuid::Empty);
     void AssignDistributionToCharacter(ObjectGuid const& targetCharGuid, uint64 distributionId, uint32 productId, uint16 specialization_id, uint16 choice_id);
     void Update(uint32 diff);
 

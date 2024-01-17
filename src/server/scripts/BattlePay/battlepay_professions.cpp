@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-#include "BattlePayMgr.h"
+#include "BattlepayMgr.h"
 #include "ScriptMgr.h"
 #include "ObjectMgr.h"
 #include "Player.h"
@@ -67,10 +67,10 @@ namespace Battlepay
 }
 
 template<uint32 t_SkillID, uint32 t_Value>
-class BattlePay_Profession : BattlePayProductScript
+class Battlepay_Profession : BattlepayProductScript
 {
 public:
-    explicit BattlePay_Profession(std::string scriptName) : BattlePayProductScript(scriptName) {}
+    explicit Battlepay_Profession(std::string scriptName) : BattlepayProductScript(scriptName) {}
 
     void OnProductDelivery(WorldSession* session, Battlepay::Product const& /*product*/) override
     {
@@ -144,21 +144,21 @@ public:
     }
 };
 
-void AddSC_BattlePay_Professions()
+void AddSC_Battlepay_Professions()
 {
-    new BattlePay_Profession<SKILL_ALCHEMY, 800>("battlepay_profession_alchemy");
-    new BattlePay_Profession<SKILL_BLACKSMITHING, 800>("battlepay_profession_blacksmithing");
-    new BattlePay_Profession<SKILL_ENCHANTING, 800>("battlepay_profession_enchanting");
-    new BattlePay_Profession<SKILL_ENGINEERING, 800>("battlepay_profession_engineering");
-    new BattlePay_Profession<SKILL_INSCRIPTION, 800>("battlepay_profession_inscription");
-    new BattlePay_Profession<SKILL_JEWELCRAFTING, 800>("battlepay_profession_jewelcrafting");
-    new BattlePay_Profession<SKILL_LEATHERWORKING, 800>("battlepay_profession_leatherworking");
-    new BattlePay_Profession<SKILL_TAILORING, 800>("battlepay_profession_tailoring");
-    new BattlePay_Profession<SKILL_FIRST_AID, 800>("battlepay_profession_first_aid");
-    new BattlePay_Profession<SKILL_COOKING, 800>("battlepay_profession_cooking");
-    new BattlePay_Profession<SKILL_HERBALISM, 800>("battlepay_profession_herbalism");
-    new BattlePay_Profession<SKILL_MINING, 800>("battlepay_profession_mining");
-    new BattlePay_Profession<SKILL_SKINNING, 800>("battlepay_profession_skinning");
-    new BattlePay_Profession<SKILL_ARCHAEOLOGY, 800>("battlepay_profession_archaeology");
-    new BattlePay_Profession<SKILL_FISHING, 800>("battlepay_profession_fishing");
+    new Battlepay_Profession<SKILL_ALCHEMY, 800>("battlepay_profession_alchemy");
+    new Battlepay_Profession<SKILL_BLACKSMITHING, 800>("battlepay_profession_blacksmithing");
+    new Battlepay_Profession<SKILL_ENCHANTING, 800>("battlepay_profession_enchanting");
+    new Battlepay_Profession<SKILL_ENGINEERING, 800>("battlepay_profession_engineering");
+    new Battlepay_Profession<SKILL_INSCRIPTION, 800>("battlepay_profession_inscription");
+    new Battlepay_Profession<SKILL_JEWELCRAFTING, 800>("battlepay_profession_jewelcrafting");
+    new Battlepay_Profession<SKILL_LEATHERWORKING, 800>("battlepay_profession_leatherworking");
+    new Battlepay_Profession<SKILL_TAILORING, 800>("battlepay_profession_tailoring");
+    new Battlepay_Profession<SKILL_FIRST_AID, 800>("battlepay_profession_first_aid");
+    new Battlepay_Profession<SKILL_COOKING, 800>("battlepay_profession_cooking");
+    new Battlepay_Profession<SKILL_HERBALISM, 800>("battlepay_profession_herbalism");
+    new Battlepay_Profession<SKILL_MINING, 800>("battlepay_profession_mining");
+    new Battlepay_Profession<SKILL_SKINNING, 800>("battlepay_profession_skinning");
+    new Battlepay_Profession<SKILL_ARCHAEOLOGY, 800>("battlepay_profession_archaeology");
+    new Battlepay_Profession<SKILL_FISHING, 800>("battlepay_profession_fishing");
 }

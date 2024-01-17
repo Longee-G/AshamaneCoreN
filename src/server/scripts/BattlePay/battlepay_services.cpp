@@ -16,8 +16,8 @@
  */
 #include "ScriptMgr.h"
 #include "Player.h"
-#include "BattlePayMgr.h"
-#include "BattlePayDataStore.h"
+#include "BattlepayMgr.h"
+#include "BattlepayDataStore.h"
 #include "DB2Stores.h"
 #include "DatabaseEnv.h"
 #include "World.h"
@@ -28,10 +28,10 @@
 #define ITEM_HEARTHSTONE 6948
 
 template<uint32 t_Level>
-class BattlePay_Level : BattlePayProductScript
+class Battlepay_Level : BattlepayProductScript
 {
 public:
-    explicit BattlePay_Level(std::string scriptName) : BattlePayProductScript(scriptName) {}
+    explicit Battlepay_Level(std::string scriptName) : BattlepayProductScript(scriptName) {}
 
     void OnProductDelivery(WorldSession* session, Battlepay::Product const& /*product*/) override
     {
@@ -188,7 +188,7 @@ public:
             // 只在内存中的一个信息... 怎么保证不同的player不会串号呢？
             // TODO: 整个目的只是给客户端发消息， 没有实际的作用
 
-            //for (auto tokenType : sBattlePayDataStore->GetTokenTypes())
+            //for (auto tokenType : sBattlepayDataStore->GetTokenTypes())
             //    if (tokenType.second.hasLoginMessage && player->GetSession()->GetTokenBalance(tokenType.first))
             //        player->SendMessageToPlayer(tokenType.second.loginMessage.c_str());
         }
@@ -283,10 +283,10 @@ public:
     }
 };
 
-template <uint32 t_AccountServiceFlag> class BattlePay_AccountService : BattlePayProductScript
+template <uint32 t_AccountServiceFlag> class Battlepay_AccountService : BattlepayProductScript
 {
 public:
-    explicit BattlePay_AccountService(std::string scriptName) : BattlePayProductScript(scriptName) {}
+    explicit Battlepay_AccountService(std::string scriptName) : BattlepayProductScript(scriptName) {}
 
     void OnProductDelivery(WorldSession* /*session*/, Battlepay::Product const& /*product*/) override
     {
@@ -301,11 +301,11 @@ public:
 };
 
 // what is `SC`
-void AddSC_BattlePay_Services()
+void AddSC_Battlepay_Services()
 {
-    new BattlePay_Level<90>("battlepay_service_level90");
-    new BattlePay_Level<100>("battlepay_service_level100");
+    new Battlepay_Level<90>("battlepay_service_level90");
+    new Battlepay_Level<100>("battlepay_service_level100");
     new playerScriptTokensAvailable();
     new reachedRefererThreshold();
-    //new BattlePay_AccountService<ServiceFlags::PremadePve>("battlepay_service_premade");
+    //new Battlepay_AccountService<ServiceFlags::PremadePve>("battlepay_service_premade");
 }
