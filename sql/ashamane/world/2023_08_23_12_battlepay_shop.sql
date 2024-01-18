@@ -2,6 +2,7 @@
 -- Table structure for battlepay_shop
 -- ----------------------------
 DROP TABLE IF EXISTS `battlepay_shop`;
+/*
 CREATE TABLE `battlepay_shop` (
   `EntryID` int(11) unsigned NOT NULL,
   `GroupID` int(11) unsigned NOT NULL,
@@ -20,3 +21,4 @@ CREATE TABLE `battlepay_shop` (
 -- Records of battlepay_shop
 -- ----------------------------
 INSERT INTO `battlepay_shop` VALUES ('6', '13', '50', '96', '0', '0');
+*/

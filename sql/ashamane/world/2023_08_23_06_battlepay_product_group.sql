@@ -1,5 +1,4 @@
 SET FOREIGN_KEY_CHECKS=0;
-
 -- ----------------------------
 -- Table structure for `battlepay_product_group`
 -- ----------------------------
