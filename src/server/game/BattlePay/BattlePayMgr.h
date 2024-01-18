@@ -54,10 +54,10 @@ namespace BattlepayDisplayFlag
     enum : uint8
     {
         None = 0x00,
-        CardDoesNotShowModel = 0x02,            // 卡片不显示模型
-        CardAlwaysShowsTexture = 0x04,          // 卡片也是不显示模型
-        HiddenPrice = 0x08,                     // 标记成已经拥有该商品... 并且隐藏了价格..
-        UseHorizontalLayoutForFullCard = 0x10,  // 没看出什么区别...
+        CardDoesNotShowModel = 0x02,
+        CardAlwaysShowsTexture = 0x04,
+        HiddenPrice = 0x08,
+        UseHorizontalLayoutForFullCard = 0x10,
     };
 };
 
@@ -144,6 +144,7 @@ sub_79B9DA(&a1, st7_0, "VasError", "BoostedTooRecently", 117);
 namespace Battlepay
 {
     const float g_CurrencyPrecision = 10000.0f;
+    const uint32 MODEL_SCENE_ID = 62;           // DO NOT use other ID.
 
     namespace BattlepayCustomType
     {
@@ -266,7 +267,7 @@ namespace Battlepay
         Nzd = 30
     };
 
-    // `trinity_string`表中没有这几个字符串，需要导入...TODO:
+    // `trinity_string` import needed TODO:
     enum String
     {
         AtGoldLimit = 14090,
@@ -331,13 +332,12 @@ namespace Battlepay
         };
     }
 
-    // 产品的卡片显示的样式 .. 
     namespace BattlepayGroupDisplayType
     {
         enum : uint8
         {
             Default = 0,
-            Splash = 1,
+            Splash = 1,             // only show <= 3 Cards
             DoubleWide = 2,
         };
     }
@@ -349,7 +349,7 @@ namespace Battlepay
         uint32 Ordering;
         uint32 Flags;
         std::string Name;
-        uint8 DisplayType; ///< BattlepayGroupDisplayType
+        uint8 DisplayType;          // BattlepayGroupDisplayType
         uint8 TokenType;
         bool IngameOnly;
         bool OwnsTokensOnly;
@@ -357,9 +357,9 @@ namespace Battlepay
 
     struct DisplayInfo
     {
-        uint32 CreatureDisplayInfoID;       // model id ?
-        uint32 IconFileID;
-        uint32 Flags;       // BattlepayDisplayFlag
+        uint32 CreatureDisplayID;       // Used to Display Model
+        uint32 IconFileID;              // Used to Display Icon
+        uint32 Flags;                   // BattlepayDisplayFlag
         std::string Name1;
         std::string Name2;
         std::string Name3;
@@ -368,7 +368,7 @@ namespace Battlepay
 
     struct ProductItem
     {
-        uint32 ID;
+        uint32 Entry;
         uint32 ItemID;
         uint32 Quantity;
         uint32 DisplayInfoID;
@@ -379,7 +379,7 @@ namespace Battlepay
     struct Product
     {
         /// Databases fields
-        std::vector<ProductItem> Items;     // 一个商品可能关联多个Item吗？
+        std::vector<ProductItem> Items;
         uint64 NormalPriceFixedPoint;
         uint64 CurrentPriceFixedPoint;
         uint32 ProductID;
@@ -403,8 +403,8 @@ namespace Battlepay
         uint32 ProductID;
         int32 Ordering;        
         uint32 DisplayInfoID;
-        uint32 VasServiceType;           // VasServiceType
-        uint8 StoreDeliveryType;        // StoreDeliveryType
+        uint32 VasServiceType;              // VasServiceType
+        uint8 StoreDeliveryType;            // StoreDeliveryType
     };
 
     struct Purchase

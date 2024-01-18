@@ -60,13 +60,12 @@ void BattlepayDataStoreMgr::LoadDisplayInfos()
 {
     TC_LOG_INFO("server.loading", "Loading Battlepay display info ...");
     _displayInfos.clear();
-    //                                          0               1                       2
-    auto result = WorldDatabase.PQuery("SELECT DisplayInfoId, CreatureDisplayInfoID, FileDataID, Flags, Name1, Name2, Name3, Name4 FROM battlepay_display_info");
+    //                                          0               1                       2        3        4     5      6     7
+    auto result = WorldDatabase.PQuery("SELECT DisplayInfoId, CreatureDisplayID, FileDataID, Flags, Name1, Name2, Name3, Name4 FROM battlepay_display_info");
     if (!result)
         return;
 
     auto oldMsTime = getMSTime();
-
 
     int shift = 0;
 
@@ -75,17 +74,13 @@ void BattlepayDataStoreMgr::LoadDisplayInfos()
         auto fields = result->Fetch();
 
         Battlepay::DisplayInfo displaInfo;
-        displaInfo.CreatureDisplayInfoID = fields[1].GetUInt32();   // 关联到 `creature_template.modelid1`
-        displaInfo.IconFileID = fields[2].GetInt32();                // 关联到 IconFileId ...
+        displaInfo.CreatureDisplayID = fields[1].GetUInt32();       //  `creature_template.modelid1`
+        displaInfo.IconFileID = fields[2].GetInt32();
         displaInfo.Flags = fields[3].GetUInt32();
-        displaInfo.Name1 = fields[4].GetString();                   // Product Name
+        displaInfo.Name1 = fields[4].GetString();
         displaInfo.Name2 = fields[5].GetString();
-        displaInfo.Name3 = fields[6].GetString();                   // Product Description
+        displaInfo.Name3 = fields[6].GetString();
         displaInfo.Name4 = fields[7].GetString();
-
-        // Flags 某个值会标记某个商品已经拥有...
-        //displaInfo.Flags = 1 << (shift++);
-        //if (shift > 16) shift = 0;
 
         _displayInfos.insert(std::make_pair(fields[0].GetUInt32(), displaInfo));
     } while (result->NextRow());
@@ -95,6 +90,8 @@ void BattlepayDataStoreMgr::LoadDisplayInfos()
 
 void BattlepayDataStoreMgr::LoadDisplayInfoVisuals()
 {
+    /* DO NOT need this NOW.
+
     TC_LOG_INFO("server.loading", "Loading Battlepay display info visuals ...");
     _visuals.clear();
 
@@ -109,13 +106,14 @@ void BattlepayDataStoreMgr::LoadDisplayInfoVisuals()
         auto fields = result->Fetch();
 
         WorldPackets::Battlepay::ProductDisplayVisualData displaInfo;
-        displaInfo.DisplayId = fields[1].GetUInt32();
-        displaInfo.VisualId = fields[2].GetInt32();
-        displaInfo.ProductName = fields[3].GetString();
+        displaInfo.DisplayID = fields[1].GetUInt32();
+        displaInfo.ModelSceneID = fields[2].GetInt32();
+        displaInfo.Title = fields[3].GetString();
         _visuals[fields[0].GetUInt32()].emplace_back(displaInfo);
     } while (result->NextRow());
 
     TC_LOG_INFO("server.loading", ">> Loaded %lu Battlepay display info visuals in %u ms.", uint64(_visuals.size()), GetMSTimeDiffToNow(oldMsTime));
+    */ 
 }
 
 void BattlepayDataStoreMgr::LoadProductGroups()
@@ -185,7 +183,7 @@ void BattlepayDataStoreMgr::LoadProduct()
         _products.insert(std::make_pair(product.ProductID, product));
     } while (result->NextRow());
 
-    // 和商城中的商品关联的Item的Id...
+    //                                    0      1          2        3         4           5  
     result = WorldDatabase.PQuery("SELECT ID, ProductID, ItemID, Quantity, DisplayID, PetResult FROM battlepay_product_item");
     if (!result)
         return;
@@ -207,7 +205,7 @@ void BattlepayDataStoreMgr::LoadProduct()
         if (!sItemStore[productItem.ItemID])
             continue;
 
-        productItem.ID = fields[0].GetUInt32();
+        productItem.Entry = fields[0].GetUInt32();
         productItem.Quantity = fields[3].GetUInt32();
         productItem.PetResult = fields[5].GetUInt8();
         _products[productID].Items.push_back(productItem);
@@ -248,7 +246,7 @@ void BattlepayDataStoreMgr::LoadShopEntires()
         shopEntry.Ordering = fields[3].GetInt32();
         shopEntry.VasServiceType = fields[4].GetUInt32();
         shopEntry.StoreDeliveryType = fields[5].GetUInt8();
-        shopEntry.DisplayInfoID = fields[6].GetUInt32();        // 这个变量应
+        shopEntry.DisplayInfoID = fields[6].GetUInt32();
         _shopEntries.push_back(shopEntry);
     } while (result->NextRow());
 

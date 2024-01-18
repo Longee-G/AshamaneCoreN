@@ -23,18 +23,15 @@
 
 // <WIP>....
 
-// 这个定义的是一个什么？delegate？
-// 获取player的背包还有多少可用的空间...
 auto GetBagsFreeSlots = [](Player* player) -> uint32
 {
     uint32 freeBagSlots = 0;
-    // 背包格子的定义没看明白需要进行分析...
-    // 这个是放`背包`的格子的索引... 每个player可以有4个放`背包`的格子...
+
     for (uint8 i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END; i++)
     {
         if (auto bag = player->GetBagByPos(i))
             freeBagSlots += bag->GetFreeSlots();
-        // 计算缺省的背包（就是一开始固定的背包，16格的那个，后期可以扩展）
+        
         uint8 inventoryEnd = INVENTORY_SLOT_ITEM_START + player->GetInventorySlotCount();
         for (int i = INVENTORY_SLOT_ITEM_START; i < inventoryEnd; i++)
             if (!player->GetItemByPos(INVENTORY_SLOT_BAG_0, i))
@@ -44,14 +41,12 @@ auto GetBagsFreeSlots = [](Player* player) -> uint32
     return freeBagSlots;
 };
 
-// 定义c++的delegate需要操作符`[]`吗？ 这个
-// 为什么要用这种方式来定义函数... 直接定义函数它不香吗？
 
 auto SendStartPurchaseResponse = [](WorldSession* session, Battlepay::Purchase const& purchase, Battlepay::Error const& result) -> void
 {
     WorldPackets::Battlepay::StartPurchaseResponse response;
     response.PurchaseID = purchase.PurchaseID;
-    response.ClientToken = purchase.ClientToken;        // 这个token从哪来的...
+    response.ClientToken = purchase.ClientToken;        // What's ClientToken?
     response.PurchaseResult = result;
     session->SendPacket(response.Write());
 };
@@ -73,7 +68,6 @@ auto SendPurchaseUpdate = [](WorldSession* session, Battlepay::Purchase const& p
     session->SendPacket(packet.Write());
 };
 
-// 给客户端返回货品列表...货品列表要从哪里获取？
 void WorldSession::HandleGetPurchaseListQuery(WorldPackets::Battlepay::GetPurchaseListQuery & packet)
 {
     WorldPackets::Battlepay::PurchaseListResponse resp;
@@ -224,13 +218,12 @@ void WorldSession::HandleBattlepayStartPurchase(WorldPackets::Battlepay::StartPu
     MakePurchase(packet.TargetCharacter, packet.ClientToken, packet.ProductID, this);
 }
 
-// TODO: 为什么和 StartPurchase 一样处理？
+// TODO: 
 void WorldSession::HandleBattlepayPurchaseProduct(WorldPackets::Battlepay::PurchaseProduct & packet)
 {
     MakePurchase(packet.TargetCharacter, packet.ClientToken, packet.ProductID, this);
 }
 
-// 确认购买
 void WorldSession::HandleBattlepayConfirmPurchase(WorldPackets::Battlepay::ConfirmPurchaseResponse & packet)
 {
     if (!GetBattlepayMgr()->IsAvailable())
@@ -327,7 +320,6 @@ void WorldSession::HandleBattlepayAckFailedResponse(WorldPackets::Battlepay::Bat
 }
 
 
-// 有可能是用来购买角色升级服务的...
 void WorldSession::HandleBattlepayQueryClassTrialResult(WorldPackets::Battlepay::BattlepayQueryClassTrialResult & packet)
 {
     if (!GetBattlepayMgr()->IsAvailable())
@@ -336,7 +328,6 @@ void WorldSession::HandleBattlepayQueryClassTrialResult(WorldPackets::Battlepay:
     // TODO:
 }
 
-// 开始进行角色升级...
 void WorldSession::HandleBattlepayTrialBoostCharacter(WorldPackets::Battlepay::BattlepayTrialBoostCharacter & packet)
 {
     if (!GetBattlepayMgr()->IsAvailable())
@@ -360,7 +351,6 @@ void WorldSession::HandleBattlepayPurchaseUnkResponse(WorldPackets::Battlepay::B
     SendPurchaseUpdate(this, *purchase, Battlepay::Error::Ok);
 }
 
-// Promotion 推广消息... 这个消息和Bpay的商店相关，没有这个消息，商店打开会一直出现loading
 void WorldSession::SendDisplayPromo(int32 promotionID)
 {
     SendPacket(WorldPackets::Battlepay::DisplayPromotion(promotionID).Write());
@@ -368,7 +358,6 @@ void WorldSession::SendDisplayPromo(int32 promotionID)
     if (!GetBattlepayMgr()->IsAvailable())
         return;
 
-    // 有可能是这个消息没有应答导致无法打开    
     WorldPackets::Battlepay::DistributionListResponse packet;
     SendPacket(packet.Write());
     /*
@@ -438,10 +427,7 @@ void WorldSession::SendDisplayPromo(int32 promotionID)
    */
 }
 
-// 请求代币信息？
 void WorldSession::HandleRequestConsumptionConversionInfo(WorldPackets::Battlepay::RequestConsumptionConversionInfo & packet)
 {
     // TODO: response SMSG_CONSUMPTION_CONVERSION_INFO_RESPONSE or SMSG_CONSUMPTION_CONVERSION_RESULT
-
-
 }

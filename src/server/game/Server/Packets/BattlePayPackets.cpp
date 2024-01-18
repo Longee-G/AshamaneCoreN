@@ -17,11 +17,12 @@
 
 #include "BattlepayPackets.h"
 
-ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::ProductDisplayInfo const& displayInfo)
+using namespace WorldPackets;
+
+ByteBuffer& operator<<(ByteBuffer& data, Battlepay::ProductDisplayInfo const& displayInfo)
 {
-    // 经过测试，正确的顺序应该是先IconId，再ModelId，之后的数据也是这个顺序 ...
     data.WriteBit(displayInfo.IconFileID.is_initialized());
-    data.WriteBit(displayInfo.CreatureDisplayInfoID.is_initialized());
+    data.WriteBit(displayInfo.ModelSceneID.is_initialized());
     data.WriteBits(displayInfo.Name1.length(), 10);
     data.WriteBits(displayInfo.Name2.length(), 10);
     data.WriteBits(displayInfo.Name3.length(), 13);
@@ -34,13 +35,11 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::ProductDisplay
 
     data << static_cast<uint32>(displayInfo.Visuals.size());
 
-
     if (displayInfo.IconFileID)
         data << *displayInfo.IconFileID;
 
-    if (displayInfo.CreatureDisplayInfoID)
-        data << *displayInfo.CreatureDisplayInfoID;
-        //data << test;
+    if (displayInfo.ModelSceneID)
+        data << *displayInfo.ModelSceneID;
 
     data.WriteString(displayInfo.Name1);
     data.WriteString(displayInfo.Name2);
@@ -48,8 +47,8 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::ProductDisplay
     data.WriteString(displayInfo.Name4);
 
     if (displayInfo.Flags)
-        data << *displayInfo.Flags;     // 这个位置是正确的，客户端读取了
-
+        data << *displayInfo.Flags;
+    
     if (displayInfo.UnkInt1)
         data << *displayInfo.UnkInt1;
 
@@ -59,53 +58,33 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::ProductDisplay
     if (displayInfo.UnkInt3)
         data << *displayInfo.UnkInt3;
 
-    // 有没有一种可能，模型的显示是在这个数据上的？
-
-    // 这个数据是可以多份的，在预览窗口中通过左右箭头图标来切换显示 ...
-    // 并且Name字段已经生效了，显示在左右箭头图标的上面...
-    // 当只有1份数据的时候，预览窗口的两个按钮是转向按钮
-    // 当有超过一份的时候，预览窗口的两个按钮是左右切换按钮 ..
     for (auto const& itr : displayInfo.Visuals)
     {
-        data.WriteBits(itr.ProductName.length(), 10);
+        data.WriteBits(itr.Title.length(), 10);
         data.FlushBits();
-        data << itr.DisplayId;
-        data << itr.VisualId;
-        data.WriteString(itr.ProductName);
+        data << itr.DisplayID;
+        data << itr.ModelSceneID;
+        data.WriteString(itr.Title);
     }
     return data;
 }
 
-// product info 的数据来自哪里？ 和product数据有什么不同？
-// 来自 `battlepay_product`表
-
-ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::ProductInfoStruct const& info)
+ByteBuffer& operator<<(ByteBuffer& data, Battlepay::BattlepayProduct const& info)
 {
-    uint32 cnt = 0;
-    uint32 cnt2 = 0;
-
     data << info.ProductID;
     data << info.NormalPriceFixedPoint;
     data << info.CurrentPriceFixedPoint;
+    data << uint32(info.ProductIDs.size());
+    data << info.Flags;
+    data << uint32(info.UnkInts.size());
 
-    data << uint32(info.ProductIDs.size());         // 确定了，这个是一个count，需要在之后输出count 个 uint32 ...
-    data << info.UnkInt2;                           // 47 ？ Flags ？ 填 0 会导致显示不出商城内容 ..
-    data << uint32(info.UnkInts.size());            // info.UnkInts      也确定了这个需要输出count 个 uint32 
-    
-
-    // 输出的这个值用在 角色界面，当鼠标移动到卡片的Icon上面的时候显示的Tips
-    // 如果填写了非0值，会导致在游戏中，无法显示tooltip ..
-    // 如果填写了ItemId，会导致无法显示 tooltips, 不管是填0还是itemId，都会导致无法显示tooltips...
-    for (auto z1 : info.ProductIDs)  // 这个数据来自哪里？    
+    for (auto z1 : info.ProductIDs)
         data << uint32(z1);
 
-    // 这个Id不明白是什么
     for (auto z2 : info.UnkInts)
         data << uint32(z2);
 
-
-    // 前面的数据是确定了... 
-    data.WriteBits(info.ChoiceType, 7);             // 这个位置是正确的？ 写入的值是 2
+    data.WriteBits(info.ChoiceType, 7);
     data.WriteBit(info.DisplayInfo.is_initialized());
     data.FlushBits();
     if (info.DisplayInfo)
@@ -114,20 +93,18 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::ProductInfoStr
     return data;
 }
 
-
-// 这个实际上应该是 ProductItem 的数据 ...
-ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::BattlepayProductItem const& product)
+ByteBuffer& operator<<(ByteBuffer& data, Battlepay::BattlepayProductItem const& product)
 {
     data << product.ProductID;
     data << product.Type;
-    data << product.UnkInt0;              // 如果设置了具体的itemId，当鼠标移动到图标上的时候，会显示物品的Tips, 设置成0，就只显示product的tip
+    data << product.ItemID;
     data << product.UnkInt1;
-    data << product.DisplayId;
+    data << product.UnkInt2;
     data << product.UnkInt3;
-    data << product.UnkInt4;            // Maybe CreatureID?
+    data << product.UnkInt4;
     data << product.UnkInt5;
 
-    data.WriteBits(product.UnkString.size(), 8);        // 这个长度不确定是什么，需要在后面输出size()个字节数据，最长255
+    data.WriteBits(product.UnkString.size(), 8);
     data.WriteBit(product.UnkBit);
     data.WriteBit(product.UnkBits.is_initialized());
     data.WriteBits(product.Items.size(), 7);
@@ -137,7 +114,7 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::BattlepayProdu
 
     data.FlushBits();
 
- 
+
     for (auto const& productItem : product.Items)
     {
         data << productItem.Entry;
@@ -160,6 +137,7 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::BattlepayProdu
             data << *productItem.DisplayInfo;
     }
 
+
     data.WriteString(product.UnkString);
 
     if (product.DisplayInfo)
@@ -168,7 +146,7 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::BattlepayProdu
     return data;
 }
 
-ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::BattlepayDistributionObject const& object)
+ByteBuffer& operator<<(ByteBuffer& data, Battlepay::BattlepayDistributionObject const& object)
 {
     data << object.DistributionID;
 
@@ -190,7 +168,7 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::BattlepayDistr
     return data;
 }
 
-ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::BattlepayPurchase const& purchase)
+ByteBuffer& operator<<(ByteBuffer& data, Battlepay::BattlepayPurchase const& purchase)
 {
     data << purchase.PurchaseID;
     data << purchase.Status;
@@ -206,8 +184,7 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::BattlepayPurch
     return data;
 }
 
-// 购买清单
-WorldPacket const* WorldPackets::Battlepay::PurchaseListResponse::Write()
+WorldPacket const* Battlepay::PurchaseListResponse::Write()
 {
     _worldPacket << Result;
     _worldPacket << static_cast<uint32>(Purchase.size());
@@ -217,7 +194,7 @@ WorldPacket const* WorldPackets::Battlepay::PurchaseListResponse::Write()
     return &_worldPacket;
 }
 
-WorldPacket const* WorldPackets::Battlepay::DistributionListResponse::Write()
+WorldPacket const* Battlepay::DistributionListResponse::Write()
 {
     _worldPacket << Result;
     _worldPacket.WriteBits(DistributionObject.size(), 11);
@@ -227,48 +204,49 @@ WorldPacket const* WorldPackets::Battlepay::DistributionListResponse::Write()
     return &_worldPacket;
 }
 
-WorldPacket const* WorldPackets::Battlepay::DistributionUpdate::Write()
+WorldPacket const* Battlepay::DistributionUpdate::Write()
 {
     _worldPacket << DistributionObject;
 
     return &_worldPacket;
 }
 
-WorldPacket const* WorldPackets::Battlepay::ProductListResponse::Write()
+WorldPacket const* Battlepay::ProductListResponse::Write()
 {
     _worldPacket << Result;
     _worldPacket << ProductList.CurrencyID;
 
-    _worldPacket << static_cast<uint32>(ProductList.ProductInfo.size());
-    _worldPacket << static_cast<uint32>(ProductList.Product.size());
-    _worldPacket << static_cast<uint32>(ProductList.ProductGroup.size());
+    _worldPacket << static_cast<uint32>(ProductList.Products.size());
+    _worldPacket << static_cast<uint32>(ProductList.Items.size());
+    _worldPacket << static_cast<uint32>(ProductList.Groups.size());
     _worldPacket << static_cast<uint32>(ProductList.Shop.size());
 
-    // product info ... 
-    for (auto const& v : ProductList.ProductInfo)
-        _worldPacket << v;
+    // product ... 
+    for (auto const& product : ProductList.Products)
+        _worldPacket << product;
 
     // product Item ...
-    for (auto const& productData : ProductList.Product)
-        _worldPacket << productData;
+    for (auto const& item : ProductList.Items)
+        _worldPacket << item;
 
     // product group 
-    for (auto const& productGroupData : ProductList.ProductGroup)
+    for (auto const& group : ProductList.Groups)
     {
-        _worldPacket << productGroupData.GroupID;
-        _worldPacket << productGroupData.IconFileDataID;
-        _worldPacket << productGroupData.DisplayType;
-        _worldPacket << productGroupData.Ordering;
-        _worldPacket << productGroupData.Flags;
+        _worldPacket << group.GroupID;
+        _worldPacket << group.IconFileDataID;
+        _worldPacket << group.DisplayType;
+        _worldPacket << group.Ordering;
+        _worldPacket << group.Flags;
 
-        _worldPacket.WriteBits(productGroupData.Name.length(), 8);
-        _worldPacket.WriteBits(productGroupData.IsAvailableDescription.length() + 1, 24);
-        _worldPacket.WriteString(productGroupData.Name);
-        if (!productGroupData.IsAvailableDescription.empty())
-            _worldPacket.WriteString(productGroupData.IsAvailableDescription);
+        _worldPacket.WriteBits(group.Name.length(), 8);
+        _worldPacket.WriteBits(group.IsAvailableDescription.length() , 24);
+        _worldPacket.WriteString(group.Name);
+
+        if (!group.IsAvailableDescription.empty())
+            _worldPacket.WriteString(group.IsAvailableDescription);
     }
 
-    // shop entry ...
+    // shop product ...
     for (BattlepayShopEntry const& shopData : ProductList.Shop)
     {
         _worldPacket << shopData.EntryID;
@@ -277,12 +255,9 @@ WorldPacket const* WorldPackets::Battlepay::ProductListResponse::Write()
         _worldPacket << shopData.Ordering;
         _worldPacket << shopData.VasServiceType;
         _worldPacket << shopData.StoreDeliveryType;
-
-        // 这个数据是错误的，或者是displayInfo 的结构是错误的 ...
         if (_worldPacket.WriteBit(shopData.DisplayInfo.is_initialized()))
         {
             _worldPacket.FlushBits();
-
             _worldPacket << *shopData.DisplayInfo;
         }
     }
@@ -290,14 +265,14 @@ WorldPacket const* WorldPackets::Battlepay::ProductListResponse::Write()
     return &_worldPacket;
 }
 
-void WorldPackets::Battlepay::StartPurchase::Read()
+void Battlepay::StartPurchase::Read()
 {
     _worldPacket >> ClientToken;
     _worldPacket >> ProductID;
     _worldPacket >> TargetCharacter;
 }
 
-void WorldPackets::Battlepay::PurchaseProduct::Read()
+void Battlepay::PurchaseProduct::Read()
 {
     _worldPacket >> ClientToken;
     _worldPacket >> ProductID;
@@ -309,7 +284,7 @@ void WorldPackets::Battlepay::PurchaseProduct::Read()
     PublicKey = _worldPacket.ReadString(strlen2);
 }
 
-WorldPacket const* WorldPackets::Battlepay::StartPurchaseResponse::Write()
+WorldPacket const* Battlepay::StartPurchaseResponse::Write()
 {
     _worldPacket << PurchaseID;
     _worldPacket << PurchaseResult;
@@ -318,7 +293,7 @@ WorldPacket const* WorldPackets::Battlepay::StartPurchaseResponse::Write()
     return &_worldPacket;
 }
 
-WorldPacket const* WorldPackets::Battlepay::BattlepayAckFailed::Write()
+WorldPacket const* Battlepay::BattlepayAckFailed::Write()
 {
     _worldPacket << PurchaseID;
     _worldPacket << PurchaseResult;
@@ -327,7 +302,7 @@ WorldPacket const* WorldPackets::Battlepay::BattlepayAckFailed::Write()
     return &_worldPacket;
 }
 
-WorldPacket const* WorldPackets::Battlepay::PurchaseUpdate::Write()
+WorldPacket const* Battlepay::PurchaseUpdate::Write()
 {
     _worldPacket << static_cast<uint32>(Purchase.size());
     for (auto const& purchaseData : Purchase)
@@ -336,7 +311,7 @@ WorldPacket const* WorldPackets::Battlepay::PurchaseUpdate::Write()
     return &_worldPacket;
 }
 
-WorldPacket const* WorldPackets::Battlepay::ConfirmPurchase::Write()
+WorldPacket const* Battlepay::ConfirmPurchase::Write()
 {
     _worldPacket << PurchaseID;
     _worldPacket << ServerToken;
@@ -344,19 +319,19 @@ WorldPacket const* WorldPackets::Battlepay::ConfirmPurchase::Write()
     return &_worldPacket;
 }
 
-void WorldPackets::Battlepay::ConfirmPurchaseResponse::Read()
+void Battlepay::ConfirmPurchaseResponse::Read()
 {
     ConfirmPurchase = _worldPacket.ReadBit();
     _worldPacket >> ServerToken;
     _worldPacket >> ClientCurrentPriceFixedPoint;
 }
 
-void WorldPackets::Battlepay::BattlepayAckFailedResponse::Read()
+void Battlepay::BattlepayAckFailedResponse::Read()
 {
     _worldPacket >> ServerToken;
 }
 
-WorldPacket const* WorldPackets::Battlepay::DeliveryEnded::Write()
+WorldPacket const* Battlepay::DeliveryEnded::Write()
 {
     _worldPacket << DistributionID;
 
@@ -367,21 +342,21 @@ WorldPacket const* WorldPackets::Battlepay::DeliveryEnded::Write()
     return &_worldPacket;
 }
 
-WorldPacket const* WorldPackets::Battlepay::BattlepayDeliveryStarted::Write()
+WorldPacket const* Battlepay::BattlepayDeliveryStarted::Write()
 {
     _worldPacket << DistributionID;
 
     return &_worldPacket;
 }
 
-WorldPacket const* WorldPackets::Battlepay::UpgradeStarted::Write()
+WorldPacket const* Battlepay::UpgradeStarted::Write()
 {
     _worldPacket << CharacterGUID;
 
     return &_worldPacket;
 }
 
-void WorldPackets::Battlepay::DistributionAssignToTarget::Read()
+void Battlepay::DistributionAssignToTarget::Read()
 {
     _worldPacket >> ProductID;
     _worldPacket >> DistributionID;
@@ -390,7 +365,7 @@ void WorldPackets::Battlepay::DistributionAssignToTarget::Read()
     _worldPacket >> ChoiceID;
 }
 
-ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::VasPurchaseData const& purchase)
+ByteBuffer& operator<<(ByteBuffer& data, Battlepay::VasPurchaseData const& purchase)
 {
     data << purchase.PlayerGuid;
     data << purchase.UnkInt;
@@ -405,7 +380,7 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battlepay::VasPurchaseDat
     return data;
 }
 
-WorldPacket const* WorldPackets::Battlepay::BattlepayVasPurchaseStarted::Write()
+WorldPacket const* Battlepay::BattlepayVasPurchaseStarted::Write()
 {
     _worldPacket << UnkInt;
     _worldPacket << VasPurchase;
@@ -413,13 +388,13 @@ WorldPacket const* WorldPackets::Battlepay::BattlepayVasPurchaseStarted::Write()
     return &_worldPacket;
 }
 
-WorldPacket const* WorldPackets::Battlepay::CharacterClassTrialCreate::Write()
+WorldPacket const* Battlepay::CharacterClassTrialCreate::Write()
 {
     _worldPacket << Result;
     return &_worldPacket;
 }
 
-WorldPacket const* WorldPackets::Battlepay::BattlepayCharacterUpgradeQueued::Write()
+WorldPacket const* Battlepay::BattlepayCharacterUpgradeQueued::Write()
 {
     _worldPacket << Character;
     _worldPacket << static_cast<uint32>(EquipmentItems.size());
@@ -429,13 +404,13 @@ WorldPacket const* WorldPackets::Battlepay::BattlepayCharacterUpgradeQueued::Wri
     return &_worldPacket;
 }
 
-void WorldPackets::Battlepay::BattlepayTrialBoostCharacter::Read()
+void Battlepay::BattlepayTrialBoostCharacter::Read()
 {
     _worldPacket >> Character;
     _worldPacket >> SpecializationID;
 }
 
-WorldPacket const* WorldPackets::Battlepay::BattlepayVasPurchaseList::Write()
+WorldPacket const* Battlepay::BattlepayVasPurchaseList::Write()
 {
     _worldPacket.WriteBits(VasPurchase.size(), 6);
     _worldPacket.FlushBits();
@@ -445,7 +420,7 @@ WorldPacket const* WorldPackets::Battlepay::BattlepayVasPurchaseList::Write()
     return &_worldPacket;
 }
 
-WorldPacket const* WorldPackets::Battlepay::BattlepayPurchaseDetails::Write()
+WorldPacket const* Battlepay::BattlepayPurchaseDetails::Write()
 {
     _worldPacket << UnkInt;
     _worldPacket << VasPurchaseProgress;
@@ -459,7 +434,7 @@ WorldPacket const* WorldPackets::Battlepay::BattlepayPurchaseDetails::Write()
     return &_worldPacket;
 }
 
-WorldPacket const* WorldPackets::Battlepay::BattlepayPurchaseUnk::Write()
+WorldPacket const* Battlepay::BattlepayPurchaseUnk::Write()
 {
     _worldPacket << UnkByte;
     _worldPacket << UnkInt;
@@ -470,7 +445,7 @@ WorldPacket const* WorldPackets::Battlepay::BattlepayPurchaseUnk::Write()
     return &_worldPacket;
 }
 
-WorldPacket const* WorldPackets::Battlepay::BattlepayBattlePetDelivered::Write()
+WorldPacket const* Battlepay::BattlepayBattlePetDelivered::Write()
 {
     _worldPacket << DisplayID;
     _worldPacket << BattlePetGuid;
@@ -478,12 +453,12 @@ WorldPacket const* WorldPackets::Battlepay::BattlepayBattlePetDelivered::Write()
     return &_worldPacket;
 }
 
-void WorldPackets::Battlepay::BattlepayPurchaseDetailsResponse::Read()
+void Battlepay::BattlepayPurchaseDetailsResponse::Read()
 {
     _worldPacket >> UnkByte;
 }
 
-void WorldPackets::Battlepay::BattlepayPurchaseUnkResponse::Read()
+void Battlepay::BattlepayPurchaseUnkResponse::Read()
 {
     auto keyLen = _worldPacket.ReadBits(6);
     auto key2Len = _worldPacket.ReadBits(7);
@@ -491,14 +466,14 @@ void WorldPackets::Battlepay::BattlepayPurchaseUnkResponse::Read()
     Key2 = _worldPacket.ReadString(key2Len);
 }
 
-WorldPacket const* WorldPackets::Battlepay::DisplayPromotion::Write()
+WorldPacket const* Battlepay::DisplayPromotion::Write()
 {
     _worldPacket << PromotionID;
 
     return &_worldPacket;
 }
 
-WorldPacket const* WorldPackets::Battlepay::BattlepayStartDistributionAssignToTargetResponse::Write()
+WorldPacket const* Battlepay::BattlepayStartDistributionAssignToTargetResponse::Write()
 {
     _worldPacket << DistributionID;
     _worldPacket << unkint1;
@@ -508,7 +483,7 @@ WorldPacket const* WorldPackets::Battlepay::BattlepayStartDistributionAssignToTa
 }
 
 
-void WorldPackets::Battlepay::RequestConsumptionConversionInfo::Read()
+void Battlepay::RequestConsumptionConversionInfo::Read()
 {
     _worldPacket >> ID;
 }

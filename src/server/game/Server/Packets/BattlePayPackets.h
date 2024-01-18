@@ -27,7 +27,6 @@ namespace WorldPackets
     // BattleNet Pay Service ...
     namespace Battlepay
     {
-        // TODO: 这个消息是和Battlepay相关的消息，客户端请求消费所用的代币的信息
         class RequestConsumptionConversionInfo final : public ClientPacket
         {
         public:
@@ -64,15 +63,14 @@ namespace WorldPackets
 
         struct ProductDisplayVisualData
         {
-            uint32 DisplayId = 0;
-            uint32 VisualId = 0;
-            std::string ProductName;
+            uint32 DisplayID;               // Model ID
+            uint32 ModelSceneID;            // Only!!! 62 CAN display model.
+            std::string Title;              // Title of Model Preview Frame...
         };
 
         struct ProductDisplayInfo
-        {
-            std::vector<ProductDisplayVisualData> Visuals;
-            Optional<uint32> CreatureDisplayInfoID;
+        {   
+            Optional<uint32> ModelSceneID;          // use MODEL_SCENE_ID or Let is empty ...
             Optional<uint32> IconFileID;            // IconFileID
             Optional<uint32> Flags;                 // enum BattlepayDisplayFlag
             Optional<uint32> UnkInt1;               // Name1 Color - 0xFFFFFF
@@ -80,13 +78,15 @@ namespace WorldPackets
             Optional<uint32> UnkInt3;               // Replace Card's BackgroundFileID
             std::string Name1;                      // Product Name
             std::string Name2;
-            std::string Name3;                      // Product Descript
-            std::string Name4;
+            std::string Name3;                      // Product Description
+            std::string Name4;                      // Product Description For (FullCard Mode - Only 2 Product In Card)
+
+            std::vector<ProductDisplayVisualData> Visuals;      // 3D Model Info ...
         };
 
         struct ProductItem
         {
-            uint32 Entry = 0;          // entry ..
+            uint32 Entry = 0;
             uint8 UnkByte = 0;
             uint32 ItemID = 0;
             uint32 Quantity = 0;
@@ -100,12 +100,12 @@ namespace WorldPackets
         struct BattlepayProductItem
         {
             std::vector<ProductItem> Items;
-            Optional<ProductDisplayInfo> DisplayInfo;           // 关联 battlepay_product_item.DisplayID
+            Optional<ProductDisplayInfo> DisplayInfo;           // associated with battlepay_product_item.DisplayID
             Optional<uint16> UnkBits;
             uint32 ProductID = 0;
-            uint32 UnkInt0 = 0;
+            uint32 ItemID = 0;                                 // ItemID with The Product, For Tooltips ...
             uint32 UnkInt1 = 0;
-            uint32 DisplayId = 0;
+            uint32 UnkInt2 = 0;                              
             uint32 UnkInt3 = 0;
             uint32 UnkInt4 = 0;
             uint32 UnkInt5 = 0;
@@ -197,20 +197,20 @@ namespace WorldPackets
         {
             std::vector<uint32> ProductIDs;
             std::vector<uint32> UnkInts;
-            Optional<ProductDisplayInfo> DisplayInfo;   // 关联了battlepay_product.DisplayInfoID
+            Optional<ProductDisplayInfo> DisplayInfo;
             uint64 NormalPriceFixedPoint = 0;
             uint64 CurrentPriceFixedPoint = 0;
             uint32 ProductID = 0;
-            uint32 UnkInt2 = 0;     // Display Flags 
+            uint32 Flags = 0;     // Display Flags 
             uint32 ChoiceType = 0;
         };
 
         struct ProductListData
         {
-            std::vector<ProductInfoStruct> ProductInfo;             // Product
-            std::vector<BattlepayProductItem> Product;                  // ItemList ...
-            std::vector<BattlepayProductGroup> ProductGroup;
-            std::vector<BattlepayShopEntry> Shop;
+            std::vector<BattlepayProduct> Products;                 // Product List
+            std::vector<BattlepayProductItem> Items;                // Item  ...
+            std::vector<BattlepayProductGroup> Groups;              // Group List
+            std::vector<BattlepayShopEntry> Shop;                   // ShopProduct list
             uint32 CurrencyID = 0;
         };
 
