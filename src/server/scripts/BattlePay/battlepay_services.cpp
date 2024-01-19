@@ -288,23 +288,58 @@ template <uint32 t_AccountServiceFlag> class Battlepay_AccountService : Battlepa
 public:
     explicit Battlepay_AccountService(std::string scriptName) : BattlepayProductScript(scriptName) {}
 
-    void OnProductDelivery(WorldSession* /*session*/, Battlepay::Product const& /*product*/) override
+    void OnProductDelivery(WorldSession* session, Battlepay::Product const& /*product*/) override
     {
-        //session->SetServiceFlags(t_AccountServiceFlag);
+
+        
     }
 
     bool CanBuy(WorldSession* /*session*/, Battlepay::Product const& /*product*/, std::string& reason) override
     {
-
+        // TODO:
         return true;
     }
 };
 
-// what is `SC`
+template <uint32 Money>
+class battlepay_gold : BattlepayProductScript
+{
+public:
+    explicit battlepay_gold(std::string scriptName) : BattlepayProductScript(scriptName) {}
+    void OnProductDelivery(WorldSession* session, Battlepay::Product const& /*product*/) override
+    {
+        if (auto player = session->GetPlayer())
+        {
+            // Convert to copper coins ...
+            player->ModifyMoney(Money * 100 * 100);
+            std::ostringstream msg;
+            msg << "|cffff8000  Added " << Money << " golds...";
+            player->SendCustomMessage(msg.str());
+        }
+    }
+
+    bool CanBuy(WorldSession* /*session*/, Battlepay::Product const& /*product*/, std::string& reason) override
+    {
+        // TODO:
+        return true;
+    }
+};
+
+
+
+// `SC` = `Script`
 void AddSC_Battlepay_Services()
 {
     new Battlepay_Level<90>("battlepay_service_level90");
     new Battlepay_Level<100>("battlepay_service_level100");
+
+    new battlepay_gold<1000>("battlepay_gold_1k");
+    new battlepay_gold<5000>("battlepay_gold_5k");
+    new battlepay_gold<10000>("battlepay_gold_10k");
+    new battlepay_gold<30000>("battlepay_gold_30k");
+    new battlepay_gold<80000>("battlepay_gold_80k");
+    new battlepay_gold<150000>("battlepay_gold_150k");
+
     new playerScriptTokensAvailable();
     new reachedRefererThreshold();
     //new Battlepay_AccountService<ServiceFlags::PremadePve>("battlepay_service_premade");

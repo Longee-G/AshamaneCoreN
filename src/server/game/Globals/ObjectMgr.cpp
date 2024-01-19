@@ -9397,6 +9397,8 @@ void ObjectMgr::LoadScriptNames()
         "UNION "
         "SELECT DISTINCT(ScriptName) FROM garrison_scripts WHERE ScriptName <> '' "
         "UNION "
+        "SELECT DISTINCT(ScriptName) FROM battlepay_product WHERE ScriptName <> '' "
+        "UNION "
         "SELECT DISTINCT(script) FROM instance_template WHERE script <> ''");
 
     if (!result)

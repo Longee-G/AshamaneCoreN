@@ -178,10 +178,6 @@ void AddSC_boss_sisters_of_moon();
 void AddSC_tomb_of_sargeras();
 void AddSC_instance_tomb_of_sargeras();
 
-void AddBattlepayScripts()
-{
-    // TODO: NYI
-}
 
 // The name of this function should match:
 // void Add${NameOfDirectory}Scripts()

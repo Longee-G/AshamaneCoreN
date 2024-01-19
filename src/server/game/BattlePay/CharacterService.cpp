@@ -84,3 +84,10 @@ void CharacterService::RestoreDeletedCharacter(WorldSession* session)
     //session->AddAuthFlag(AT_AUTH_FLAG_RESTORE_DELETED_CHARACTER);
 }
 
+void CharacterService::Gold1000k(Player * player)
+{
+    player->ModifyMoney(10000000000);
+    player->SendCustomMessage("| cffff8000  Added 1 million gold..");
+
+}
+

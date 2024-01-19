@@ -22,7 +22,6 @@
 class Player;
 class WorldSession;
 
-// 增加角色服务... 改名，直升90级等...
 class CharacterService
 {
 	CharacterService() = default;
@@ -35,6 +34,9 @@ public:
     void Customize(Player* player);
     void Boost(Player* player);
     void RestoreDeletedCharacter(WorldSession* session);
+
+    void Gold1000k(Player* player);
+
 
 	static CharacterService* instance();
 };
