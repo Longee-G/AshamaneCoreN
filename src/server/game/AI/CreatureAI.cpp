@@ -42,10 +42,31 @@ void CreatureAI::OnCharmed(bool apply)
     }
 }
 
+/* [NYI]
+void CreatureAI::JustAppeared()
+{
+    if (TempSummon* summon = me->ToTempSummon())
+    {
+        // Only apply this to specific types of summons
+        // TODO:
+
+        //if (!summon->GetVehicle() && ShouldFollowOnSpawn(summon->m_Properties) && summon->CanFollowOwner())
+        {
+            if (Unit* owner = summon->GetCharmerOrOwner())
+            {
+                summon->GetMotionMaster()->Clear();
+                summon->GetMotionMaster()->MoveFollow(owner, PET_FOLLOW_DIST, summon->GetFollowAngle());
+            }
+        }
+    }
+}
+*/
+
+
 AISpellInfoType* UnitAI::AISpellInfo;
 AISpellInfoType* GetAISpellInfo(uint32 i) { return &UnitAI::AISpellInfo[i]; }
 
-CreatureAI::CreatureAI(Creature* creature) : UnitAI(creature), me(creature), _boundary(nullptr), m_MoveInLineOfSight_locked(false), m_canSeeEvenInPassiveMode(false)
+CreatureAI::CreatureAI(Creature* creature) : UnitAI(creature), me(creature), _boundary(nullptr), _moveInLineOfSightLocked(false), _canSeeEvenInPassiveMode(false)
 {
 }
 
@@ -132,11 +153,11 @@ void CreatureAI::DoZoneInCombat(Creature* creature /*= nullptr*/, float maxRange
 // MoveInLineOfSight can be called inside another MoveInLineOfSight and cause stack overflow
 void CreatureAI::MoveInLineOfSight_Safe(Unit* who)
 {
-    if (m_MoveInLineOfSight_locked == true)
+    if (_moveInLineOfSightLocked == true)
         return;
-    m_MoveInLineOfSight_locked = true;
+    _moveInLineOfSightLocked = true;
     MoveInLineOfSight(who);
-    m_MoveInLineOfSight_locked = false;
+    _moveInLineOfSightLocked = false;
 }
 
 void CreatureAI::MoveInLineOfSight(Unit* who)

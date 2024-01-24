@@ -36,7 +36,8 @@
 #include "GameObjectAI.h"
 #include "CreatureTextMgr.h"
 #include "GossipDef.h"
-
+#include "SpellScript.h"
+#include "GridNotifiers.h"
 
 enum eQuests
 {
@@ -562,11 +563,95 @@ struct npc_cyana_nightglaive_invasion_begins : public ScriptedAI
 struct npc_illidari_fighting_invasion_begins : public ScriptedAI
 {
     npc_illidari_fighting_invasion_begins(Creature* creature) : ScriptedAI(creature) {}
-    void UpdateAI(uint32 diff) override
-    {
 
+    enum FightingEvents
+    {
+        EVENT_CHAOS_STRIKE = 1,
+        EVENT_FEL_RUSH
+    };
+
+    Unit* GetNextTarget()
+    {
+        std::list<Unit*> targetList;        
+        Trinity::AnyUnfriendlyUnitInObjectRangeCheck checker(me, me, 100.0f);
+        Trinity::UnitListSearcher<Trinity::AnyUnfriendlyUnitInObjectRangeCheck> searcher(me, targetList, checker);
+        Cell::VisitAllObjects(me, searcher, 100.0f);
+        targetList.remove_if([](Unit* possibleTarget)
+        {
+            return possibleTarget->isAttackingPlayer();
+        });
+
+        // 随机选择列表中的目标 ...
+        return Trinity::Containers::SelectRandomContainerElement(targetList);;
     }
 
+    void ScheduleTargetSelection()
+    {
+        _scheduler.Schedule(200ms, [this](TaskContext context)
+        {
+            Unit* target = GetNextTarget();
+            if (!target)
+            {
+                context.Repeat(500ms);
+                return;
+            }
+            AttackStart(target);
+        });
+    }
+
+    void JustRespawned() override
+    {
+        ScheduleTargetSelection();
+    }
+
+    void Reset() override
+    {
+        events.Reset();
+    }
+
+    void EnterCombat(Unit* /*victim*/) override
+    {
+        events.ScheduleEvent(EVENT_CHAOS_STRIKE, 5s);
+        events.ScheduleEvent(EVENT_FEL_RUSH, 7s);
+    }
+    // leave combat
+    void EnterEvadeMode(EvadeReason why) override
+    {
+        // manualling calling it to not move to home position but move to next target instead
+        _EnterEvadeMode(why);
+        Reset();
+        ScheduleTargetSelection();
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        if (!UpdateVictim())
+        {
+            _scheduler.Update(diff);
+            return;
+        }
+
+        events.Update(diff);
+
+        if (me->HasUnitState(UNIT_STATE_CASTING))
+            return;
+
+        switch (events.ExecuteEvent())
+        {
+        case EVENT_CHAOS_STRIKE:
+            DoCastVictim(197639); // SPELL_ILLIDARI_CHAOS_STRIKE
+            events.ScheduleEvent(EVENT_CHAOS_STRIKE, 5s);
+            break;
+        case EVENT_FEL_RUSH:
+            DoCastVictim(200879);   // SPELL_ILLIDARI_FEL_RUSH
+            events.ScheduleEvent(EVENT_FEL_RUSH, 7s);
+            break;
+        default:
+            break;
+        }
+    }
+private:
+    TaskScheduler _scheduler;
 };
 
 
@@ -607,6 +692,39 @@ private:
     }
 };
 
+// Fel Spreader is NPC - 97142
+// in table `npc_spellclick_spells`, associated with spell_id:191827
+// 当player和npc交互，会自动释放法术
+class spell_destroying_fel_spreader : public SpellScript
+{
+    PrepareSpellScript(spell_destroying_fel_spreader);
+    void HandleHitDefaultEffect(SpellEffIndex effIndex)
+    {
+        if (Unit* caster = GetCaster())
+        {
+            if (Player* player = caster->ToPlayer())
+            {
+                if (Unit* target = GetHitUnit())
+                {
+                    // 将npc添加到隐藏列表，让player不能再看到这个npc
+                    // 不使用相位让某个creature或者gameobject只对某个player不可见...
+                    // TODO: 还没有实现 ... 怎么实现这个功能
+                                       
+
+                    target->DestroyForPlayer(player);
+                    // 通过这个方式来增加突袭马顿的进度 ...
+                    player->KilledMonsterCredit(target->GetEntry());
+                    Conversation::CreateConversation(581, player, *player, { player->GetGUID() }, nullptr);
+                }
+            }
+        }
+
+    }
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_destroying_fel_spreader::HandleHitDefaultEffect, EFFECT_0, SPELL_EFFECT_DUMMY);
+    }
+};
 
 
 // Legion版本使用 `go-244898` 是一个旗子
@@ -636,6 +754,9 @@ public:
 // 灰舌..  激活器会在完成任务目标后消失应该是和phase相关..
 // LegionCore 是怎么来控制phase的？ GO对某个phase可见...
 // GO-241751
+
+// TODO: 激活器需要通过phase来控制，当被点击之后，需要消失掉 ...
+
 class go_mardum_portal_ashtongue : public GameObjectScript
 {
 public:
@@ -1559,6 +1680,8 @@ void AddSC_zone_mardum()
     RegisterCreatureAI(npc_korvas_bloodthorn_invasion_begins);
     RegisterCreatureAI(npc_sevis_brightflame_invasion_begins);
     RegisterCreatureAI(npc_cyana_nightglaive_invasion_begins);
+    RegisterCreatureAI(npc_illidari_fighting_invasion_begins);
+
     new go_legion_communicator();
     new go_mardum_legion_banner_1();    
     new go_mardum_portal_ashtongue();
@@ -1593,4 +1716,6 @@ void AddSC_zone_mardum()
     new npc_mardum_kayn_sunfury_end();
     new go_mardum_the_keystone();
     RegisterSpellScript(spell_mardum_back_to_black_temple);
+
+    RegisterSpellScript(spell_destroying_fel_spreader);
 }

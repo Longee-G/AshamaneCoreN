@@ -594,7 +594,18 @@ void SmartAI::JustRespawned()
     mFollowArrivedEntry = 0;
     mFollowCreditType = 0;
 }
+/*
+void SmartAI::JustAppeared()
+{
+    // [Longee]
+    CreatureAI::JustAppeared();
+    if (me->isDead())
+        return;
 
+    GetScript()->ProcessEventsFor(SMART_EVENT_RESPAWN);
+    GetScript()->OnReset();
+}
+*/
 int SmartAI::Permissible(const Creature* creature)
 {
     if (creature->GetAIName() == "SmartAI")

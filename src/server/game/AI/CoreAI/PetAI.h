@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -49,12 +49,14 @@ class TC_GAME_API PetAI : public CreatureAI
         //
         void MoveInLineOfSight(Unit* /*who*/) override { } // CreatureAI interferes with returning pets
         void MoveInLineOfSight_Safe(Unit* /*who*/) { } // CreatureAI interferes with returning pets
+        // [NYI]
+        //void JustAppeared() override { } // we will control following manually
         void EnterEvadeMode(EvadeReason /*why*/) override { } // For fleeing, pets don't use this type of Evade mechanic
 
         void OnCharmed(bool /*apply*/) override;
 
     private:
-        bool _isVisible(Unit*) const;
+        //bool _isVisible(Unit*) const;
         bool _needToStop(void);
         void _stopAttack(void);
 

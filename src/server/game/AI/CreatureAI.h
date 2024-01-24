@@ -107,8 +107,8 @@ public:
     // Called if IsVisible(Unit* who) is true at each who move, reaction at visibility zone enter
     void MoveInLineOfSight_Safe(Unit* who);
 
-    bool CanSeeEvenInPassiveMode() { return m_canSeeEvenInPassiveMode; }
-    void SetCanSeeEvenInPassiveMode(bool canSeeEvenInPassiveMode) { m_canSeeEvenInPassiveMode = canSeeEvenInPassiveMode; }
+    bool CanSeeEvenInPassiveMode() { return _canSeeEvenInPassiveMode; }
+    void SetCanSeeEvenInPassiveMode(bool canSeeEvenInPassiveMode) { _canSeeEvenInPassiveMode = canSeeEvenInPassiveMode; }
 
     // Called in Creature::Update when deathstate = DEAD.
     virtual bool CanRespawn() { return true; }
@@ -176,6 +176,10 @@ public:
 
     // Called when creature is spawned or respawned
     virtual void JustRespawned() { }
+
+    // Called when creature appears in the world (spawn, respawn, grid load etc...)
+    // [NYI]
+    //virtual void JustAppeared();
 
     // Called at waypoint reached or point movement finished
     virtual void MovementInform(uint32 /*type*/, uint32 /*id*/) { }
@@ -266,8 +270,8 @@ protected:
     CreatureBoundary const* _boundary;
 
 private:
-    bool m_MoveInLineOfSight_locked;
-    bool m_canSeeEvenInPassiveMode;
+    bool _moveInLineOfSightLocked;
+    bool _canSeeEvenInPassiveMode;
 };
 
 enum Permitions

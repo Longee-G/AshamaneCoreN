@@ -71,6 +71,10 @@ class TC_GAME_API SmartAI : public CreatureAI
         // Called when creature is spawned or respawned
         void JustRespawned() override;
 
+        // Called once creature is fully added to world
+        // [NYI] same as JustRespawned
+        //void JustAppeared() override;
+
         // Called at reaching home after evade, InitializeAI(), EnterEvadeMode() for resetting variables
         void JustReachedHome() override;
 

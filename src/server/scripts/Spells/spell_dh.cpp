@@ -131,7 +131,8 @@ enum DHSpells
     SPELL_DH_NETHER_BOND_PERIODIC           = 207811,
     SPELL_DH_PREPARED                       = 203551,
     SPELL_DH_RAZOR_SPIKES_SLOW              = 210003,
-    SPELL_DH_SHATTERED_SOULS                = 178940,
+    SPELL_DH_SHATTERED_SOULS_H              = 178940,   // for Havoc
+    SPELL_DH_SHATTERED_SOULS_V              = 204254,   // for Vengeance
     SPELL_DH_SHATTERED_SOULS_AT_DEMON       = 203795,
     SPELL_DH_SHATTERED_SOULS_AT_NORMAL      = 228537,
     SPELL_DH_SHATTERED_SOULS_LESSER         = 204255,
@@ -1133,7 +1134,7 @@ public:
     }
 };
 
-// Shattered Souls - 178940 and 204254
+// Shattered Souls - 178940(Havoc) and 204254(Vengeance)
 class spell_dh_shattered_souls : public SpellScriptLoader
 {
 public:
@@ -1153,10 +1154,21 @@ public:
             if (roll_chance_i(GetSpellInfo()->GetEffect(EFFECT_0)->BasePoints))
             {
                 uint32 triggerSpellId = 0;
-                if (target->GetCreatureType() == CREATURE_TYPE_DEMON)
-                    triggerSpellId = SPELL_DH_SHATTERED_SOULS_AT_DEMON;
-                else
-                    triggerSpellId = SPELL_DH_SHATTERED_SOULS_AT_NORMAL;
+
+                if (GetId() == SPELL_DH_SHATTERED_SOULS_H)
+                {
+                    if (target->GetCreatureType() == CREATURE_TYPE_DEMON)
+                        triggerSpellId = SPELL_DH_SHATTERED_SOULS_AT_DEMON; // 203795  Soul Fragment
+                    else
+                        triggerSpellId = SPELL_DH_SHATTERED_SOULS_AT_NORMAL;    // 228537   Shattered Souls
+                }
+                else if (GetId() == SPELL_DH_SHATTERED_SOULS_V)
+                {
+                    if (target->GetCreatureType() == CREATURE_TYPE_DEMON)
+                        triggerSpellId = 210038;    // Shatter Soul
+                    else
+                        triggerSpellId = 209981;    // Shatter Soul
+                }
 
                 caster->CastCustomSpell(SPELL_DH_SHATTERED_SOULS_MISSILE, SpellValueMod(SPELLVALUE_TRIGGER_SPELL + EFFECT_1), triggerSpellId, caster);
             }
