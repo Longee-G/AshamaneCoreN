@@ -1501,15 +1501,11 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void UpdateForQuestWorldObjects();
         bool CanShareQuest(uint32 questId) const;
 
-        // Chat Message
-        void SendCustomMessage(std::string const& n);
-        void SendCustomMessage(std::string const& n, std::ostringstream const& data);
-        void SendCustomMessage(std::string const& n, std::vector<std::string> const& data);
-
         int32 GetQuestObjectiveData(Quest const* quest, int8 storageIndex) const;
         int32 GetQuestObjectiveData(uint32 questId, int8 storageIndex) const;
         int32 GetQuestObjectiveCounter(uint32 objectiveId) const;
         bool IsQuestObjectiveComplete(QuestObjective const& objective) const;
+        bool IsQuestObjectiveComplete(uint32 questId, int8 storageIndex) const;
         void SetQuestObjectiveData(QuestObjective const& objective, int32 data);
         bool IsQuestObjectiveProgressComplete(Quest const* quest) const;
         void SendQuestComplete(Quest const* quest) const;
@@ -1523,6 +1519,11 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void SendQuestUpdateAddCreditSimple(QuestObjective const& obj) const;
         void SendQuestUpdateAddPlayer(Quest const* quest, uint16 newCount) const;
         void SendQuestGiverStatusMultiple();
+
+        // Chat Message
+        void SendCustomMessage(std::string const& n);
+        void SendCustomMessage(std::string const& n, std::ostringstream const& data);
+        void SendCustomMessage(std::string const& n, std::vector<std::string> const& data);
 
         ObjectGuid GetDivider() const { return _divider; }
         void SetDivider(ObjectGuid guid) { _divider = guid; }

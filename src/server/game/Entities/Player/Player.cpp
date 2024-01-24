@@ -17695,6 +17695,18 @@ bool Player::IsQuestObjectiveComplete(QuestObjective const& objective) const
     return true;
 }
 
+bool Player::IsQuestObjectiveComplete(uint32 questId, int8 storageIndex) const
+{
+    if (Quest const* q = sObjectMgr->GetQuestTemplate(questId))
+    {
+        for (QuestObjective const& obj : q->GetObjectives())
+            if (obj.StorageIndex == storageIndex)
+                return IsQuestObjectiveComplete(obj);
+    }
+
+    return false;
+}
+
 void Player::SetQuestObjectiveData(QuestObjective const& objective, int32 data)
 {
     if (objective.StorageIndex < 0)
@@ -25304,7 +25316,9 @@ bool Player::HasQuestForGO(int32 GOId) const
                     continue;
 
                 if (GOId == obj.ObjectID && GetQuestObjectiveData(qInfo, obj.StorageIndex) < obj.Amount)
+                {
                     return true;
+                }
             }
         }
     }

@@ -795,7 +795,12 @@ void GameObject::Update(uint32 diff)
                 //any return here in case battleground traps
                 if (GameObjectTemplateAddon const* addon = GetTemplateAddon())
                     if (addon->flags & GO_FLAG_NODESPAWN)
+                    {
+                        // FIXME: 临时添加，否则会导致GO一直处于 GO_JUST_DEACTIVATED 
+                        SetLootState(GO_READY);
                         return;
+                    }
+                        
             }
 
             loot.clear();
@@ -1230,7 +1235,15 @@ void GameObject::Respawn()
 bool GameObject::ActivateToQuest(Player* target) const
 {
     if (target->HasQuestForGO(GetEntry()))
+    {
+        // FIXME: 还需要检查GO是否已经被触发过 ...
+        if (QuestObjectiveCriteriaMgr* criteriaMgr = target->GetQuestObjectiveCriteriaMgr())
+        {
+        }
+
         return true;
+    }
+        
 
     if (!sObjectMgr->IsGameObjectForQuests(GetEntry()))
         return false;
@@ -1265,7 +1278,11 @@ bool GameObject::ActivateToQuest(Player* target) const
         case GAMEOBJECT_TYPE_GOOBER:
         {
             if (target->GetQuestStatus(GetGOInfo()->goober.questID) == QUEST_STATUS_INCOMPLETE)
+            {
+                
                 return true;
+            }
+                
             break;
         }
         default:

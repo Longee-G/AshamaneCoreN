@@ -573,15 +573,17 @@ struct npc_illidari_fighting_invasion_begins : public ScriptedAI
     Unit* GetNextTarget()
     {
         std::list<Unit*> targetList;        
-        Trinity::AnyUnfriendlyUnitInObjectRangeCheck checker(me, me, 100.0f);
+        Trinity::AnyUnfriendlyUnitInObjectRangeCheck checker(me, me, 35.0f);
         Trinity::UnitListSearcher<Trinity::AnyUnfriendlyUnitInObjectRangeCheck> searcher(me, targetList, checker);
         Cell::VisitAllObjects(me, searcher, 100.0f);
         targetList.remove_if([](Unit* possibleTarget)
         {
+            if (possibleTarget->GetGUID().IsBattlePet())
+                return true;
+
             return possibleTarget->isAttackingPlayer();
         });
 
-        // 随机选择列表中的目标 ...
         return Trinity::Containers::SelectRandomContainerElement(targetList);;
     }
 
@@ -592,7 +594,7 @@ struct npc_illidari_fighting_invasion_begins : public ScriptedAI
             Unit* target = GetNextTarget();
             if (!target)
             {
-                context.Repeat(500ms);
+                context.Repeat(1500ms);
                 return;
             }
             AttackStart(target);
@@ -670,25 +672,33 @@ public:
         }
         else if (go->GetEntry() == 244440) // Legion Communicator #2
         {
-            UpdateObjective(player, go, 281334, 102224, 583);
+            return !UpdateObjective(player, go, 281334, 102224, 583);
         }
         else if (go->GetEntry() == 244441) // Legion Communicator #3
         {
             // Brood Queen Tyranna says: Whoever this is, you're caught in my web now.
-            UpdateObjective(player, go, 281335, 102225, 583);   // what conversation id?
+            return !UpdateObjective(player, go, 281335, 102225, 583);   // what conversation id?
         }
         return false;
     }
 private:
-    void UpdateObjective(Player* player, GameObject* go, uint32 objectiveId, uint32 killCredit, uint32 conversationId)
+    bool UpdateObjective(Player* player, GameObject* go, uint32 objectiveId, uint32 killCredit, uint32 conversationId)
     {
-        if (!player->GetQuestObjectiveCounter(objectiveId))
+        // 需要调用这个接口，才能用GO关联的spell触发
+        go->AddUniqueUse(player);
+
+
+        //if (!player->GetQuestObjectiveCounter(objectiveId))
         {
+            // FIXME: ... 这个有问题 ... 不能输入guid参数，这个参数好像是用来找creature的 ...
+
             player->KilledMonsterCredit(killCredit, go->GetGUID());
             Conversation::CreateConversation(conversationId, player, *player, { player->GetGUID() }, nullptr);
 
             player->KilledMonsterCredit(go->GetEntry());
+            return true;
         }
+        return false;
     }
 };
 
@@ -737,8 +747,10 @@ public:
 
     bool OnGossipHello(Player* player, GameObject* go) override
     {
-        if (!player->GetQuestObjectiveData(QUEST_INVASION_BEGIN, 0))
+        if (!player->IsQuestObjectiveComplete(QUEST_INVASION_BEGIN, 0))
             return true;
+
+        // bugfix: 当任务目标第1步没有完成，不能和go进行交互 ...
 
         if (!player->GetQuestObjectiveData(QUEST_INVASION_BEGIN, 1))
             player->CastSpell(player, SPELL_SCENE_MARDUM_LEGION_BANNER, true);
@@ -1234,7 +1246,7 @@ struct npc_mardum_sevis_brightflame_shivarra : public ScriptedAI
 {
     npc_mardum_sevis_brightflame_shivarra(Creature* creature) : ScriptedAI(creature) { }
 
-    // TEMP FIX, will need gossip
+    // TEMP FIX, need gossip?
     void MoveInLineOfSight(Unit* unit) override
     {
         if (Player* player = unit->ToPlayer())
