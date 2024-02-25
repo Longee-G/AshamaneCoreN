@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2012-2014 Arctium Emulation <http://arctium.org>
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
@@ -54,6 +54,9 @@ namespace Connection_Patcher
             static std::vector<unsigned char> CertBundleUrl() { return { 'h', 't', 't', 'p', 's', ':', '/', '/', 't', 'r', 'i', 'n', 'i', 't', 'y', '6', '.', 'g', 'i', 't', 'h', 'u', 'b', '.', 'i', 'o', '/', 'B', 'n', 'e', 't', '/', 'z', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', '/', 'c', 'l', 'i', 'e', 'n', 't', '/', 'b', 'g', 's', '-', 'k', 'e', 'y', '-', 'f', 'i', 'n', 'g', 'e', 'r', 'p', 'r', 'i', 'n', 't' }; }
             static std::string CertificateBundle()
             {
+                // 字符串前面加R是什么意思
+                // 表示字符串内的所有字符都是原始字符，不再需要通过转义字符来设置特殊字符..
+
                 return
 R"({
     "Created": 1455065214,

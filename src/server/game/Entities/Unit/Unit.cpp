@@ -11264,7 +11264,8 @@ void Unit::Kill(Unit* victim, bool durabilityLoss)
 
     if (player && player != victim)
     {
-        Group* group = player->GetGroup();
+        // check whether player has group
+        Group* pGroup = player->GetGroup();
 
         if (isXpRewardAllowed)
         {
@@ -11272,8 +11273,8 @@ void Unit::Kill(Unit* victim, bool durabilityLoss)
             partyKillLog.Player = player->GetGUID();
             partyKillLog.Victim = victim->GetGUID();
 
-            if (group)
-                group->BroadcastPacket(partyKillLog.Write(), group->GetMemberGroup(player->GetGUID()) != 0);
+            if (pGroup)
+                pGroup->BroadcastPacket(partyKillLog.Write(), pGroup->GetMemberGroup(player->GetGUID()) != 0);
             else
                 player->SendDirectMessage(partyKillLog.Write());
 
@@ -11287,14 +11288,14 @@ void Unit::Kill(Unit* victim, bool durabilityLoss)
             Player* looter = player;
             bool hasLooterGuid = false;
 
-            if (group)
-            {
+            if (pGroup)
+            { // in group
                 if (creature)
                 {
-                    group->UpdateLooterGuid(creature, true);
-                    if (!group->GetLooterGuid().IsEmpty())
+                    pGroup->UpdateLooterGuid(creature, true);
+                    if (!pGroup->GetLooterGuid().IsEmpty())
                     {
-                        looter = ObjectAccessor::FindPlayer(group->GetLooterGuid());
+                        looter = ObjectAccessor::FindPlayer(pGroup->GetLooterGuid());
                         if (looter)
                         {
                             hasLooterGuid = true;
@@ -11304,7 +11305,7 @@ void Unit::Kill(Unit* victim, bool durabilityLoss)
                 }
             }
             else
-            {
+            { // not in group
                 if (creature)
                 {
                     WorldPackets::Loot::LootList lootList;
@@ -11326,16 +11327,16 @@ void Unit::Kill(Unit* victim, bool durabilityLoss)
 
                 loot->generateMoneyLoot(creature->GetCreatureTemplate()->mingold, creature->GetCreatureTemplate()->maxgold);
 
-                if (group)
+                if (pGroup)
                 {
                     if (hasLooterGuid)
-                        group->SendLooter(creature, looter);
+                        pGroup->SendLooter(creature, looter);
                     else
-                        group->SendLooter(creature, NULL);
+                        pGroup->SendLooter(creature, NULL);
 
                     // Update round robin looter only if the creature had loot
                     if (!loot->empty())
-                        group->UpdateLooterGuid(creature);
+                        pGroup->UpdateLooterGuid(creature);
                 }
             }
         }

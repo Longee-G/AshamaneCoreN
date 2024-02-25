@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
  *
@@ -42,7 +42,7 @@ struct TC_GAME_API LootStoreItem
     float   chance;                                         // chance to drop for both quest and non-quest items, chance to be used for refs
     uint16  lootmode;                                       // where's loot mode defines?? enum LootModes ??
     bool    needs_quest;                                    // quest drop (quest is required for item to drop)
-    uint8   groupid;
+    uint8   groupid;                                        // item group id, 0 -- non-grouped
     uint32  mincount;                                       // mincount for drop items
     uint32  maxcount;                                       // max drop count for the item mincount or Ref multiplicator
     ConditionContainer conditions;                          // additional loot condition
@@ -53,9 +53,10 @@ struct TC_GAME_API LootStoreItem
         : itemid(_itemid), type(_type), reference(_reference), chance(_chance), lootmode(_lootmode),
         needs_quest(_needs_quest), groupid(_groupid), mincount(_mincount), maxcount(_maxcount)
          { }
-
-    bool Roll(bool rate) const;                             // Checks if the entry takes it's chance (at loot generation)
-    bool IsValid(LootStore const& store, uint32 entry) const; // Checks correctness of values
+    // Checks if the entry takes it's chance (at loot generation)
+    bool Roll(bool rate) const;
+    // Checks correctness of values
+    bool IsValid(LootStore const& store, uint32 entry) const; 
 };
 
 typedef std::list<LootStoreItem*> LootStoreItemList;
@@ -65,75 +66,78 @@ typedef std::set<uint32> LootIdSet;
 
 class TC_GAME_API LootStore
 {
-    public:
-        explicit LootStore(char const* name, char const* entryName, bool ratesAllowed)
-            : _name(name), _entryName(entryName), _ratesAllowed(ratesAllowed) { }
+public:
+    explicit LootStore(char const* name, char const* entryName, bool ratesAllowed)
+        : _name(name), _entryName(entryName), _ratesAllowed(ratesAllowed) { }
 
-        virtual ~LootStore() { Clear(); }
+    virtual ~LootStore() { Clear(); }
 
-        void Verify() const;
+    void Verify() const;
 
-        uint32 LoadAndCollectLootIds(LootIdSet& ids_set);
-        void CheckLootRefs(LootIdSet* ref_set = NULL) const; // check existence reference and remove it from ref_set
-        void ReportUnusedIds(LootIdSet const& ids_set) const;
-        void ReportNonExistingId(uint32 lootId) const;
-        void ReportNonExistingId(uint32 lootId, const char* ownerType, uint32 ownerId) const;
+    uint32 LoadAndCollectLootIds(LootIdSet& ids_set);
+    // check existence reference and remove it from ref_set
+    void CheckLootRefs(LootIdSet* ref_set = NULL) const; 
+    void ReportUnusedIds(LootIdSet const& ids_set) const;
+    void ReportNonExistingId(uint32 lootId) const;
+    void ReportNonExistingId(uint32 lootId, const char* ownerType, uint32 ownerId) const;
 
-        bool HaveLootFor(uint32 loot_id) const { return _lootTemplates.find(loot_id) != _lootTemplates.end(); }
-        bool HaveQuestLootFor(uint32 loot_id) const;
-        bool HaveQuestLootForPlayer(uint32 loot_id, Player* player) const;
+    bool HaveLootFor(uint32 loot_id) const { return _lootTemplates.find(loot_id) != _lootTemplates.end(); }
+    bool HaveQuestLootFor(uint32 loot_id) const;
+    bool HaveQuestLootForPlayer(uint32 loot_id, Player* player) const;
 
-        LootTemplate const* GetLootFor(uint32 loot_id) const;
-        void ResetConditions();
-        LootTemplate* GetLootForConditionFill(uint32 loot_id);
+    LootTemplate const* GetLootFor(uint32 loot_id) const;
+    void ResetConditions();
+    LootTemplate* GetLootForConditionFill(uint32 loot_id);
 
-        char const* GetName() const { return _name; }
-        char const* GetEntryName() const { return _entryName; }
-        bool IsRatesAllowed() const { return _ratesAllowed; }
-    protected:
-        uint32 LoadLootTable();
-        void Clear();
-    private:
-        LootTemplateMap _lootTemplates;
-        char const* _name;
-        char const* _entryName;
-        bool _ratesAllowed;
+    char const* GetName() const { return _name; }
+    char const* GetEntryName() const { return _entryName; }
+    bool IsRatesAllowed() const { return _ratesAllowed; }
+protected:
+    uint32 LoadLootTable();
+    void Clear();
+private:
+    LootTemplateMap _lootTemplates;
+    char const* _name;
+    char const* _entryName;
+    bool _ratesAllowed;
 };
 
+// 
 class TC_GAME_API LootTemplate
 {
-    class LootGroup;                                       // A set of loot definitions for items (refs are not allowed inside)
+    // A set of loot definitions for items (refs are not allowed inside)
+    class LootGroup;
     typedef std::vector<LootGroup*> LootGroups;
 
-    public:
-        LootTemplate() { }
-        ~LootTemplate();
+public:
+    LootTemplate() { }
+    ~LootTemplate();
 
-        // Adds an entry to the group (at loading stage)
-        void AddEntry(LootStoreItem* item);
-        // Rolls for every item in the template and adds the rolled items the the loot
-        void Process(Loot& loot, bool rate, uint16 lootMode, uint8 groupId = 0, Player const* player = nullptr, bool specOnly = false) const;
-        void CopyConditions(const ConditionContainer& conditions);
-        void CopyConditions(LootItem* li) const;
+    // Adds an entry to the group (at loading stage)
+    void AddEntry(LootStoreItem* item);
+    // Rolls for every item in the template and adds the rolled items the the loot
+    void Process(Loot& loot, bool rate, uint16 lootMode, uint8 groupId = 0, Player const* player = nullptr, bool specOnly = false) const;
+    void CopyConditions(const ConditionContainer& conditions);
+    void CopyConditions(LootItem* li) const;
 
-        // True if template includes at least 1 quest drop entry
-        bool HasQuestDrop(LootTemplateMap const& store, uint8 groupId = 0) const;
-        // True if template includes at least 1 quest drop for an active quest of the player
-        bool HasQuestDropForPlayer(LootTemplateMap const& store, Player const* player, uint8 groupId = 0) const;
+    // True if template includes at least 1 quest drop entry
+    bool HasQuestDrop(LootTemplateMap const& store, uint8 groupId = 0) const;
+    // True if template includes at least 1 quest drop for an active quest of the player
+    bool HasQuestDropForPlayer(LootTemplateMap const& store, Player const* player, uint8 groupId = 0) const;
 
-        // Checks integrity of the template
-        void Verify(LootStore const& store, uint32 Id) const;
-        void CheckLootRefs(LootTemplateMap const& store, LootIdSet* ref_set) const;
-        bool addConditionItem(Condition* cond);
-        bool isReference(uint32 id);
+    // Checks integrity of the template
+    void Verify(LootStore const& store, uint32 Id) const;
+    void CheckLootRefs(LootTemplateMap const& store, LootIdSet* ref_set) const;
+    bool addConditionItem(Condition* cond);
+    bool isReference(uint32 id);
 
-    private:
-        LootStoreItemList Entries;                          // not grouped only
-        LootGroups        Groups;                           // groups have own (optimised) processing, grouped entries go there
+private:
+    LootStoreItemList Entries;                          // not grouped only
+    LootGroups        Groups;                           // groups have own (optimised) processing, grouped entries go there
 
-        // Objects of this class must never be copied, we are storing pointers in container
-        LootTemplate(LootTemplate const&) = delete;
-        LootTemplate& operator=(LootTemplate const&) = delete;
+    // Objects of this class must never be copied, we are storing pointers in container
+    LootTemplate(LootTemplate const&) = delete;
+    LootTemplate& operator=(LootTemplate const&) = delete;
 };
 
 //=====================================================

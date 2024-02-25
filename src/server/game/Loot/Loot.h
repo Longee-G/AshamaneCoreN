@@ -176,7 +176,7 @@ struct TC_GAME_API LootItem
     bool    freeforall        : 1;                          // free for all
     bool    is_underthreshold : 1;
     bool    is_counted        : 1;
-    bool    needs_quest       : 1;                          // quest drop
+    bool    needs_quest       : 1;                          // drop only quest
     bool    follow_loot_rules : 1;
     bool    canSave;
 
@@ -236,15 +236,16 @@ public:
 
 //=====================================================
 
+// how to build `Loot`
 struct TC_GAME_API Loot
 {
-    NotNormalLootItemMap const& GetPlayerCurrencies() const { return PlayerCurrencies; }
-    NotNormalLootItemMap const& GetPlayerQuestItems() const { return PlayerQuestItems; }
-    NotNormalLootItemMap const& GetPlayerFFAItems() const { return PlayerFFAItems; }
-    NotNormalLootItemMap const& GetPlayerNonQuestNonFFAConditionalItems() const { return PlayerNonQuestNonFFAConditionalItems; }
+    NotNormalLootItemMap const& GetPlayerCurrencies() const { return _playerCurrencies; }
+    NotNormalLootItemMap const& GetPlayerQuestItems() const { return _playerQuestItems; }
+    NotNormalLootItemMap const& GetPlayerFFAItems() const { return _playerFFAItems; }
+    NotNormalLootItemMap const& GetPlayerNonQuestNonFFAConditionalItems() const { return _playerNonQuestNonFFAConditionalItems; }
 
-    std::vector<LootItem> items;
-    std::vector<LootItem> quest_items;
+    std::vector<LootItem> items;                            // droped item list
+    std::vector<LootItem> quest_items;                      // droped items for quest
     uint32 gold;
     uint32 unlootedCount;
     ObjectGuid roundRobinPlayer;                            // GUID of the player having the Round-Robin ownership for the loot. If 0, round robin owner has released.
@@ -252,7 +253,7 @@ struct TC_GAME_API Loot
     uint8 maxDuplicates;                                    // Max amount of items with the same entry that can drop (default is 1; on 25 man raid mode 3)
 
     // GUID of container that holds this loot (item_instance.entry)
-    //  Only set for inventory items that can be right-click looted
+    // Only set for inventory items that can be right-click looted
     ObjectGuid containerID;
 
     Loot(uint32 _gold = 0);
@@ -268,7 +269,7 @@ struct TC_GAME_API Loot
     // if loot becomes invalid this reference is used to inform the listener
     void addLootValidatorRef(LootValidatorRef* pLootValidatorRef)
     {
-        i_LootValidatorRefManager.insertFirst(pLootValidatorRef);
+        _lootValidatorRefManager.insertFirst(pLootValidatorRef);
     }
 
     void clear();
@@ -299,7 +300,6 @@ struct TC_GAME_API Loot
     void BuildLootResponse(WorldPackets::Loot::LootResponse& packet, Player* viewer, PermissionTypes permission = ALL_PERMISSION) const;
 
 private:
-
     LootSlotType GetUITypeByPermission(LootItem const& item, PermissionTypes permission, LootSlotType slotType) const;
     void FillNotNormalLootFor(Player* player, bool presentAtLooting);
     NotNormalLootItemList* FillCurrencyLoot(Player* player);
@@ -308,13 +308,15 @@ private:
     NotNormalLootItemList* FillNonQuestNonFFAConditionalLoot(Player* player, bool presentAtLooting);
 
     GuidSet PlayersLooting;
-    NotNormalLootItemMap PlayerCurrencies;
-    NotNormalLootItemMap PlayerQuestItems;
-    NotNormalLootItemMap PlayerFFAItems;
-    NotNormalLootItemMap PlayerNonQuestNonFFAConditionalItems;
+    // key=playerGUID
+    NotNormalLootItemMap _playerCurrencies;
+    NotNormalLootItemMap _playerQuestItems;
+    // free for all items 
+    NotNormalLootItemMap _playerFFAItems;
+    NotNormalLootItemMap _playerNonQuestNonFFAConditionalItems;
 
     // All rolls are registered here. They need to know, when the loot is not valid anymore
-    LootValidatorRefManager i_LootValidatorRefManager;
+    LootValidatorRefManager _lootValidatorRefManager;
 
     // Loot GUID
     ObjectGuid _GUID;

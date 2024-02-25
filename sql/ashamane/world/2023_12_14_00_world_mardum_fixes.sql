@@ -211,3 +211,7 @@ UPDATE `gameobject_template` SET `ScriptName`='go_legion_communicator' WHERE `en
 
 -- Delete duplicate NPC
 DELETE FROM `creature` WHERE `guid` IN (20543738, 20543739);	-- Sevis Brightflame
+
+
+-- Loot fixes
+UPDATE `creature_loot_template` SET `QuestRequired`=1 WHERE `Entry`=95226 AND `Item`=128227;

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) 2012-2014 Arctium Emulation <http://arctium.org>
  * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
@@ -87,7 +87,7 @@ namespace Connection_Patcher
 
             std::cout << "Patching done.\n";
         }
-
+        // 写入证书包...写入文件的什么位置呢？
         void WriteCertificateBundle(boost::filesystem::path const& dest)
         {
             if (!boost::filesystem::exists(dest.parent_path()) &&

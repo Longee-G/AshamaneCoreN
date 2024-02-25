@@ -65,6 +65,7 @@ struct LootGroupInvalidSelector : public std::unary_function<LootStoreItem*, boo
         if (!(item->lootmode & _lootMode))
             return true;
 
+        // 怎么感觉这个group是用来避免堆叠物品超过最大数量的？
         uint8 foundDuplicates = 0;
         for (std::vector<LootItem>::const_iterator itr = _loot.items.begin(); itr != _loot.items.end(); ++itr)
             if (itr->itemid == item->itemid)
@@ -79,34 +80,35 @@ private:
     uint16 _lootMode;
 };
 
-class LootTemplate::LootGroup                               // A set of loot definitions for items (refs are not allowed)
+// A set of loot definitions for items (refs are not allowed)
+class LootTemplate::LootGroup
 {
-    public:
-        LootGroup() { }
-        ~LootGroup();
+public:
+    LootGroup() { }
+    ~LootGroup();
 
-        void AddEntry(LootStoreItem* item);                 // Adds an entry to the group (at loading stage)
-        bool HasQuestDrop() const;                          // True if group includes at least 1 quest drop entry
-        bool HasQuestDropForPlayer(Player const* player) const;
-                                                            // The same for active quests of the player
-        void Process(Loot& loot, uint16 lootMode) const;    // Rolls an item from the group (if any) and adds the item to the loot
-        float RawTotalChance() const;                       // Overall chance for the group (without equal chanced items)
-        float TotalChance() const;                          // Overall chance for the group
+    void AddEntry(LootStoreItem* item);                 // Adds an entry to the group (at loading stage)
+    bool HasQuestDrop() const;                          // True if group includes at least 1 quest drop entry
+    bool HasQuestDropForPlayer(Player const* player) const;
+    // The same for active quests of the player
+    void Process(Loot& loot, uint16 lootMode) const;    // Rolls an item from the group (if any) and adds the item to the loot
+    float RawTotalChance() const;                       // Overall chance for the group (without equal chanced items)
+    float TotalChance() const;                          // Overall chance for the group
 
-        void Verify(LootStore const& lootstore, uint32 id, uint8 group_id) const;
-        void CheckLootRefs(LootTemplateMap const& store, LootIdSet* ref_set) const;
-        LootStoreItemList* GetExplicitlyChancedItemList() { return &ExplicitlyChanced; }
-        LootStoreItemList* GetEqualChancedItemList() { return &EqualChanced; }
-        void CopyConditions(ConditionContainer conditions);
-    private:
-        LootStoreItemList ExplicitlyChanced;                // Entries with chances defined in DB
-        LootStoreItemList EqualChanced;                     // Zero chances - every entry takes the same chance
+    void Verify(LootStore const& lootstore, uint32 id, uint8 group_id) const;
+    void CheckLootRefs(LootTemplateMap const& store, LootIdSet* ref_set) const;
+    LootStoreItemList* GetExplicitlyChancedItemList() { return &ExplicitlyChanced; }
+    LootStoreItemList* GetEqualChancedItemList() { return &EqualChanced; }
+    void CopyConditions(ConditionContainer conditions);
+private:
+    LootStoreItemList ExplicitlyChanced;                // Entries with chances defined in DB
+    LootStoreItemList EqualChanced;                     // Zero chances - every entry takes the same chance
 
-        LootStoreItem const* Roll(Loot& loot, uint16 lootMode) const;   // Rolls an item from the group, returns NULL if all miss their chances
+    LootStoreItem const* Roll(Loot& loot, uint16 lootMode) const;   // Rolls an item from the group, returns NULL if all miss their chances
 
-        // This class must never be copied - storing pointers
-        LootGroup(LootGroup const&);
-        LootGroup& operator=(LootGroup const&);
+    // This class must never be copied - storing pointers
+    LootGroup(LootGroup const&);
+    LootGroup& operator=(LootGroup const&);
 };
 
 //Remove all data and free all memory
@@ -289,7 +291,7 @@ bool LootStoreItem::Roll(bool rate) const
 {
     if (chance >= 100.0f)
         return true;
-
+    // the entry reference other db_entry..
     if (reference > 0)                                   // reference case
         return roll_chance_f(chance* (rate ? sWorld->getRate(RATE_DROP_ITEM_REFERENCED) : 1.0f));
 
@@ -394,6 +396,8 @@ void LootTemplate::LootGroup::AddEntry(LootStoreItem* item)
     else
         EqualChanced.push_back(item);
 }
+
+// 分组物品的roll和无分组物品有什么不同？
 
 // Rolls an item from the group, returns NULL if all miss their chances
 LootStoreItem const* LootTemplate::LootGroup::Roll(Loot& loot, uint16 lootMode) const
@@ -597,6 +601,8 @@ void LootTemplate::Process(Loot& loot, bool rate, uint16 lootMode, uint8 groupId
         return;
     }
 
+    // 什么是未分组的物品？
+
     // Rolling non-grouped items
     for (LootStoreItemList::const_iterator i = Entries.begin(); i != Entries.end(); ++i)
     {
@@ -620,6 +626,9 @@ void LootTemplate::Process(Loot& loot, bool rate, uint16 lootMode, uint8 groupId
         else                                                    // Plain entries (not a reference, not grouped)
             loot.AddItem(*item, player, specOnly);              // Chance is already checked, just add
     }
+
+    // What's grouped items? ...
+    // 有两类物品吗？一种是分组的，一种是未分组的？
 
     // Now processing groups
     for (LootGroups::const_iterator i = Groups.begin(); i != Groups.end(); ++i)
