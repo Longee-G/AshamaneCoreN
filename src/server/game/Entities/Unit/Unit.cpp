@@ -11647,6 +11647,7 @@ void Unit::SetStunned(bool apply)
     }
 }
 
+// What's rooted ?
 void Unit::SetRooted(bool apply, bool packetOnly /*= false*/)
 {
     if (!packetOnly)
@@ -12446,7 +12447,7 @@ void Unit::UpdateObjectVisibility(bool forced)
     }
 }
 
-void Unit::SendMoveKnockBack(Player* player, float speedXY, float speedZ, float vcos, float vsin)
+void Unit::SendMoveKnockback(Player* player, float speedXY, float speedZ, float vcos, float vsin)
 {
     WorldPackets::Movement::MoveKnockBack moveKnockBack;
     moveKnockBack.MoverGUID = GetGUID();
@@ -12476,7 +12477,7 @@ void Unit::KnockbackFrom(float x, float y, float speedXY, float speedZ, Movement
     {
         float vcos, vsin;
         GetSinCos(x, y, vsin, vcos);
-        SendMoveKnockBack(player, std::abs(speedXY), -speedZ, vcos, vsin);
+        SendMoveKnockback(player, std::abs(speedXY), -speedZ, vcos, vsin);
     }
 }
 
@@ -12951,7 +12952,7 @@ void Unit::JumpTo(float speedXY, float speedZ, bool forward)
     {
         float vcos = std::cos(angle+GetOrientation());
         float vsin = std::sin(angle+GetOrientation());
-        SendMoveKnockBack(ToPlayer(), speedXY, -speedZ, vcos, vsin);
+        SendMoveKnockback(ToPlayer(), speedXY, -speedZ, vcos, vsin);
     }
 }
 

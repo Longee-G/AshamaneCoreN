@@ -1316,7 +1316,7 @@ public:
     void UpdateOrientation(float orientation);
     void UpdateHeight(float newZ);
 
-    void SendMoveKnockBack(Player* player, float speedXY, float speedZ, float vcos, float vsin);
+    void SendMoveKnockback(Player* player, float speedXY, float speedZ, float vcos, float vsin);
     void KnockbackFrom(float x, float y, float speedXY, float speedZ, Movement::SpellEffectExtraData const* spellEffectExtraData = nullptr);
     void JumpTo(float speedXY, float speedZ, bool forward = true);
     void JumpTo(WorldObject* obj, float speedZ, bool withOrientation = false);
