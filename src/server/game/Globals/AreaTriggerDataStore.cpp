@@ -27,9 +27,20 @@
 
 namespace
 {
+    // key=triggerId
     std::unordered_map<uint32, AreaTriggerTemplate> _areaTriggerTemplateStore;
+    // key=miscId
     std::unordered_map<uint32, AreaTriggerMiscTemplate> _areaTriggerTemplateSpellMisc;
 }
+
+// Table Associated with AreaTrigger ..
+// `spell_areatrigger`
+// `spell_areatrigger_circular`
+// `areatrigger_template`
+// `areatrigger_template_actions`
+// `areatrigger_template_polygon_vertices`
+// `spell_areatrigger_splines`
+// `spell_areatrigger_rollpitchyaw`
 
 void AreaTriggerDataStore::LoadAreaTriggerTemplates()
 {
@@ -330,6 +341,7 @@ void AreaTriggerDataStore::LoadAreaTriggers()
     TC_LOG_INFO("server.loading", ">> Loaded " SZFMTD " areatrigger in %u ms", _areaTriggerData.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
+// 调用这个接口的triggerId来源是什么？
 AreaTriggerTemplate const* AreaTriggerDataStore::GetAreaTriggerTemplate(uint32 areaTriggerId) const
 {
     auto itr = _areaTriggerTemplateStore.find(areaTriggerId);

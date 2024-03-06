@@ -149,7 +149,7 @@ protected:
     int32 _lastSplineIndex;
     uint32 _movementTime;
 
-    AreaTriggerTemplate const* _areaTriggerTemplate;
+    AreaTriggerTemplate const* _areaTriggerTemplate;        // from db table
     Optional<AreaTriggerCircularMovementInfo> _circularMovementInfo;
     AreaTriggerMiscTemplate const* _areaTriggerMiscTemplate;
     GuidUnorderedSet _insideUnits;

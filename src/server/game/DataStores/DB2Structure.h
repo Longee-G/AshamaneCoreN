@@ -137,7 +137,7 @@ struct AreaTriggerEntry
     float BoxWidth;
     float BoxHeight;
     float BoxYaw;
-    int16 ContinentID;
+    int16 ContinentID;              // mapId
     int16 PhaseID;
     int16 PhaseGroupID;
     int16 ShapeID;
@@ -145,7 +145,7 @@ struct AreaTriggerEntry
     int8 PhaseUseFlags;
     int8 ShapeType;
     int8 Flags;
-    uint32 ID;
+    uint32 ID;  // What ID
 };
 
 struct ArmorLocationEntry
