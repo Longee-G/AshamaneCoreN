@@ -215,3 +215,10 @@ DELETE FROM `creature` WHERE `guid` IN (20543738, 20543739);	-- Sevis Brightflam
 
 -- Loot fixes
 UPDATE `creature_loot_template` SET `QuestRequired`=1 WHERE `Entry`=95226 AND `Item`=128227;
+
+
+
+-- Quest id: 38727 - "Stop the Bombardment" - Add missing banner
+DELETE FROM `gameobject` WHERE `guid` = 20375675;
+INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`, `isActive`, `ScriptName`, `VerifiedBuild`) VALUES 
+(20375675, 243965, 1481, 7705, 7747, 0, 0, 0, 0, -1, 1813.36, 1543.43, 88.3732, 5.74205, 0, 0, 0.267278, -0.963619, 7200, 255, 1, 0, '', 26972);

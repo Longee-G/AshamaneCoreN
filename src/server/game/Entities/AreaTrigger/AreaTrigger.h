@@ -40,7 +40,7 @@ namespace Movement
 
 typedef std::list<AreaTrigger*> AreaTriggerList;
 
-// 区域触发器...
+
 class TC_GAME_API AreaTrigger : public WorldObject, public GridObject<AreaTrigger>, public MapObject
 {
 public:

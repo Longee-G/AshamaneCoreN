@@ -2,7 +2,7 @@
 -- Map: 1468
 
 --
--- Warden Prison Creature respawns
+-- `Vault of The Wardens` Creature respawns
 --
 DELETE FROM `creature` WHERE `map`=1468;
 SET @CGUID:=14680000;
@@ -953,3 +953,17 @@ UPDATE `quest_template_addon` SET `PrevQuestID` = 40373, `NextQuestID` = 39690, 
 UPDATE `quest_template_addon` SET `PrevQuestID` = 40373, `NextQuestID` = 39689, `ExclusiveGroup` = 39694 WHERE `ID` = 39688; -- between us and freedom
 UPDATE `quest_template_addon` SET `PrevQuestID` = 40373, `NextQuestID` = 39689, `ExclusiveGroup` = 39694 WHERE `ID` = 40255; -- between us and freedom
 UPDATE `quest_template_addon` SET `PrevQuestID` = 40373, `NextQuestID` = 39690, `ExclusiveGroup` = 39694 WHERE `ID` = 40256; -- between us and freedom
+
+-- path for Maiev Shadowsong(92718)
+DELETE FROM `waypoint_data` WHERE `id` IN (1092718);
+INSERT INTO `waypoint_data`(`id`,`point`,`position_x`,`position_y`,`position_z`,`orientation`,`delay`,`move_type`,`action`,`action_chance`,`wpguid`) VALUES 
+(1092718,1,4325.83,-585.576,-281.745,0,0,1,0,100,0),
+(1092718,2,4325.83,-582.826,-281.495,0,0,1,0,100,0),
+(1092718,3,4325.83,-582.826,-281.495,0,0,1,0,100,0),
+(1092718,4,4325.83,-579.576,-281.495,0,0,1,336,100,0),
+(1092718,5,4325.83,-576.826,-281.495,0,0,1,0,100,0);
+
+
+-- spell - Demon Hunter Start
+INSERT INTO `spell_area` (`spell`, `area`, `quest_start`, `quest_end`, `aura_spell`, `teamId`, `racemask`, `gender`, `flags`, `quest_start_status`, `quest_end_status`) VALUES 
+('191649', '7873', '38669', '38669', '0', '-1', '0', '2', '2', '1', '64');

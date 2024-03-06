@@ -75,10 +75,8 @@ enum eKillCredits
     KILL_CREDIT_REUNION_FINISHED_ALTRUIS = 112287,
 };
 
-// ?????1?npc,??
-
 // quest:38672 `Breaking Out`
-// npc_maiev_shadowsong
+// 92718 npc_maiev_shadowsong
 class npc_maiev_shadowsong_welcome : public CreatureScript
 {
 public:
@@ -87,7 +85,6 @@ public:
     {
         if (quest->GetQuestId() == QUEST_BREAKING_OUT)
         {
-            // ??????npc? ?????SAI???????????,???npc????
             player->SummonCreature(92718, creature->GetPosition(), TEMPSUMMON_MANUAL_DESPAWN, 10000, 0, true);
         }
         return true;
@@ -124,12 +121,12 @@ public:
             {
                 if (timer <= diff)
                 {
-                    // ??go????
+                    // Ward of the Hunters[244925]
                     if (GameObject* go = me->FindNearestGameObject(244925, me->GetValuesCount()))
                         go->UseDoorOrButton();
-                    // ????????
-                    me->GetMotionMaster()->MovePath(1092718, false);
-                    
+
+                    // path defines in table `waypoint_data`
+                    me->GetMotionMaster()->MovePath(1092718, false);                    
                     me->GetScheduler().Schedule(4s, [this](TaskContext context)
                     {
                         Creature* maiev = GetContextCreature();
@@ -145,13 +142,11 @@ public:
                     timer -= diff;
             }
         }
-
     };
-
 };
 
 
-// DH Mardum??????????...
+// 
 void AddSC_zone_vault_of_wardens()
 {
 
