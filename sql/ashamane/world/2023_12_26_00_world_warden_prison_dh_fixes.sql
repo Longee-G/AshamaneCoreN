@@ -906,15 +906,17 @@ INSERT INTO `creature_questender` (`id`,`quest`) VALUES (92984, 40253), (92984, 
 --
 -- 设置creature和gameobject的脚本
 --
+UPDATE `creature_template` SET `ScriptName` = 'npc_maiev_shadowsong_welcome' WHERE `entry` = 92718;	-- Maiev Shadowsong
+UPDATE `creature_template` SET `ScriptName` = 'npc_kayn_cell' WHERE `entry` = 103658;	-- Kayn's Cell
+UPDATE `creature_template` SET `ScriptName` = 'npc_altruis_cell' WHERE `entry` = 103655;	-- Altruis's Cell
+
+
 UPDATE `creature_template` SET `ScriptName` = 'npc_kayn_3' WHERE `entry` = 96665;	-- Kayn Sunfury
 UPDATE `creature_template` SET `ScriptName` = 'npc_altruis' WHERE `entry` = 92986;	-- Altruis the Sufferer
 UPDATE `creature_template` SET `ScriptName` = 'npc_fel_infusion' WHERE `entry` = 92776;	-- Fel Shocktrooper
 UPDATE `creature_template` SET `ScriptName` = 'npc_fel_infusion' WHERE `entry` = 92782;	-- Savage Felstalker
-UPDATE `creature_template` SET `ScriptName` = 'npc_kayn_cell' WHERE `entry` = 103658;	-- Kayn's Cell
-UPDATE `creature_template` SET `ScriptName` = 'npc_altruis_cell' WHERE `entry` = 103655;	-- Altruis's Cell
 UPDATE `creature_template` SET `ScriptName` = 'npc_korvas_bloodthorn' WHERE `entry` = 97644;	-- Kor'vas Bloodthorn
 UPDATE `creature_template` SET `ScriptName` = 'npc_khadgar' WHERE `entry` = 97978;	-- Archmage Khadgar
-UPDATE `creature_template` SET `ScriptName` = 'npc_maiev_shadowsong' WHERE `entry` = 92718;	-- Maiev Shadowsong
 UPDATE `creature_template` SET `ScriptName` = 'npc_immolanth' WHERE `entry` = 96682;	-- Immolanth
 UPDATE `creature_template` SET `ScriptName` = 'npc_vow_ashgolm' WHERE `entry` = 96681;	-- Ash'golm
 UPDATE `creature_template` SET `ScriptName` = 'npc_bastillax' WHERE `entry` = 96783;	-- Bastillax
@@ -922,7 +924,6 @@ UPDATE `creature_template` SET `ScriptName` = 'npc_legion_portal' WHERE `entry` 
 UPDATE `creature_template` SET `ScriptName` = 'npc_cyana_immolanth_fight' WHERE `entry` = 96672;	-- Cyana Nightglaive
 UPDATE `creature_template` SET `ScriptName` = 'npc_khadgars_upgraded_servant' WHERE `entry` = 114562;	-- Khadgar's Upgraded Servant
 
--- UPDATE `creature_template` SET `AIName`='', `ScriptName`='npc_maiev_shadowsong_welcome' WHERE `entry`=92718; -- Maiev	
 
 -- 这个有问题，guid对不上 ...
 -- UPDATE `creature` SET `ScriptName` = 'npc_kayn_sledge_fight' WHERE `guid` = 20542913;
@@ -963,7 +964,7 @@ INSERT INTO `waypoint_data`(`id`,`point`,`position_x`,`position_y`,`position_z`,
 (1092718,4,4325.83,-579.576,-281.495,0,0,1,336,100,0),
 (1092718,5,4325.83,-576.826,-281.495,0,0,1,0,100,0);
 
-
 -- spell - Demon Hunter Start
+DELETE FROM `spell_area` WHERE `spell`=191649 AND `area`=7873;
 INSERT INTO `spell_area` (`spell`, `area`, `quest_start`, `quest_end`, `aura_spell`, `teamId`, `racemask`, `gender`, `flags`, `quest_start_status`, `quest_end_status`) VALUES 
-('191649', '7873', '38669', '38669', '0', '-1', '0', '2', '2', '1', '64');
+(191649, 7873, 38669, 38669, 0, -1, 0, 2, 2, 1, 64);

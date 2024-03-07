@@ -76,7 +76,7 @@ enum eKillCredits
 };
 
 // quest:38672 `Breaking Out`
-// 92718 npc_maiev_shadowsong
+// 92718 - npc_maiev_shadowsong
 class npc_maiev_shadowsong_welcome : public CreatureScript
 {
 public:
@@ -146,8 +146,65 @@ public:
 };
 
 
+
+// 103658 - Kayn's cell
+class npc_kayn_cell : public CreatureScript
+{
+public:
+    npc_kayn_cell() : CreatureScript("npc_kayn_cell") {}
+    bool OnGossipHello(Player* player, Creature* creature) override
+    {
+        // 检查任务目标是否已经完成 ...
+        if (player->GetQuestStatus(QUEST_BREAKING_OUT) == QUEST_STATUS_INCOMPLETE)
+        {
+            if (player->GetQuestObjectiveCounter(92848) > 0)
+                return true;
+
+            if (creature == nullptr)
+                return false;
+
+            player->CastSpell(creature, SPELL_UNLOCKING_KAYN, true);
+            creature->DespawnOrUnsummon(60);
+            // 99631 - Kayn Sunfury
+            player->SummonCreature(99631, 4343.16f, -589.57f, -281.40f, 3.38f, TEMPSUMMON_TIMED_DESPAWN, 60000, false);
+        }
+
+        return true;
+    }
+};
+
+// 103655 - Altruis's cell
+class npc_altruis_cell : public CreatureScript
+{
+public:
+    npc_altruis_cell() : CreatureScript("npc_altruis_cell") {}
+
+    bool OnGossipHello(Player* player, Creature* creature) override
+    {
+        if (player->GetQuestStatus(QUEST_BREAKING_OUT) == QUEST_STATUS_INCOMPLETE)
+        {
+            if (player->GetQuestObjectiveCounter(92849) > 0)
+                return true;
+
+            if (creature == nullptr)
+                return false;
+
+            player->CastSpell(creature, SPELL_UNLOCKING_ALTRUIS, true);
+            creature->DespawnOrUnsummon(60);
+            // 99632 - Altruis the Sufferer
+            player->SummonCreature(99632, 4309.94f, -589.618f, -281.407f, 6.13126f, TEMPSUMMON_TIMED_DESPAWN, 60000, false);
+        }
+
+        return true;
+    }
+};
+
+
 // 
 void AddSC_zone_vault_of_wardens()
 {
+    new npc_maiev_shadowsong_welcome();
+    new npc_kayn_cell();
+    new npc_altruis_cell();
 
 }
