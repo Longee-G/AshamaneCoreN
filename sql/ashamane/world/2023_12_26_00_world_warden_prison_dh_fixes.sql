@@ -968,3 +968,11 @@ INSERT INTO `waypoint_data`(`id`,`point`,`position_x`,`position_y`,`position_z`,
 DELETE FROM `spell_area` WHERE `spell`=191649 AND `area`=7873;
 INSERT INTO `spell_area` (`spell`, `area`, `quest_start`, `quest_end`, `aura_spell`, `teamId`, `racemask`, `gender`, `flags`, `quest_start_status`, `quest_end_status`) VALUES 
 (191649, 7873, 38669, 38669, 0, -1, 0, 2, 1|2, 1, 64);	-- autocast
+
+
+
+-- 这个是新的知识，关联任务的脚本？ ... 在quest_template中没有脚本的设置 ...
+UPDATE `quest_template_addon` SET `ScriptName`='q_breaking_out' WHERE `ID`=38672;
+
+-- 原先使用了Script吗？ -- 不将脚本绑在npc上
+UPDATE `creature_template` SET `ScriptName`='' WHERE `entry`=92718;

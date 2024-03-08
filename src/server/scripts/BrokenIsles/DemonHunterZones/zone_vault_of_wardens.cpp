@@ -199,6 +199,49 @@ public:
     }
 };
 
+// 38672 - `Breaking Out`
+class q_breaking_out : public QuestScript
+{
+public:
+    q_breaking_out() : QuestScript("q_breaking_out") {}
+    void OnQuestStatusChange(Player* player, Quest const* quest, QuestStatus oldStatus, QuestStatus newStatus) override
+    {
+        if (newStatus == QUEST_STATUS_NONE)
+        {
+            // 为什么要主动调用这个接口？
+            PhasingHandler::OnConditionChange(player);
+            // 244925 - Ward of the Hunters
+            if (GameObject* go = player->FindNearestGameObject(244925, 200.0f))
+                go->ResetDoorOrButton();    // 这个是关门还是开门？
+        }
+        else if (newStatus == QUEST_STATUS_REWARDED)
+        {
+            if (GameObject* go = player->FindNearestGameObject(244925, 200.0f))
+                go->UseDoorOrButton();
+        }
+        else if (newStatus == QUEST_STATUS_COMPLETE)
+        {
+            if (Creature* kayn = player->FindNearestCreature(99631, player->GetVisibilityRange(), true))
+            {
+                kayn->AI()->SetData(21, 21);    // 啥意思
+                kayn->GetScheduler().Schedule(3s, [kayn](TaskContext context)
+                {
+                    kayn->AI()->Talk(1);
+                });
+            }
+
+            if (Creature* altruis = player->FindNearestCreature(99632, player->GetVisibilityRange(), true))
+            {
+                altruis->AI()->SetData(21, 21);
+                altruis->GetScheduler().Schedule(3s, [altruis](TaskContext context) {
+                    altruis->AI()->Talk(1);
+                });
+            }
+        }
+    }
+};
+
+
 
 // 
 void AddSC_zone_vault_of_wardens()
@@ -206,5 +249,5 @@ void AddSC_zone_vault_of_wardens()
     new npc_maiev_shadowsong_welcome();
     new npc_kayn_cell();
     new npc_altruis_cell();
-
+    new q_breaking_out();
 }
