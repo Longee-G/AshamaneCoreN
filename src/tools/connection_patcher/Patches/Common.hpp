@@ -52,6 +52,11 @@ namespace Connection_Patcher
             }
             static std::string VersionsFile() { return "trinity6.github.io/%s/%s/build/versi"; };
             static std::vector<unsigned char> CertBundleUrl() { return { 'h', 't', 't', 'p', 's', ':', '/', '/', 't', 'r', 'i', 'n', 'i', 't', 'y', '6', '.', 'g', 'i', 't', 'h', 'u', 'b', '.', 'i', 'o', '/', 'B', 'n', 'e', 't', '/', 'z', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', '/', 'c', 'l', 'i', 'e', 'n', 't', '/', 'b', 'g', 's', '-', 'k', 'e', 'y', '-', 'f', 'i', 'n', 'g', 'e', 'r', 'p', 'r', 'i', 'n', 't' }; }
+
+            // 这个字符串是怎么写入到exe文件中的？
+            // 通过sha加密后再更新到exe中的 ..
+
+            // 这个证书包写入到文件 `C:\ProgramData\Blizzard Entertainment\Battle.net\Cache\web_cert_bundle`中...
             static std::string CertificateBundle()
             {
                 // 字符串前面加R是什么意思

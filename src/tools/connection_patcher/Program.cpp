@@ -87,17 +87,21 @@ namespace Connection_Patcher
 
             std::cout << "Patching done.\n";
         }
-        // 写入证书包...写入文件的什么位置呢？
+        // q:写入证书包...写入文件的什么位置呢？
+        // a:这个函数是在 `C:\ProgramData\Blizzard Entertainment\Battle.net\Cache`目录下创建一个证书文件
+        // 例如 `web_cert_bundle` ... 
         void WriteCertificateBundle(boost::filesystem::path const& dest)
         {
             if (!boost::filesystem::exists(dest.parent_path()) &&
                 !boost::filesystem::create_directories(dest.parent_path()))
                 throw std::runtime_error("could not create " + dest.parent_path().string());
 
+            // 打开.exe文件
             std::ofstream ofs(dest.string(), std::ofstream::binary);
             if (!ofs)
                 throw std::runtime_error("could not open " + dest.string());
 
+            // 
             ofs << std::noskipws << Patches::Common::CertificateBundle() << "NGIS";
 
             SHA256Hash signatureHash;
@@ -110,6 +114,7 @@ namespace Connection_Patcher
             rsa.LoadFromString(Patches::Common::CertificatePrivateKey(), Trinity::Crypto::RSA::PrivateKey{});
             rsa.Sign(signatureHash.GetDigest(), signatureHash.GetLength(), signature.data(), Trinity::Crypto::RSA::SHA256{});
 
+            // 最后写入签名数据...
             ofs.write(reinterpret_cast<char const*>(signature.data()), signature.size());
         }
     }
@@ -204,6 +209,8 @@ int main(int argc, char** argv)
                 boost::algorithm::replace_all(renamed_binary_path, ".exe", "_Patched.exe");
                 do_patches<Patches::Windows, Patterns::Windows>
                     (&patcher, renamed_binary_path, wowBuild);
+
+                // 创建一个证书文件到 ProgramData目录下 ..
                 WriteCertificateBundle(boost::filesystem::path(appDataPath) / L"Blizzard Entertainment/Battle.net/Cache/web_cert_bundle");
                 break;
             case Constants::BinaryTypes::Mach64:
